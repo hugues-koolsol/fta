@@ -9,12 +9,10 @@ $o1='';?>
 <div class="menuScroller">
     <ul>
         <li>
-            <a href="javascript:chargerSourceDeTestJs()">source de test</a>
-            &nbsp;
+            <a href="javascript:__gi1.remplir_une_textarea_avex_un_source_de_test_js('txtar1')">source de test</a>
         </li>
         <li>
-            <a href="javascript:bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn3( 'txtar1' , 'txtar2' )" class="yysucces">convertir module acorn 3</a>
-            &nbsp;
+            <a href="javascript:__gi1.bouton_transform_textarea_js_en_rev_avec_acorn3( 'txtar1' , 'txtar2' , true )" class="yysucces">convertir module acorn 3</a>
         </li>
     </ul>
 </div>
@@ -64,8 +62,10 @@ $par=array(/* */
 //<source_javascript_rev>
 window.addEventListener("load",function(){
         setTimeout(function(){
-                chargerLeDernierSourceJs();
-                /* bouton_dans_traite_js_transform_textarea_js_en_rev_avec_acorn3("txtar1","txtar2"); */
+                var fta_indexhtml_javascript_dernier_fichier_charge=localStorage.getItem('fta_indexhtml_javascript_dernier_fichier_charge');
+                if(fta_indexhtml_javascript_dernier_fichier_charge !== null){
+                    document.getElementById('txtar1').value=fta_indexhtml_javascript_dernier_fichier_charge;
+                }
             },100);
     });
 //</source_javascript_rev>

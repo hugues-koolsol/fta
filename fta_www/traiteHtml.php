@@ -10,12 +10,10 @@ $o1='';?>
 <div class="menuScroller">
     <ul>
         <li>
-            <a href="javascript:chargerSourceDeTestHtml()">source de test</a>
-            &nbsp;
+            <a href="javascript:__gi1.remplir_une_textarea_avec_un_source_de_test_html('txtar1')">source de test</a>
         </li>
         <li>
-            <a href="javascript:transform_text_area_Html_en_rev(&quot;txtar1&quot;,&quot;{'zone_html_rev':'txtar2','zone_html_resultat':'txtar3'}&quot;)" class="yysucces">html-&gt;rev</a>
-            &nbsp;
+            <a href="javascript:__gi1.convertir_text_area_html_en_rev(&quot;txtar1&quot;,&quot;{'zone_html_rev':'txtar2','zone_html_resultat':'txtar3'}&quot;)" class="yysucces">html-&gt;rev</a>
         </li>
     </ul>
 </div>
@@ -37,7 +35,7 @@ $o1='';?>
 </div>
 <textarea class="txtar1" id="txtar2" rows="12" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 <div style="width:90%;">
-    <a href="javascript:transform_text_area_rev_en_html(&quot;txtar2&quot;,&quot;txtar3&quot;)" class="yyinfo">rev-&gt;html</a>
+    <a href="javascript:__gi1.convertir_textearea_rev_vers_textarea_html( 'txtar2' , 'txtar3' )" class="yyinfo">rev-&gt;html</a>
     <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;txtar3&quot;,1)">aller à la ligne n°</a>
     <a style="float:right;" class="yyinfo" href="javascript:__gi1.aller_a_la_position(&quot;txtar3&quot;)">aller à la position</a>
     <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar3&quot;);" title="réduire la zone">👊</a>
@@ -51,11 +49,8 @@ $js_a_executer_apres_chargement=array(/* */
     array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar2', 'mode' => 'rev'))
 );
 $par=array(/* */
-    'js_a_inclure' => array(
-            /**/
+    'js_a_inclure' => array(/*il peut y avoir du javascript dans le html*/
             'js/javascript.js',
-            'js/convertit-html-en-rev1.js',
-            'js/convertit-js-en-rev1.js',
             'js/jslib/acorn.js'
         ),
     'module_a_inclure' => array(/**/
@@ -66,7 +61,11 @@ $par=array(/* */
 );
 $o1 .= '<script type="text/javascript">
 window.addEventListener(\'load\',function(){
-  chargerLeDernierSourceHTML();
+    var fta_traitehtml_dernier_fichier_charge=localStorage.getItem(\'fta_traitehtml_dernier_fichier_charge\');
+    if(fta_traitehtml_dernier_fichier_charge !== null){
+        document.getElementById(\'txtar1\').value=fta_traitehtml_dernier_fichier_charge;
+    }
+
  }
 )
 </script>';

@@ -1063,13 +1063,12 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
         if(strpos($__valeurs['T0.chp_nom_source'],'.js') !== false){
 
             $o1 .= '   <a class="yyinfo" href="javascript:convertir_rev_en_js(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R-&gt;J&#8615;</a>' . PHP_EOL;
-            $o1 .= '   <a class="yyrose" href="javascript:bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;J-&gt;R</a>' . PHP_EOL;
+            $o1 .= '   <a class="yyrose" href="javascript:__gi1.bouton_transform_textarea_js_en_rev_avec_acorn3(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,false)">&#8613;J-&gt;R</a>' . PHP_EOL;
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.htm') !== false){
 
             $o1 .= '   <a class="yyinfo" href="javascript:convertir_rev_en_html(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R2H&#8615;</a>' . PHP_EOL;
-            /* $o1.='   <a class="yyavertissement" href="javascript:convertir_html_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613;H2R</a>'.PHP_EOL;*/
-            $o1 .= '   <a class="yyavertissement" href="javascript:transform_text_area_Html_en_rev(&quot;chp_genere_source&quot;,&quot;{\'zone_html_rev\':\'chp_rev_source\'}&quot;)" class="yysucces">&#8613;H2R</a>' . PHP_EOL;
+            $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.convertir_text_area_html_en_rev(&quot;chp_genere_source&quot;,&quot;{\'zone_html_rev\':\'chp_rev_source\'}&quot;)" class="yysucces">&#8613;H2R</a>' . PHP_EOL;
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.php') !== false){
 
@@ -1226,7 +1225,6 @@ $par=array( 'js_a_inclure' => array(
             'js/texte.js',
             'js/jslib/sqlite-parser.js',
             'js/convertion_sql_en_rev.js',
-            'js/convertit-html-en-rev1.js',
             'js/jslib/acorn.js',
             'js/jslib/php-parser.js'
         ), 'module_a_inclure' => array(/**/

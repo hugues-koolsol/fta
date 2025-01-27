@@ -272,7 +272,11 @@ function nl1(){
     /* at nom_fonction (http://localhost/a/b/c/js/fichier.js:25:15) */
     var texte_erreur=stack.shift();
     var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
-    var nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
+    if(texte_erreur.match(/ at ([^\.]+) \(/)===null){
+        var nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
+    }else{
+        var nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
+    }
     var numero_de_ligne=modele_champ_erreur.exec(texte_erreur)[1];
     return('^G ' + nom_fichier + ' ' + nom_fonction + ' ' + numero_de_ligne + ' ');
 }
@@ -1005,7 +1009,7 @@ function formaterErreurRev(obj){
       __xme : '1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
       texte:texte,
       chaineTableau:chaineTableau,
-      tabComment:tabCommentaireEtFinParentheses,
+      chaine_tableau_commentaires:chaine_tableau_commentaires
       tableauEntree:tableauEntree,
       quitterSiErreurNiveau:quitterSiErreurNiveau,
       autoriserCstDansRacine:autoriserCstDansRacine
@@ -1026,7 +1030,7 @@ function formaterErreurRev(obj){
           SyntaxError: Bad control character in string literal in JSON at position 113 (line 1 column 114)
           at JSON.parse (<anonymous>)
           at functionToArray2 (core6.js:1939:13)
-          at transformLeRev (pour-index_php0.js:118:24)
+          at transformLeRev (nom_du_source:118:24)
           at <anonymous>:1:1      
         */
         if(obj.ejson.message.indexOf('at position ') >= 0){
@@ -1045,10 +1049,31 @@ function formaterErreurRev(obj){
                 }
             }
         }
-        return({"__xst" : obj.__xst ,"__xva" : T ,"id" : obj.ind ,"__xme" : obj.__xme + ' ' + message_ajoute});
+        return({"__xst" : obj.__xst ,"__xva" : '' ,"id" : obj.ind ,"__xme" : obj.__xme + ' ' + message_ajoute});
     }
     var chaineTableau='[' + obj.chaineTableau + ']';
-    var T=JSON.parse(chaineTableau);
+    /*#
+      // à ajouter éventuellement
+      if(chaine_tableau_commentaires!==''){
+          chaine_tableau_commentaires='[' + chaine_tableau_commentaires.substr(1) + ']';
+          try{
+              tabCommentaireEtFinParentheses=JSON.parse(chaine_tableau_commentaires);
+          }catch(e){
+              debugger
+          }
+          
+          //  Puis on ajoute les commentaires 
+          //  tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire];
+          //  T[indice][13]=commentaire;
+          
+          var rgx1=new RegExp(chLF, "g");
+          var rgx2=new RegExp(chCR, "g");
+          l01=tabCommentaireEtFinParentheses.length;
+          for( i=0 ; i < l01 ; i++ ){
+              T[tabCommentaireEtFinParentheses[i][0]][13]=tabCommentaireEtFinParentheses[i][1].replace(rgx1,'\n').replace(rgx2,'\r');
+          }
+      }
+    */    
     if(obj.hasOwnProperty('tableauEntree')){
         if(obj.hasOwnProperty('ind')){
             if(obj.ind > 50){
@@ -1088,6 +1113,7 @@ function formaterErreurRev(obj){
             }
         }
     }
+    var T=JSON.parse(chaineTableau);    
     return({"__xst" : obj.__xst ,"__xva" : T ,"id" : obj.ind ,"__xme" : obj.__xme + message_ajoute ,"line" : line});
 }
 /*#
@@ -1183,6 +1209,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       =============================================================================================================
     */
     var tabCommentaireEtFinParentheses=[];
+    var chaine_tableau_commentaires='';
     var T=[];
     /*
       =============================================================================================================
@@ -1237,7 +1264,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                       après avoir rempli la fonction, on met les commentaires dans un tableau et on remplira 
                       le tableau principal "T" à la fin
                     */
-                    tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire];
+                    chaine_tableau_commentaires+=',['+indice+',"'+commentaire.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t')+'"]';
                     indiceTabCommentaire++;
                     posFerPar=0;
                     /*
@@ -1308,7 +1335,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             "type" : 'rev' ,
                             "texte" : texte ,
                             "chaineTableau" : chaineTableau ,
-                            "tabComment" : tabCommentaireEtFinParentheses ,
+                            "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                             "tableauEntree" : tableauEntree ,
                             "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                             "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -1335,7 +1362,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             "type" : 'rev' ,
                             "texte" : texte ,
                             "chaineTableau" : chaineTableau ,
-                            "tabComment" : tabCommentaireEtFinParentheses ,
+                            "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                             "tableauEntree" : tableauEntree ,
                             "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                             "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -1350,7 +1377,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             "type" : 'rev' ,
                             "texte" : texte ,
                             "chaineTableau" : chaineTableau ,
-                            "tabComment" : tabCommentaireEtFinParentheses ,
+                            "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                             "tableauEntree" : tableauEntree ,
                             "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                             "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -1367,7 +1394,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         "type" : 'rev' ,
                         "texte" : texte ,
                         "chaineTableau" : chaineTableau ,
-                        "tabComment" : tabCommentaireEtFinParentheses ,
+                        "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                         "tableauEntree" : tableauEntree ,
                         "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                         "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -1428,7 +1455,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         "type" : 'rev' ,
                         "texte" : texte ,
                         "chaineTableau" : chaineTableau ,
-                        "tabComment" : tabCommentaireEtFinParentheses ,
+                        "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                         "tableauEntree" : tableauEntree ,
                         "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                         "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -1523,7 +1550,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         "type" : 'rev' ,
                         "texte" : texte ,
                         "chaineTableau" : chaineTableau ,
-                        "tabComment" : tabCommentaireEtFinParentheses ,
+                        "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                         "tableauEntree" : tableauEntree ,
                         "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                         "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -1538,7 +1565,8 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   
                   pour une regex, on met les drapeaux ( g,...) dans la zone commentaire [13]
                 */
-                tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,drapeauRegex,0];
+                chaine_tableau_commentaires+=',['+indice+',"'+drapeauRegex.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t')+'"]';
+                
                 indiceTabCommentaire++;
                 typePrecedent='c';
                 niveauPrecedent=niveau;
@@ -1564,7 +1592,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     "type" : 'rev' ,
                     "texte" : texte ,
                     "chaineTableau" : chaineTableau ,
-                    "tabComment" : tabCommentaireEtFinParentheses ,
+                    "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                     "tableauEntree" : tableauEntree ,
                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                     "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -1722,7 +1750,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             "type" : 'rev' ,
                             "texte" : texte ,
                             "chaineTableau" : chaineTableau ,
-                            "tabComment" : tabCommentaireEtFinParentheses ,
+                            "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                             "tableauEntree" : tableauEntree ,
                             "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                             "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -1785,7 +1813,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         "type" : 'rev' ,
                         "texte" : texte ,
                         "chaineTableau" : chaineTableau ,
-                        "tabComment" : tabCommentaireEtFinParentheses ,
+                        "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                         "tableauEntree" : tableauEntree ,
                         "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                         "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -1876,7 +1904,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             "__xme" : '1786 une fermeture de parenthése ne doit pas être au niveau 0' ,
                             "type" : 'rev' ,
                             "chaineTableau" : chaineTableau ,
-                            "tabComment" : tabCommentaireEtFinParentheses ,
+                            "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                             "tableauEntree" : tableauEntree ,
                             "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                             "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -1917,7 +1945,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                                 "__xme" : '1555 erreur de conversion de tableau' ,
                                 "type" : 'rev' ,
                                 "chaineTableau" : chaineTableau ,
-                                "tabComment" : tabCommentaireEtFinParentheses ,
+                                "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                                 "tableauEntree" : tableauEntree ,
                                 "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                 "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -2148,7 +2176,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                                     "type" : 'rev' ,
                                     "texte" : texte ,
                                     "chaineTableau" : chaineTableau ,
-                                    "tabComment" : tabCommentaireEtFinParentheses ,
+                                    "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                                     "tableauEntree" : tableauEntree ,
                                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                     "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -2164,7 +2192,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                                 "type" : 'rev' ,
                                 "texte" : texte ,
                                 "chaineTableau" : chaineTableau ,
-                                "tabComment" : tabCommentaireEtFinParentheses ,
+                                "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                                 "tableauEntree" : tableauEntree ,
                                 "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                 "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -2177,7 +2205,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                                 "type" : 'rev' ,
                                 "texte" : texte ,
                                 "chaineTableau" : chaineTableau ,
-                                "tabComment" : tabCommentaireEtFinParentheses ,
+                                "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                                 "tableauEntree" : tableauEntree ,
                                 "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                 "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -2216,7 +2244,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                                 "type" : 'rev' ,
                                 "texte" : texte ,
                                 "chaineTableau" : chaineTableau ,
-                                "tabComment" : tabCommentaireEtFinParentheses ,
+                                "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                                 "tableauEntree" : tableauEntree ,
                                 "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                 "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -2266,7 +2294,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             "type" : 'rev' ,
             "texte" : texte ,
             "chaineTableau" : chaineTableau ,
-            "tabComment" : tabCommentaireEtFinParentheses ,
+            "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
             "tableauEntree" : tableauEntree ,
             "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
             "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -2286,7 +2314,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     "type" : 'rev' ,
                     "texte" : texte ,
                     "chaineTableau" : chaineTableau ,
-                    "tabComment" : tabCommentaireEtFinParentheses ,
+                    "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                     "tableauEntree" : tableauEntree ,
                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                     "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -2300,6 +2328,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         typePrecedent='c';
         niveauPrecedent=niveau;
     }
+    
     /*
       =============================================================================================================
       On reconstruit chaineTableau ici
@@ -2316,7 +2345,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             "__xme" : '1836 erreur de conversion de tableau' ,
             "type" : 'rev' ,
             "chaineTableau" : chaineTableau ,
-            "tabComment" : tabCommentaireEtFinParentheses ,
             "tableauEntree" : tableauEntree ,
             "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
             "autoriserCstDansRacine" : autoriserCstDansRacine
@@ -2334,14 +2362,24 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         }
         return({"__xst" : false ,"__xme" : 'pas de correspondance trouvée'});
     }
-    /*
-      Puis on ajoute les commentaires 
-      tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire];
-      T[indice][13]=commentaire;
-    */
-    l01=tabCommentaireEtFinParentheses.length;
-    for( i=0 ; i < l01 ; i++ ){
-        T[tabCommentaireEtFinParentheses[i][0]][13]=tabCommentaireEtFinParentheses[i][1];
+    if(chaine_tableau_commentaires!==''){
+        chaine_tableau_commentaires='[' + chaine_tableau_commentaires.substr(1) + ']';
+        try{
+            tabCommentaireEtFinParentheses=JSON.parse(chaine_tableau_commentaires);
+        }catch(e){
+            debugger;
+        }
+        /*
+          Puis on ajoute les commentaires 
+          tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire];
+          T[indice][13]=commentaire;
+        */
+        var rgx1=new RegExp(chLF, "g");
+        var rgx2=new RegExp(chCR, "g");
+        l01=tabCommentaireEtFinParentheses.length;
+        for( i=0 ; i < l01 ; i++ ){
+            T[tabCommentaireEtFinParentheses[i][0]][13]=tabCommentaireEtFinParentheses[i][1].replace(rgx1,'\n').replace(rgx2,'\r');
+        }
     }
     /*
       =============================================================================================================
@@ -2413,7 +2451,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             }
         }
     }
-    /*#
+    /*
       //pour la mesure des performances
       var endMicro = performance.now();
       var temps=parseInt((endMicro - startMicro) * 1000,10) / 1000;
@@ -2424,5 +2462,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
           }
       }
     */
+    
     return({"__xst" : true ,"__xva" : T});
 }

@@ -26,126 +26,126 @@
             var __webpack_modules__={
                 "8938" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Location=__webpack_require__(4778);
                     var Position=__webpack_require__(8822);
                     /*#
-                     * ## Class hierarchy
-                     *
-                     * - [Location](#location)
-                     * - [Position](#position)
-                     * - [Node](#node)
-                     *   - [Noop](#noop)
-                     *   - [NullKeyword](#nullkeyword)
-                     *   - [StaticVariable](#staticvariable)
-                     *   - [EncapsedPart](#encapsedpart)
-                     *   - [Constant](#constant)
-                     *   - [Identifier](#identifier)
-                     *   - [Reference](#reference)
-                     *     - [TypeReference](#typereference)
-                     *     - [ParentReference](#parentreference)
-                     *     - [StaticReference](#staticreference)
-                     *     - [SelfReference](#selfreference)
-                     *     - [Name](#name)
-                     *   - [TraitUse](#traituse)
-                     *   - [TraitAlias](#traitalias)
-                     *   - [TraitPrecedence](#traitprecedence)
-                     *   - [Comment](#comment)
-                     *     - [CommentLine](#commentline)
-                     *     - [CommentBlock](#commentblock)
-                     *   - [Error](#error)
-                     *   - [Expression](#expression)
-                     *     - [Entry](#entry)
-                     *     - [ArrowFunc](#arrowfunc)
-                     *     - [Closure](#closure)
-                     *     - [ByRef](#byref)
-                     *     - [Silent](#silent)
-                     *     - [RetIf](#retif)
-                     *     - [New](#new)
-                     *     - [Include](#include)
-                     *     - [Call](#call)
-                     *     - [Eval](#eval)
-                     *     - [Exit](#exit)
-                     *     - [Clone](#clone)
-                     *     - [Assign](#assign)
-                     *     - [AssignRef](#assignref)
-                     *     - [Array](#array)
-                     *     - [List](#list)
-                     *     - [Variable](#variable)
-                     *     - [Variadic](#variadic)
-                     *     - [Yield](#yield)
-                     *     - [YieldFrom](#yieldfrom)
-                     *     - [Print](#print)
-                     *     - [Isset](#isset)
-                     *     - [Empty](#empty)
-                     *     - [Lookup](#lookup)
-                     *       - [PropertyLookup](#propertylookup)
-                     *       - [StaticLookup](#staticlookup)
-                     *       - [OffsetLookup](#offsetlookup)
-                     *     - [Operation](#operation)
-                     *       - [Pre](#pre)
-                     *       - [Post](#post)
-                     *       - [Bin](#bin)
-                     *       - [Unary](#unary)
-                     *       - [Cast](#cast)
-                     *     - [Literal](#literal)
-                     *       - [Boolean](#boolean)
-                     *       - [String](#string)
-                     *       - [Number](#number)
-                     *       - [Inline](#inline)
-                     *       - [Magic](#magic)
-                     *       - [Nowdoc](#nowdoc)
-                     *       - [Encapsed](#encapsed)
-                     *   - [Statement](#statement)
-                     *     - [ConstantStatement](#constantstatement)
-                     *       - [ClassConstant](#classconstant)
-                     *     - [Return](#return)
-                     *     - [Label](#label)
-                     *     - [Continue](#continue)
-                     *     - [Case](#case)
-                     *     - [Break](#break)
-                     *     - [Echo](#echo)
-                     *     - [Unset](#unset)
-                     *     - [Halt](#halt)
-                     *     - [Declare](#declare)
-                     *     - [Global](#global)
-                     *     - [Static](#static)
-                     *     - [If](#if)
-                     *     - [Do](#do)
-                     *     - [While](#while)
-                     *     - [For](#for)
-                     *     - [Foreach](#foreach)
-                     *     - [Switch](#switch)
-                     *     - [Goto](#goto)
-                     *     - [Try](#try)
-                     *     - [Catch](#catch)
-                     *     - [Throw](#throw)
-                     *     - [UseGroup](#usegroup)
-                     *     - [UseItem](#useitem)
-                     *     - [Block](#block)
-                     *       - [Program](#program)
-                     *       - [Namespace](#namespace)
-                     *     - [PropertyStatement](#propertystatement)
-                     *     - [Property](#property)
-                     *     - [Declaration](#declaration)
-                     *       - [Class](#class)
-                     *       - [Interface](#interface)
-                     *       - [Trait](#trait)
-                     *       - [Function](#function)
-                     *         - [Method](#method)
-                     *       - [Parameter](#parameter)
-                     * ---
+                      * ## Class hierarchy
+                      *
+                      * - [Location](#location)
+                      * - [Position](#position)
+                      * - [Node](#node)
+                      *   - [Noop](#noop)
+                      *   - [NullKeyword](#nullkeyword)
+                      *   - [StaticVariable](#staticvariable)
+                      *   - [EncapsedPart](#encapsedpart)
+                      *   - [Constant](#constant)
+                      *   - [Identifier](#identifier)
+                      *   - [Reference](#reference)
+                      *     - [TypeReference](#typereference)
+                      *     - [ParentReference](#parentreference)
+                      *     - [StaticReference](#staticreference)
+                      *     - [SelfReference](#selfreference)
+                      *     - [Name](#name)
+                      *   - [TraitUse](#traituse)
+                      *   - [TraitAlias](#traitalias)
+                      *   - [TraitPrecedence](#traitprecedence)
+                      *   - [Comment](#comment)
+                      *     - [CommentLine](#commentline)
+                      *     - [CommentBlock](#commentblock)
+                      *   - [Error](#error)
+                      *   - [Expression](#expression)
+                      *     - [Entry](#entry)
+                      *     - [ArrowFunc](#arrowfunc)
+                      *     - [Closure](#closure)
+                      *     - [ByRef](#byref)
+                      *     - [Silent](#silent)
+                      *     - [RetIf](#retif)
+                      *     - [New](#new)
+                      *     - [Include](#include)
+                      *     - [Call](#call)
+                      *     - [Eval](#eval)
+                      *     - [Exit](#exit)
+                      *     - [Clone](#clone)
+                      *     - [Assign](#assign)
+                      *     - [AssignRef](#assignref)
+                      *     - [Array](#array)
+                      *     - [List](#list)
+                      *     - [Variable](#variable)
+                      *     - [Variadic](#variadic)
+                      *     - [Yield](#yield)
+                      *     - [YieldFrom](#yieldfrom)
+                      *     - [Print](#print)
+                      *     - [Isset](#isset)
+                      *     - [Empty](#empty)
+                      *     - [Lookup](#lookup)
+                      *       - [PropertyLookup](#propertylookup)
+                      *       - [StaticLookup](#staticlookup)
+                      *       - [OffsetLookup](#offsetlookup)
+                      *     - [Operation](#operation)
+                      *       - [Pre](#pre)
+                      *       - [Post](#post)
+                      *       - [Bin](#bin)
+                      *       - [Unary](#unary)
+                      *       - [Cast](#cast)
+                      *     - [Literal](#literal)
+                      *       - [Boolean](#boolean)
+                      *       - [String](#string)
+                      *       - [Number](#number)
+                      *       - [Inline](#inline)
+                      *       - [Magic](#magic)
+                      *       - [Nowdoc](#nowdoc)
+                      *       - [Encapsed](#encapsed)
+                      *   - [Statement](#statement)
+                      *     - [ConstantStatement](#constantstatement)
+                      *       - [ClassConstant](#classconstant)
+                      *     - [Return](#return)
+                      *     - [Label](#label)
+                      *     - [Continue](#continue)
+                      *     - [Case](#case)
+                      *     - [Break](#break)
+                      *     - [Echo](#echo)
+                      *     - [Unset](#unset)
+                      *     - [Halt](#halt)
+                      *     - [Declare](#declare)
+                      *     - [Global](#global)
+                      *     - [Static](#static)
+                      *     - [If](#if)
+                      *     - [Do](#do)
+                      *     - [While](#while)
+                      *     - [For](#for)
+                      *     - [Foreach](#foreach)
+                      *     - [Switch](#switch)
+                      *     - [Goto](#goto)
+                      *     - [Try](#try)
+                      *     - [Catch](#catch)
+                      *     - [Throw](#throw)
+                      *     - [UseGroup](#usegroup)
+                      *     - [UseItem](#useitem)
+                      *     - [Block](#block)
+                      *       - [Program](#program)
+                      *       - [Namespace](#namespace)
+                      *     - [PropertyStatement](#propertystatement)
+                      *     - [Property](#property)
+                      *     - [Declaration](#declaration)
+                      *       - [Class](#class)
+                      *       - [Interface](#interface)
+                      *       - [Trait](#trait)
+                      *       - [Function](#function)
+                      *         - [Method](#method)
+                      *       - [Parameter](#parameter)
+                      * ---
                     */
                     /*#
-                     * The AST builder class
-                     * @constructor AST
-                     * @memberOf module:php-parser
-                     * @tutorial AST
-                     * @property {Boolean} withPositions - Should locate any node (by default false)
-                     * @property {Boolean} withSource - Should extract the node original code (by default false)
+                      * The AST builder class
+                      * @constructor AST
+                      * @memberOf module:php-parser
+                      * @tutorial AST
+                      * @property {Boolean} withPositions - Should locate any node (by default false)
+                      * @property {Boolean} withSource - Should extract the node original code (by default false)
                     */
                     var AST=function AST(withPositions,withSource){
                         this.withPositions=withPositions;
@@ -189,20 +189,20 @@
                                 });
                         });
                     /*#
-                     * @private
-                     * @function AST#isRightAssociative
-                     * @memberOf module:php-parser
-                     * @param operator
-                     * @return {boolean}
+                      * @private
+                      * @function AST#isRightAssociative
+                      * @memberOf module:php-parser
+                      * @param operator
+                      * @return {boolean}
                     */
                     AST.prototype.isRightAssociative=function(operator){
                         return(operator === "**" || operator === "??");
                     };
                     /*#
-                     * Change parent node informations after swapping childs
-                     * @private
-                     * @function AST#swapLocations
-                     * @memberOf module:php-parser
+                      * Change parent node informations after swapping childs
+                      * @private
+                      * @function AST#swapLocations
+                      * @memberOf module:php-parser
                     */
                     AST.prototype.swapLocations=function(target,first,last,parser){
                         if(this.withPositions){
@@ -214,10 +214,10 @@
                         }
                     };
                     /*#
-                     * Includes locations from first & last into the target
-                     * @private
-                     * @function AST#resolveLocations
-                     * @memberOf module:php-parser
+                      * Includes locations from first & last into the target
+                      * @private
+                      * @function AST#resolveLocations
+                      * @memberOf module:php-parser
                     */
                     AST.prototype.resolveLocations=function(target,first,last,parser){
                         if(this.withPositions){
@@ -234,10 +234,10 @@
                         }
                     };
                     /*#
-                     * Check and fix precence, by default using right
-                     * @private
-                     * @function AST#resolvePrecedence
-                     * @memberOf module:php-parser
+                      * Check and fix precence, by default using right
+                      * @private
+                      * @function AST#resolvePrecedence
+                      * @memberOf module:php-parser
                     */
                     AST.prototype.resolvePrecedence=function(result,parser){
                         var buffer;
@@ -345,14 +345,14 @@
                         return result;
                     };
                     /*#
-                     * Prepares an AST node
-                     * @private
-                     * @function AST#prepare
-                     * @memberOf module:php-parser
-                     * @param {String|null} kind - Defines the node type
-                     * @param {*} docs - (if null, the kind must be passed at the function call)
-                     * @param {Parser} parser - The parser instance (use for extracting locations)
-                     * @return {Function}
+                      * Prepares an AST node
+                      * @private
+                      * @function AST#prepare
+                      * @memberOf module:php-parser
+                      * @param {String|null} kind - Defines the node type
+                      * @param {*} docs - (if null, the kind must be passed at the function call)
+                      * @param {Parser} parser - The parser instance (use for extracting locations)
+                      * @return {Function}
                     */
                     AST.prototype.prepare=function(kind,docs,parser){
                         var start=null;
@@ -578,37 +578,37 @@
                 } ,
                 "3160" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expr=__webpack_require__(839);
                     var KIND="array";
                     /*#
-                     * Defines an array structure
-                     * @constructor Array
-                     * @memberOf module:php-parser
-                     * @example
-                     * // PHP code :
-                     * [1, 'foo' => 'bar', 3]
-                     *
-                     * // AST structure :
-                     * {
-                     *  "kind": "array",
-                     *  "shortForm": true
-                     *  "items": [
-                     *    {"kind": "number", "value": "1"},
-                     *    {
-                     *      "kind": "entry",
-                     *      "key": {"kind": "string", "value": "foo", "isDoubleQuote": false},
-                     *      "value": {"kind": "string", "value": "bar", "isDoubleQuote": false}
-                     *    },
-                     *    {"kind": "number", "value": "3"}
-                     *  ]
-                     * }
-                     * @extends {Expression}
-                     * @property {Array<Entry|Expression|Variable>} items List of array items
-                     * @property {boolean} shortForm Indicate if the short array syntax is used, ex `[]` instead `array()`
+                      * Defines an array structure
+                      * @constructor Array
+                      * @memberOf module:php-parser
+                      * @example
+                      * // PHP code :
+                      * [1, 'foo' => 'bar', 3]
+                      *
+                      * // AST structure :
+                      * {
+                      *  "kind": "array",
+                      *  "shortForm": true
+                      *  "items": [
+                      *    {"kind": "number", "value": "1"},
+                      *    {
+                      *      "kind": "entry",
+                      *      "key": {"kind": "string", "value": "foo", "isDoubleQuote": false},
+                      *      "value": {"kind": "string", "value": "bar", "isDoubleQuote": false}
+                      *    },
+                      *    {"kind": "number", "value": "3"}
+                      *  ]
+                      * }
+                      * @extends {Expression}
+                      * @property {Array<Entry|Expression|Variable>} items List of array items
+                      * @property {boolean} shortForm Indicate if the short array syntax is used, ex `[]` instead `array()`
                     */
                     module.exports=Expr["extends"](KIND,function Array(shortForm,items,docs,location){
                         Expr.apply(this,[KIND,docs,location]);
@@ -618,23 +618,23 @@
                 } ,
                 "1654" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="arrowfunc";
                     /*#
-                     * Defines an arrow function (it's like a closure)
-                     * @constructor ArrowFunc
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Parameter[]} arguments
-                     * @property {Identifier} type
-                     * @property {Expression} body
-                     * @property {boolean} byref
-                     * @property {boolean} nullable
-                     * @property {boolean} isStatic
+                      * Defines an arrow function (it's like a closure)
+                      * @constructor ArrowFunc
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Parameter[]} arguments
+                      * @property {Identifier} type
+                      * @property {Expression} body
+                      * @property {boolean} byref
+                      * @property {boolean} nullable
+                      * @property {boolean} isStatic
                     */
                     module.exports=Expression["extends"](KIND,function Closure(args,byref,body,type,nullable,isStatic,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -648,20 +648,20 @@
                 } ,
                 "1240" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="assign";
                     /*#
-                     * Assigns a value to the specified target
-                     * @constructor Assign
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Expression} left
-                     * @property {Expression} right
-                     * @property {String} operator
+                      * Assigns a value to the specified target
+                      * @constructor Assign
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Expression} left
+                      * @property {Expression} right
+                      * @property {String} operator
                     */
                     module.exports=Expression["extends"](KIND,function Assign(left,right,operator,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -672,20 +672,20 @@
                 } ,
                 "3979" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="assignref";
                     /*#
-                     * Assigns a value to the specified target
-                     * @constructor AssignRef
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Expression} left
-                     * @property {Expression} right
-                     * @property {String} operator
+                      * Assigns a value to the specified target
+                      * @constructor AssignRef
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Expression} left
+                      * @property {Expression} right
+                      * @property {String} operator
                     */
                     module.exports=Expression["extends"](KIND,function AssignRef(left,right,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -695,18 +695,18 @@
                 } ,
                 "2207" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="attrgroup";
                     /*#
-                     * Attribute group
-                     * @memberOf module:php-parser
-                     * @constructor AttrGroup
-                     * @extends {Node}
-                     * @property {Attribute[]} attrs
+                      * Attribute group
+                      * @memberOf module:php-parser
+                      * @constructor AttrGroup
+                      * @extends {Node}
+                      * @property {Attribute[]} attrs
                     */
                     module.exports=Node["extends"](KIND,function AttrGroup(attrs,docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -715,19 +715,19 @@
                 } ,
                 "5553" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="attribute";
                     /*#
-                     * Attribute Value
-                     * @memberOf module:php-parser
-                     * @constructor Attribute
-                     * @extends {Node}
-                     * @property {String} name
-                     * @property {Parameter[]} args
+                      * Attribute Value
+                      * @memberOf module:php-parser
+                      * @constructor Attribute
+                      * @extends {Node}
+                      * @property {String} name
+                      * @property {Parameter[]} args
                     */
                     module.exports=Node["extends"](KIND,function Attribute(name,args,docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -737,20 +737,20 @@
                 } ,
                 "2916" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Operation=__webpack_require__(8268);
                     var KIND="bin";
                     /*#
-                     * Binary operations
-                     * @constructor Bin
-                     * @memberOf module:php-parser
-                     * @extends {Operation}
-                     * @property {String} type
-                     * @property {Expression} left
-                     * @property {Expression} right
+                      * Binary operations
+                      * @constructor Bin
+                      * @memberOf module:php-parser
+                      * @extends {Operation}
+                      * @property {String} type
+                      * @property {Expression} left
+                      * @property {Expression} right
                     */
                     module.exports=Operation["extends"](KIND,function Bin(type,left,right,docs,location){
                         Operation.apply(this,[KIND,docs,location]);
@@ -761,18 +761,18 @@
                 } ,
                 "4628" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="block";
                     /*#
-                     * A block statement, i.e., a sequence of statements surrounded by braces.
-                     * @constructor Block
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Node[]} children
+                      * A block statement, i.e., a sequence of statements surrounded by braces.
+                      * @constructor Block
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Node[]} children
                     */
                     module.exports=Statement["extends"](KIND,function Block(kind,children,docs,location){
                         Statement.apply(this,[kind || KIND,docs,location]);
@@ -781,18 +781,18 @@
                 } ,
                 "7509" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Literal=__webpack_require__(5514);
                     var KIND="boolean";
                     /*#
-                     * Defines a boolean value (true/false)
-                     * @constructor Boolean
-                     * @memberOf module:php-parser
-                     * @extends {Literal}
-                     * @property {boolean} value
+                      * Defines a boolean value (true/false)
+                      * @constructor Boolean
+                      * @memberOf module:php-parser
+                      * @extends {Literal}
+                      * @property {boolean} value
                     */
                     module.exports=Literal["extends"](KIND,function Boolean(value,raw,docs,location){
                         Literal.apply(this,[KIND,value,raw,docs,location]);
@@ -800,18 +800,18 @@
                 } ,
                 "2906" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="break";
                     /*#
-                     * A break statement
-                     * @constructor Break
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Number|Null} level
+                      * A break statement
+                      * @constructor Break
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Number|Null} level
                     */
                     module.exports=Statement["extends"](KIND,function Break(level,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -820,18 +820,18 @@
                 } ,
                 "5723" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="byref";
                     /*#
-                     * Passing by Reference - so the function can modify the variable
-                     * @constructor ByRef
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {ExpressionStatement} what
+                      * Passing by Reference - so the function can modify the variable
+                      * @constructor ByRef
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {ExpressionStatement} what
                     */
                     module.exports=Expression["extends"](KIND,function ByRef(what,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -840,19 +840,19 @@
                 } ,
                 "7561" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="call";
                     /*#
-                     * Executes a call statement
-                     * @constructor Call
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Identifier|Variable} what
-                     * @property {Expression[]} arguments
+                      * Executes a call statement
+                      * @constructor Call
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Identifier|Variable} what
+                      * @property {Expression[]} arguments
                     */
                     module.exports=Expression["extends"](KIND,function Call(what,args,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -862,19 +862,19 @@
                 } ,
                 "6473" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="case";
                     /*#
-                     * A switch case statement
-                     * @constructor Case
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Expression|null} test - if null, means that the default case
-                     * @property {Block|null} body
+                      * A switch case statement
+                      * @constructor Case
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Expression|null} test - if null, means that the default case
+                      * @property {Block|null} body
                     */
                     module.exports=Statement["extends"](KIND,function Case(test,body,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -884,20 +884,20 @@
                 } ,
                 "9626" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Operation=__webpack_require__(8268);
                     var KIND="cast";
                     /*#
-                     * Binary operations
-                     * @constructor Cast
-                     * @memberOf module:php-parser
-                     * @extends {Operation}
-                     * @property {String} type
-                     * @property {String} raw
-                     * @property {Expression} expr
+                      * Binary operations
+                      * @constructor Cast
+                      * @memberOf module:php-parser
+                      * @extends {Operation}
+                      * @property {String} type
+                      * @property {String} raw
+                      * @property {Expression} expr
                     */
                     module.exports=Operation["extends"](KIND,function Cast(type,raw,expr,docs,location){
                         Operation.apply(this,[KIND,docs,location]);
@@ -908,21 +908,21 @@
                 } ,
                 "4782" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="catch";
                     /*#
-                     * Defines a catch statement
-                     * @constructor Catch
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Name[]} what
-                     * @property {Variable} variable
-                     * @property {Block} body
-                     * @see http://php.net/manual/en/language.exceptions.php
+                      * Defines a catch statement
+                      * @constructor Catch
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Name[]} what
+                      * @property {Variable} variable
+                      * @property {Block} body
+                      * @see http://php.net/manual/en/language.exceptions.php
                     */
                     module.exports=Statement["extends"](KIND,function Catch(body,what,variable,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -933,25 +933,25 @@
                 } ,
                 "8477" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Declaration=__webpack_require__(8533);
                     var KIND="class";
                     /*#
-                     * A class definition
-                     * @constructor Class
-                     * @memberOf module:php-parser
-                     * @extends {Declaration}
-                     * @property {Identifier|null} extends
-                     * @property {Identifier[]|null} implements
-                     * @property {Declaration[]} body
-                     * @property {boolean} isAnonymous
-                     * @property {boolean} isAbstract
-                     * @property {boolean} isFinal
-                     * @property {boolean} isReadonly
-                     * @property {AttrGroup[]} attrGroups
+                      * A class definition
+                      * @constructor Class
+                      * @memberOf module:php-parser
+                      * @extends {Declaration}
+                      * @property {Identifier|null} extends
+                      * @property {Identifier[]|null} implements
+                      * @property {Declaration[]} body
+                      * @property {boolean} isAnonymous
+                      * @property {boolean} isAbstract
+                      * @property {boolean} isFinal
+                      * @property {boolean} isReadonly
+                      * @property {AttrGroup[]} attrGroups
                     */
                     module.exports=Declaration["extends"](KIND,function Class(name,ext,impl,body,flags,docs,location){
                         Declaration.apply(this,[KIND,name,docs,location]);
@@ -965,9 +965,9 @@
                 } ,
                 "5045" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var ConstantStatement=__webpack_require__(2112);
                     var KIND="classconstant";
@@ -976,15 +976,15 @@
                     var IS_PROTECTED="protected";
                     var IS_PRIVATE="private";
                     /*#
-                     * Defines a class/interface/trait constant
-                     * @constructor ClassConstant
-                     * @memberOf module:php-parser
-                     * @extends {ConstantStatement}
-                     * @property {string} visibility
-                     * @property {boolean} final
-                     * @property {boolean} nullable
-                     * @property {TypeReference|IntersectionType|UnionType|null} type
-                     * @property {AttrGroup[]} attrGroups
+                      * Defines a class/interface/trait constant
+                      * @constructor ClassConstant
+                      * @memberOf module:php-parser
+                      * @extends {ConstantStatement}
+                      * @property {string} visibility
+                      * @property {boolean} final
+                      * @property {boolean} nullable
+                      * @property {TypeReference|IntersectionType|UnionType|null} type
+                      * @property {AttrGroup[]} attrGroups
                     */
                     var ClassConstant=ConstantStatement["extends"](KIND,function ClassConstant(kind,constants,flags,nullable,type,attrGroups,docs,location){
                         ConstantStatement.apply(this,[kind || KIND,constants,docs,location]);
@@ -994,12 +994,12 @@
                         this.attrGroups=attrGroups;
                     });
                     /*#
-                     * Generic flags parser
-                     * @function
-                     * @name ClassConstant#parseFlags
-                     * @memberOf module:php-parser
-                     * @param {Array<number|null>} flags
-                     * @return {void}
+                      * Generic flags parser
+                      * @function
+                      * @name ClassConstant#parseFlags
+                      * @memberOf module:php-parser
+                      * @param {Array<number|null>} flags
+                      * @return {void}
                     */
                     ClassConstant.prototype.parseFlags=function(flags){
                         if(flags[0] === -1){
@@ -1020,18 +1020,18 @@
                 } ,
                 "900" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="clone";
                     /*#
-                     * Defines a clone call
-                     * @constructor Clone
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Expression} what
+                      * Defines a clone call
+                      * @constructor Clone
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Expression} what
                     */
                     module.exports=Expression["extends"](KIND,function Clone(what,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -1040,25 +1040,25 @@
                 } ,
                 "4824" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="closure";
                     /*#
-                     * Defines a closure
-                     * @constructor Closure
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Parameter[]} arguments
-                     * @property {Variable[]} uses
-                     * @property {Identifier} type
-                     * @property {Boolean} byref
-                     * @property {boolean} nullable
-                     * @property {Block|null} body
-                     * @property {boolean} isStatic
-                     * @property {AttrGroup[]} attrGroups
+                      * Defines a closure
+                      * @constructor Closure
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Parameter[]} arguments
+                      * @property {Variable[]} uses
+                      * @property {Identifier} type
+                      * @property {Boolean} byref
+                      * @property {boolean} nullable
+                      * @property {Block|null} body
+                      * @property {boolean} isStatic
+                      * @property {AttrGroup[]} attrGroups
                     */
                     module.exports=Expression["extends"](KIND,function Closure(args,byref,uses,type,nullable,isStatic,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -1074,17 +1074,17 @@
                 } ,
                 "1020" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     /*#
-                     * Abstract documentation node (ComentLine or CommentBlock)
-                     * @constructor Comment
-                     * @memberOf module:php-parser
-                     * @extends {Node}
-                     * @property {String} value
+                      * Abstract documentation node (ComentLine or CommentBlock)
+                      * @constructor Comment
+                      * @memberOf module:php-parser
+                      * @extends {Node}
+                      * @property {String} value
                     */
                     module.exports=Node["extends"]("comment",function Comment(kind,value,docs,location){
                         Node.apply(this,[kind,docs,location]);
@@ -1093,17 +1093,17 @@
                 } ,
                 "9847" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Comment=__webpack_require__(1020);
                     var KIND="commentblock";
                     /*#
-                     * A comment block (multiline)
-                     * @constructor CommentBlock
-                     * @memberOf module:php-parser
-                     * @extends {Comment}
+                      * A comment block (multiline)
+                      * @constructor CommentBlock
+                      * @memberOf module:php-parser
+                      * @extends {Comment}
                     */
                     module.exports=Comment["extends"](KIND,function CommentBlock(value,docs,location){
                         Comment.apply(this,[KIND,value,docs,location]);
@@ -1111,17 +1111,17 @@
                 } ,
                 "2790" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Comment=__webpack_require__(1020);
                     var KIND="commentline";
                     /*#
-                     * A single line comment
-                     * @constructor CommentLine
-                     * @memberOf module:php-parser
-                     * @extends {Comment}
+                      * A single line comment
+                      * @constructor CommentLine
+                      * @memberOf module:php-parser
+                      * @extends {Comment}
                     */
                     module.exports=Comment["extends"](KIND,function CommentLine(value,docs,location){
                         Comment.apply(this,[KIND,value,docs,location]);
@@ -1129,19 +1129,19 @@
                 } ,
                 "1333" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="constant";
                     /*#
-                     * Defines a constant
-                     * @constructor Constant
-                     * @memberOf module:php-parser
-                     * @extends {Node}
-                     * @property {string} name
-                     * @property {Node|string|number|boolean|null} value
+                      * Defines a constant
+                      * @constructor Constant
+                      * @memberOf module:php-parser
+                      * @extends {Node}
+                      * @property {string} name
+                      * @property {Node|string|number|boolean|null} value
                     */
                     module.exports=Node["extends"](KIND,function Constant(name,value,docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -1151,18 +1151,18 @@
                 } ,
                 "2112" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="constantstatement";
                     /*#
-                     * Declares a constants into the current scope
-                     * @constructor ConstantStatement
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Constant[]} constants
+                      * Declares a constants into the current scope
+                      * @constructor ConstantStatement
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Constant[]} constants
                     */
                     module.exports=Statement["extends"](KIND,function ConstantStatement(kind,constants,docs,location){
                         Statement.apply(this,[kind || KIND,docs,location]);
@@ -1171,18 +1171,18 @@
                 } ,
                 "9960" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="continue";
                     /*#
-                     * A continue statement
-                     * @constructor Continue
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {number|null} level
+                      * A continue statement
+                      * @constructor Continue
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {number|null} level
                     */
                     module.exports=Statement["extends"](KIND,function Continue(level,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -1191,9 +1191,9 @@
                 } ,
                 "8533" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="declaration";
@@ -1202,23 +1202,23 @@
                     var IS_PROTECTED="protected";
                     var IS_PRIVATE="private";
                     /*#
-                     * A declaration statement (function, class, interface...)
-                     * @constructor Declaration
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Identifier|string} name
+                      * A declaration statement (function, class, interface...)
+                      * @constructor Declaration
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Identifier|string} name
                     */
                     var Declaration=Statement["extends"](KIND,function Declaration(kind,name,docs,location){
                         Statement.apply(this,[kind || KIND,docs,location]);
                         this.name=name;
                     });
                     /*#
-                     * Generic flags parser
-                     * @function
-                     * @name Declaration#parseFlags
-                     * @memberOf module:php-parser
-                     * @param {Array<number|null>} flags
-                     * @return {void}
+                      * Generic flags parser
+                      * @function
+                      * @name Declaration#parseFlags
+                      * @memberOf module:php-parser
+                      * @param {Array<number|null>} flags
+                      * @return {void}
                     */
                     Declaration.prototype.parseFlags=function(flags){
                         this.isAbstract=flags[2] === 1;
@@ -1244,20 +1244,20 @@
                 } ,
                 "5947" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Block=__webpack_require__(4628);
                     var KIND="declare";
                     /*#
-                     * The declare construct is used to set execution directives for a block of code
-                     * @constructor Declare
-                     * @memberOf module:php-parser
-                     * @extends {Block}
-                     * @property {DeclareDirective[]} directives
-                     * @property {string} mode
-                     * @see http://php.net/manual/en/control-structures.declare.php
+                      * The declare construct is used to set execution directives for a block of code
+                      * @constructor Declare
+                      * @memberOf module:php-parser
+                      * @extends {Block}
+                      * @property {DeclareDirective[]} directives
+                      * @property {string} mode
+                      * @see http://php.net/manual/en/control-structures.declare.php
                     */
                     var Declare=Block["extends"](KIND,function Declare(directives,body,mode,docs,location){
                         Block.apply(this,[KIND,body,docs,location]);
@@ -1265,61 +1265,61 @@
                         this.mode=mode;
                     });
                     /*#
-                     * The node is declared as a short tag syntax :
-                     * ```php
-                     * <?php
-                     * declare(ticks=1):
-                     * // some statements
-                     * enddeclare;
-                     * ```
-                     * @constant {String} Declare#MODE_SHORT
-                     * @memberOf module:php-parser
+                      * The node is declared as a short tag syntax :
+                      * ```php
+                      * <?php
+                      * declare(ticks=1):
+                      * // some statements
+                      * enddeclare;
+                      * ```
+                      * @constant {String} Declare#MODE_SHORT
+                      * @memberOf module:php-parser
                     */
                     Declare.MODE_SHORT="short";
                     /*#
-                     * The node is declared bracket enclosed code :
-                     * ```php
-                     * <?php
-                     * declare(ticks=1) {
-                     * // some statements
-                     * }
-                     * ```
-                     * @constant {String} Declare#MODE_BLOCK
-                     * @memberOf module:php-parser
+                      * The node is declared bracket enclosed code :
+                      * ```php
+                      * <?php
+                      * declare(ticks=1) {
+                      * // some statements
+                      * }
+                      * ```
+                      * @constant {String} Declare#MODE_BLOCK
+                      * @memberOf module:php-parser
                     */
                     Declare.MODE_BLOCK="block";
                     /*#
-                     * The node is declared as a simple statement. In order to make things simpler
-                     * children of the node are automatically collected until the next
-                     * declare statement.
-                     * ```php
-                     * <?php
-                     * declare(ticks=1);
-                     * // some statements
-                     * declare(ticks=2);
-                     * // some statements
-                     * ```
-                     * @constant {String} Declare#MODE_NONE
-                     * @memberOf module:php-parser
+                      * The node is declared as a simple statement. In order to make things simpler
+                      * children of the node are automatically collected until the next
+                      * declare statement.
+                      * ```php
+                      * <?php
+                      * declare(ticks=1);
+                      * // some statements
+                      * declare(ticks=2);
+                      * // some statements
+                      * ```
+                      * @constant {String} Declare#MODE_NONE
+                      * @memberOf module:php-parser
                     */
                     Declare.MODE_NONE="none";
                     module.exports=Declare;
                 } ,
                 "7786" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="declaredirective";
                     /*#
-                     * Defines a constant
-                     * @constructor DeclareDirective
-                     * @memberOf module:php-parser
-                     * @extends {Node}
-                     * @property {Identifier} key
-                     * @property {Node|string|number|boolean|null} value
+                      * Defines a constant
+                      * @constructor DeclareDirective
+                      * @memberOf module:php-parser
+                      * @extends {Node}
+                      * @property {Identifier} key
+                      * @property {Node|string|number|boolean|null} value
                     */
                     module.exports=Node["extends"](KIND,function DeclareDirective(key,value,docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -1329,19 +1329,19 @@
                 } ,
                 "5436" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="do";
                     /*#
-                     * Defines a do/while statement
-                     * @constructor Do
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Expression} test
-                     * @property {Block | null} body
+                      * Defines a do/while statement
+                      * @constructor Do
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Expression} test
+                      * @property {Block | null} body
                     */
                     module.exports=Statement["extends"](KIND,function Do(test,body,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -1351,19 +1351,19 @@
                 } ,
                 "1136" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="echo";
                     /*#
-                     * Defines system based call
-                     * @constructor Echo
-                     * @memberOf module:php-parser
-                     * @property {boolean} shortForm
-                     * @property {Expression[]} expressions
-                     * @extends {Statement}
+                      * Defines system based call
+                      * @constructor Echo
+                      * @memberOf module:php-parser
+                      * @property {boolean} shortForm
+                      * @property {Expression[]} expressions
+                      * @extends {Statement}
                     */
                     module.exports=Statement["extends"](KIND,function Echo(expressions,shortForm,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -1373,17 +1373,17 @@
                 } ,
                 "380" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="empty";
                     /*#
-                     * Defines an empty check call
-                     * @constructor Empty
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
+                      * Defines an empty check call
+                      * @constructor Empty
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
                     */
                     module.exports=Expression["extends"](KIND,function Empty(expression,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -1392,86 +1392,86 @@
                 } ,
                 "6129" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Literal=__webpack_require__(5514);
                     var KIND="encapsed";
                     /*#
-                     * Defines an encapsed string (contains expressions)
-                     * @constructor Encapsed
-                     * @memberOf module:php-parser
-                     * @extends {Literal}
-                     * @property {String} type - Defines the type of encapsed string (shell, heredoc, string)
-                     * @property {String|Null} label - The heredoc label, defined only when the type is heredoc
-                     * @property {EncapsedPart[]} value
+                      * Defines an encapsed string (contains expressions)
+                      * @constructor Encapsed
+                      * @memberOf module:php-parser
+                      * @extends {Literal}
+                      * @property {String} type - Defines the type of encapsed string (shell, heredoc, string)
+                      * @property {String|Null} label - The heredoc label, defined only when the type is heredoc
+                      * @property {EncapsedPart[]} value
                     */
                     var Encapsed=Literal["extends"](KIND,function Encapsed(value,raw,type,docs,location){
                         Literal.apply(this,[KIND,value,raw,docs,location]);
                         this.type=type;
                     });
                     /*#
-                     * The node is a double quote string :
-                     * ```php
-                     * <?php
-                     * echo "hello $world";
-                     * ```
-                     * @constant {String} Encapsed#TYPE_STRING - `string`
-                     * @memberOf module:php-parser
+                      * The node is a double quote string :
+                      * ```php
+                      * <?php
+                      * echo "hello $world";
+                      * ```
+                      * @constant {String} Encapsed#TYPE_STRING - `string`
+                      * @memberOf module:php-parser
                     */
                     Encapsed.TYPE_STRING="string";
                     /*#
-                     * The node is a shell execute string :
-                     * ```php
-                     * <?php
-                     * echo `ls -larth $path`;
-                     * ```
-                     * @constant {String} Encapsed#TYPE_SHELL - `shell`
-                     * @memberOf module:php-parser
+                      * The node is a shell execute string :
+                      * ```php
+                      * <?php
+                      * echo `ls -larth $path`;
+                      * ```
+                      * @constant {String} Encapsed#TYPE_SHELL - `shell`
+                      * @memberOf module:php-parser
                     */
                     Encapsed.TYPE_SHELL="shell";
                     /*#
-                     * The node is a shell execute string :
-                     * ```php
-                     * <?php
-                     * echo <<<STR
-                     *  Hello $world
-                     * STR
-                     * ;
-                     * ```
-                     * @constant {String} Encapsed#TYPE_HEREDOC - `heredoc`
-                     * @memberOf module:php-parser
+                      * The node is a shell execute string :
+                      * ```php
+                      * <?php
+                      * echo <<<STR
+                      *  Hello $world
+                      * STR
+                      * ;
+                      * ```
+                      * @constant {String} Encapsed#TYPE_HEREDOC - `heredoc`
+                      * @memberOf module:php-parser
                     */
                     Encapsed.TYPE_HEREDOC="heredoc";
                     /*#
-                     * The node contains a list of constref / variables / expr :
-                     * ```php
-                     * <?php
-                     * echo $foo->bar_$baz;
-                     * ```
-                     * @constant {String} Encapsed#TYPE_OFFSET - `offset`
-                     * @memberOf module:php-parser
+                      * The node contains a list of constref / variables / expr :
+                      * ```php
+                      * <?php
+                      * echo $foo->bar_$baz;
+                      * ```
+                      * @constant {String} Encapsed#TYPE_OFFSET - `offset`
+                      * @memberOf module:php-parser
                     */
                     Encapsed.TYPE_OFFSET="offset";
                     module.exports=Encapsed;
                 } ,
                 "9723" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="encapsedpart";
                     /*#
-                     * Part of `Encapsed` node
-                     * @constructor EncapsedPart
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Expression} expression
-                     * @property {String} syntax
-                     * @property {Boolean} curly
+                      * Part of `Encapsed` node
+                      * @constructor EncapsedPart
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Expression} expression
+                      * @property {String} syntax
+                      * @property {Boolean} curly
                     */
                     module.exports=Expression["extends"](KIND,function EncapsedPart(expression,syntax,curly,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -1482,21 +1482,21 @@
                 } ,
                 "5125" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="entry";
                     /*#
-                     * An array entry - see [Array](#array)
-                     * @memberOf module:php-parser
-                     * @constructor Entry
-                     * @extends {Expression}
-                     * @property {Node|null} key The entry key/offset
-                     * @property {Node} value The entry value
-                     * @property {Boolean} byRef By reference
-                     * @property {Boolean} unpack Argument unpacking
+                      * An array entry - see [Array](#array)
+                      * @memberOf module:php-parser
+                      * @constructor Entry
+                      * @extends {Expression}
+                      * @property {Node|null} key The entry key/offset
+                      * @property {Node} value The entry value
+                      * @property {Boolean} byRef By reference
+                      * @property {Boolean} unpack Argument unpacking
                     */
                     module.exports=Expression["extends"](KIND,function Entry(key,value,byRef,unpack,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -1508,21 +1508,21 @@
                 } ,
                 "9632" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Declaration=__webpack_require__(8533);
                     var KIND="enum";
                     /*#
-                     * A enum definition
-                     * @constructor Enum
-                     * @memberOf module:php-parser
-                     * @extends {Declaration}
-                     * @property {Identifier|null} valueType
-                     * @property {Identifier[]} implements
-                     * @property {Declaration[]} body
-                     * @property {AttrGroup[]} attrGroups
+                      * A enum definition
+                      * @constructor Enum
+                      * @memberOf module:php-parser
+                      * @extends {Declaration}
+                      * @property {Identifier|null} valueType
+                      * @property {Identifier[]} implements
+                      * @property {Declaration[]} body
+                      * @property {AttrGroup[]} attrGroups
                     */
                     module.exports=Declaration["extends"](KIND,function Enum(name,valueType,impl,body,docs,location){
                         Declaration.apply(this,[KIND,name,docs,location]);
@@ -1534,19 +1534,19 @@
                 } ,
                 "4300" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="enumcase";
                     /*#
-                     * Declares a cases into the current scope
-                     * @constructor EnumCase
-                     * @memberOf module:php-parser
-                     * @extends {Node}
-                     * @property {string} name
-                     * @property {string|number|null} value
+                      * Declares a cases into the current scope
+                      * @constructor EnumCase
+                      * @memberOf module:php-parser
+                      * @extends {Node}
+                      * @property {string} name
+                      * @property {string|number|null} value
                     */
                     module.exports=Node["extends"](KIND,function EnumCase(name,value,docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -1556,21 +1556,21 @@
                 } ,
                 "1515" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="error";
                     /*#
-                     * Defines an error node (used only on silentMode)
-                     * @constructor Error
-                     * @memberOf module:php-parser
-                     * @extends {Node}
-                     * @property {string} message
-                     * @property {number} line
-                     * @property {number|string} token
-                     * @property {string|array} expected
+                      * Defines an error node (used only on silentMode)
+                      * @constructor Error
+                      * @memberOf module:php-parser
+                      * @extends {Node}
+                      * @property {string} message
+                      * @property {number} line
+                      * @property {number|string} token
+                      * @property {string|array} expected
                     */
                     module.exports=Node["extends"](KIND,function Error(message,token,line,expected,docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -1582,18 +1582,18 @@
                 } ,
                 "3411" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="eval";
                     /*#
-                     * Defines an eval statement
-                     * @constructor Eval
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Node} source
+                      * Defines an eval statement
+                      * @constructor Eval
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Node} source
                     */
                     module.exports=Expression["extends"](KIND,function Eval(source,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -1602,19 +1602,19 @@
                 } ,
                 "9781" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="exit";
                     /*#
-                     * Defines an exit / die call
-                     * @constructor Exit
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Node|null} expression
-                     * @property {boolean} useDie
+                      * Defines an exit / die call
+                      * @constructor Exit
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Node|null} expression
+                      * @property {boolean} useDie
                     */
                     module.exports=Expression["extends"](KIND,function Exit(expression,useDie,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -1624,18 +1624,18 @@
                 } ,
                 "839" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="expression";
                     /*#
-                     * Any expression node. Since the left-hand side of an assignment may
-                     * be any expression in general, an expression can also be a pattern.
-                     * @constructor Expression
-                     * @memberOf module:php-parser
-                     * @extends {Node}
+                      * Any expression node. Since the left-hand side of an assignment may
+                      * be any expression in general, an expression can also be a pattern.
+                      * @constructor Expression
+                      * @memberOf module:php-parser
+                      * @extends {Node}
                     */
                     module.exports=Node["extends"](KIND,function Expression(kind,docs,location){
                         Node.apply(this,[kind || KIND,docs,location]);
@@ -1643,18 +1643,18 @@
                 } ,
                 "8374" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="expressionstatement";
                     /*#
-                     * Defines an expression based statement
-                     * @constructor ExpressionStatement
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Expression} expression
+                      * Defines an expression based statement
+                      * @constructor ExpressionStatement
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Expression} expression
                     */
                     module.exports=Statement["extends"](KIND,function ExpressionStatement(expr,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -1663,23 +1663,23 @@
                 } ,
                 "9754" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="for";
                     /*#
-                     * Defines a for iterator
-                     * @constructor For
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Expression[]} init
-                     * @property {Expression[]} test
-                     * @property {Expression[]} increment
-                     * @property {Block | null} body
-                     * @property {boolean} shortForm
-                     * @see http://php.net/manual/en/control-structures.for.php
+                      * Defines a for iterator
+                      * @constructor For
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Expression[]} init
+                      * @property {Expression[]} test
+                      * @property {Expression[]} increment
+                      * @property {Block | null} body
+                      * @property {boolean} shortForm
+                      * @see http://php.net/manual/en/control-structures.for.php
                     */
                     module.exports=Statement["extends"](KIND,function For(init,test,increment,body,shortForm,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -1692,23 +1692,23 @@
                 } ,
                 "4251" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="foreach";
                     /*#
-                     * Defines a foreach iterator
-                     * @constructor Foreach
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Expression} source
-                     * @property {Expression|null} key
-                     * @property {Expression} value
-                     * @property {Block | null} body
-                     * @property {boolean} shortForm
-                     * @see http://php.net/manual/en/control-structures.foreach.php
+                      * Defines a foreach iterator
+                      * @constructor Foreach
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Expression} source
+                      * @property {Expression|null} key
+                      * @property {Expression} value
+                      * @property {Block | null} body
+                      * @property {boolean} shortForm
+                      * @see http://php.net/manual/en/control-structures.foreach.php
                     */
                     module.exports=Statement["extends"](KIND,function Foreach(source,key,value,body,shortForm,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -1721,23 +1721,23 @@
                 } ,
                 "6553" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Declaration=__webpack_require__(8533);
                     var KIND="function";
                     /*#
-                     * Defines a classic function
-                     * @constructor Function
-                     * @memberOf module:php-parser
-                     * @extends {Declaration}
-                     * @property {Parameter[]} arguments
-                     * @property {Identifier} type
-                     * @property {boolean} byref
-                     * @property {boolean} nullable
-                     * @property {Block|null} body
-                     * @property {AttrGroup[]} attrGroups
+                      * Defines a classic function
+                      * @constructor Function
+                      * @memberOf module:php-parser
+                      * @extends {Declaration}
+                      * @property {Parameter[]} arguments
+                      * @property {Identifier} type
+                      * @property {boolean} byref
+                      * @property {boolean} nullable
+                      * @property {Block|null} body
+                      * @property {AttrGroup[]} attrGroups
                     */
                     module.exports=Declaration["extends"](KIND,function _Function(name,args,byref,type,nullable,docs,location){
                         Declaration.apply(this,[KIND,name,docs,location]);
@@ -1751,18 +1751,18 @@
                 } ,
                 "8630" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="global";
                     /*#
-                     * Imports a variable from the global scope
-                     * @constructor Global
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Variable[]} items
+                      * Imports a variable from the global scope
+                      * @constructor Global
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Variable[]} items
                     */
                     module.exports=Statement["extends"](KIND,function Global(items,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -1771,19 +1771,19 @@
                 } ,
                 "9786" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="goto";
                     /*#
-                     * Defines goto statement
-                     * @constructor Goto
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {string} label
-                     * @see {Label}
+                      * Defines goto statement
+                      * @constructor Goto
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {string} label
+                      * @see {Label}
                     */
                     module.exports=Statement["extends"](KIND,function Goto(label,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -1792,19 +1792,19 @@
                 } ,
                 "9742" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="halt";
                     /*#
-                     * Halts the compiler execution
-                     * @constructor Halt
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {String} after - String after the halt statement
-                     * @see http://php.net/manual/en/function.halt-compiler.php
+                      * Halts the compiler execution
+                      * @constructor Halt
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {String} after - String after the halt statement
+                      * @see http://php.net/manual/en/function.halt-compiler.php
                     */
                     module.exports=Statement["extends"](KIND,function Halt(after,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -1813,18 +1813,18 @@
                 } ,
                 "1234" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="identifier";
                     /*#
-                     * Defines an identifier node
-                     * @constructor Identifier
-                     * @memberOf module:php-parser
-                     * @extends {Node}
-                     * @property {string} name
+                      * Defines an identifier node
+                      * @constructor Identifier
+                      * @memberOf module:php-parser
+                      * @extends {Node}
+                      * @property {string} name
                     */
                     var Identifier=Node["extends"](KIND,function Identifier(name,docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -1834,21 +1834,21 @@
                 } ,
                 "6" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="if";
                     /*#
-                     * Defines a if statement
-                     * @constructor If
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Expression} test
-                     * @property {Block} body
-                     * @property {Block|If|null} alternate
-                     * @property {boolean} shortForm
+                      * Defines a if statement
+                      * @constructor If
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Expression} test
+                      * @property {Block} body
+                      * @property {Block|If|null} alternate
+                      * @property {boolean} shortForm
                     */
                     module.exports=Statement["extends"](KIND,function If(test,body,alternate,shortForm,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -1860,20 +1860,20 @@
                 } ,
                 "8861" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="include";
                     /*#
-                     * Defines system include call
-                     * @constructor Include
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Node} target
-                     * @property {boolean} once
-                     * @property {boolean} require
+                      * Defines system include call
+                      * @constructor Include
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Node} target
+                      * @property {boolean} once
+                      * @property {boolean} require
                     */
                     module.exports=Expression["extends"](KIND,function Include(once,require,target,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -1884,18 +1884,18 @@
                 } ,
                 "7860" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Literal=__webpack_require__(5514);
                     var KIND="inline";
                     /*#
-                     * Defines inline html output (treated as echo output)
-                     * @constructor Inline
-                     * @memberOf module:php-parser
-                     * @extends {Literal}
-                     * @property {string} value
+                      * Defines inline html output (treated as echo output)
+                      * @constructor Inline
+                      * @memberOf module:php-parser
+                      * @extends {Literal}
+                      * @property {string} value
                     */
                     module.exports=Literal["extends"](KIND,function Inline(value,raw,docs,location){
                         Literal.apply(this,[KIND,value,raw,docs,location]);
@@ -1903,20 +1903,20 @@
                 } ,
                 "9834" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Declaration=__webpack_require__(8533);
                     var KIND="interface";
                     /*#
-                     * An interface definition
-                     * @constructor Interface
-                     * @memberOf module:php-parser
-                     * @extends {Declaration}
-                     * @property {Identifier[]} extends
-                     * @property {Declaration[]} body
-                     * @property {AttrGroup[]} attrGroups
+                      * An interface definition
+                      * @constructor Interface
+                      * @memberOf module:php-parser
+                      * @extends {Declaration}
+                      * @property {Identifier[]} extends
+                      * @property {Declaration[]} body
+                      * @property {AttrGroup[]} attrGroups
                     */
                     module.exports=Declaration["extends"](KIND,function Interface(name,ext,body,attrGroups,docs,location){
                         Declaration.apply(this,[KIND,name,docs,location]);
@@ -1927,18 +1927,18 @@
                 } ,
                 "2724" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Declaration=__webpack_require__(8533);
                     var KIND="intersectiontype";
                     /*#
-                     * A union of types
-                     * @memberOf module:php-parser
-                     * @constructor IntersectionType
-                     * @extends {Declaration}
-                     * @property {TypeReference[]} types
+                      * A union of types
+                      * @memberOf module:php-parser
+                      * @constructor IntersectionType
+                      * @extends {Declaration}
+                      * @property {TypeReference[]} types
                     */
                     module.exports=Declaration["extends"](KIND,function IntersectionType(types,docs,location){
                         Declaration.apply(this,[KIND,null,docs,location]);
@@ -1947,17 +1947,17 @@
                 } ,
                 "6025" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="isset";
                     /*#
-                     * Defines an isset call
-                     * @constructor Isset
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
+                      * Defines an isset call
+                      * @constructor Isset
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
                     */
                     module.exports=Expression["extends"](KIND,function Isset(variables,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -1966,18 +1966,18 @@
                 } ,
                 "2687" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="label";
                     /*#
-                     * A label statement (referenced by goto)
-                     * @constructor Label
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {String} name
+                      * A label statement (referenced by goto)
+                      * @constructor Label
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {String} name
                     */
                     module.exports=Statement["extends"](KIND,function Label(name,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -1986,19 +1986,19 @@
                 } ,
                 "7633" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="list";
                     /*#
-                     * Defines list assignment
-                     * @constructor List
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {boolean} shortForm
-                     * @property {Entry[]} items
+                      * Defines list assignment
+                      * @constructor List
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {boolean} shortForm
+                      * @property {Entry[]} items
                     */
                     module.exports=Expression["extends"](KIND,function List(items,shortForm,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -2008,19 +2008,19 @@
                 } ,
                 "5514" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="literal";
                     /*#
-                     * Defines an array structure
-                     * @constructor Literal
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {string} raw
-                     * @property {EncapsedPart[]|Node|string|number|boolean|null} value
+                      * Defines an array structure
+                      * @constructor Literal
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {string} raw
+                      * @property {EncapsedPart[]|Node|string|number|boolean|null} value
                     */
                     module.exports=Expression["extends"](KIND,function Literal(kind,value,raw,docs,location){
                         Expression.apply(this,[kind || KIND,docs,location]);
@@ -2032,17 +2032,17 @@
                 } ,
                 "4778" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     /*#
-                     * Defines the location of the node (with it's source contents as string)
-                     * @constructor Location
-                     * @memberOf module:php-parser
-                     * @property {string|null} source
-                     * @property {Position} start
-                     * @property {Position} end
+                      * Defines the location of the node (with it's source contents as string)
+                      * @constructor Location
+                      * @memberOf module:php-parser
+                      * @property {string|null} source
+                      * @property {Position} start
+                      * @property {Position} end
                     */
                     var Location=function Location(source,start,end){
                         this.source=source;
@@ -2053,19 +2053,19 @@
                 } ,
                 "7427" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expr=__webpack_require__(839);
                     var KIND="lookup";
                     /*#
-                     * Lookup on an offset in the specified object
-                     * @constructor Lookup
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Expression} what
-                     * @property {Expression} offset
+                      * Lookup on an offset in the specified object
+                      * @constructor Lookup
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Expression} what
+                      * @property {Expression} offset
                     */
                     module.exports=Expr["extends"](KIND,function Lookup(kind,what,offset,docs,location){
                         Expr.apply(this,[kind || KIND,docs,location]);
@@ -2075,17 +2075,17 @@
                 } ,
                 "1122" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Literal=__webpack_require__(5514);
                     var KIND="magic";
                     /*#
-                     * Defines magic constant
-                     * @constructor Magic
-                     * @memberOf module:php-parser
-                     * @extends {Literal}
+                      * Defines magic constant
+                      * @constructor Magic
+                      * @memberOf module:php-parser
+                      * @extends {Literal}
                     */
                     module.exports=Literal["extends"](KIND,function Magic(value,raw,docs,location){
                         Literal.apply(this,[KIND,value,raw,docs,location]);
@@ -2093,19 +2093,19 @@
                 } ,
                 "7256" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="match";
                     /*#
-                     * Defines a match expression
-                     * @memberOf module:php-parser
-                     * @constructor Match
-                     * @extends {Expression}
-                     * @property {Expression} cond Condition expression to match against
-                     * @property {MatchArm[]} arms Arms for comparison
+                      * Defines a match expression
+                      * @memberOf module:php-parser
+                      * @constructor Match
+                      * @extends {Expression}
+                      * @property {Expression} cond Condition expression to match against
+                      * @property {MatchArm[]} arms Arms for comparison
                     */
                     module.exports=Expression["extends"](KIND,function Match(cond,arms,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -2115,19 +2115,19 @@
                 } ,
                 "7416" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="matcharm";
                     /*#
-                     * An array entry - see [Array](#array)
-                     * @memberOf module:php-parser
-                     * @constructor MatchArm
-                     * @extends {Expression}
-                     * @property {Expression[]|null} conds The match condition expression list - null indicates default arm
-                     * @property {Expression} body The return value expression
+                      * An array entry - see [Array](#array)
+                      * @memberOf module:php-parser
+                      * @constructor MatchArm
+                      * @extends {Expression}
+                      * @property {Expression[]|null} conds The match condition expression list - null indicates default arm
+                      * @property {Expression} body The return value expression
                     */
                     module.exports=Expression["extends"](KIND,function MatchArm(conds,body,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -2137,21 +2137,21 @@
                 } ,
                 "8140" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Function_=__webpack_require__(6553);
                     var KIND="method";
                     /*#
-                     * Defines a class/interface/trait method
-                     * @constructor Method
-                     * @memberOf module:php-parser
-                     * @extends {Function}
-                     * @property {boolean} isAbstract
-                     * @property {boolean} isFinal
-                     * @property {boolean} isStatic
-                     * @property {string} visibility
+                      * Defines a class/interface/trait method
+                      * @constructor Method
+                      * @memberOf module:php-parser
+                      * @extends {Function}
+                      * @property {boolean} isAbstract
+                      * @property {boolean} isFinal
+                      * @property {boolean} isStatic
+                      * @property {string} visibility
                     */
                     module.exports=Function_["extends"](KIND,function Method(){
                         Function_.apply(this,arguments);
@@ -2160,19 +2160,19 @@
                 } ,
                 "6258" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Reference=__webpack_require__(8276);
                     var KIND="name";
                     /*#
-                     * Defines a class reference node
-                     * @constructor Name
-                     * @memberOf module:php-parser
-                     * @extends {Reference}
-                     * @property {string} name
-                     * @property {string} resolution
+                      * Defines a class reference node
+                      * @constructor Name
+                      * @memberOf module:php-parser
+                      * @extends {Reference}
+                      * @property {string} name
+                      * @property {string} resolution
                     */
                     var Name=Reference["extends"](KIND,function Name(name,resolution,docs,location){
                         Reference.apply(this,[KIND,docs,location]);
@@ -2180,49 +2180,49 @@
                         this.resolution=resolution;
                     });
                     /*#
-                     * This is an identifier without a namespace separator, such as Foo
-                     * @constant {String} Name#UNQUALIFIED_NAME
-                     * @memberOf module:php-parser
+                      * This is an identifier without a namespace separator, such as Foo
+                      * @constant {String} Name#UNQUALIFIED_NAME
+                      * @memberOf module:php-parser
                     */
                     Name.UNQUALIFIED_NAME="uqn";
                     /*#
-                     * This is an identifier with a namespace separator, such as Foo\Bar
-                     * @constant {String} Name#QUALIFIED_NAME
-                     * @memberOf module:php-parser
+                      * This is an identifier with a namespace separator, such as Foo\Bar
+                      * @constant {String} Name#QUALIFIED_NAME
+                      * @memberOf module:php-parser
                     */
                     Name.QUALIFIED_NAME="qn";
                     /*#
-                     * This is an identifier with a namespace separator that begins with
-                     * a namespace separator, such as \Foo\Bar. The namespace \Foo is also
-                     * a fully qualified name.
-                     * @constant {String} Name#FULL_QUALIFIED_NAME
-                     * @memberOf module:php-parser
+                      * This is an identifier with a namespace separator that begins with
+                      * a namespace separator, such as \Foo\Bar. The namespace \Foo is also
+                      * a fully qualified name.
+                      * @constant {String} Name#FULL_QUALIFIED_NAME
+                      * @memberOf module:php-parser
                     */
                     Name.FULL_QUALIFIED_NAME="fqn";
                     /*#
-                     * This is an identifier starting with namespace, such as namespace\Foo\Bar.
-                     * @constant {String} Name#RELATIVE_NAME
-                     * @memberOf module:php-parser
+                      * This is an identifier starting with namespace, such as namespace\Foo\Bar.
+                      * @constant {String} Name#RELATIVE_NAME
+                      * @memberOf module:php-parser
                     */
                     Name.RELATIVE_NAME="rn";
                     module.exports=Name;
                 } ,
                 "6827" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="namedargument";
                     /*#
-                     * Named arguments.
-                     * @memberOf module:php-parser
-                     * @constructor namedargument
-                     * @extends {Expression}
-                     * @property {String} name
-                     * @property {Expression} value
-                     * @see https://www.php.net/manual/en/functions.arguments.php#functions.named-arguments
+                      * Named arguments.
+                      * @memberOf module:php-parser
+                      * @constructor namedargument
+                      * @extends {Expression}
+                      * @property {String} name
+                      * @property {Expression} value
+                      * @see https://www.php.net/manual/en/functions.arguments.php#functions.named-arguments
                     */
                     module.exports=Expression["extends"](KIND,function namedargument(name,value,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -2232,19 +2232,19 @@
                 } ,
                 "9474" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Block=__webpack_require__(4628);
                     var KIND="namespace";
                     /*#
-                     * The main program node
-                     * @constructor Namespace
-                     * @memberOf module:php-parser
-                     * @extends {Block}
-                     * @property {string} name
-                     * @property {boolean} withBrackets
+                      * The main program node
+                      * @constructor Namespace
+                      * @memberOf module:php-parser
+                      * @extends {Block}
+                      * @property {string} name
+                      * @property {boolean} withBrackets
                     */
                     module.exports=Block["extends"](KIND,function Namespace(name,children,withBrackets,docs,location){
                         Block.apply(this,[KIND,children,docs,location]);
@@ -2254,19 +2254,19 @@
                 } ,
                 "4427" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="new";
                     /*#
-                     * Creates a new instance of the specified class
-                     * @constructor New
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Identifier|Variable|Class} what
-                     * @property {Variable[]} arguments
+                      * Creates a new instance of the specified class
+                      * @constructor New
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Identifier|Variable|Class} what
+                      * @property {Variable[]} arguments
                     */
                     module.exports=Expression["extends"](KIND,function New(what,args,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -2276,18 +2276,18 @@
                 } ,
                 "4065" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     /*#
-                     * A generic AST node
-                     * @constructor Node
-                     * @memberOf module:php-parser
-                     * @property {Location|null} loc
-                     * @property {CommentBlock[]|Comment[]|null} leadingComments
-                     * @property {CommentBlock[]|Comment[]|null} trailingComments
-                     * @property {string} kind
+                      * A generic AST node
+                      * @constructor Node
+                      * @memberOf module:php-parser
+                      * @property {Location|null} loc
+                      * @property {CommentBlock[]|Comment[]|null} leadingComments
+                      * @property {CommentBlock[]|Comment[]|null} trailingComments
+                      * @property {string} kind
                     */
                     var Node=function Node(kind,docs,location){
                         this.kind=kind;
@@ -2299,18 +2299,18 @@
                         }
                     };
                     /*#
-                     * Attach comments to current node
-                     * @function Node#setTrailingComments
-                     * @memberOf module:php-parser
-                     * @param {*} docs
+                      * Attach comments to current node
+                      * @function Node#setTrailingComments
+                      * @memberOf module:php-parser
+                      * @param {*} docs
                     */
                     Node.prototype.setTrailingComments=function(docs){
                         this.trailingComments=docs;
                     };
                     /*#
-                     * Destroying an unused node
-                     * @function Node#destroy
-                     * @memberOf module:php-parser
+                      * Destroying an unused node
+                      * @function Node#destroy
+                      * @memberOf module:php-parser
                     */
                     Node.prototype.destroy=function(node){
                         if(!node){
@@ -2334,10 +2334,10 @@
                         return node;
                     };
                     /*#
-                     * Includes current token position of the parser
-                     * @function Node#includeToken
-                     * @memberOf module:php-parser
-                     * @param {*} parser
+                      * Includes current token position of the parser
+                      * @function Node#includeToken
+                      * @memberOf module:php-parser
+                      * @param {*} parser
                     */
                     Node.prototype.includeToken=function(parser){
                         if(this.loc){
@@ -2353,12 +2353,12 @@
                         return this;
                     };
                     /*#
-                     * Helper for extending the Node class
-                     * @function Node.extends
-                     * @memberOf module:php-parser
-                     * @param {string} type
-                     * @param {Function} constructor
-                     * @return {Function}
+                      * Helper for extending the Node class
+                      * @function Node.extends
+                      * @memberOf module:php-parser
+                      * @param {string} type
+                      * @param {Function} constructor
+                      * @return {Function}
                     */
                     Node["extends"]=function(type,constructor){
                         constructor.prototype=Object.create(this.prototype);
@@ -2371,18 +2371,18 @@
                 } ,
                 "4297" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="noop";
                     /*#
-                     * Ignore this node, it implies a no operation block, for example :
-                     * [$foo, $bar, /* here a noop node * /]
-                     * @constructor Noop
-                     * @memberOf module:php-parser
-                     * @extends {Node}
+                      * Ignore this node, it implies a no operation block, for example :
+                      * [$foo, $bar, /* here a noop node * /]
+                      * @constructor Noop
+                      * @memberOf module:php-parser
+                      * @extends {Node}
                     */
                     module.exports=Node["extends"](KIND,function Noop(docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -2390,20 +2390,20 @@
                 } ,
                 "5859" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Literal=__webpack_require__(5514);
                     var KIND="nowdoc";
                     /*#
-                     * Defines a nowdoc string
-                     * @constructor NowDoc
-                     * @memberOf module:php-parser
-                     * @extends {Literal}
-                     * @property {string} label
-                     * @property {string} raw
-                     * @property {string} value
+                      * Defines a nowdoc string
+                      * @constructor NowDoc
+                      * @memberOf module:php-parser
+                      * @extends {Literal}
+                      * @property {string} label
+                      * @property {string} raw
+                      * @property {string} value
                     */
                     module.exports=Literal["extends"](KIND,function Nowdoc(value,raw,label,docs,location){
                         Literal.apply(this,[KIND,value,raw,docs,location]);
@@ -2412,17 +2412,17 @@
                 } ,
                 "6985" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="nullkeyword";
                     /*#
-                     * Represents the null keyword
-                     * @constructor NullKeyword
-                     * @memberOf module:php-parser
-                     * @extends {Node}
+                      * Represents the null keyword
+                      * @constructor NullKeyword
+                      * @memberOf module:php-parser
+                      * @extends {Node}
                     */
                     module.exports=Node["extends"](KIND,function NullKeyword(raw,docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -2431,17 +2431,17 @@
                 } ,
                 "9302" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Lookup=__webpack_require__(7427);
                     var KIND="nullsafepropertylookup";
                     /*#
-                     * Lookup to an object property
-                     * @memberOf module:php-parser
-                     * @constructor NullSafePropertyLookup
-                     * @extends {Lookup}
+                      * Lookup to an object property
+                      * @memberOf module:php-parser
+                      * @constructor NullSafePropertyLookup
+                      * @extends {Lookup}
                     */
                     module.exports=Lookup["extends"](KIND,function NullSafePropertyLookup(what,offset,docs,location){
                         Lookup.apply(this,[KIND,what,offset,docs,location]);
@@ -2449,18 +2449,18 @@
                 } ,
                 "8212" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Literal=__webpack_require__(5514);
                     var KIND="number";
                     /*#
-                     * Defines a numeric value
-                     * @constructor Number
-                     * @memberOf module:php-parser
-                     * @extends {Literal}
-                     * @property {number} value
+                      * Defines a numeric value
+                      * @constructor Number
+                      * @memberOf module:php-parser
+                      * @extends {Literal}
+                      * @property {number} value
                     */
                     module.exports=Literal["extends"](KIND,function Number(value,raw,docs,location){
                         Literal.apply(this,[KIND,value,raw,docs,location]);
@@ -2468,17 +2468,17 @@
                 } ,
                 "864" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Lookup=__webpack_require__(7427);
                     var KIND="offsetlookup";
                     /*#
-                     * Lookup on an offset in an array
-                     * @constructor OffsetLookup
-                     * @memberOf module:php-parser
-                     * @extends {Lookup}
+                      * Lookup on an offset in an array
+                      * @constructor OffsetLookup
+                      * @memberOf module:php-parser
+                      * @extends {Lookup}
                     */
                     module.exports=Lookup["extends"](KIND,function OffsetLookup(what,offset,docs,location){
                         Lookup.apply(this,[KIND,what,offset,docs,location]);
@@ -2486,17 +2486,17 @@
                 } ,
                 "8268" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expr=__webpack_require__(839);
                     var KIND="operation";
                     /*#
-                     * Defines binary operations
-                     * @constructor Operation
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
+                      * Defines binary operations
+                      * @constructor Operation
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
                     */
                     module.exports=Expr["extends"](KIND,function Operation(kind,docs,location){
                         Expr.apply(this,[kind || KIND,docs,location]);
@@ -2504,40 +2504,40 @@
                 } ,
                 "7190" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Declaration=__webpack_require__(8533);
                     var KIND="parameter";
                     /*#
-                     * @memberOf module:php-parser
-                     * @typedef {1} MODIFIER_PUBLIC
-                     *
+                      * @memberOf module:php-parser
+                      * @typedef {1} MODIFIER_PUBLIC
+                      *
                     */
                     /*#
-                     * @memberOf module:php-parser
-                     * @typedef {2} MODIFIER_PROTECTED
-                     *
+                      * @memberOf module:php-parser
+                      * @typedef {2} MODIFIER_PROTECTED
+                      *
                     */
                     /*#
-                     * @memberOf module:php-parser
-                     * @typedef {4} MODIFIER_PRIVATE
-                     *
+                      * @memberOf module:php-parser
+                      * @typedef {4} MODIFIER_PRIVATE
+                      *
                     */
                     /*#
-                     * Defines a function parameter
-                     * @constructor Parameter
-                     * @memberOf module:php-parser
-                     * @extends {Declaration}
-                     * @property {Identifier|null} type
-                     * @property {Node|null} value
-                     * @property {boolean} byref
-                     * @property {boolean} variadic
-                     * @property {boolean} readonly
-                     * @property {boolean} nullable
-                     * @property {AttrGroup[]} attrGroups
-                     * @property {MODIFIER_PUBLIC|MODIFIER_PROTECTED|MODIFIER_PRIVATE} flags
+                      * Defines a function parameter
+                      * @constructor Parameter
+                      * @memberOf module:php-parser
+                      * @extends {Declaration}
+                      * @property {Identifier|null} type
+                      * @property {Node|null} value
+                      * @property {boolean} byref
+                      * @property {boolean} variadic
+                      * @property {boolean} readonly
+                      * @property {boolean} nullable
+                      * @property {AttrGroup[]} attrGroups
+                      * @property {MODIFIER_PUBLIC|MODIFIER_PROTECTED|MODIFIER_PRIVATE} flags
                     */
                     module.exports=Declaration["extends"](KIND,function Parameter(name,type,value,isRef,isVariadic,readonly,nullable,flags,docs,location){
                         Declaration.apply(this,[KIND,name,docs,location]);
@@ -2553,17 +2553,17 @@
                 } ,
                 "8519" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Reference=__webpack_require__(8276);
                     var KIND="parentreference";
                     /*#
-                     * Defines a class reference node
-                     * @constructor ParentReference
-                     * @memberOf module:php-parser
-                     * @extends {Reference}
+                      * Defines a class reference node
+                      * @constructor ParentReference
+                      * @memberOf module:php-parser
+                      * @extends {Reference}
                     */
                     var ParentReference=Reference["extends"](KIND,function ParentReference(raw,docs,location){
                         Reference.apply(this,[KIND,docs,location]);
@@ -2573,17 +2573,17 @@
                 } ,
                 "8822" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     /*#
-                     * Each Position object consists of a line number (1-indexed) and a column number (0-indexed):
-                     * @constructor Position
-                     * @memberOf module:php-parser
-                     * @property {number} line
-                     * @property {number} column
-                     * @property {number} offset
+                      * Each Position object consists of a line number (1-indexed) and a column number (0-indexed):
+                      * @constructor Position
+                      * @memberOf module:php-parser
+                      * @property {number} line
+                      * @property {number} column
+                      * @property {number} offset
                     */
                     var Position=function Position(line,column,offset){
                         this.line=line;
@@ -2594,19 +2594,19 @@
                 } ,
                 "4835" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Operation=__webpack_require__(8268);
                     var KIND="post";
                     /*#
-                     * Defines a post operation `$i++` or `$i--`
-                     * @constructor Post
-                     * @memberOf module:php-parser
-                     * @extends {Operation}
-                     * @property {String} type
-                     * @property {Variable} what
+                      * Defines a post operation `$i++` or `$i--`
+                      * @constructor Post
+                      * @memberOf module:php-parser
+                      * @extends {Operation}
+                      * @property {String} type
+                      * @property {Variable} what
                     */
                     module.exports=Operation["extends"](KIND,function Post(type,what,docs,location){
                         Operation.apply(this,[KIND,docs,location]);
@@ -2616,19 +2616,19 @@
                 } ,
                 "2056" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Operation=__webpack_require__(8268);
                     var KIND="pre";
                     /*#
-                     * Defines a pre operation `++$i` or `--$i`
-                     * @constructor Pre
-                     * @memberOf module:php-parser
-                     * @extends {Operation}
-                     * @property {String} type
-                     * @property {Variable} what
+                      * Defines a pre operation `++$i` or `--$i`
+                      * @constructor Pre
+                      * @memberOf module:php-parser
+                      * @extends {Operation}
+                      * @property {String} type
+                      * @property {Variable} what
                     */
                     module.exports=Operation["extends"](KIND,function Pre(type,what,docs,location){
                         Operation.apply(this,[KIND,docs,location]);
@@ -2638,17 +2638,17 @@
                 } ,
                 "4838" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="print";
                     /*#
-                     * Outputs
-                     * @constructor Print
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
+                      * Outputs
+                      * @constructor Print
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
                     */
                     module.exports=Expression["extends"](KIND,function Print(expression,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -2657,20 +2657,20 @@
                 } ,
                 "7869" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Block=__webpack_require__(4628);
                     var KIND="program";
                     /*#
-                     * The main program node
-                     * @constructor Program
-                     * @memberOf module:php-parser
-                     * @extends {Block}
-                     * @property {Error[]} errors
-                     * @property {Comment[]|null} comments
-                     * @property {String[]|null} tokens
+                      * The main program node
+                      * @constructor Program
+                      * @memberOf module:php-parser
+                      * @extends {Block}
+                      * @property {Error[]} errors
+                      * @property {Comment[]|null} comments
+                      * @property {String[]|null} tokens
                     */
                     module.exports=Block["extends"](KIND,function Program(children,errors,comments,tokens,docs,location){
                         Block.apply(this,[KIND,children,docs,location]);
@@ -2685,23 +2685,23 @@
                 } ,
                 "1908" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="property";
                     /*#
-                     * Defines a class property
-                     * @constructor Property
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {string} name
-                     * @property {Node|null} value
-                     * @property {boolean} readonly
-                     * @property {boolean} nullable
-                     * @property {Identifier|Array<Identifier>|null} type
-                     * @property {AttrGroup[]} attrGroups
+                      * Defines a class property
+                      * @constructor Property
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {string} name
+                      * @property {Node|null} value
+                      * @property {boolean} readonly
+                      * @property {boolean} nullable
+                      * @property {Identifier|Array<Identifier>|null} type
+                      * @property {AttrGroup[]} attrGroups
                     */
                     module.exports=Statement["extends"](KIND,function Property(name,value,readonly,nullable,type,attrGroups,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -2715,17 +2715,17 @@
                 } ,
                 "170" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Lookup=__webpack_require__(7427);
                     var KIND="propertylookup";
                     /*#
-                     * Lookup to an object property
-                     * @memberOf module:php-parser
-                     * @constructor PropertyLookup
-                     * @extends {Lookup}
+                      * Lookup to an object property
+                      * @memberOf module:php-parser
+                      * @constructor PropertyLookup
+                      * @extends {Lookup}
                     */
                     module.exports=Lookup["extends"](KIND,function PropertyLookup(what,offset,docs,location){
                         Lookup.apply(this,[KIND,what,offset,docs,location]);
@@ -2733,9 +2733,9 @@
                 } ,
                 "1091" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="propertystatement";
@@ -2744,13 +2744,13 @@
                     var IS_PROTECTED="protected";
                     var IS_PRIVATE="private";
                     /*#
-                     * Declares a properties into the current scope
-                     * @constructor PropertyStatement
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Property[]} properties
-                     * @property {string|null} visibility
-                     * @property {boolean} isStatic
+                      * Declares a properties into the current scope
+                      * @constructor PropertyStatement
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Property[]} properties
+                      * @property {string|null} visibility
+                      * @property {boolean} isStatic
                     */
                     var PropertyStatement=Statement["extends"](KIND,function PropertyStatement(kind,properties,flags,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -2758,11 +2758,11 @@
                         this.parseFlags(flags);
                     });
                     /*#
-                     * Generic flags parser
-                     * @function PropertyStatement#parseFlags
-                     * @memberOf module:php-parser
-                     * @param {Array<number|null>} flags
-                     * @return {void}
+                      * Generic flags parser
+                      * @function PropertyStatement#parseFlags
+                      * @memberOf module:php-parser
+                      * @param {Array<number|null>} flags
+                      * @return {void}
                     */
                     PropertyStatement.prototype.parseFlags=function(flags){
                         if(flags[0] === -1){
@@ -2782,17 +2782,17 @@
                 } ,
                 "8276" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="reference";
                     /*#
-                     * Defines a reference node
-                     * @constructor Reference
-                     * @memberOf module:php-parser
-                     * @extends {Node}
+                      * Defines a reference node
+                      * @constructor Reference
+                      * @memberOf module:php-parser
+                      * @extends {Node}
                     */
                     var Reference=Node["extends"](KIND,function Reference(kind,docs,location){
                         Node.apply(this,[kind || KIND,docs,location]);
@@ -2801,20 +2801,20 @@
                 } ,
                 "1842" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="retif";
                     /*#
-                     * Defines a short if statement that returns a value
-                     * @constructor RetIf
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Expression} test
-                     * @property {Expression} trueExpr
-                     * @property {Expression} falseExpr
+                      * Defines a short if statement that returns a value
+                      * @constructor RetIf
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Expression} test
+                      * @property {Expression} trueExpr
+                      * @property {Expression} falseExpr
                     */
                     module.exports=Expression["extends"](KIND,function RetIf(test,trueExpr,falseExpr,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -2825,18 +2825,18 @@
                 } ,
                 "5739" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="return";
                     /*#
-                     * A continue statement
-                     * @constructor Return
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Expression|null} expr
+                      * A continue statement
+                      * @constructor Return
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Expression|null} expr
                     */
                     module.exports=Statement["extends"](KIND,function Return(expr,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -2845,17 +2845,17 @@
                 } ,
                 "1274" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Reference=__webpack_require__(8276);
                     var KIND="selfreference";
                     /*#
-                     * Defines a class reference node
-                     * @constructor SelfReference
-                     * @memberOf module:php-parser
-                     * @extends {Reference}
+                      * Defines a class reference node
+                      * @constructor SelfReference
+                      * @memberOf module:php-parser
+                      * @extends {Reference}
                     */
                     var SelfReference=Reference["extends"](KIND,function SelfReference(raw,docs,location){
                         Reference.apply(this,[KIND,docs,location]);
@@ -2865,18 +2865,18 @@
                 } ,
                 "4352" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="silent";
                     /*#
-                     * Avoids to show/log warnings & notices from the inner expression
-                     * @constructor Silent
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Expression} expr
+                      * Avoids to show/log warnings & notices from the inner expression
+                      * @constructor Silent
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Expression} expr
                     */
                     module.exports=Expression["extends"](KIND,function Silent(expr,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -2885,17 +2885,17 @@
                 } ,
                 "9672" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="statement";
                     /*#
-                     * Any statement.
-                     * @constructor Statement
-                     * @memberOf module:php-parser
-                     * @extends {Node}
+                      * Any statement.
+                      * @constructor Statement
+                      * @memberOf module:php-parser
+                      * @extends {Node}
                     */
                     module.exports=Node["extends"](KIND,function Statement(kind,docs,location){
                         Node.apply(this,[kind || KIND,docs,location]);
@@ -2903,18 +2903,18 @@
                 } ,
                 "711" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="static";
                     /*#
-                     * Declares a static variable into the current scope
-                     * @constructor Static
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {StaticVariable[]} variables
+                      * Declares a static variable into the current scope
+                      * @constructor Static
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {StaticVariable[]} variables
                     */
                     module.exports=Statement["extends"](KIND,function Static(variables,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -2923,17 +2923,17 @@
                 } ,
                 "1865" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Lookup=__webpack_require__(7427);
                     var KIND="staticlookup";
                     /*#
-                     * Lookup to a static property
-                     * @constructor StaticLookup
-                     * @memberOf module:php-parser
-                     * @extends {Lookup}
+                      * Lookup to a static property
+                      * @constructor StaticLookup
+                      * @memberOf module:php-parser
+                      * @extends {Lookup}
                     */
                     module.exports=Lookup["extends"](KIND,function StaticLookup(what,offset,docs,location){
                         Lookup.apply(this,[KIND,what,offset,docs,location]);
@@ -2941,17 +2941,17 @@
                 } ,
                 "1102" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Reference=__webpack_require__(8276);
                     var KIND="staticreference";
                     /*#
-                     * Defines a class reference node
-                     * @constructor StaticReference
-                     * @memberOf module:php-parser
-                     * @extends {Reference}
+                      * Defines a class reference node
+                      * @constructor StaticReference
+                      * @memberOf module:php-parser
+                      * @extends {Reference}
                     */
                     var StaticReference=Reference["extends"](KIND,function StaticReference(raw,docs,location){
                         Reference.apply(this,[KIND,docs,location]);
@@ -2961,19 +2961,19 @@
                 } ,
                 "1231" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="staticvariable";
                     /*#
-                     * Defines a constant
-                     * @constructor StaticVariable
-                     * @memberOf module:php-parser
-                     * @extends {Node}
-                     * @property {Variable} variable
-                     * @property {Node|string|number|boolean|null} defaultValue
+                      * Defines a constant
+                      * @constructor StaticVariable
+                      * @memberOf module:php-parser
+                      * @extends {Node}
+                      * @property {Variable} variable
+                      * @property {Node|string|number|boolean|null} defaultValue
                     */
                     module.exports=Node["extends"](KIND,function StaticVariable(variable,defaultValue,docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -2983,21 +2983,21 @@
                 } ,
                 "7472" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Literal=__webpack_require__(5514);
                     var KIND="string";
                     /*#
-                     * Defines a string (simple or double quoted) - chars are already escaped
-                     * @constructor String
-                     * @memberOf module:php-parser
-                     * @extends {Literal}
-                     * @property {boolean} unicode
-                     * @property {boolean} isDoubleQuote
-                     * @see {Encapsed}
-                     * @property {string} value
+                      * Defines a string (simple or double quoted) - chars are already escaped
+                      * @constructor String
+                      * @memberOf module:php-parser
+                      * @extends {Literal}
+                      * @property {boolean} unicode
+                      * @property {boolean} isDoubleQuote
+                      * @see {Encapsed}
+                      * @property {string} value
                     */
                     module.exports=Literal["extends"](KIND,function String(isDoubleQuote,value,unicode,raw,docs,location){
                         Literal.apply(this,[KIND,value,raw,docs,location]);
@@ -3007,20 +3007,20 @@
                 } ,
                 "6133" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="switch";
                     /*#
-                     * Defines a switch statement
-                     * @constructor Switch
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Expression} test
-                     * @property {Block} body
-                     * @property {boolean} shortForm
+                      * Defines a switch statement
+                      * @constructor Switch
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Expression} test
+                      * @property {Block} body
+                      * @property {boolean} shortForm
                     */
                     module.exports=Statement["extends"](KIND,function Switch(test,body,shortForm,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -3031,18 +3031,18 @@
                 } ,
                 "1197" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="throw";
                     /*#
-                     * Defines a throw statement
-                     * @constructor Throw
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Expression} what
+                      * Defines a throw statement
+                      * @constructor Throw
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Expression} what
                     */
                     module.exports=Statement["extends"](KIND,function Throw(what,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -3051,18 +3051,18 @@
                 } ,
                 "6649" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Declaration=__webpack_require__(8533);
                     var KIND="trait";
                     /*#
-                     * A trait definition
-                     * @constructor Trait
-                     * @memberOf module:php-parser
-                     * @extends {Declaration}
-                     * @property {Declaration[]} body
+                      * A trait definition
+                      * @constructor Trait
+                      * @memberOf module:php-parser
+                      * @extends {Declaration}
+                      * @property {Declaration[]} body
                     */
                     module.exports=Declaration["extends"](KIND,function Trait(name,body,docs,location){
                         Declaration.apply(this,[KIND,name,docs,location]);
@@ -3071,9 +3071,9 @@
                 } ,
                 "1837" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="traitalias";
@@ -3082,14 +3082,14 @@
                     var IS_PROTECTED="protected";
                     var IS_PRIVATE="private";
                     /*#
-                     * Defines a trait alias
-                     * @constructor TraitAlias
-                     * @memberOf module:php-parser
-                     * @extends {Node}
-                     * @property {Identifier|null} trait
-                     * @property {Identifier} method
-                     * @property {Identifier|null} as
-                     * @property {string|null} visibility
+                      * Defines a trait alias
+                      * @constructor TraitAlias
+                      * @memberOf module:php-parser
+                      * @extends {Node}
+                      * @property {Identifier|null} trait
+                      * @property {Identifier} method
+                      * @property {Identifier|null} as
+                      * @property {string|null} visibility
                     */
                     module.exports=Node["extends"](KIND,function TraitAlias(trait,method,as,flags,docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -3110,20 +3110,20 @@
                 } ,
                 "2277" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="traitprecedence";
                     /*#
-                     * Defines a trait alias
-                     * @constructor TraitPrecedence
-                     * @memberOf module:php-parser
-                     * @extends {Node}
-                     * @property {Identifier|null} trait
-                     * @property {Identifier} method
-                     * @property {Identifier[]} instead
+                      * Defines a trait alias
+                      * @constructor TraitPrecedence
+                      * @memberOf module:php-parser
+                      * @extends {Node}
+                      * @property {Identifier|null} trait
+                      * @property {Identifier} method
+                      * @property {Identifier[]} instead
                     */
                     module.exports=Node["extends"](KIND,function TraitPrecedence(trait,method,instead,docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -3134,19 +3134,19 @@
                 } ,
                 "8010" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="traituse";
                     /*#
-                     * Defines a trait usage
-                     * @constructor TraitUse
-                     * @memberOf module:php-parser
-                     * @extends {Node}
-                     * @property {Identifier[]} traits
-                     * @property {Node[]|null} adaptations
+                      * Defines a trait usage
+                      * @constructor TraitUse
+                      * @memberOf module:php-parser
+                      * @extends {Node}
+                      * @property {Identifier[]} traits
+                      * @property {Node[]|null} adaptations
                     */
                     module.exports=Node["extends"](KIND,function TraitUse(traits,adaptations,docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -3156,20 +3156,20 @@
                 } ,
                 "7579" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="try";
                     /*#
-                     * Defines a try statement
-                     * @constructor Try
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Block} body
-                     * @property {Catch[]} catches
-                     * @property {Block} always
+                      * Defines a try statement
+                      * @constructor Try
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Block} body
+                      * @property {Catch[]} catches
+                      * @property {Block} always
                     */
                     module.exports=Statement["extends"](KIND,function Try(body,catches,always,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -3180,18 +3180,18 @@
                 } ,
                 "3460" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Reference=__webpack_require__(8276);
                     var KIND="typereference";
                     /*#
-                     * Defines a class reference node
-                     * @constructor TypeReference
-                     * @memberOf module:php-parser
-                     * @extends {Reference}
-                     * @property {string} name
+                      * Defines a class reference node
+                      * @constructor TypeReference
+                      * @memberOf module:php-parser
+                      * @extends {Reference}
+                      * @property {string} name
                     */
                     var TypeReference=Reference["extends"](KIND,function TypeReference(name,raw,docs,location){
                         Reference.apply(this,[KIND,docs,location]);
@@ -3214,19 +3214,19 @@
                 } ,
                 "2702" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Operation=__webpack_require__(8268);
                     var KIND="unary";
                     /*#
-                     * Unary operations
-                     * @constructor Unary
-                     * @memberOf module:php-parser
-                     * @extends {Operation}
-                     * @property {string} type
-                     * @property {Expression} what
+                      * Unary operations
+                      * @constructor Unary
+                      * @memberOf module:php-parser
+                      * @extends {Operation}
+                      * @property {string} type
+                      * @property {Expression} what
                     */
                     module.exports=Operation["extends"](KIND,function Unary(type,what,docs,location){
                         Operation.apply(this,[KIND,docs,location]);
@@ -3236,18 +3236,18 @@
                 } ,
                 "514" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Declaration=__webpack_require__(8533);
                     var KIND="uniontype";
                     /*#
-                     * A union of types
-                     * @memberOf module:php-parser
-                     * @constructor UnionType
-                     * @extends {Declaration}
-                     * @property {TypeReference[]} types
+                      * A union of types
+                      * @memberOf module:php-parser
+                      * @constructor UnionType
+                      * @extends {Declaration}
+                      * @property {TypeReference[]} types
                     */
                     module.exports=Declaration["extends"](KIND,function UnionType(types,docs,location){
                         Declaration.apply(this,[KIND,null,docs,location]);
@@ -3256,17 +3256,17 @@
                 } ,
                 "5684" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="unset";
                     /*#
-                     * Deletes references to a list of variables
-                     * @constructor Unset
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
+                      * Deletes references to a list of variables
+                      * @constructor Unset
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
                     */
                     module.exports=Statement["extends"](KIND,function Unset(variables,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -3275,22 +3275,22 @@
                 } ,
                 "8019" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="usegroup";
                     /*#
-                     * Defines a use statement (with a list of use items)
-                     * @constructor UseGroup
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {string|null} name
-                     * @property {string|null} type - Possible value : function, const
-                     * @property {UseItem[]} item
-                     * @see {Namespace}
-                     * @see http://php.net/manual/en/language.namespaces.importing.php
+                      * Defines a use statement (with a list of use items)
+                      * @constructor UseGroup
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {string|null} name
+                      * @property {string|null} type - Possible value : function, const
+                      * @property {UseItem[]} item
+                      * @see {Namespace}
+                      * @see http://php.net/manual/en/language.namespaces.importing.php
                     */
                     module.exports=Statement["extends"](KIND,function UseGroup(name,type,items,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -3301,22 +3301,22 @@
                 } ,
                 "7721" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="useitem";
                     /*#
-                     * Defines a use statement (from namespace)
-                     * @constructor UseItem
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {string} name
-                     * @property {string|null} type - Possible value : function, const
-                     * @property {Identifier|null} alias
-                     * @see {Namespace}
-                     * @see http://php.net/manual/en/language.namespaces.importing.php
+                      * Defines a use statement (from namespace)
+                      * @constructor UseItem
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {string} name
+                      * @property {string|null} type - Possible value : function, const
+                      * @property {Identifier|null} alias
+                      * @see {Namespace}
+                      * @see http://php.net/manual/en/language.namespaces.importing.php
                     */
                     var UseItem=Statement["extends"](KIND,function UseItem(name,alias,type,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -3325,44 +3325,44 @@
                         this.type=type;
                     });
                     /*#
-                     * Importing a constant
-                     * @constant {string} UseItem#TYPE_CONST
-                     * @memberOf module:php-parser
+                      * Importing a constant
+                      * @constant {string} UseItem#TYPE_CONST
+                      * @memberOf module:php-parser
                     */
                     UseItem.TYPE_CONST="const";
                     /*#
-                     * Importing a function
-                     * @constant {string} UseItem#TYPE_FUNC
-                     * @memberOf module:php-parser
+                      * Importing a function
+                      * @constant {string} UseItem#TYPE_FUNC
+                      * @memberOf module:php-parser
                     */
                     UseItem.TYPE_FUNCTION="function";
                     module.exports=UseItem;
                 } ,
                 "4369" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="variable";
                     /*#
-                     * Any expression node. Since the left-hand side of an assignment may
-                     * be any expression in general, an expression can also be a pattern.
-                     * @constructor Variable
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @example
-                     * // PHP code :
-                     * $foo
-                     * // AST output
-                     * {
-                     *  "kind": "variable",
-                     *  "name": "foo",
-                     *  "curly": false
-                     * }
-                     * @property {string|Node} name The variable name (can be a complex expression when the name is resolved dynamically)
-                     * @property {boolean} curly Indicate if the name is defined between curlies, ex `${foo}`
+                      * Any expression node. Since the left-hand side of an assignment may
+                      * be any expression in general, an expression can also be a pattern.
+                      * @constructor Variable
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @example
+                      * // PHP code :
+                      * $foo
+                      * // AST output
+                      * {
+                      *  "kind": "variable",
+                      *  "name": "foo",
+                      *  "curly": false
+                      * }
+                      * @property {string|Node} name The variable name (can be a complex expression when the name is resolved dynamically)
+                      * @property {boolean} curly Indicate if the name is defined between curlies, ex `${foo}`
                     */
                     module.exports=Expression["extends"](KIND,function Variable(name,curly,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -3372,19 +3372,19 @@
                 } ,
                 "40" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="variadic";
                     /*#
-                     * Introduce a list of items into the arguments of the call
-                     * @constructor Variadic
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Array|Expression} what
-                     * @see https://wiki.php.net/rfc/argument_unpacking
+                      * Introduce a list of items into the arguments of the call
+                      * @constructor Variadic
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Array|Expression} what
+                      * @see https://wiki.php.net/rfc/argument_unpacking
                     */
                     module.exports=Expression["extends"](KIND,function variadic(what,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -3393,19 +3393,19 @@
                 } ,
                 "4919" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Node=__webpack_require__(4065);
                     var KIND="variadicplaceholder";
                     /*#
-                     * Defines a variadic placeholder (the ellipsis in PHP 8.1+'s first-class callable syntax)
-                     * @constructor VariadicPlaceholder
-                     * @memberOf module:php-parser
-                     * @extends {Node}
-                     * @see {Namespace}
-                     * @see http://php.net/manual/en/language.namespaces.importing.php
+                      * Defines a variadic placeholder (the ellipsis in PHP 8.1+'s first-class callable syntax)
+                      * @constructor VariadicPlaceholder
+                      * @memberOf module:php-parser
+                      * @extends {Node}
+                      * @see {Namespace}
+                      * @see http://php.net/manual/en/language.namespaces.importing.php
                     */
                     module.exports=Node["extends"](KIND,function VariadicPlaceholder(docs,location){
                         Node.apply(this,[KIND,docs,location]);
@@ -3413,20 +3413,20 @@
                 } ,
                 "7676" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Statement=__webpack_require__(9672);
                     var KIND="while";
                     /*#
-                     * Defines a while statement
-                     * @constructor While
-                     * @memberOf module:php-parser
-                     * @extends {Statement}
-                     * @property {Expression} test
-                     * @property {Block | null} body
-                     * @property {boolean} shortForm
+                      * Defines a while statement
+                      * @constructor While
+                      * @memberOf module:php-parser
+                      * @extends {Statement}
+                      * @property {Expression} test
+                      * @property {Block | null} body
+                      * @property {boolean} shortForm
                     */
                     module.exports=Statement["extends"](KIND,function While(test,body,shortForm,docs,location){
                         Statement.apply(this,[KIND,docs,location]);
@@ -3437,20 +3437,20 @@
                 } ,
                 "2596" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="yield";
                     /*#
-                     * Defines a yield generator statement
-                     * @constructor Yield
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Expression|null} value
-                     * @property {Expression|null} key
-                     * @see http://php.net/manual/en/language.generators.syntax.php
+                      * Defines a yield generator statement
+                      * @constructor Yield
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Expression|null} value
+                      * @property {Expression|null} key
+                      * @see http://php.net/manual/en/language.generators.syntax.php
                     */
                     module.exports=Expression["extends"](KIND,function Yield(value,key,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -3460,19 +3460,19 @@
                 } ,
                 "6744" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Expression=__webpack_require__(839);
                     var KIND="yieldfrom";
                     /*#
-                     * Defines a yield from generator statement
-                     * @constructor YieldFrom
-                     * @memberOf module:php-parser
-                     * @extends {Expression}
-                     * @property {Expression} value
-                     * @see http://php.net/manual/en/language.generators.syntax.php
+                      * Defines a yield from generator statement
+                      * @constructor YieldFrom
+                      * @memberOf module:php-parser
+                      * @extends {Expression}
+                      * @property {Expression} value
+                      * @see http://php.net/manual/en/language.generators.syntax.php
                     */
                     module.exports=Expression["extends"](KIND,function YieldFrom(value,docs,location){
                         Expression.apply(this,[KIND,docs,location]);
@@ -3481,9 +3481,9 @@
                 } ,
                 "5362" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2020 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2020 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     function _typeof(o){"@babel/helpers - typeof"
                         return((_typeof="function" ==  typeof Symbol && "symbol" ==  typeof Symbol.iterator ?
@@ -3502,7 +3502,7 @@
                     var tokens=__webpack_require__(1906);
                     var AST=__webpack_require__(8938);
                     /*#
-                     * @private
+                      * @private
                     */
                     function combine(src,to){
                         var keys=Object.keys(src);
@@ -3525,37 +3525,37 @@
                         return to;
                     }
                     /*#
-                     * Initialise a new parser instance with the specified options
-                     *
-                     * @class
-                     * @memberOf module:php-parser
-                     * @tutorial Engine
-                     * @example
-                     * var parser = require('php-parser');
-                     * var instance = new parser({
-                     *   parser: {
-                     *     extractDoc: true,
-                     *     suppressErrors: true,
-                     *     version: 704 // or '7.4'
-                     *   },
-                     *   ast: {
-                     *     withPositions: true
-                     *   },
-                     *   lexer: {
-                     *     short_tags: true,
-                     *     asp_tags: true
-                     *   }
-                     * });
-                     *
-                     * var evalAST = instance.parseEval('some php code');
-                     * var codeAST = instance.parseCode('<?php some php code', 'foo.php');
-                     * var tokens = instance.tokenGetAll('<?php some php code');
-                     *
-                     * @param {Object} options - List of options
-                     * @property {Lexer} lexer
-                     * @property {Parser} parser
-                     * @property {AST} ast
-                     * @property {Object} tokens
+                      * Initialise a new parser instance with the specified options
+                      *
+                      * @class
+                      * @memberOf module:php-parser
+                      * @tutorial Engine
+                      * @example
+                      * var parser = require('php-parser');
+                      * var instance = new parser({
+                      *   parser: {
+                      *     extractDoc: true,
+                      *     suppressErrors: true,
+                      *     version: 704 // or '7.4'
+                      *   },
+                      *   ast: {
+                      *     withPositions: true
+                      *   },
+                      *   lexer: {
+                      *     short_tags: true,
+                      *     asp_tags: true
+                      *   }
+                      * });
+                      *
+                      * var evalAST = instance.parseEval('some php code');
+                      * var codeAST = instance.parseCode('<?php some php code', 'foo.php');
+                      * var tokens = instance.tokenGetAll('<?php some php code');
+                      *
+                      * @param {Object} options - List of options
+                      * @property {Lexer} lexer
+                      * @property {Parser} parser
+                      * @property {AST} ast
+                      * @property {Object} tokens
                     */
                     var Engine=function Engine(options){
                         if( typeof this === "function"){
@@ -3594,35 +3594,35 @@
                         }
                     };
                     /*#
-                     * Check if the inpyt is a buffer or a string
-                     * @private
-                     * @param  {Buffer|String} buffer Input value that can be either a buffer or a string
-                     * @return {String}   Returns the string from input
+                      * Check if the inpyt is a buffer or a string
+                      * @private
+                      * @param  {Buffer|String} buffer Input value that can be either a buffer or a string
+                      * @return {String}   Returns the string from input
                     */
                     var getStringBuffer=function getStringBuffer(buffer){
                         return( typeof buffer.write === "function" ? ( buffer.toString() ) : ( buffer ));
                     };
                     /*#
-                     * Creates a new instance (Helper)
-                     * @param {Object} options
-                     * @return {Engine}
-                     * @private
+                      * Creates a new instance (Helper)
+                      * @param {Object} options
+                      * @return {Engine}
+                      * @private
                     */
                     Engine.create=function(options){
                         return(new Engine(options));
                     };
                     /*#
-                     * Evaluate the buffer
-                     * @private
+                      * Evaluate the buffer
+                      * @private
                     */
                     Engine.parseEval=function(buffer,options){
                         var self=new Engine(options);
                         return(self.parseEval(buffer));
                     };
                     /*#
-                     * Parse an evaluating mode string (no need to open php tags)
-                     * @param {String} buffer
-                     * @return {Program}
+                      * Parse an evaluating mode string (no need to open php tags)
+                      * @param {String} buffer
+                      * @return {Program}
                     */
                     Engine.prototype.parseEval=function(buffer){
                         this.lexer.mode_eval=true;
@@ -3631,8 +3631,8 @@
                         return(this.parser.parse(buffer,"eval"));
                     };
                     /*#
-                     * Static function that parse a php code with open/close tags
-                     * @private
+                      * Static function that parse a php code with open/close tags
+                      * @private
                     */
                     Engine.parseCode=function(buffer,filename,options){
                         if(_typeof(filename) === "object" && !options){
@@ -3644,24 +3644,24 @@
                         return(self.parseCode(buffer,filename));
                     };
                     /*#
-                     * Function that parse a php code with open/close tags
-                     *
-                     * Sample code :
-                     * ```php
-                     * <?php $x = 1;
-                     * ```
-                     *
-                     * Usage :
-                     * ```js
-                     * var parser = require('php-parser');
-                     * var phpParser = new parser({
-                     *   // some options
-                     * });
-                     * var ast = phpParser.parseCode('...php code...', 'foo.php');
-                     * ```
-                     * @param {String} buffer - The code to be parsed
-                     * @param {String} filename - Filename
-                     * @return {Program}
+                      * Function that parse a php code with open/close tags
+                      *
+                      * Sample code :
+                      * ```php
+                      * <?php $x = 1;
+                      * ```
+                      *
+                      * Usage :
+                      * ```js
+                      * var parser = require('php-parser');
+                      * var phpParser = new parser({
+                      *   // some options
+                      * });
+                      * var ast = phpParser.parseCode('...php code...', 'foo.php');
+                      * ```
+                      * @param {String} buffer - The code to be parsed
+                      * @param {String} filename - Filename
+                      * @return {Program}
                     */
                     Engine.prototype.parseCode=function(buffer,filename){
                         this.lexer.mode_eval=false;
@@ -3670,18 +3670,18 @@
                         return(this.parser.parse(buffer,filename));
                     };
                     /*#
-                     * Split the buffer into tokens
-                     * @private
+                      * Split the buffer into tokens
+                      * @private
                     */
                     Engine.tokenGetAll=function(buffer,options){
                         var self=new Engine(options);
                         return(self.tokenGetAll(buffer));
                     };
                     /*#
-                     * Extract tokens from the specified buffer.
-                     * > Note that the output tokens are *STRICLY* similar to PHP function `token_get_all`
-                     * @param {string} buffer
-                     * @return {Array<string|string[]>} - Each item can be a string or an array with following informations [token_name, text, line_number]
+                      * Extract tokens from the specified buffer.
+                      * > Note that the output tokens are *STRICLY* similar to PHP function `token_get_all`
+                      * @param {string} buffer
+                      * @return {Array<string|string[]>} - Each item can be a string or an array with following informations [token_name, text, line_number]
                     */
                     Engine.prototype.tokenGetAll=function(buffer){
                         this.lexer.mode_eval=false;
@@ -3717,24 +3717,24 @@
                 } ,
                 "9108" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     /*#
-                     * This is the php lexer. It will tokenize the string for helping the
-                     * parser to build the AST from its grammar.
-                     *
-                     * @constructor Lexer
-                     * @memberOf module:php-parser
-                     * @property {number} EOF
-                     * @property {boolean} all_tokens defines if all tokens must be retrieved (used by token_get_all only)
-                     * @property {boolean} comment_tokens extracts comments tokens
-                     * @property {boolean} mode_eval enables the evald mode (ignore opening tags)
-                     * @property {boolean} asp_tags disables by default asp tags mode
-                     * @property {boolean} short_tags enables by default short tags mode
-                     * @property {object} keywords List of php keyword
-                     * @property {object} castKeywords List of php keywords for type casting
+                      * This is the php lexer. It will tokenize the string for helping the
+                      * parser to build the AST from its grammar.
+                      *
+                      * @constructor Lexer
+                      * @memberOf module:php-parser
+                      * @property {number} EOF
+                      * @property {boolean} all_tokens defines if all tokens must be retrieved (used by token_get_all only)
+                      * @property {boolean} comment_tokens extracts comments tokens
+                      * @property {boolean} mode_eval enables the evald mode (ignore opening tags)
+                      * @property {boolean} asp_tags disables by default asp tags mode
+                      * @property {boolean} short_tags enables by default short tags mode
+                      * @property {object} keywords List of php keyword
+                      * @property {object} castKeywords List of php keywords for type casting
                     */
                     function _typeof(o){"@babel/helpers - typeof"
                         return((_typeof="function" ==  typeof Symbol && "symbol" ==  typeof Symbol.iterator ?
@@ -3855,9 +3855,9 @@
                         };
                     };
                     /*#
-                     * Initialize the lexer with the specified input
-                     * @function Lexer#setInput
-                     * @memberOf module:php-parser
+                      * Initialize the lexer with the specified input
+                      * @function Lexer#setInput
+                      * @memberOf module:php-parser
                     */
                     Lexer.prototype.setInput=function(input){
                         this._input=input;
@@ -3914,9 +3914,9 @@
                         return this;
                     };
                     /*#
-                     * consumes and returns one char from the input
-                     * @function Lexer#input
-                     * @memberOf module:php-parser
+                      * consumes and returns one char from the input
+                      * @function Lexer#input
+                      * @memberOf module:php-parser
                     */
                     Lexer.prototype.input=function(){
                         var ch=this._input[this.offset];
@@ -3939,9 +3939,9 @@
                         return ch;
                     };
                     /*#
-                     * revert eating specified size
-                     * @function Lexer#unput
-                     * @memberOf module:php-parser
+                      * revert eating specified size
+                      * @function Lexer#unput
+                      * @memberOf module:php-parser
                     */
                     Lexer.prototype.unput=function(size){
                         if(size === 1){
@@ -3999,31 +3999,31 @@
                         return this;
                     };
                     /*#
-                     * check if the text matches
-                     * @function Lexer#tryMatch
-                     * @memberOf module:php-parser
-                     * @param {string} text
-                     * @returns {boolean}
+                      * check if the text matches
+                      * @function Lexer#tryMatch
+                      * @memberOf module:php-parser
+                      * @param {string} text
+                      * @returns {boolean}
                     */
                     Lexer.prototype.tryMatch=function(text){
                         return(text === this.ahead(text.length));
                     };
                     /*#
-                     * check if the text matches
-                     * @function Lexer#tryMatchCaseless
-                     * @memberOf module:php-parser
-                     * @param {string} text
-                     * @returns {boolean}
+                      * check if the text matches
+                      * @function Lexer#tryMatchCaseless
+                      * @memberOf module:php-parser
+                      * @param {string} text
+                      * @returns {boolean}
                     */
                     Lexer.prototype.tryMatchCaseless=function(text){
                         return(text === this.ahead(text.length).toLowerCase());
                     };
                     /*#
-                     * look ahead
-                     * @function Lexer#ahead
-                     * @memberOf module:php-parser
-                     * @param {number} size
-                     * @returns {string}
+                      * look ahead
+                      * @function Lexer#ahead
+                      * @memberOf module:php-parser
+                      * @param {number} size
+                      * @returns {string}
                     */
                     Lexer.prototype.ahead=function(size){
                         var text=this._input.substring(this.offset,this.offset + size);
@@ -4033,11 +4033,11 @@
                         return text;
                     };
                     /*#
-                     * consume the specified size
-                     * @function Lexer#consume
-                     * @memberOf module:php-parser
-                     * @param {number} size
-                     * @returns {Lexer}
+                      * consume the specified size
+                      * @function Lexer#consume
+                      * @memberOf module:php-parser
+                      * @param {number} size
+                      * @returns {Lexer}
                     */
                     Lexer.prototype.consume=function(size){
                         for( var i=0 ; i < size ; i++ ){
@@ -4063,9 +4063,9 @@
                         return this;
                     };
                     /*#
-                     * Gets the current state
-                     * @function Lexer#getState
-                     * @memberOf module:php-parser
+                      * Gets the current state
+                      * @function Lexer#getState
+                      * @memberOf module:php-parser
                     */
                     Lexer.prototype.getState=function(){
                         return({
@@ -4084,9 +4084,9 @@
                         });
                     };
                     /*#
-                     * Sets the current lexer state
-                     * @function Lexer#setState
-                     * @memberOf module:php-parser
+                      * Sets the current lexer state
+                      * @function Lexer#setState
+                      * @memberOf module:php-parser
                     */
                     Lexer.prototype.setState=function(state){
                         this.yytext=state.yytext;
@@ -4100,22 +4100,22 @@
                         return this;
                     };
                     /*#
-                     * prepend next token
-                     * @function Lexer#appendToken
-                     * @memberOf module:php-parser
-                     * @param {*} value
-                     * @param {*} ahead
-                     * @returns {Lexer}
+                      * prepend next token
+                      * @function Lexer#appendToken
+                      * @memberOf module:php-parser
+                      * @param {*} value
+                      * @param {*} ahead
+                      * @returns {Lexer}
                     */
                     Lexer.prototype.appendToken=function(value,ahead){
                         this.tokens.push([value,ahead]);
                         return this;
                     };
                     /*#
-                     * return next match that has a token
-                     * @function Lexer#lex
-                     * @memberOf module:php-parser
-                     * @returns {number|string}
+                      * return next match that has a token
+                      * @function Lexer#lex
+                      * @memberOf module:php-parser
+                      * @returns {number|string}
                     */
                     Lexer.prototype.lex=function(){
                         this.yylloc.prev_offset=this.offset;
@@ -4158,11 +4158,11 @@
                         return token;
                     };
                     /*#
-                     * activates a new lexer condition state (pushes the new lexer condition state onto the condition stack)
-                     * @function Lexer#begin
-                     * @memberOf module:php-parser
-                     * @param {*} condition
-                     * @returns {Lexer}
+                      * activates a new lexer condition state (pushes the new lexer condition state onto the condition stack)
+                      * @function Lexer#begin
+                      * @memberOf module:php-parser
+                      * @param {*} condition
+                      * @returns {Lexer}
                     */
                     Lexer.prototype.begin=function(condition){
                         this.conditionStack.push(condition);
@@ -4175,10 +4175,10 @@
                         return this;
                     };
                     /*#
-                     * pop the previously active lexer condition state off the condition stack
-                     * @function Lexer#popState
-                     * @memberOf module:php-parser
-                     * @returns {string|*}
+                      * pop the previously active lexer condition state off the condition stack
+                      * @function Lexer#popState
+                      * @memberOf module:php-parser
+                      * @returns {string|*}
                     */
                     Lexer.prototype.popState=function(){
                         var n=this.conditionStack.length - 1;
@@ -4192,10 +4192,10 @@
                         return condition;
                     };
                     /*#
-                     * return next match in input
-                     * @function Lexer#next
-                     * @memberOf module:php-parser
-                     * @returns {number|*}
+                      * return next match in input
+                      * @function Lexer#next
+                      * @memberOf module:php-parser
+                      * @returns {number|*}
                     */
                     Lexer.prototype.next=function(){
                         var token;
@@ -4260,9 +4260,9 @@
                 } ,
                 "9671" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                         "attributeIndex" : 0 ,
@@ -4343,9 +4343,9 @@
                 } ,
                 "2429" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -4399,9 +4399,9 @@
                 } ,
                 "3683" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                         "nextINITIAL" : function nextINITIAL(){
@@ -4456,9 +4456,9 @@
                 } ,
                 "6545" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     /* istanbul ignore else */
                     var MAX_LENGTH_OF_LONG=10;
@@ -4638,9 +4638,9 @@
                 } ,
                 "3810" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                         "matchST_LOOKING_FOR_PROPERTY" : function matchST_LOOKING_FOR_PROPERTY(){
@@ -4732,9 +4732,9 @@
                 } ,
                 "8510" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                         "matchST_IN_SCRIPTING" : function matchST_IN_SCRIPTING(){
@@ -4847,9 +4847,9 @@
                 } ,
                 "4401" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var newline=["\n","\r"];
                     var valid_after_heredoc=["\n","\r",";"];
@@ -5013,7 +5013,7 @@
                             }
                             if(this._input.substring(offset - 1,(offset - 1) + this.heredoc_label.length) === this.heredoc_label.label){
                                 var ch=this._input[(offset - 1) + this.heredoc_label.length];
-                                if(this.version >= 703 ? ( valid_after_heredoc_73 ) : ( valid_after_heredoc ).includes(ch)){
+                                if((this.version >= 703 ? ( valid_after_heredoc_73 ) : ( valid_after_heredoc.includes(ch) ))){
                                     if(consumeLeadingSpaces){
                                         this.consume(indentation);
                                         /* https://wiki.php.net/rfc/flexible_heredoc_nowdoc_syntaxes */
@@ -5331,9 +5331,9 @@
                 } ,
                 "4349" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                         "T_STRING" : function T_STRING(){
@@ -5671,9 +5671,9 @@
                 } ,
                 "8582" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var tokens=";:,.\\[]()|^&+-/*=%!~$<>?@";
                     module.exports={
@@ -5795,30 +5795,30 @@
                 } ,
                 "7259" : (module,__unused_webpack_exports,__webpack_require__) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var Position=__webpack_require__(8822);
                     /*#
-                     * @private
+                      * @private
                     */
                     function isNumber(n){
                         return(n != "." && n != "," && !isNaN(parseFloat(n)) && isFinite(n));
                     }
                     /*#
-                     * The PHP Parser class that build the AST tree from the lexer
-                     *
-                     * @constructor Parser
-                     * @memberOf module:php-parser
-                     * @tutorial Parser
-                     * @property {Lexer} lexer - current lexer instance
-                     * @property {AST} ast - the AST factory instance
-                     * @property {number|string} token - current token
-                     * @property {boolean} extractDoc - should extract documentation as AST node
-                     * @property {boolean} extractTokens - should extract each token
-                     * @property {boolean} suppressErrors - should ignore parsing errors and continue
-                     * @property {boolean} debug - should output debug informations
+                      * The PHP Parser class that build the AST tree from the lexer
+                      *
+                      * @constructor Parser
+                      * @memberOf module:php-parser
+                      * @tutorial Parser
+                      * @property {Lexer} lexer - current lexer instance
+                      * @property {AST} ast - the AST factory instance
+                      * @property {number|string} token - current token
+                      * @property {boolean} extractDoc - should extract documentation as AST node
+                      * @property {boolean} extractTokens - should extract each token
+                      * @property {boolean} suppressErrors - should ignore parsing errors and continue
+                      * @property {boolean} debug - should output debug informations
                     */
                     var Parser=function Parser(lexer,ast){
                         this.lexer=lexer;
@@ -6034,9 +6034,9 @@
                             };
                     };
                     /*#
-                     * helper : gets a token name
-                     * @function Parser#getTokenName
-                     * @memberOf module:php-parser
+                      * helper : gets a token name
+                      * @function Parser#getTokenName
+                      * @memberOf module:php-parser
                     */
                     Parser.prototype.getTokenName=function(token){
                         if(!isNumber(token)){
@@ -6049,9 +6049,9 @@
                         }
                     };
                     /*#
-                     * main entry point : converts a source code to AST
-                     * @function Parser#parse
-                     * @memberOf module:php-parser
+                      * main entry point : converts a source code to AST
+                      * @function Parser#parse
+                      * @memberOf module:php-parser
                     */
                     Parser.prototype.parse=function(code,filename){
                         this._errors=[];
@@ -6106,9 +6106,9 @@
                         return result;
                     };
                     /*#
-                     * Raise an error
-                     * @function Parser#raiseError
-                     * @memberOf module:php-parser
+                      * Raise an error
+                      * @function Parser#raiseError
+                      * @memberOf module:php-parser
                     */
                     Parser.prototype.raiseError=function(message,msgExpect,expect,token){
                         message+=" on line " + this.lexer.yylloc.first_line;
@@ -6125,9 +6125,9 @@
                         return node;
                     };
                     /*#
-                     * handling errors
-                     * @function Parser#error
-                     * @memberOf module:php-parser
+                      * handling errors
+                      * @function Parser#error
+                      * @memberOf module:php-parser
                     */
                     Parser.prototype.error=function(expect){
                         var msg="Parse Error : syntax error";
@@ -6153,19 +6153,19 @@
                         return(this.raiseError(msg,msgExpect,expect,token));
                     };
                     /*#
-                     * Create a position node from the lexers position
-                     *
-                     * @function Parser#position
-                     * @memberOf module:php-parser
-                     * @return {Position}
+                      * Create a position node from the lexers position
+                      *
+                      * @function Parser#position
+                      * @memberOf module:php-parser
+                      * @return {Position}
                     */
                     Parser.prototype.position=function(){
                         return(new Position(this.lexer.yylloc.first_line,this.lexer.yylloc.first_column,this.lexer.yylloc.first_offset));
                     };
                     /*#
-                     * Creates a new AST node
-                     * @function Parser#node
-                     * @memberOf module:php-parser
+                      * Creates a new AST node
+                      * @function Parser#node
+                      * @memberOf module:php-parser
                     */
                     Parser.prototype.node=function(name){
                         if(this.extractDoc){
@@ -6239,10 +6239,10 @@
                         return(this.ast.prepare(name,null,this));
                     };
                     /*#
-                     * expects an end of statement or end of file
-                     * @function Parser#expectEndOfStatement
-                     * @memberOf module:php-parser
-                     * @return {boolean}
+                      * expects an end of statement or end of file
+                      * @function Parser#expectEndOfStatement
+                      * @memberOf module:php-parser
+                      * @return {boolean}
                     */
                     Parser.prototype.expectEndOfStatement=function(node){
                         if(this.token === ";"){
@@ -6260,10 +6260,10 @@
                     };
                     var ignoreStack=["parser.next","parser.node","parser.showlog"];
                     /*#
-                     * outputs some debug information on current token
-                     * @private
-                     * @function Parser#showlog
-                     * @memberOf module:php-parser
+                      * outputs some debug information on current token
+                      * @private
+                      * @function Parser#showlog
+                      * @memberOf module:php-parser
                     */
                     Parser.prototype.showlog=function(){
                         var stack=(new Error()).stack.split("\n");
@@ -6288,19 +6288,19 @@
                         return this;
                     };
                     /*#
-                     * Force the parser to check the current token.
-                     *
-                     * If the current token does not match to expected token,
-                     * the an error will be raised.
-                     *
-                     * If the suppressError mode is activated, then the error will
-                     * be added to the program error stack and this function will return `false`.
-                     *
-                     * @function Parser#expect
-                     * @memberOf module:php-parser
-                     * @param {String|Number} token
-                     * @return {boolean}
-                     * @throws Error
+                      * Force the parser to check the current token.
+                      *
+                      * If the current token does not match to expected token,
+                      * the an error will be raised.
+                      *
+                      * If the suppressError mode is activated, then the error will
+                      * be added to the program error stack and this function will return `false`.
+                      *
+                      * @function Parser#expect
+                      * @memberOf module:php-parser
+                      * @param {String|Number} token
+                      * @return {boolean}
+                      * @throws Error
                     */
                     Parser.prototype.expect=function(token){
                         if(Array.isArray(token)){
@@ -6315,18 +6315,18 @@
                         return true;
                     };
                     /*#
-                     * Returns the current token contents
-                     * @function Parser#text
-                     * @memberOf module:php-parser
-                     * @return {String}
+                      * Returns the current token contents
+                      * @function Parser#text
+                      * @memberOf module:php-parser
+                      * @return {String}
                     */
                     Parser.prototype.text=function(){
                         return this.lexer.yytext;
                     };
                     /*#
-                     * consume the next token
-                     * @function Parser#next
-                     * @memberOf module:php-parser
+                      * consume the next token
+                      * @function Parser#next
+                      * @memberOf module:php-parser
                     */
                     Parser.prototype.next=function(){
                         /* prepare the back command */
@@ -6355,10 +6355,10 @@
                         return this;
                     };
                     /*#
-                     * Peek at the next token.
-                     * @function Parser#peek
-                     * @memberOf module:php-parser
-                     * @returns {string|number} Next Token
+                      * Peek at the next token.
+                      * @function Parser#peek
+                      * @memberOf module:php-parser
+                      * @returns {string|number} Next Token
                     */
                     Parser.prototype.peek=function(){
                         var lexerState=this.lexer.getState();
@@ -6367,9 +6367,9 @@
                         return nextToken;
                     };
                     /*#
-                     * Eating a token
-                     * @function Parser#lex
-                     * @memberOf module:php-parser
+                      * Eating a token
+                      * @function Parser#lex
+                      * @memberOf module:php-parser
                     */
                     Parser.prototype.lex=function(){
                         /* append on token stack */
@@ -6413,9 +6413,9 @@
                         return this;
                     };
                     /*#
-                     * Check if token is of specified type
-                     * @function Parser#is
-                     * @memberOf module:php-parser
+                      * Check if token is of specified type
+                      * @function Parser#is
+                      * @memberOf module:php-parser
                     */
                     Parser.prototype.is=function(type){
                         if(Array.isArray(type)){
@@ -6455,9 +6455,9 @@
                 } ,
                 "5525" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -6553,9 +6553,9 @@
                 } ,
                 "7072" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     function _slicedToArray(r,e){
                         return(_arrayWithHoles(r) || _iterableToArrayLimit(r,e) || _unsupportedIterableToArray(r,e) || _nonIterableRest());
@@ -6822,13 +6822,13 @@
                                     this.expect([",",";","="]);
                                     return(result(propName,null,nullable,type,attrs || []));
                                 }
-                            }, /* 
+                            }, /*   
      * Reads a variable declaration
      *
      * ```ebnf
      *  variable_declaration ::= T_VARIABLE '=' scalar
      * ```
-      */ ",");
+        */ ",");
                             return(result(null,properties,flags));
                         } ,
                          /*
@@ -6862,14 +6862,14 @@
                                     value=this.next().read_expr();
                                 }
                                 return(result(constName,value));
-                            }, /* 
+                            }, /*   
      * Reads a constant declaration
      *
      * ```ebnf
      *  constant_declaration ::= (T_STRING | IDENTIFIER) '=' expr
      * ```
      * @return {Constant} [:link:](AST.md#constant)
-      */ ",");
+        */ ",");
                             return(result(null,items,flags,nullable,type,attrs || []));
                         } ,
                          /*
@@ -7188,9 +7188,9 @@
                 } ,
                 "3997" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -7228,9 +7228,9 @@
                 } ,
                 "979" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -7281,9 +7281,9 @@
                 } ,
                 "6477" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                         "read_expr" : function read_expr(expr){
@@ -8093,9 +8093,9 @@
                 } ,
                 "8214" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -8523,9 +8523,9 @@
                 } ,
                 "9461" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -8620,9 +8620,9 @@
                 } ,
                 "5931" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -8811,9 +8811,9 @@
                 } ,
                 "9147" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -8832,9 +8832,9 @@
                 } ,
                 "9219" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -9056,9 +9056,9 @@
                 } ,
                 "7170" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     var specialChar={
                         "\\" : "\\" ,
@@ -9476,9 +9476,9 @@
                 } ,
                 "6261" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -9889,9 +9889,9 @@
                 } ,
                 "2478" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -9983,9 +9983,9 @@
                 } ,
                 "77" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -10026,9 +10026,9 @@
                 } ,
                 "6077" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -10220,9 +10220,9 @@
                 } ,
                 "1130" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     module.exports={
                          /*
@@ -10571,16 +10571,16 @@
                 } ,
                 "1906" : (module) => {
                     /*#
-                     * Copyright (C) 2018 Glayzzle (BSD3 License)
-                     * @authors https://github.com/glayzzle/php-parser/graphs/contributors
-                     * @url http://glayzzle.com
+                      * Copyright (C) 2018 Glayzzle (BSD3 License)
+                      * @authors https://github.com/glayzzle/php-parser/graphs/contributors
+                      * @url http://glayzzle.com
                     */
                     /*#
-                     * @readonly
-                     * @memberOf module:php-parser
-                     *
-                     * @enum {number}
-                     *
+                      * @readonly
+                      * @memberOf module:php-parser
+                      *
+                      * @enum {number}
+                      *
                     */
                     function _typeof(o){"@babel/helpers - typeof"
                         return((_typeof="function" ==  typeof Symbol && "symbol" ==  typeof Symbol.iterator ?
@@ -10868,13 +10868,13 @@
                         "T_NAME_FULLY_QUALIFIED" : 243
                     };
                     /*#
-                     * PHP AST Tokens
-                     * @readonly
-                     * @memberOf module:php-parser
-                     *
-                     * @type {object}
-                     * @property {Object.<number, string>} values
-                     * @property {TokenNames} names
+                      * PHP AST Tokens
+                      * @readonly
+                      * @memberOf module:php-parser
+                      *
+                      * @type {object}
+                      * @property {Object.<number, string>} values
+                      * @property {TokenNames} names
                     */
                     var tokens={
                         "values" : Object.entries(TokenNames).reduce(function(result,_ref){

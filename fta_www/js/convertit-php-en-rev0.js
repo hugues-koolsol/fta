@@ -3272,7 +3272,7 @@ function TransformAstPhpEnRev(stmts,niveau,parent,dansFor,de_racine,options_trai
                                                     }
                                                     if(obj1.content[j].content[k].type.toLowerCase() === 'script'){
                                                         if(obj1.content[j].content[k].content){
-                                                            var objScr=convertit_source_javascript_en_rev(obj1.content[j].content[k].content[0]);
+                                                            var objScr=__gi1.convertit_source_javascript_en_rev(obj1.content[j].content[k].content[0]);
                                                             if(objScr.__xst === true){
                                                                 contient_du_javascript_dans_html=true;
                                                                 if(objScr.__xva === ''){

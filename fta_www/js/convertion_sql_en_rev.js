@@ -690,6 +690,10 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
     var t='';
     var esp0=' '.repeat(NBESPACESREV * niveau);
     var esp1=' '.repeat(NBESPACESREV);
+    if(element===null){
+        return(logerreur({"__xst" : false ,"__xme" : nl1()+'conversion_de_ast_vers_sql element null' }));
+     
+    }
     element.en_cours_de_traitement=true;
     if(element.traite && element.traite === true){
         return({"__xst" : true ,"__xva" : ''});
@@ -1112,7 +1116,7 @@ function transform_sql_de_textarea_en_rev(nom_de_la_textarea_sql,nom_de_la_texta
     var texte=document.getElementById(nom_de_la_textarea_sql).value;
     localStorage.setItem('fta_traiteSql_dernier_fichier_charge',texte);
     try{
-        var obj=convertion_texte_sql_en_rev(texte); // 
+        var obj=convertion_texte_sql_en_rev(texte);
         if(obj.__xst === true){
             document.getElementById(nom_de_la_textarea_rev).value=obj.__xva;
             var tableau1=iterateCharacters2(obj.__xva);

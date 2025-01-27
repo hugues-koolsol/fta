@@ -250,12 +250,19 @@ class interface1{
                 logerreur({"__xst" : false ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur});
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree) ,"masquee" : masquer_les_messages_du_serveur});
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(donnees) ,"masquee" : masquer_les_messages_du_serveur});
-                return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t ,"masquee" : masquer_les_messages_du_serveur});
+                return({
+                    "__xst" : false ,
+                    "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t ,
+                    "masquee" : masquer_les_messages_du_serveur
+                });
             }
         }catch(e){
             console.log(e);
             if(e.message === 'signal timed out'){
-                logerreur({"__xst" : false ,"__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt((delais_admis / 1000) * 10,10) / 10) + ' secondes '});
+                logerreur({
+                        "__xst" : false ,
+                        "__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt((delais_admis / 1000) * 10,10) / 10) + ' secondes '
+                    });
             }else{
                 logerreur({"__xst" : false ,"__xme" : e.message});
             }
@@ -317,7 +324,10 @@ class interface1{
     */
     supprimer_ce_commentaire_et_recompiler(id_source,id_rev,provenance){
         console.log(id_source + ' ' + id_rev);
-        var param={"nom_du_travail_en_arriere_plan" : 'supprimer_un_commentaire1' ,"liste_des_taches" : [{"etat" : 'a_faire' ,"id_source" : id_source ,"id_rev" : id_rev ,"provenance" : provenance}]};
+        var param={
+            "nom_du_travail_en_arriere_plan" : 'supprimer_un_commentaire1' ,
+            "liste_des_taches" : [{"etat" : 'a_faire' ,"id_source" : id_source ,"id_rev" : id_rev ,"provenance" : provenance}]
+        };
         this.lancer_un_travail_en_arriere_plan(JSON.stringify(param));
     }
     /*
@@ -504,7 +514,11 @@ class interface1{
       function definir_le_nombre_de_lignes_a_afficher_pour_une_liste
     */
     definir_le_nombre_de_lignes_a_afficher_pour_une_liste(nom_de_la_page,nombre_de_lignes){
-        var ajax_param={"call" : {"lib" : 'php' ,"file" : 'session' ,"funct" : 'definir_le_nombre_de_lignes_a_afficher_pour_une_liste'} ,"nom_de_la_page" : nom_de_la_page ,"nombre_de_lignes" : nombre_de_lignes};
+        var ajax_param={
+            "call" : {"lib" : 'php' ,"file" : 'session' ,"funct" : 'definir_le_nombre_de_lignes_a_afficher_pour_une_liste'} ,
+            "nom_de_la_page" : nom_de_la_page ,
+            "nombre_de_lignes" : nombre_de_lignes
+        };
         async function definir_le_nombre_de_lignes_a_afficher_pour_une_liste1(url="",ajax_param){
             return(__gi1.recupérer_un_fetch(url,ajax_param));
         }
@@ -550,8 +564,7 @@ class interface1{
                     }else{
                         lsta1[i].classList.add('yyunset_temporaire');
                     }
-                }catch(e){
-                }
+                }catch(e){}
             }
         }
     }
@@ -569,8 +582,7 @@ class interface1{
                 __gi1.masquer_les_boutons();
             }
             e.target.classList.add("yyunset_temporaire");
-        }catch(e1){
-        }
+        }catch(e1){}
         if(attendre_message_avant_reactivation === false){
             setTimeout(function(){
                     /*
@@ -648,8 +660,7 @@ class interface1{
         try{
             var elem=document.getElementById('sloserver1');
             elem.remove();
-        }catch(e){
-        }
+        }catch(e){}
         var lstb1=document.getElementsByClassName("yyunset_temporaire");
         for( i=0 ; i < lstb1.length ; i++ ){
             lstb1[i].classList.remove('yyunset_temporaire');
@@ -675,8 +686,7 @@ class interface1{
                     }
                 }
             }
-        }catch(e){
-        }
+        }catch(e){}
     }
     /*
       =============================================================================================================
@@ -707,8 +717,7 @@ class interface1{
     click_sur_bouton1(e){
         try{
             e.target.style.visibility="hidden";
-        }catch(e1){
-        }
+        }catch(e1){}
         this.#globale_timeout_reference_timer_serveur_lent=setTimeout(this.#affichage_boite_serveur_lent1.bind(this),this.#globale_timeout_serveur_lent);
     }
     /*
@@ -722,8 +731,7 @@ class interface1{
         }else{
             try{
                 e.target.classList.add("yyunset_temporaire");
-            }catch(e1){
-            }
+            }catch(e1){}
             this.#globale_timeout_reference_timer_serveur_lent=setTimeout(this.#affichage_boite_serveur_lent1.bind(this),this.#globale_timeout_serveur_lent);
         }
     }
@@ -769,8 +777,7 @@ class interface1{
                             lsta1[i].addEventListener("click",this.click_sur_lien1.bind(this),false);
                         }
                     }
-                }catch(e){
-                }
+                }catch(e){}
                 /* pour les liens dans le svg */
             }
         }
@@ -786,8 +793,7 @@ class interface1{
                         lsta1[i].addEventListener("click",this.action_quand_click_sur_lien_javascript,false);
                     }
                 }
-            }catch(e){
-            }
+            }catch(e){}
         }
         /*
           =====================================================================================================
@@ -810,8 +816,7 @@ class interface1{
                     a.innerHTML='&nbsp;⬱&nbsp;';
                     ref.insertBefore(a,ref.firstChild);
                 }
-            }catch(e){
-            }
+            }catch(e){}
         }
     }
     /*
@@ -835,6 +840,102 @@ class interface1{
         this.#largeur_des_ascenseurs=div.scrollTop - 1;
         div.removeChild(bag);
         body.removeChild(div);
+    }
+    /*
+      =============================================================================================================
+    */
+    convertit_source_javascript_en_rev(sourceDuJavascript){
+        var parseur_javascript=window.acorn.Parser;
+        try{
+            var tableau_des_commentaires_js=[];
+            var obj=parseur_javascript.parse(sourceDuJavascript,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tableau_des_commentaires_js});
+            if(obj === ''){
+                t='';
+            }else if(obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0){
+                t='';
+            }else{
+                /* var obj1=TransformAstEnRev(obj.body,0); */
+                /*
+                  il faut retirer les commentaires si ce sont des CDATA ou des <source_javascript_rev> 
+                  car javascriptdanshtml les ajoute.
+                */
+                var commentaires_a_remplacer=['<![CDATA[',']]>','<source_javascript_rev>','</source_javascript_rev>'];
+                for( var nn=0 ; nn < commentaires_a_remplacer.length ; nn++ ){
+                    for( var indc=tableau_des_commentaires_js.length - 1 ; indc >= 0 ; indc-- ){
+                        if(tableau_des_commentaires_js[indc].value.trim() === commentaires_a_remplacer[nn]){
+                            tableau_des_commentaires_js.splice(indc,1);
+                        }
+                    }
+                }
+                for( var indc=tableau_des_commentaires_js.length - 1 ; indc >= 0 ; indc-- ){
+                    if(tableau_des_commentaires_js[indc].value.trim() === '' && tableau_des_commentaires_js[indc].type === 'Line'){
+                        tableau_des_commentaires_js.splice(indc,1);
+                    }
+                }
+                /* on transforme le ast du js en rev */
+                var obj1=__module_js_parseur1.traite_ast(obj.body,tableau_des_commentaires_js,{});
+                if(obj1.__xst === true){
+                    return({"__xst" : true ,"__xva" : obj1.__xva});
+                }else{
+                    logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3433'});
+                }
+            }
+        }catch(e){
+            console.error('e=',e);
+            if(e.pos){
+                logerreur({"__xst" : false ,"__xme" : nl1() ,"plage" : [e.pos,e.pos]});
+            }else{
+                logerreur({"__xst" : false ,"__xme" : nl1()});
+            }
+        }
+        return({"__xst" : true ,"__xva" : obj1.__xva});
+    }
+    /*
+      =============================================================================================================
+    */
+    bouton_transform_textarea_js_en_rev_avec_acorn3(nom_de_la_text_area_js,nom_de_la_text_area_rev,sauvegarder_en_stockage_local=false){
+        this.raz_des_messages();
+        var a=document.getElementById(nom_de_la_text_area_js);
+        if(sauvegarder_en_stockage_local === true){
+            localStorage.setItem('fta_indexhtml_javascript_dernier_fichier_charge',a.value);
+        }
+        /*
+          https://github.com/acornjs/acorn
+        */
+        var parseur_javascript=window.acorn.Parser;
+        try{
+            var tabComment=[];
+            /* on transforme le javascript en ast */
+            var obj=parseur_javascript.parse(a.value,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
+            /* on transforme le ast en rev */
+            var obj=__module_js_parseur1.traite_ast(obj.body,tabComment,{});
+            if(obj.__xst === true){
+                document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;
+                var tableau1=iterateCharacters2(obj.__xva);
+                var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+                if(matriceFonction.__xst === true){
+                    /*
+                      var startMicro = performance.now();
+                    */
+                    var obj2=arrayToFunct1(matriceFonction.__xva,true);
+                    if(obj2.__xst === true){
+                        document.getElementById(nom_de_la_text_area_rev).value=obj2.__xva;
+                    }
+                }else{
+                    logerreur({"__xst" : false ,"__xme" : 'erreur rev'});
+                }
+            }else{
+                this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_js);
+            }
+        }catch(e){
+            /* console.error('e=',e); */
+            if(e.pos){
+                logerreur({"__xst" : false ,"__xme" : '3427 source js "' + e.message + '"' ,"plage" : [e.pos,e.pos]});
+            }else{
+                logerreur({"__xst" : false ,"__xme" : '3429 source js "' + e.message + '"'});
+            }
+        }
+        this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_js);
     }
     /*
       =============================================================================================================
@@ -939,7 +1040,7 @@ class interface1{
               console.log(endMicro - startMicro); 
             */
         }catch(e){
-            /*  console.error(e); */
+            /* console.error(e); */
             if(e.lineNumber){
                 logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />' + e.message ,"line" : e.lineNumber});
             }else{
@@ -948,6 +1049,88 @@ class interface1{
             this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_php);
         }
         this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_php);
+    }
+    /*
+      =============================================================================================================
+    */
+    convertir_textearea_rev_vers_textarea_html(nom_de_la_textarea_rev,nom_de_la_textarea_html){
+        __gi1.raz_des_messages();
+        var a=document.getElementById(nom_de_la_textarea_rev);
+        var tableau1=iterateCharacters2(a.value);
+        var obj1=functionToArray2(tableau1.out,false,true,'');
+        if(obj1.__xst === true){
+            var obj2=__module_html1.tabToHtml1(obj1.__xva,0,false,0);
+            if(obj2.__xst === true){
+                document.getElementById(nom_de_la_textarea_html).value=obj2.__xva;
+                logerreur({"__xst" : true ,"__xme" : 'html produit'});
+            }else{
+                logerreur({"__xst" : false ,"__xme" : 'erreur de reconstruction du html'});
+            }
+        }else{
+            logerreur({"__xst" : false ,"__xme" : 'erreur pour le rev'});
+        }
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
+    }
+    /*
+      =============================================================================================================
+    */
+    convertir_text_area_html_en_rev(nom_de_la_textarea,options){
+        try{
+            var options_json=JSON.parse(options.replace(/\'/g,'"'));
+            options_json['zone_source']=nom_de_la_textarea;
+        }catch(e){
+            console.log(e);
+            logerreur({"__xst" : false ,"__xme" : '0050 convertit-html-en-rev.js erreur dans les paramètres option'});
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar2');
+            return;
+        }
+        if(options_json.hasOwnProperty('zone_html_rev')){
+            document.getElementById(options_json.zone_html_rev).value='';
+        }
+        if(options_json.hasOwnProperty('zone_html_resultat')){
+            document.getElementById(options_json.zone_html_resultat).value='';
+        }
+        __gi1.raz_des_messages();
+        var a=document.getElementById(nom_de_la_textarea);
+        localStorage.setItem('fta_traitehtml_dernier_fichier_charge',a.value);
+        var lines=a.value.split(/\r\n|\r|\n/);
+        var count=lines.length;
+        var obj=__module_html1.TransformHtmlEnRev(a.value,0,options_json);
+        if(obj.__xst == true){
+            if(obj.hasOwnProperty('traitements_javascript_integres_en_cours') && obj.traitements_javascript_integres_en_cours === true){
+            }else{
+                var tableau1=iterateCharacters2(obj.__xva);
+                var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+                if(matriceFonction.__xst === true){
+                    var obj2=arrayToFunct1(matriceFonction.__xva,true);
+                    if(obj2.__xst === true){
+                        if(options_json.hasOwnProperty('zone_html_rev')){
+                            document.getElementById(options_json.zone_html_rev).value=obj2.__xva;
+                        }
+                    }else{
+                        if(options_json.hasOwnProperty('zone_html_rev')){
+                            document.getElementById(options_json.zone_html_rev).value=obj.__xva;
+                        }
+                    }
+                }else{
+                    if(options_json.hasOwnProperty('zone_html_rev')){
+                        document.getElementById(options_json.zone_html_rev).value=obj.__xva;
+                    }
+                }
+                if(options_json.hasOwnProperty('zone_html_rev')){
+                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages',options_json.zone_html_rev);
+                }else{
+                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                }
+            }
+        }else{
+            if(options_json.hasOwnProperty('zone_source')){
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',options_json.zone_source);
+            }else{
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+            }
+        }
+        return;
     }
     /*
       =============================================================================================================
@@ -1053,7 +1236,112 @@ class interface1{
             document.getElementById('resultat1').appendChild(t2);
         }
         this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea);
-    }    
+    }
+    /*
+      =============================================================================================================
+    */
+    remplir_une_textarea_avec_un_source_de_test_html(nom_de_la_textarea){
+        var t=`<!DOCTYPE html>
+<html lang="fr">
+    <head>
+        <title>Hello</title>
+    </head>
+    <body style="color:red;">
+        <p>&lt;standars & poor's 2 tabulations entre les flèches =&gt;		&lt;=</p>
+        <div>
+            <a biza-rre="" href="www.example.com" style="color:red;" onclick="alert('1');alert(&quot;2&quot;)" class="">test</a>
+            <a href="www.example.com" style="" class="">lien</a>
+        </div>
+        <!-- commentaire html : si vous devez mettre du javascript dans du html alors mettez le dans du CDATA -->
+<script>
+//<![CDATA[
+//<source_javascript_rev>
+/* commentaire javascript : si vous devez mettre du javascript dans du html alors mettez le dans du CDATA */
+function monAlerte(a){
+    alert(a);
+}
+monAlerte(0);
+//</source_javascript_rev>
+//]]>
+</script>
+
+    </body>
+</html>`;
+        document.getElementById(nom_de_la_textarea).value=t;
+    }
+    /*
+      =============================================================================================================
+    */
+    remplir_une_textarea_avex_un_source_de_test_js(nom_de_la_text_area_js){
+        var t=`var test=a===2;
+var test=a==2;
+test=a===2;test=a==2;
+
+a.b("c").d += '<e f="g">' + h.i[i] + "</e>";
+
+for (var i = 0; i < b; i++) {
+  a.b("c").d += '<e>' + h.i[i] + "</e>";
+}
+t = " ".repeat(NBESPACESSOURCEPRODUIT * i);
+t += " ".repeat(NBESPACESSOURCEPRODUIT * i);
+/*
+  =====================================================================================================================
+*/
+
+function traiteCommentaire2(texte, niveau, ind) {
+  var s = "";
+  s = traiteCommentaireSourceEtGenere1(texte, niveau, ind, NBESPACESSOURCEPRODUIT, false);
+  return s;
+}
+
+/*
+  =====================================================================================================================
+*/
+
+function tagada() {
+  for (var i = 0; i < global_messages.errors.length; i++) {
+    document.getElementById("global_messages").innerHTML += '<div class="yyerreur">' + global_messages.errors[i] + "</div>";
+  }
+  var numLignePrecedente = -1;
+  for (var i = 0; i < global_messages.ids.length; i++) {
+    var id = global_messages.ids[i];
+    if (id < global_messages.data.matrice.__xva.length) {
+      var ligneMatrice = global_messages.data.matrice.__xva[id];
+      var caractereDebut = ligneMatrice[5];
+      var numeroDeLigne = 0;
+      for (var j = caractereDebut; j >= 0; j--) {
+        if (global_messages.data.tableau.out[j][0] === "\\n") {
+          numeroDeLigne++;
+        }
+      }
+    }
+    if (numeroDeLigne > 0) {
+      if (numeroDeLigne !== numLignePrecedente) {
+        document.getElementById("global_messages").innerHTML += '<a href="javascript:jumpToError(' + (numeroDeLigne + 1) + ')" class="yyerreur" style="border:2px red outset;">go to line ' + numeroDeLigne + "</a>&nbsp;";
+        numLignePrecedente = numeroDeLigne;
+      }
+    }
+  }
+}
+
+/*
+  =====================================================================================================================
+*/
+
+function espacesn(optionCRLF, i) {
+  var t = "";
+  if (optionCRLF) {
+    t = "\\r\\n";
+  } else {
+    t = "\\n";
+  }
+  if (i > 0) {
+    t += " ".repeat(NBESPACESSOURCEPRODUIT * i);
+  }
+  return t;
+}`;
+        document.getElementById(nom_de_la_text_area_js).value=t;
+    }
     /*
       =============================================================================================================
     */
@@ -1109,7 +1397,7 @@ while($i<5){
 </script>
     `;
         document.getElementById(nom_de_la_text_area_php).value=t;
-    }        
+    }
     /*
       =============================================================================================================
     */
@@ -1119,7 +1407,6 @@ while($i<5){
           n'ont pas le même aspect car ils ont un encodage différent.
           J'aimerais bien que les navigateurs fassent la même chose.
         */
-     
         var t=`#( début aaaa  debut),
 a(
   #(test , 👍,𤭢,àà),
@@ -1179,7 +1466,7 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
         var lines=t.split(/\r|\r\n|\n/);
         var count=lines.length;
         document.getElementById(nom_de_la_text_area_rev).setAttribute('rows',count + 1);
-    }    
+    }
     /*
       =============================================================================================================
       function mouseWheelOnMenu
@@ -2024,8 +2311,7 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
             document.getElementById(this.#nom_div_des_messages1).innerHTML='';
             /* display a pu être mis à "none" ailleurs */
             document.getElementById(this.#nom_div_des_messages1).style.visibility='hidden';
-        }catch(e){
-        }
+        }catch(e){}
         global_messages={
             "errors" : [] ,
             "avertissements" : [] ,

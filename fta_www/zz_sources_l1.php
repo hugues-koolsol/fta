@@ -186,7 +186,6 @@ foreach($tt[__xva] as $k0 => $v0){
 
         }else if(substr($v0['T0.chp_nom_source'],-3) === '.js'){
 
-            /* $lsttbl.=' <a class="yyavertissement" href="javascript:zz_l1_convertir_un_source_sur_disque('.$v0['T0.chi_id_source'].')" title="convertir un source sur disque">😊</a>';*/
             $lsttbl .= ' <a class="yyrose" data-attendre_message="oui" id="js_' . $v0['T0.chi_id_source'] . '" href="javascript:zz_l1_convertir_un_source_js_sur_disque2(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque">😊</a>';
 
         }else if(substr($v0['T0.chp_nom_source'],-4) === '.php'){
@@ -236,7 +235,6 @@ $par=array( 'js_a_inclure' => array(
             'js/pour_zz_source1.js',
             'js/convertit-php-en-rev0.js',
             'js/php.js',
-            'js/convertit-html-en-rev1.js',
             'js/convertit-js-en-rev1.js',
             'js/javascript.js',
             'js/jslib/acorn.js',

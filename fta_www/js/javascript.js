@@ -2943,7 +2943,6 @@ function TraiteOperations2(tab,id,niveau,niveauOp,ajouter_des_sauts_de_lignes){
             if(tab[id][1] === 'Instanceof'){
                 operandes.push({"valeur" : tab[i][1].replace(/\\\\/g,'\\')});
             }else{
-                /* operandes.push({"valeur" : ma_cst_pour_php(tab[i]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r')}); */
                 operandes.push({"valeur" : ma_cst_pour_javascript(tab[i])});
             }
         }else{

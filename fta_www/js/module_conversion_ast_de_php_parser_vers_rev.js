@@ -322,7 +322,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                                             }
                                             if(obj1.content[j].content[k].type.toLowerCase() === 'script'){
                                                 if(obj1.content[j].content[k].content){
-                                                    var objScr=convertit_source_javascript_en_rev(obj1.content[j].content[k].content[0]);
+                                                    var objScr=__gi1.convertit_source_javascript_en_rev(obj1.content[j].content[k].content[0]);
                                                     if(objScr.__xst === true){
                                                         if(objScr.__xva === ''){
                                                             t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + '))';
