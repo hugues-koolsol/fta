@@ -226,7 +226,8 @@ class interface1{
         };
         try{
             var response=await fetch(url,en_entree).catch((err) => {
-                console.error('err interface recupérer_un_fetch ',err);
+                /*console.error('err interface recupérer_un_fetch ',err);*/
+                logerreur({"__xst" : false ,"__xme" : nl1()+ ' recupérer_un_fetch <br/>'+err});
             }).finally(() => {
                 /* vide */
             });
@@ -929,10 +930,11 @@ class interface1{
             }
         }catch(e){
             /* console.error('e=',e); */
+            debugger
             if(e.pos){
-                logerreur({"__xst" : false ,"__xme" : '3427 source js "' + e.message + '"' ,"plage" : [e.pos,e.pos]});
+                logerreur({"__xst" : false ,"__xme" : nl1()+'"' + e.message + '"' ,"plage" : [e.pos,e.pos]});
             }else{
-                logerreur({"__xst" : false ,"__xme" : '3429 source js "' + e.message + '"'});
+                logerreur({"__xst" : false ,"__xme" : nl1(e)+'"' + e.message + '"'});
             }
         }
         this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_js);
@@ -1001,12 +1003,14 @@ class interface1{
       convertir le contenu d'une textearea php et le mettre le résultat rev dans une textarea
       =============================================================================================================
     */
-    convertir_text_area_php_en_rev_avec_php_parseur_js(nom_de_la_text_area_php,nom_de_la_text_area_rev,options_traitement){
+    convertir_text_area_php_en_rev_avec_php_parseur_js(nom_de_la_text_area_php,nom_de_la_text_area_rev,options_traitement,sauvegarder_en_stockage_local){
         var options_traitement=JSON.parse(options_traitement.replace(/\'/g,'"'));
         document.getElementById(nom_de_la_text_area_rev).value='Veuillez patienter !';
         this.raz_des_messages();
         var a=document.getElementById(nom_de_la_text_area_php);
-        localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
+        if(sauvegarder_en_stockage_local!==false){
+            localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
+        }
         var lines=a.value.split(/\r|\r\n|\n/);
         var count=lines.length;
         try{
@@ -1184,7 +1188,8 @@ class interface1{
             var parent=document.getElementById('resultat1');
             var startMicro=performance.now();
             var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction1.__xva,true);
-            var diResultatsCompactes=document.createElement('pre');
+            var resultat_compacte_ok='';
+            var diResultatsCompactes=document.createElement('div');
             if(fonctionReecriteAvecRetour1.__xst === true){
                 var compacteOriginal=arrayToFunct1(matriceFonction1.__xva,false);
                 var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.__xva);
@@ -1193,7 +1198,8 @@ class interface1{
                 if(compacteOriginal.__xst === true && compacteReecrit.__xst === true){
                     if(compacteOriginal.__xva == compacteReecrit.__xva){
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
-                        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(compacteOriginal.__xva) + '</textarea>';
+//                        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(compacteOriginal.__xva) + '</textarea>';
+                          resultat_compacte_ok=strToHtml(compacteOriginal.__xva);
                         logerreur({"__xst" : true ,"__xme" : '👍 sources compactés Egaux : ' + tempsTraitement});
                     }else{
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">💥sources compactés différents</b>';
@@ -1209,15 +1215,29 @@ class interface1{
             var endMicro=performance.now();
             console.log('tests compactes=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
             document.getElementById('resultat1').appendChild(diResultatsCompactes);
+            
+            if(resultat_compacte_ok!==''){
+                var di_texte_compacte=document.createElement('div');
+                di_texte_compacte.className='yyconteneur_de_texte1';
+                di_texte_compacte.innerHTML='<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">' + resultat_compacte_ok + '</textarea>';
+                document.getElementById('resultat1').appendChild(di_texte_compacte);
+                
+             
+            }
+            
+            
+            /* */
             var fonctionReecriteAvecEtColoration1=arrayToFunct1(matriceFonction1.__xva,true);
-            var difonctionReecriteAvecRetour1=document.createElement('pre');
+            var difonctionReecriteAvecRetour1=document.createElement('div');
+            difonctionReecriteAvecRetour1.className='yyconteneur_de_texte1';
             difonctionReecriteAvecRetour1.style.fontSize='0.9em';
             if(fonctionReecriteAvecEtColoration1.__xst === true){
-                difonctionReecriteAvecRetour1.innerHTML='<hr  />arrayToFunctNoComment2:<hr /><textarea class="txtar1" rows="10">' + strToHtml(fonctionReecriteAvecEtColoration1.__xva) + '</textarea>';
+                difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(fonctionReecriteAvecEtColoration1.__xva) + '</textarea>';
             }else{
-                difonctionReecriteAvecRetour1.innerHTML='<hr />💥arrayToFunctNoComment2:<textarea class="txtar1" rows="10">' + strToHtml(fonctionReecriteAvecRetour1.message) + '</textarea>';
+                difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(fonctionReecriteAvecRetour1.message) + '</textarea>';
             }
             document.getElementById('resultat1').appendChild(difonctionReecriteAvecRetour1);
+            /* */
             var t0=document.createElement('div');
             t0.style.overflowX='scroll';
             var t1=document.createElement('table');

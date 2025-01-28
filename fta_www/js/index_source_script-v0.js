@@ -494,13 +494,16 @@ function enregistrer2(){
         zoneContenantLeSourceGenere.style.display='none';
         zoneContenantLeSourceGenere.id='zoneContenantLeSourceGenere';
         zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere);
-        var zoneContenantLeSourceGenere2=document.createElement('textarea');
-        zoneContenantLeSourceGenere2.rows=30;
-        zoneContenantLeSourceGenere2.cols=120;
-        zoneContenantLeSourceGenere2.style.background='lightcyan';
-        zoneContenantLeSourceGenere2.style.display='none';
-        zoneContenantLeSourceGenere2.id='zoneContenantLeSourceGenere2';
-        zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere2);
+        var cont01=document.createElement('div');
+            cont01.className='yyconteneur_de_texte1';
+            var zoneContenantLeSourceGenere2=document.createElement('textarea');
+            zoneContenantLeSourceGenere2.rows=30;
+            zoneContenantLeSourceGenere2.cols=120;
+            zoneContenantLeSourceGenere2.style.background='lightcyan';
+            zoneContenantLeSourceGenere2.style.display='none';
+            zoneContenantLeSourceGenere2.id='zoneContenantLeSourceGenere2';
+            cont01.appendChild(zoneContenantLeSourceGenere2);
+            zonedonneesComplementaires.appendChild(cont01);
         voirSourceGenere();
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
@@ -533,7 +536,7 @@ function voirMatrice1(){
     var zoneContenantLaMatrice=document.getElementById('zoneContenantLaMatrice');
     if(zoneContenantLaMatrice && document.getElementById('zoneContenantLaMatrice').innerHTML == ''){
         var zoneMatrice=document.createElement('table');
-        ConstruitHtmlMatrice(zoneMatrice,global_messages.data.matrice);
+        __gi1.construit_tableau_html_de_le_matrice_rev(zoneMatrice,global_messages.data.matrice);
         zoneContenantLaMatrice.appendChild(zoneMatrice);
         zoneContenantLaMatrice.style.display='';
     }else{
@@ -551,7 +554,7 @@ function voirTableau1(){
     var zoneContenantLeTableauCaracteres=document.getElementById('zoneContenantLeTableauCaracteres');
     if(zoneContenantLeTableauCaracteres && document.getElementById('zoneContenantLeTableauCaracteres').innerHTML == ''){
         var zoneTableauCaracteres=document.createElement('table');
-        ConstruitHtmlTableauCaracteres(zoneTableauCaracteres,'',global_messages.data.tableau);
+        __gi1.construit_un_html_du_tableau_des_caracteres(zoneTableauCaracteres,'',global_messages.data.tableau);
         zoneContenantLeTableauCaracteres.appendChild(zoneTableauCaracteres);
         zoneContenantLeTableauCaracteres.style.display='';
     }else{

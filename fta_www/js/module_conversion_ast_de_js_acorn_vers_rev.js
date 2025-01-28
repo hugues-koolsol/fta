@@ -117,7 +117,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     if(obj.__xst === true){
                         les_arguments+='p(' + le_commentaire + obj.__xva + ')';
                     }else{
-                        return(astjs_logerreur({"__xst" : false ,"__xme" : '0114 traiteCallExpression1 ' ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0114 traiteCallExpression1 ' ,"element" : element}));
                     }
                 }
             }else{
@@ -130,10 +130,10 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             if(obj.__xst === true){
                 nom_de_la_fonction+=obj.__xva;
             }else{
-                return(astjs_logerreur({"__xst" : false ,"__xme" : '0114 traiteCallExpression1 ' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0114 traiteCallExpression1 ' ,"element" : element}));
             }
         }else{
-            return(astjs_logerreur({"__xst" : false ,"__xme" : '0125 traiteCallExpression1' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0125 traiteCallExpression1' ,"element" : element}));
         }
         if(element.body){
             obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
@@ -142,14 +142,16 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     le_contenu=',contenu(' + contenu + ')';
                 }
             }else{
-                return(astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 pour body' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 pour body' ,"element" : element}));
             }
         }
         if(element.optional === true){
             t+='chainé(' + nom_de_la_fonction + ' , appelf(' + auto_appelee + 'nomf()' + ',' + les_arguments + le_contenu + '))';
         }else{
             if(type_callee === 'MemberExpression'){
-                if(nom_de_la_fonction.indexOf('nomf') < 0){
+                if(nom_de_la_fonction.substr(0,8)==='tableau('){
+                    t+='appelf(' + auto_appelee + 'nomf(' + nom_de_la_fonction + '),' + les_arguments + le_contenu + ')';
+                }else if(nom_de_la_fonction.indexOf('nomf') < 0){
                     t+='appelf(' + auto_appelee + 'nomf(' + nom_de_la_fonction + '),' + les_arguments + le_contenu + ')';
                 }else{
                     t+='appelf(' + auto_appelee + nom_de_la_fonction + ',' + les_arguments + le_contenu + ')';
@@ -951,7 +953,7 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{
-            return(astjs_logerreur({"__xst" : false ,"__xme" : '0671 #traiteCondition1' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0671 #traiteCondition1' ,"element" : element}));
         }
         /*
           il faut transformer ceci :
@@ -1813,6 +1815,27 @@ let x16=a.b ?. c(a.b);
         return({"__xst" : true ,"__xva" : t});
     }
     /*
+      =====================================================================================================================
+    */
+    #traiteAssignmentPattern(element,niveau,parent,tab_comm){
+        var t='';
+        var esp0=' '.repeat(NBESPACESREV * niveau);
+        var esp1=' '.repeat(NBESPACESREV);
+        if(element.left && element.right){
+            var objgauche=this.#traite_element(element.left ,niveau + 1 ,element,tab_comm,false);
+            var objdroite=this.#traite_element(element.right,niveau + 1 ,element,tab_comm,false);
+            if(objgauche.__xst === true && objdroite.__xst){
+                t+=objgauche.__xva + ',defaut(' + objdroite.__xva + ')';
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : 'erreur traiteAssignmentPattern 1558 pour ' + element.type ,"element" : element}));
+            }
+        }else{
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : 'erreur traiteAssignmentPattern 1554 pour ' + element.type ,"element" : element}));
+        }
+        return({"__xst" : true ,"__xva" : t});
+    }
+    
+    /*
       =============================================================================================================
     */
     #traite_MethodDefinition(element,niveau,parent,tab_comm){
@@ -1845,7 +1868,7 @@ let x16=a.b ?. c(a.b);
                     if(element.value.params[j].type === "Identifier"){
                         t+='argument(' + element.value.params[j].name + ')';
                     }else if(element.value.params[j].type === "AssignmentPattern"){
-                        obj=traiteAssignmentPattern(element.value.params[j],niveau + 1,{});
+                        obj=this.#traiteAssignmentPattern(element.value.params[j],niveau + 1,element,tab_comm);
                         if(obj.__xst === true){
                             t+='argument(' + obj.__xva + ')';
                         }else{

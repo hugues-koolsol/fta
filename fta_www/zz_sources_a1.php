@@ -1027,11 +1027,15 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
+    /*
+      champ rev
+    */
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">outils sur rev</div>' . PHP_EOL;
+    $o1 .= '   <div style="word-break:break-word;">rev</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
-    $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
+    $o1 .= '  <div class="yyfinp1 yyconteneur_de_texte1">' . PHP_EOL;
+    $o1 .= '  <div>' . PHP_EOL;
     $o1 .= '   <a href="javascript:__gi1.parentheses1(&quot;chp_rev_source&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>' . PHP_EOL;
     $o1 .= '   <a href="javascript:__gi1.formatter_le_source_rev(&quot;chp_rev_source&quot;);" title="formatter le source rev">(😊)</a>' . PHP_EOL;
     $o1 .= '   <a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;chp_rev_source&quot;);" title="formatter le source rev">#()(😊)</a>' . PHP_EOL;
@@ -1039,23 +1043,20 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '   <a class="yyinfo" href="javascript:__gi1.remplacer_la_selection_par(&quot;chp_rev_source&quot;)">remplacer la sélection</a>' . PHP_EOL;
     $o1 .= '   <a href="javascript:__gi1.agrandir_la_text_area(&quot;chp_rev_source&quot;);" title="agrandir la zone">🖐</a>' . PHP_EOL;
     $o1 .= '   <a href="javascript:__gi1.reduire_la_text_area(&quot;chp_rev_source&quot;);" title="réduire la zone">👊</a>' . PHP_EOL;
-    $o1 .= '   &nbsp;&nbsp;<a href="javascript:__gi1.raz_la_text_area(&quot;chp_rev_source&quot;);" title="raz de la zone">🚫</a>' . PHP_EOL;
-    $o1 .= '  </div></div>' . PHP_EOL;
-    $o1 .= ' </div>' . PHP_EOL;
-    $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">rev</div>' . PHP_EOL;
+    $o1 .= '   <a href="javascript:__gi1.raz_la_text_area(&quot;chp_rev_source&quot;);" title="raz de la zone">🚫</a>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
-    $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <textarea  name="chp_rev_source" id="chp_rev_source"  rows="15" spellcheck="false" >' . enti1($__valeurs['T0.chp_rev_source'],ENT_COMPAT) . '</textarea>' . PHP_EOL;
-    $o1 .= '  </div></div>' . PHP_EOL;
+    $o1 .= '  </div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
+    /*
+      champ genere
+    */
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">outils de convertion</div>' . PHP_EOL;
+    $o1 .= '   <div style="word-break:break-word;">genere</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
-    $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
-    $o1 .= '   &nbsp; &nbsp; &nbsp;' . PHP_EOL;
+    $o1 .= '  <div class="yyfinp1 yyconteneur_de_texte1">' . PHP_EOL;
+    $o1 .= '  <div>' . PHP_EOL;
 
     if($__valeurs['T0.chp_type_source'] === 'normal'){
 
@@ -1073,8 +1074,10 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.php') !== false){
 
             $o1 .= '   <a class="yyinfo" href="javascript:convertir_rev_en_php_et_sauvegarde_rev(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R2P&#8615;</a>' . PHP_EOL;
-            $o1 .= '   <a class="yyavertissement" title="sans nettoyage html en ligne" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':false}&quot;)">&#8613;P2RS</a>' . PHP_EOL;
-            $o1 .= '   <a class="yyavertissement" title="AVEC nettoyage html en ligne" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':true}&quot;)">&#8613;P2RH</a>' . PHP_EOL;
+            $o1 .= '   <a class="yyavertissement" title="sans nettoyage html en ligne" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':false}&quot;)">nikic &#8613;P2RS</a>' . PHP_EOL;
+            $o1 .= '   <a class="yyavertissement" title="AVEC nettoyage html en ligne" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':true}&quot;)">nikic &#8613;P2RH</a>' . PHP_EOL;
+            $o1 .= '   <a class="yyinfo" href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':false}&quot;,false)">phpp htm strict</a>';
+            $o1 .= '   <a class="yyinfo" href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':true}&quot;,false)">phpp htm echo</a>';
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.sql') !== false){
 
@@ -1090,25 +1093,13 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
     }
 
-    $o1 .= '   <a class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>' . PHP_EOL;
-    $o1 .= '   <a href="javascript:__gi1.agrandir_la_text_area(&quot;chp_genere_source&quot;);" title="agrandir la zone">🖐</a>' . PHP_EOL;
-    $o1 .= '   <a href="javascript:__gi1.reduire_la_text_area(&quot;chp_genere_source&quot;);" title="réduire la zone">👊</a>' . PHP_EOL;
-    $o1 .= '  </div></div>' . PHP_EOL;
-    $o1 .= ' </div>' . PHP_EOL;
-    $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">genere</div>' . PHP_EOL;
+    $o1 .= '   <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;chp_genere_source&quot;)">aller à la ligne n°</a>' . PHP_EOL;
+    $o1 .= '   <a style="float:right;" href="javascript:__gi1.agrandir_la_text_area(&quot;chp_genere_source&quot;);" title="agrandir la zone">🖐</a>' . PHP_EOL;
+    $o1 .= '   <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;chp_genere_source&quot;);" title="réduire la zone">👊</a>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
-    $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <textarea  name="chp_genere_source" id="chp_genere_source"  rows="15" spellcheck="false" >' . enti1($__valeurs['T0.chp_genere_source'],ENT_COMPAT) . '</textarea>' . PHP_EOL;
-    $o1 .= '  </div></div>' . PHP_EOL;
-    $o1 .= ' </div>' . PHP_EOL;
-    $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">outils de fichiers</div>' . PHP_EOL;
-    $o1 .= '  </div>' . PHP_EOL;
-    $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
-
+    $o1 .= '   <div>' . PHP_EOL;
+    
     if($__valeurs['T2.chp_nom_dossier'] !== null){
 
         $o1 .= '   <button id="__ecrire_sur_disque" name="__ecrire_sur_disque" class="yyinfo">ecrire le généré sur le disque</button>' . PHP_EOL;
@@ -1159,15 +1150,21 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
     }
 
-    $o1 .= '   ' . PHP_EOL;
-    $o1 .= '  </div></div>' . PHP_EOL;
+    
+    
+    $o1 .= '   </div>' . PHP_EOL;
+    $o1 .= '  </div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
+    
+    
+    
+    
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
     $o1 .= '   <div style="word-break:break-word;">commentaire</div>' . PHP_EOL;
     $o1 .= '   <div style="font-weight: normal;">texte libre</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
-    $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
+    $o1 .= '  <div class="yyfinp1 yyconteneur_de_texte1"><div>' . PHP_EOL;
     $o1 .= '   <textarea  name="chp_commentaire_source" id="chp_commentaire_source"  rows="5" >' . enti1($__valeurs['T0.chp_commentaire_source'],ENT_COMPAT) . '</textarea>' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
@@ -1213,7 +1210,9 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
   =====================================================================================================================
 */
 $js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple'));
-$par=array( 'js_a_inclure' => array(
+$par=array(/**/
+    'js_a_inclure' => array(
+            /**/
             'js/javascript.js',
             'js/php.js',
             'js/convertit-php-en-rev0.js',
@@ -1227,10 +1226,14 @@ $par=array( 'js_a_inclure' => array(
             'js/convertion_sql_en_rev.js',
             'js/jslib/acorn.js',
             'js/jslib/php-parser.js'
-        ), 'module_a_inclure' => array(/**/
+        ),
+    'module_a_inclure' => array(/**/
             'js/module_html.js',
-            'js/module_conversion_ast_de_js_acorn_vers_rev.js'
-        ), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+            'js/module_conversion_ast_de_js_acorn_vers_rev.js',
+            'js/module_conversion_ast_de_php_parser_vers_rev.js'
+        ),
+    'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
+);
 $nom_bref='aa_js_sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.js';
 $nom_complet=INCLUDE_PATH . DIRECTORY_SEPARATOR . 'sql/' . $nom_bref;
 

@@ -2448,7 +2448,6 @@ function traiteUpdateExpress1(element,niveau,opt,parent){
 }
 /*
   =====================================================================================================================
-*/
 function traiteAssignmentPattern(element,niveau,opt){
     var t='';
     var esp0=' '.repeat(NBESPACESREV * niveau);
@@ -2474,6 +2473,7 @@ function traiteAssignmentPattern(element,niveau,opt){
     }
     return({"__xst" : true ,"__xva" : t});
 }
+*/
 /*
   =====================================================================================================================
 */
@@ -2794,6 +2794,7 @@ function ajouteCommentaireAvant(element,niveau,positionDebutBloc){
     var t='';
     var esp0=' '.repeat(NBESPACESREV * niveau);
     var esp1=' '.repeat(NBESPACESREV);
+    debugger
     var i=tabComment.length - 1;
     var nombre_de_ligne_trouvees=0;
     for( i=tabComment.length - 1 ; i >= 0 ; i-- ){

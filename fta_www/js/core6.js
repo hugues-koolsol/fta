@@ -249,8 +249,16 @@ function nbre_caracteres2(lettre,chaine){
   numéro de ligne courant du js
   =====================================================================================================================
 */
-function nl1(){
-    var e=new Error();
+
+function nl1(e_originale){
+ 
+    var e=null;
+    if(e_originale!==undefined){
+     e=e_originale;
+    }else{
+     e=new Error();
+    }
+
     if(!e.stack){
         try{
             /* IE ?? */
@@ -262,23 +270,66 @@ function nl1(){
             }
         }
     }
-    var stack=e.stack.toString().split(/\r\n|\n/);
-    /* We want our caller's frame. It's index into |stack| depends on the */
-    /* browser and browser version, so we need to search for the second frame: */
-    var modele_champ_erreur=/:(\d+):(?:\d+)[^\d]*$/;
-    do{
-        var ligne_erreur=stack.shift();
-    }while(!modele_champ_erreur.exec(ligne_erreur) && stack.length);
-    /* at nom_fonction (http://localhost/a/b/c/js/fichier.js:25:15) */
-    var texte_erreur=stack.shift();
-    var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
-    if(texte_erreur.match(/ at ([^\.]+) \(/)===null){
-        var nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
+
+    if(e_originale!==undefined){
+        var stack=e.stack.toString().split(/\r\n|\n/);
+        /* We want our caller's frame. It's index into |stack| depends on the */
+        /* browser and browser version, so we need to search for the second frame: */
+        var modele_champ_erreur=/:(\d+):(?:\d+)[^\d]*$/;
+        var modele_champ_erreur2=/:(\d+):(\d+).*$/;
+        var continuer=50;
+        do{
+            var ligne_erreur=stack.shift();
+            if(ligne_erreur.indexOf(' at ')){
+             if(modele_champ_erreur2.exec(ligne_erreur)!==null){
+              continuer=-1;
+             }
+            }
+            
+          continuer--;
+        }while(continuer>0);
+        if(continuer===-2){
+            /* at nom_fonction (http://localhost/a/b/c/js/fichier.js:25:15) */
+    //        var texte_erreur=stack.shift();
+            var texte_erreur=ligne_erreur;
+            var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
+            var nom_fonction='';
+            if(texte_erreur.match(/ at ([^\.]+) \(/)===null){
+                if(texte_erreur.match(/ at ([^]+) \(/)===null){
+                    if(texte_erreur.match(/([^]+)\/([^]+)/)[2]!==null){
+                     nom_fonction='erreur javascript '+texte_erreur.match(/([^]+)\/([^]+)/)[2];
+                    }
+                }else{
+                    nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
+                }
+            }else{
+                nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
+            }
+            var numero_de_ligne=modele_champ_erreur.exec(texte_erreur)[1];
+            return('^G ' + numero_de_ligne + ' ' + nom_fichier + ' ' + nom_fonction + ' ' + ' ');
+        }else{
+            console.error(e_originale);
+            return 'Erreur non traçable';
+        }
     }else{
-        var nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
+        var stack=e.stack.toString().split(/\r\n|\n/);
+        /* We want our caller's frame. It's index into |stack| depends on the */
+        /* browser and browser version, so we need to search for the second frame: */
+        var modele_champ_erreur=/:(\d+):(?:\d+)[^\d]*$/;
+        do{
+            var ligne_erreur=stack.shift();
+        }while(!modele_champ_erreur.exec(ligne_erreur) && stack.length);
+        /* at nom_fonction (http://localhost/a/b/c/js/fichier.js:25:15) */
+        var texte_erreur=stack.shift();
+        var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
+        if(texte_erreur.match(/ at ([^\.]+) \(/)===null){
+            var nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
+        }else{
+            var nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
+        }
+        var numero_de_ligne=modele_champ_erreur.exec(texte_erreur)[1];
+        return('^G ' + nom_fichier + ' ' + nom_fonction + ' ' + numero_de_ligne + ' ');
     }
-    var numero_de_ligne=modele_champ_erreur.exec(texte_erreur)[1];
-    return('^G ' + nom_fichier + ' ' + nom_fonction + ' ' + numero_de_ligne + ' ');
 }
 /*
   =====================================================================================================================

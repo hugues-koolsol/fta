@@ -67,23 +67,30 @@ $o1='';?>
 <div id="div_de_travail" style="max-width:100%;">
     Veuillez patienter
 </div>
-<textarea class="txtar1" id="txtar2" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+<div class="yyconteneur_de_texte1">
+    <textarea class="txtar1" id="txtar2" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+</div>
 <br />
 <h4>php</h4>
 <div>
     <a href="javascript:__gi1.reduire_la_text_area(&quot;txtar3&quot;);" title="réduire la zone">👊</a>
     <a href="javascript:__gi1.agrandir_la_text_area(&quot;txtar3&quot;);" title="agrandir la zone">🖐</a>
 </div>
-<textarea class="txtar1" id="txtar3" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+<div class="yyconteneur_de_texte1">
+    <textarea class="txtar1" id="txtar3" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+</div>
 <div>
     <b>initialisation</b>
     <a href="javascript:__gi1.reduire_la_text_area(&quot;init&quot;);" title="réduire la zone">👊</a>
     <a href="javascript:__gi1.agrandir_la_text_area(&quot;init&quot;);" title="agrandir la zone">🖐</a>
 </div>
-<textarea class="txtar1" id="init" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+<div class="yyconteneur_de_texte1">
+    <textarea class="txtar1" id="init" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+</div>
 <br />
 <h4>exemple</h4>
-<textarea class="txtar1" rows="5">sélectionner(
+<div class="yyconteneur_de_texte1">
+    <textarea class="txtar1" rows="5">sélectionner(
    valeurs(
       champ(T0.chi_id_dossier),
       champ(chp_nom_dossier),
@@ -111,15 +118,23 @@ $o1='';?>
    ,limité_à(quantité(champ(roro)),début(3))
 ),  
 </textarea>
+</div>
 <?php
 $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
-$par=array( 'module_a_inclure' => array( 'js/module_requete_sql.js'), 'js_a_inclure' => array(
+$par=array(/**/
+    'module_a_inclure' => array(/**/
+            'js/module_requete_sql.js'
+        ),
+    'js_a_inclure' => array(
+            /**/
             'js/sql.js',
             'js/convertion_sql_en_rev.js',
             'js/jslib/sqlite_parser_from_demo.js',
             'js/pour_requete_sql.js',
             'js/jslib/Sortable.js'
-        ), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+        ),
+    'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
+);
 $o1 .= '';
 $o1 .= html_footer1($par);
 print($o1);

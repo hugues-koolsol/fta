@@ -325,8 +325,8 @@ class requete_sql{
         */
         var nom_du_champ='';
         var alias_du_champ='';
-        var i=0;
-        for( i=0 ; i < l01 ; i++ ){
+        var formule_update='';
+        for( var i=0 ; i < l01 ; i++ ){
             if(tab[i][2] === 'f' && 'valeurs' === tab[i][1]){
                 var j=i + 1;
                 for( j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
@@ -469,14 +469,30 @@ class requete_sql{
                                         /*
                                           c'est un champ
                                         */
-                                        this.#obj_webs['champs_sortie'].push({
-                                                "type_d_element" : 'champ' ,
-                                                "id_bdd" : id_bdd ,
-                                                "nom_de_la_table" : nom_de_la_table ,
-                                                "nom_du_champ" : nom_du_champ ,
-                                                "indice_table" : 0 ,
-                                                "alias_du_champ" : alias_du_champ
-                                            });
+                                        if(that.#obj_webs.type_de_requete === 'update'){
+                                            if(tab[j][1] === 'affecte' && tab[j][2] === 'f'){
+                                                var obj=a2F1(tab,j,false,j + 1);
+                                                if(obj.__xst === true){
+                                                    if(formule_update !== ''){
+                                                        formule_update+=',';
+                                                    }
+                                                    formule_update+='affecte(' + obj.__xva + ')';
+                                                }else{
+                                                    logerreur({"__xst" : false ,"__xme" : nl1() + ' il faut un affecte pour une requete update '});
+                                                }
+                                            }else{
+                                                logerreur({"__xst" : false ,"__xme" : nl1() + ' il faut un affecte pour une requete update '});
+                                            }
+                                        }else{
+                                            this.#obj_webs['champs_sortie'].push({
+                                                    "type_d_element" : 'champ' ,
+                                                    "id_bdd" : id_bdd ,
+                                                    "nom_de_la_table" : nom_de_la_table ,
+                                                    "nom_du_champ" : nom_du_champ ,
+                                                    "indice_table" : 0 ,
+                                                    "alias_du_champ" : alias_du_champ
+                                                });
+                                        }
                                     }else{
                                         /*
                                           c'est une formule
@@ -520,6 +536,10 @@ class requete_sql{
                     this.#obj_webs['complements'].push({"type_d_element" : 'formule' ,"formule" : obj.__xva});
                 }
             }
+        }
+        if(that.#obj_webs.type_de_requete === 'update'){
+            /* debugger */
+            this.#obj_webs['champs_sortie']=[{"type_d_element" : 'formule' ,"formule" : formule_update}];
         }
     }
     /*
@@ -843,6 +863,8 @@ class requete_sql{
         var zone_formule=document.getElementById('zone_formule');
         if(this.#deb_selection_dans_formule === -1){
             if(this.#obj_webs.type_de_requete === 'update' || this.#obj_webs.type_de_requete === 'insert'){
+                zone_formule.value=zone_formule.value + 'affecte(champ(`' + nom_du_champ + '`) , :n_' + nom_du_champ + ')';
+            }else if(this.#obj_webs.type_de_requete === 'insert'){
                 zone_formule.value=zone_formule.value + 'champ(`' + nom_du_champ + '`),';
             }else{
                 zone_formule.value=zone_formule.value + 'champ(`T' + indice_table + '` , `' + nom_du_champ + '`),';
@@ -850,7 +872,9 @@ class requete_sql{
         }else{
             var debut=zone_formule.value.substr(0,this.#deb_selection_dans_formule);
             var fin=zone_formule.value.substr(this.#deb_selection_dans_formule);
-            if(this.#obj_webs.type_de_requete === 'update' || this.#obj_webs.type_de_requete === 'insert'){
+            if(this.#obj_webs.type_de_requete === 'update'){
+                zone_formule.value=debut + 'affecte( champ( `' + nom_du_champ + '`) , :n_' + nom_du_champ + '),' + fin;
+            }else if(this.#obj_webs.type_de_requete === 'insert'){
                 zone_formule.value=debut + 'champ( `' + nom_du_champ + '`),' + fin;
             }else{
                 zone_formule.value=debut + 'champ(`T' + indice_table + '` , `' + nom_du_champ + '`),' + fin;
@@ -1005,7 +1029,7 @@ class requete_sql{
         }
         t+='<a href="javascript:__gi1.formatter_le_source_rev(&quot;zone_formule&quot;);" title="formatter le source rev">(😊)</a>';
         t+='<a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;zone_formule&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>';
-        t+='<textarea id="zone_formule" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(contenu) + '</textarea>';
+        t+='<div class="yyconteneur_de_texte1"><textarea id="zone_formule" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(contenu) + '</textarea></div>';
         t+='<br /><a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_la_formule(&quot;' + destination + '&quot;)">ajouter la formule</a>';
         document.getElementById('__contenu_modale').innerHTML=t;
         __gi1.global_modale2.showModal();
@@ -1056,9 +1080,11 @@ class requete_sql{
         }
         t+='<a href="javascript:__gi1.formatter_le_source_rev(&quot;zone_formule&quot;);" title="formatter le source rev">(😊)</a>';
         t+='<a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;zone_formule&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>';
-        t+='<textarea id="zone_formule" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">';
+        t+='<div class="yyconteneur_de_texte1"><textarea id="zone_formule" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">';
         if((this.#obj_webs.type_de_requete === 'select'
-                   || this.#obj_webs.type_de_requete === 'select_liste')
+                   || this.#obj_webs.type_de_requete === 'select_liste'
+                   || this.#obj_webs.type_de_requete === 'update'
+                   || this.#obj_webs.type_de_requete === 'insert')
                && destination === 'champs_sortie'
         ){
             var contenu='';
@@ -1068,7 +1094,14 @@ class requete_sql{
                     contenu+=',';
                 }
                 if(this.#obj_webs.champs_sortie[i].type_d_element === 'champ'){
-                    contenu+='champ(`T' + this.#obj_webs.champs_sortie[i].indice_table + '` , `' + this.#obj_webs.champs_sortie[i].nom_du_champ + '`)';
+                    if(this.#obj_webs.type_de_requete === 'insert'){
+                        /* contenu+='affecte(champ(`' + this.#obj_webs.champs_sortie[i].nom_du_champ + '` , :'+this.#obj_webs.champs_sortie[i].nom_du_champ+'))'; */
+                        contenu+='champ(`' + this.#obj_webs.champs_sortie[i].nom_du_champ + '`)';
+                    }else if(this.#obj_webs.type_de_requete === 'update'){
+                        contenu+='champ(`' + this.#obj_webs.champs_sortie[i].nom_du_champ + '`)';
+                    }else{
+                        contenu+='champ(`T' + this.#obj_webs.champs_sortie[i].indice_table + '` , `' + this.#obj_webs.champs_sortie[i].nom_du_champ + '`)';
+                    }
                 }else if(this.#obj_webs.champs_sortie[i].type_d_element === 'constante'){
                     contenu+=maConstante(this.#obj_webs.champs_sortie[i].constante);
                 }else if(this.#obj_webs.champs_sortie[i].type_d_element === 'formule'){
@@ -1079,7 +1112,7 @@ class requete_sql{
         }else{
             t+=this.#obj_webs[destination][ind].formule.replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
         }
-        t+='</textarea>';
+        t+='</textarea></div>';
         t+='<br /><a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.enregistrer_la_formule_de_destination(' + ind + ',&quot;' + destination + '&quot;)">modifier la formule</a>';
         document.getElementById('__contenu_modale').innerHTML=t;
         __gi1.global_modale2.showModal();
@@ -1105,7 +1138,9 @@ class requete_sql{
                 if(!this.#obj_webs[destination]){
                     this.#obj_webs[destination]=[];
                 }
-                this.#obj_webs[destination][ind]={"type_d_element" : 'formule' ,"formule" : rev_de_la_formule};
+                /* this.#obj_webs[destination][ind]={"type_d_element" : 'formule' ,"formule" : rev_de_la_formule}; */
+                /* hugues */
+                this.#obj_webs[destination]=[{"type_d_element" : 'formule' ,"formule" : rev_de_la_formule}];
             }
             __gi1.global_modale2.close();
             this.#mettre_en_stokage_local_et_afficher();
@@ -1274,6 +1309,8 @@ class requete_sql{
         var i=0;
         for( i=0 ; i < this.#obj_webs.champs_sortie.length ; i++ ){
             if(this.#obj_webs.type_de_requete !== 'select' || this.#obj_webs.type_de_requete !== 'select_liste'){
+                /* cas insert update */
+                /* debugger; */
                 if(contenu !== ''){
                     contenu+=',';
                 }
@@ -1588,7 +1625,6 @@ class requete_sql{
             if(rev_initial !== null){
                 rev_texte=rev_initial.value;
             }
-            debugger;
             if(requete_manuelle_avec_base > 0){
                 var regex=/base_de_reference\(\d+\)/g;
                 rev_texte=rev_texte.replace(regex,'');
@@ -1609,7 +1645,7 @@ class requete_sql{
         t+='<a href="javascript:__gi1.reduire_la_text_area(&quot;txtar1&quot;);" title="réduire la zone">👊</a>';
         t+='<a href="javascript:__gi1.agrandir_la_text_area(&quot;txtar1&quot;);" title="agrandir la zone">🖐</a>';
         t+='</div>';
-        t+='<textarea class="txtar1" id="txtar1" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">' + rev_texte.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</textarea>';
+        t+='<div class="yyconteneur_de_texte1"><textarea class="txtar1" id="txtar1" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">' + rev_texte.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</textarea></div>';
         t+='</div>';
         t+='<div>';
         t+='<label style="width:90%;display:inline-block" for="cht_commentaire_requete">commentaire : <input style="width:50%" type="text" id="cht_commentaire_requete" value="' + this.#globale_commentaire_requete.replace(/&/g,'&amp;').replace('<','&lt;').replace('>','&gt;').replace('"','&quot;') + '"/></label>';
@@ -2029,8 +2065,7 @@ class requete_sql{
                     var nom_du_champ='';
                     var valeur_du_champ='';
                     var options={"au_format_php" : true ,"tableau_des_tables_utilisees" : obj3.tableau_des_tables_utilisees};
-                    var l=1;
-                    for( l=1 ; l < l01 ; l++ ){
+                    for( var l=1 ; l < l01 ; l++ ){
                         if(tab[l][7] === 0){
                             if(tab[l][1] === 'champ' && tab[l][2] === 'f'){
                                 nom_du_champ=tab[l + 1][1];

@@ -202,7 +202,7 @@ function zz_l1_convertir_un_source_js_sur_disque2(id_source){
                 if(nom_source.substr(nom_source.length - 3) === '.js'){
                     var parseur_javascript=window.acorn.Parser;
                     try{
-                        tabComment=[];
+                        var tabComment=[];
                         /* on transforme le javascript en ast */
                         var obj=parseur_javascript.parse(donnees.contenu_du_fichier,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
                         /* on transforme le ast en rev */
@@ -214,11 +214,11 @@ function zz_l1_convertir_un_source_js_sur_disque2(id_source){
                             __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
                         }
                     }catch(e){
-                        console.error('e=',e);
+                        /*console.error('e=',e);*/
                         if(e.pos){
-                            logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]});
+                            logerreur({"__xst" : false ,"__xme" : nl1()+'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]});
                         }else{
-                            logerreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3443'});
+                            logerreur({"__xst" : false ,"__xme" : nl1()+' '+e.message});
                         }
                     }
                 }

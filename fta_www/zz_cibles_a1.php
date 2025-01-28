@@ -802,9 +802,9 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $chp_commentaire_cible=isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>' . PHP_EOL;
-    $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
+    $o1 .= '  <div class="yyfinp1 yyconteneur_de_texte1">' . PHP_EOL;
     $o1 .= '   <textarea  name="chp_commentaire_cible" id="chp_commentaire_cible"  rows="15" >' . enti1($chp_commentaire_cible,ENT_COMPAT) . '</textarea>' . PHP_EOL;
-    $o1 .= '  </div></div>' . PHP_EOL;
+    $o1 .= '  </div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
@@ -869,9 +869,9 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '   <div style="word-break:break-word;">commentaire</div>' . PHP_EOL;
     $o1 .= '   <div style="font-weight: normal;">texte libre</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
-    $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
+    $o1 .= '  <div class="yyfinp1 yyconteneur_de_texte1">' . PHP_EOL;
     $o1 .= '   <textarea  name="chp_commentaire_cible" id="chp_commentaire_cible"  rows="15" >' . enti1($__valeurs['T0.chp_commentaire_cible'],ENT_COMPAT) . '</textarea>' . PHP_EOL;
-    $o1 .= '  </div></div>' . PHP_EOL;
+    $o1 .= '  </div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
     $o1 .= '<div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;

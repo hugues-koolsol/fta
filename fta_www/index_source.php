@@ -50,8 +50,10 @@ $o1='';?>
     <tbody>
         <tr>
             <td id="zoneRevFiles" style="max-width:100px;overflow-x: hidden;"></td>
-            <td>
-                <textarea id="zonesource" class="yytextSmall" cols="150" rows="60" spellcheck="false" style="height:75vh;"></textarea>
+            <td> 
+                <div class="yyconteneur_de_texte1">
+                    <textarea id="zonesource" class="yytextSmall" cols="150" rows="60" spellcheck="false" style="height:75vh;"></textarea>
+                </div>
             </td>
             <td style="vertical-align: text-top;">
                 <textarea id="normalise" class="yytextSmall" style="display:none" cols="100" rows="10" spellcheck="false"></textarea>
