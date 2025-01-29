@@ -1219,7 +1219,6 @@ $par=array(/**/
             'js/pour_zz_source1.js',
             'js/pour_zz_bdds_action1.js',
             'js/sql.js',
-            'js/convertit-js-en-rev1.js',
             'js/javascript.js',
             'js/texte.js',
             'js/jslib/sqlite-parser.js',

@@ -326,8 +326,6 @@ function zz_l1_convertir_un_source_sur_disque(id_source){
                 var type_source=donnees.db['T0.chp_type_source'];
                 if(nom_source.substr(nom_source.length - 4) === '.php'){
                     var ret=recupereAstDePhp2(donnees.contenu_du_fichier,{"donnees" : donnees ,"en_ligne" : true},null);
-                }else if(nom_source.substr(nom_source.length - 3) === '.js'){
-                    var obj=transform_source_js_en_rev_avec_acorn(donnees.contenu_du_fichier,{"donnees" : donnees ,"en_ligne" : true});
                 }else if(nom_source.substr(nom_source.length - 5) === '.html' || nom_source.substr(nom_source.length - 4) === '.htm'){
                     /* ✍traitement_apres_ajax_pour_conversion_fichier_html(donnees); */
                     var obj=__module_html1.TransformHtmlEnRev(donnees.contenu_du_fichier,0,{"en_ligne" : true ,"donnees" : donnees});

@@ -978,6 +978,7 @@ function html_header1($parametres){
      let __module_requete_sql1=null;
      let __module_php_parseur1=null;
      let __module_js_parseur1=null;
+     let __m_rev_vers_js1=null;
      /*       document.addEventListener("DOMContentLoaded",function(event){});     */
      /*
        =====================================================================================================================
@@ -1014,6 +1015,10 @@ EOT;
                             }else if(element.src && element.src.indexOf("js/module_conversion_ast_de_js_acorn_vers_rev.js") >= 0){
                                 import('./js/module_conversion_ast_de_js_acorn_vers_rev.js').then(function(Module){
                                     __module_js_parseur1=new Module.module_conversion_ast_de_js_acorn_vers_rev1('__module_js_parseur1');
+                                });
+                            }else if(element.src && element.src.indexOf("js/m_rev_vers_js1.js") >= 0){
+                                import('./js/m_rev_vers_js1.js').then(function(Module){
+                                    __m_rev_vers_js1=new Module.m_rev_vers_js1('__m_rev_vers_js1');
                                 });
                             }
                         }

@@ -62,7 +62,6 @@ $par=array(/* éléments à passer au pied de page : le php peut contenir du htm
     'js_a_inclure' => array(
             'js/javascript.js',
             'js/convertit-php-en-rev0.js',
-            'js/convertit-js-en-rev1.js',
             'js/php.js',
             'js/jslib/acorn.js',
             'js/jslib/php-parser.js'

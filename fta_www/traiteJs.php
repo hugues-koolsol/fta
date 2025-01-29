@@ -35,6 +35,7 @@ $o1='';?>
 </div>
 <div class="yyconteneur_de_texte1">
     <a class="yyinfo" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_js(&quot;txtar2&quot; , &quot;txtar3&quot;);" title="convertir rev en JS">R2J</a>
+    <a class="yyavertissement" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_js2(&quot;txtar2&quot; , &quot;txtar3&quot;);" title="convertir rev en JS">R2J2</a>
     <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar3&quot;);" title="réduire la zone">&nbsp;👊&nbsp;</a>
     <a style="float:right;" href="javascript:__gi1.agrandir_la_text_area(&quot;txtar3&quot;);" title="agrandir la zone">&nbsp;🖐&nbsp;</a>
     <a style="float:right;margin-right:15px;" href="javascript:__gi1.raz_la_text_area(&quot;txtar3&quot;);" title="raz de la zone">&nbsp;🚫&nbsp;</a>
@@ -49,11 +50,11 @@ $js_a_executer_apres_chargement=array(/* */
 $par=array(/* */
     'js_a_inclure' => array(/* */
             'js/javascript.js',
-            'js/convertit-js-en-rev1.js',
             'js/jslib/acorn.js'
         ),
     'module_a_inclure' => array(/* */
-            'js/module_conversion_ast_de_js_acorn_vers_rev.js'
+            'js/module_conversion_ast_de_js_acorn_vers_rev.js',
+            'js/m_rev_vers_js1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );?>
@@ -65,6 +66,7 @@ window.addEventListener("load",function(){
                 var fta_indexhtml_javascript_dernier_fichier_charge=localStorage.getItem('fta_indexhtml_javascript_dernier_fichier_charge');
                 if(fta_indexhtml_javascript_dernier_fichier_charge !== null){
                     document.getElementById('txtar1').value=fta_indexhtml_javascript_dernier_fichier_charge;
+                    __gi1.bouton_transform_textarea_js_en_rev_avec_acorn3( 'txtar1' , 'txtar2' , true )
                 }
             },100);
     });

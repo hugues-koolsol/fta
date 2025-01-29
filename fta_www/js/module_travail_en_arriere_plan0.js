@@ -18,11 +18,14 @@ try{
 }catch(e){
     debugger;
 }
+/*
+A remplacer avec le module
 try{
-    importScripts('./convertit-js-en-rev1.js');
+    importScripts('./c o n v e r t i t - j s - e n - r e v 1 . j s');
 }catch(e){
     debugger;
 }
+*/
 try{
     importScripts('./javascript.js');
 }catch(e){

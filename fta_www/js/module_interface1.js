@@ -855,7 +855,6 @@ class interface1{
             }else if(obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0){
                 t='';
             }else{
-                /* var obj1=TransformAstEnRev(obj.body,0); */
                 /*
                   il faut retirer les commentaires si ce sont des CDATA ou des <source_javascript_rev> 
                   car javascriptdanshtml les ajoute.
@@ -938,6 +937,23 @@ class interface1{
             }
         }
         this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_js);
+    }
+    /*
+      =============================================================================================================
+      convertir le contenu d'une textearea rev et le mettre le résultat js dans une textarea
+      =============================================================================================================
+    */
+    convertir_textearea_rev_vers_textarea_js2(chp_rev_source,chp_genere_source){
+        this.raz_des_messages();
+        var a=document.getElementById(chp_rev_source);
+        
+        var obj=__m_rev_vers_js1.c_rev_vers_js(a.value,{});
+        if(obj.__xst === true){
+            document.getElementById(chp_genere_source).value=obj.__xva;
+        }else{
+            document.getElementById(chp_genere_source).value='erreur de conversion';
+        }
+        this.remplir_et_afficher_les_messages1('zone_global_messages',chp_rev_source);
     }
     /*
       =============================================================================================================

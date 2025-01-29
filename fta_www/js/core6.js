@@ -1377,20 +1377,38 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             if(c === '"'){
                 if(autoriserCstDansRacine !== true){
                     if(i === l01 - 1){
-                        /* à faire, noter un cas d'erreur */
-                        console.error('core functionToArray2 1164 noter ce cas d\'erreur','background:gold;color:red;');
-                        return(logerreur(formaterErreurRev({
-                            "__xst" : false ,
-                            "ind" : i ,
-                            "__xme" : '1148 la racine ne peut pas contenir des constantes' ,
-                            "type" : 'rev' ,
-                            "texte" : texte ,
-                            "chaineTableau" : chaineTableau ,
-                            "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
-                            "tableauEntree" : tableauEntree ,
-                            "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
-                            "autoriserCstDansRacine" : autoriserCstDansRacine
-                        })));
+                        /* 
+                         cas : directive("use strict"
+                        */
+                        if(niveau>0){
+                            return(logerreur(formaterErreurRev({
+                                "__xst" : false ,
+                                "ind" : i ,
+                                "__xme" : 'les parenthèses ne se finissent pas à la fin du rev' ,
+                                "type" : 'rev' ,
+                                "texte" : texte ,
+                                "chaineTableau" : chaineTableau ,
+                                "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
+                                "tableauEntree" : tableauEntree ,
+                                "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
+                                "autoriserCstDansRacine" : autoriserCstDansRacine
+                            })));
+                        }else{
+                            console.error('%ccore functionToArray2 1164 noter ce cas d\'erreur','background:gold;color:red;');
+                            return(logerreur(formaterErreurRev({
+                                "__xst" : false ,
+                                "ind" : i ,
+                                "__xme" : '1387 le niveau ' ,
+                                "type" : 'rev' ,
+                                "texte" : texte ,
+                                "chaineTableau" : chaineTableau ,
+                                "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
+                                "tableauEntree" : tableauEntree ,
+                                "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
+                                "autoriserCstDansRacine" : autoriserCstDansRacine
+                            })));
+                         
+                        }
                     }
                 }
                 if(i + 1 < l01){
