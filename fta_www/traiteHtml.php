@@ -50,12 +50,14 @@ $js_a_executer_apres_chargement=array(/* */
 );
 $par=array(/* */
     'js_a_inclure' => array(/*il peut y avoir du javascript dans le html*/
-            'js/javascript.js',
+/*            'js/javascript.js', */
             'js/jslib/acorn.js'
         ),
     'module_a_inclure' => array(/**/
             'js/module_html.js',
-            'js/module_conversion_ast_de_js_acorn_vers_rev.js'
+            'js/module_conversion_ast_de_js_acorn_vers_rev.js',
+            'js/m_rev_vers_js1.js'
+            
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

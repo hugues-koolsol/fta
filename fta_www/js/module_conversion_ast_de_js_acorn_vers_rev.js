@@ -1775,7 +1775,7 @@ let x16=a.b ?. c(a.b);
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1063 #traite_ClassDeclaration' ,"element" : element}));
                 }
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1128 #traite_ClassDeclaration' ,"element" : element}));
+                corps_de_la_classe='#(rien ici)';
             }
         }
         if(element.superClass){
@@ -3059,7 +3059,7 @@ let x16=a.b ?. c(a.b);
     traite_ast(ast_de_js,tab_comm,options_traitement){
         let t='';
         let obj=null;
-        console.log(ast_de_js);
+        /* console.log(ast_de_js); */
         if(options_traitement !== undefined){
             this.#options_traitement=options_traitement;
         }

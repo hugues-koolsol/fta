@@ -81,7 +81,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     if(isset($_POST['__importer_le_fichier_source_de_fta'])){
 
         /*
-          
           =====================================================================================================
           ============================== IMPORTER LE SOURCE DE FTA ============================================
           =====================================================================================================
@@ -154,7 +153,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     }else if(isset($_POST['__convertir_sql_sqlite_en_rev'])){
 
         /*
-          
           =====================================================================================================
           ============================== CONVERTIR UN SQL EN REV ==============================================
           =====================================================================================================
@@ -182,7 +180,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     }else if(isset($_POST['__ecrire_sur_disque'])){
 
         /*
-          
           =====================================================================================================
           ============================== ECRIRE SUR DISQUE ====================================================
           =====================================================================================================
@@ -350,7 +347,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     }else if(isset($_POST['__action']) && $_POST['__action'] == '__modification'){
 
         /*
-          
           =====================================================================================================
           ============================== MODIFICATION =========================================================
           =====================================================================================================
@@ -1063,7 +1059,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
         if(strpos($__valeurs['T0.chp_nom_source'],'.js') !== false){
 
-            $o1 .= '   <a class="yyinfo" href="javascript:convertir_rev_en_js(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R-&gt;J&#8615;</a>' . PHP_EOL;
+            $o1 .= '   <a class="yyinfo" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_js2(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R-&gt;J&#8615;</a>' . PHP_EOL;
             $o1 .= '   <a class="yyrose" href="javascript:__gi1.bouton_transform_textarea_js_en_rev_avec_acorn3(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,false)">&#8613;J-&gt;R</a>' . PHP_EOL;
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.htm') !== false){
@@ -1229,7 +1225,8 @@ $par=array(/**/
     'module_a_inclure' => array(/**/
             'js/module_html.js',
             'js/module_conversion_ast_de_js_acorn_vers_rev.js',
-            'js/module_conversion_ast_de_php_parser_vers_rev.js'
+            'js/module_conversion_ast_de_php_parser_vers_rev.js',
+            'js/m_rev_vers_js1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

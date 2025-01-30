@@ -60,7 +60,7 @@ $js_a_executer_apres_chargement=array(/* fonctions js à éxécuter un fois que 
 );
 $par=array(/* éléments à passer au pied de page : le php peut contenir du html et du js, donc on importe tout */
     'js_a_inclure' => array(
-            'js/javascript.js',
+/*            'js/javascript.js', */
             'js/convertit-php-en-rev0.js',
             'js/php.js',
             'js/jslib/acorn.js',
@@ -71,7 +71,9 @@ $par=array(/* éléments à passer au pied de page : le php peut contenir du htm
             'js/module_interface1.js',
             'js/module_html.js',
             'js/module_conversion_ast_de_php_parser_vers_rev.js',
-            'js/module_conversion_ast_de_js_acorn_vers_rev.js'
+            'js/module_conversion_ast_de_js_acorn_vers_rev.js',
+            'js/m_rev_vers_js1.js'
+            
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

@@ -95,6 +95,7 @@ $tab=array(
     'fta_www/js/pour_requete_sql.js' => array(),
     'fta_www/js/module_conversion_ast_de_php_parser_vers_rev.js' => array(),
     'fta_www/js/module_conversion_ast_de_js_acorn_vers_rev.js' => array(),
+    'fta_www/js/m_rev_vers_js1.js' => array(),
     'fta_www/js/sql.js' => array(),
     'fta_www/js/texte.js' => array(),
     'fta_www/js/module_interface1.js' => array(),

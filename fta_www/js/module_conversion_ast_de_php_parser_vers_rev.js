@@ -362,6 +362,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             }
         }
         var globale_tableau_des_js2=[];
+
         if(tableau_de_html_dans_php_a_convertir.length > 0){
             obj=this.#traiter_html_dans_php2(tableau_de_html_dans_php_a_convertir,t,globale_tableau_des_js2);
             if(obj.__xst === true){
@@ -466,7 +467,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                     /* on transforme le ast du js en rev */
                     var obj0=__module_js_parseur1.traite_ast(obj.body,tableau_des_commentaires_js,{});
                     if(obj0.__xst === true){
-                        globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,obj0.__xva);
+                        globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,'source('+obj0.__xva+')');
                     }else{
                         globale_tableau_des_js2=[];
                         return(logerreur({"__xst" : true ,"__xme" : '3154 le source a été converti en rev'}));

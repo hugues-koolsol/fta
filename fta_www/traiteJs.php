@@ -21,7 +21,7 @@ $o1='';?>
     <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar1&quot;);" title="réduire la zone">👊</a>
     <a style="float:right;" href="javascript:__gi1.agrandir_la_text_area(&quot;txtar1&quot;);" title="agrandir la zone">🖐</a>
     <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_position(&quot;txtar1&quot;)">aller à la position</a>
-    <textarea class="txtar1" id="txtar1" style="" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <textarea class="txtar1" id="txtar1" style="" rows="18" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 </div>
 <!-- div id="resultat1"></div -->
 <div class="yyconteneur_de_texte1">
@@ -31,15 +31,14 @@ $o1='';?>
     <a style="float:right;" href="javascript:__gi1.agrandir_la_text_area(&quot;txtar2&quot;);" title="agrandir la zone">🖐</a>
     <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_position(&quot;txtar2&quot;)">aller à la position</a>
     <a style="float:right;margin-right:15px;" href="javascript:__gi1.raz_la_text_area(&quot;txtar2&quot;);" title="raz de la zone">&nbsp;🚫&nbsp;</a>
-    <textarea class="txtar1" id="txtar2" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <textarea class="txtar1" id="txtar2" rows="18" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 </div>
 <div class="yyconteneur_de_texte1">
-    <a class="yyinfo" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_js(&quot;txtar2&quot; , &quot;txtar3&quot;);" title="convertir rev en JS">R2J</a>
-    <a class="yyavertissement" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_js2(&quot;txtar2&quot; , &quot;txtar3&quot;);" title="convertir rev en JS">R2J2</a>
+    <a class="yyinfo" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_js2(&quot;txtar2&quot; , &quot;txtar3&quot;,null,null);" title="convertir rev en JS">R2J</a>
     <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar3&quot;);" title="réduire la zone">&nbsp;👊&nbsp;</a>
     <a style="float:right;" href="javascript:__gi1.agrandir_la_text_area(&quot;txtar3&quot;);" title="agrandir la zone">&nbsp;🖐&nbsp;</a>
     <a style="float:right;margin-right:15px;" href="javascript:__gi1.raz_la_text_area(&quot;txtar3&quot;);" title="raz de la zone">&nbsp;🚫&nbsp;</a>
-    <textarea class="txtar1" id="txtar3" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+    <textarea class="txtar1" id="txtar3" rows="18" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 </div>
 <?php
 $js_a_executer_apres_chargement=array(/* */

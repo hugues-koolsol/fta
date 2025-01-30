@@ -4110,7 +4110,7 @@ function traiter_html_dans_php2(options){
                 /* on transforme le ast du js en rev */
                 var obj0=__module_js_parseur1.traite_ast(obj.body,tableau_des_commentaires_js,{});
                 if(obj0.__xst === true){
-                    globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,obj0.__xva);
+                    globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,'source('+obj0.__xva+')');
                 }else{
                     globale_tableau_des_js2=[];
                     return(logerreur({"__xst" : true ,"__xme" : '3154 le source a été converti en rev'}));

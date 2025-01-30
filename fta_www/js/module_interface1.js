@@ -931,7 +931,7 @@ class interface1{
             /* console.error('e=',e); */
             debugger
             if(e.pos){
-                logerreur({"__xst" : false ,"__xme" : nl1()+'"' + e.message + '"' ,"plage" : [e.pos,e.pos]});
+                logerreur({"__xst" : false ,"__xme" : nl1(e)+'"' + e.message + '"' ,"plage" : [e.pos,e.pos]});
             }else{
                 logerreur({"__xst" : false ,"__xme" : nl1(e)+'"' + e.message + '"'});
             }
@@ -943,41 +943,25 @@ class interface1{
       convertir le contenu d'une textearea rev et le mettre le résultat js dans une textarea
       =============================================================================================================
     */
-    convertir_textearea_rev_vers_textarea_js2(chp_rev_source,chp_genere_source){
+    convertir_textearea_rev_vers_textarea_js2(chp_rev_source,chp_genere_source,id_source,id_cible){
         this.raz_des_messages();
         var a=document.getElementById(chp_rev_source);
         
+        var startMicro=performance.now();
         var obj=__m_rev_vers_js1.c_rev_vers_js(a.value,{});
+        var endMicro=performance.now();
+        /* console.log('%c\n\n=============\nconvertion de rev en js ='+(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms','background:lightblue;'); */
         if(obj.__xst === true){
             document.getElementById(chp_genere_source).value=obj.__xva;
+            
+            if(id_source!==null && id_cible!== null){
+                var parametres_sauvegarde={"matrice" : obj.matriceFonction ,"chp_provenance_rev" : 'source' ,"chx_source_rev" : id_source ,"id_cible" : id_cible};
+                sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
+            }
+            
+            
         }else{
             document.getElementById(chp_genere_source).value='erreur de conversion';
-        }
-        this.remplir_et_afficher_les_messages1('zone_global_messages',chp_rev_source);
-    }
-    /*
-      =============================================================================================================
-      convertir le contenu d'une textearea rev et le mettre le résultat js dans une textarea
-      =============================================================================================================
-    */
-    convertir_textearea_rev_vers_textarea_js(chp_rev_source,chp_genere_source){
-        this.raz_des_messages();
-        var a=document.getElementById(chp_rev_source);
-        var startMicro=performance.now();
-        var tableau1=iterateCharacters2(a.value);
-        global_messages.data.tableau=tableau1;
-        var endMicro=performance.now();
-        var startMicro=performance.now();
-        var matriceFonction=functionToArray2(tableau1.out,true,false,'');
-        global_messages.data.matrice=matriceFonction;
-        if(matriceFonction.__xst === true){
-            var objJs=parseJavascript0(matriceFonction.__xva,1,0);
-            if(objJs.__xst === true){
-                document.getElementById(chp_genere_source).value=objJs.__xva;
-            }else{
-                this.remplir_et_afficher_les_messages1('zone_global_messages',chp_rev_source);
-                return;
-            }
         }
         this.remplir_et_afficher_les_messages1('zone_global_messages',chp_rev_source);
     }
@@ -993,8 +977,7 @@ class interface1{
         var tableau1=iterateCharacters2(a.value);
         global_messages.data.tableau=tableau1;
         var endMicro=performance.now();
-        console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
-        var startMicro=performance.now();
+//        console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
         var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
             var objPhp=parsePhp0(matriceFonction.__xva,0,0);

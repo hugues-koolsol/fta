@@ -147,16 +147,10 @@ function sauvegarder_html_en_ligne(format_rev,donnees){
 /*
   =====================================================================================================================
 */
-function sauvegarder_js_en_ligne(format_rev,donnees){
-    var tableau1=iterateCharacters2(format_rev);
-    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
-    if(matriceFonction.__xst === false){
-        logerreur({"__xst" : false ,"__xme" : '0180 erreur sauvegarder_js_en_ligne'});
-        return({"__xst" : false ,"__xme" : '0181 erreur sauvegarder_js_en_ligne'});
-    }
-    var objJs=parseJavascript0(matriceFonction.__xva,1,0);
+function sauvegarder_js_en_ligne2(format_rev,donnees){
+    var objJs=__m_rev_vers_js1.c_rev_vers_js(format_rev,{});
     if(objJs.__xst === true){
-        sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(donnees.__entree.id_source,format_rev,objJs.__xva,donnees.__entree.date_de_debut_traitement,matriceFonction.__xva);
+        sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(donnees.__entree.id_source,format_rev,objJs.__xva,donnees.__entree.date_de_debut_traitement,objJs.matriceFonction);
         return({"__xst" : true});
     }else{
         logerreur({"__xst" : false ,"__xme" : '0195 erreur sauvegarder_js_en_ligne'});
@@ -183,7 +177,7 @@ function sauvegarder_php_en_ligne(format_rev,donnees){
 /*
   =====================================================================================================================
 */
-function zz_l1_convertir_un_source_js_sur_disque2(id_source){
+function zz_l1_convertir_un_source_js_sur_disque3(id_source){
     __gi1.raz_des_messages();
     var date_de_debut_traitement=new Date();
     date_de_debut_traitement=date_de_debut_traitement.getTime();
@@ -209,16 +203,16 @@ function zz_l1_convertir_un_source_js_sur_disque2(id_source){
                         var obj=__module_js_parseur1.traite_ast(obj.body,tabComment,{});
                         if(obj.__xst === true){
                             var parametres={"__entree" : {"id_source" : donnees.db['T0.chi_id_source'] ,"date_de_debut_traitement" : date_de_debut_traitement}};
-                            var obj2=sauvegarder_js_en_ligne(obj.__xva,parametres);
+                            var obj2=sauvegarder_js_en_ligne2(obj.__xva,parametres);
                         }else{
                             __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
                         }
                     }catch(e){
                         /*console.error('e=',e);*/
                         if(e.pos){
-                            logerreur({"__xst" : false ,"__xme" : nl1()+'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]});
+                            logerreur({"__xst" : false ,"__xme" : nl1(e)+'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]});
                         }else{
-                            logerreur({"__xst" : false ,"__xme" : nl1()+' '+e.message});
+                            logerreur({"__xst" : false ,"__xme" : nl1(e)+' '+e.message});
                         }
                     }
                 }
@@ -337,29 +331,6 @@ function zz_l1_convertir_un_source_sur_disque(id_source){
             }
             __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
         });
-}
-/*
-  =====================================================================================================================
-*/
-function convertir_rev_en_js(chp_rev_source,chp_genere_source,id_source,id_cible){
-    __gi1.raz_des_messages();
-    var a=document.getElementById(chp_rev_source);
-    var startMicro=performance.now();
-    var tableau1=iterateCharacters2(a.value);
-    global_messages.data.tableau=tableau1;
-    var endMicro=performance.now();
-    var startMicro=performance.now();
-    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
-    global_messages.data.matrice=matriceFonction;
-    if(matriceFonction.__xst === true){
-        var objJs=parseJavascript0(matriceFonction.__xva,1,0);
-        if(objJs.__xst === true){
-            document.getElementById(chp_genere_source).value=objJs.__xva;
-        }
-        var parametres_sauvegarde={"matrice" : matriceFonction.__xva ,"chp_provenance_rev" : 'source' ,"chx_source_rev" : id_source ,"id_cible" : id_cible};
-        sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
-    }
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages',chp_rev_source);
 }
 /*
   =====================================================================================================================

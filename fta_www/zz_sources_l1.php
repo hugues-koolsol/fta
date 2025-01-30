@@ -186,7 +186,8 @@ foreach($tt[__xva] as $k0 => $v0){
 
         }else if(substr($v0['T0.chp_nom_source'],-3) === '.js'){
 
-            $lsttbl .= ' <a class="yyrose" data-attendre_message="oui" id="js_' . $v0['T0.chi_id_source'] . '" href="javascript:zz_l1_convertir_un_source_js_sur_disque2(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque">😊</a>';
+//            $lsttbl .= ' <a class="yyrose" data-attendre_message="oui" id="js_' . $v0['T0.chi_id_source'] . '" href="javascript:zz_l1_convertir_un_source_js_sur_disque2(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque">😊</a>';
+            $lsttbl .= ' <a class="yyrose" data-attendre_message="oui" id="js2_' . $v0['T0.chi_id_source'] . '" href="javascript:zz_l1_convertir_un_source_js_sur_disque3(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque">😊</a>';
 
         }else if(substr($v0['T0.chp_nom_source'],-4) === '.php'){
 
@@ -231,7 +232,7 @@ $o1 .= '<div style="overflow-x:scroll;"><table class="yytableResult1">' . PHP_EO
   =====================================================================================================================
 */
 $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
-$par=array( 'js_a_inclure' => array(
+$par=array(/**/ 'js_a_inclure' => array(/**/
             'js/pour_zz_source1.js',
             'js/convertit-php-en-rev0.js',
             'js/php.js',
@@ -241,7 +242,12 @@ $par=array( 'js_a_inclure' => array(
             'js/convertion_sql_en_rev.js',
             'js/jslib/sqlite-parser.js',
             'js/jslib/php-parser.js'
-        ), 'module_a_inclure' => array( 'js/module_html.js', 'js/module_conversion_ast_de_php_parser_vers_rev.js', 'js/module_conversion_ast_de_js_acorn_vers_rev.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+        ), 'module_a_inclure' => array(/**/
+            'js/module_html.js', 
+            'js/module_conversion_ast_de_php_parser_vers_rev.js', 
+            'js/module_conversion_ast_de_js_acorn_vers_rev.js',
+            'js/m_rev_vers_js1.js'
+        ), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
 $nom_bref='aa_js_sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.js';
 $nom_complet=INCLUDE_PATH . DIRECTORY_SEPARATOR . 'sql/' . $nom_bref;
 

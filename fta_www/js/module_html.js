@@ -201,7 +201,9 @@ class traitements_sur_html{
                             tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js2"});
                             var obj=__gi1.convertit_source_javascript_en_rev(source_js);
                             if(obj.__xst === true){
+                                debugger
                                 if(t.indexOf('text/javascript') >= 0){
+                                 
                                     contenu+=obj.__xva;
                                 }else{
                                     contenu+='(\'type\' , "text/javascript")' + obj.__xva;
@@ -333,6 +335,8 @@ class traitements_sur_html{
                 t+=contenu;
             }else if(typeParent === 'script'){
                 tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js4"});
+                /*avrif*/
+                debugger;
                 var obj=__gi1.convertit_source_javascript_en_rev(jsonDeHtml);
                 if(obj.__xst === true){
                     t+='' + obj.__xva + '';
@@ -732,7 +736,10 @@ class traitements_sur_html{
                                                 }
                                             }
                                         }
-                                        var objContenuJs=parseJavascript0(tab,debut,0);
+                                        /* var objContenuJs=parseJavascript0(tab,debut,0); */
+                                        var objContenuJs=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:debut});
+                                        debugger
+                                        /*avrif*/
                                         if(objContenuJs.__xst === true){
                                             le_contenu.push(JSON.parse(JSON.stringify({"type" : 'javascriptdanshtml' ,"content" : objContenuJs.__xva ,"attributes" : attrib})));
                                         }else{
@@ -749,7 +756,10 @@ class traitements_sur_html{
                                                 }
                                             }
                                         }
-                                        var objContenuJs=parseJavascript0(tab,debut,0);
+                                        /* var objContenuJs=parseJavascript0(tab,debut,0); */
+                                        var objContenuJs=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:debut});
+                                        /*avrif*/
+                                        debugger
                                         if(objContenuJs.__xst === true){
                                             var contenu=objContenuJs.__xva.substr(objContenuJs.__xva.indexOf('=') + 1);
                                             if(contenu.substr(contenu.length - 1,1) === ';'){
@@ -819,7 +829,10 @@ class traitements_sur_html{
                         }
                     }
                 }
-                var objContenuJs=parseJavascript0(tab,debut,0);
+                /* var objContenuJs=parseJavascript0(tab,debut,0); */
+                var objContenuJs=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:debut});
+                debugger
+                /*avrif*/
                 if(objContenuJs.__xst === true){
                     var contenu=objContenuJs.__xva.substr(objContenuJs.__xva.indexOf('=') + 1);
                     if(contenu.substr(contenu.length - 1,1) === ';'){
@@ -840,7 +853,10 @@ class traitements_sur_html{
                         }
                     }
                 }
-                var objContenuJs=parseJavascript0(tab,debut,0);
+                /* var objContenuJs=parseJavascript0(tab,debut,0); */
+                var objContenuJs=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:debut});
+                debugger
+                /*avrif*/
                 if(objContenuJs.__xst === true){
                     content.push(objContenuJs.__xva);
                 }else{
@@ -1110,7 +1126,7 @@ class traitements_sur_html{
                                 if(obj1.__xst === true){
                                     /* puis on remplace la chaine */
                                     var phrase_a_remplacer='#(cle_javascript_a_remplacer,' + tableau_de_javascripts_a_convertir[indjs].cle + ')';
-                                    obj.__xva=obj.__xva.replace(phrase_a_remplacer,obj1.__xva);
+                                    obj.__xva=obj.__xva.replace(phrase_a_remplacer,'source('+obj1.__xva+')');
                                 }else{
                                     console.error('erreur de conversion de ast vers js e=',e);
                                     return({"__xst" : false ,"__xme" : '1093 il y a un problème dans la transformation de ast js vers rev dans un source javascript'});
@@ -1257,7 +1273,8 @@ class traitements_sur_html{
             /*
               c'est un script dans un html
             */
-            var ob=parseJavascript0(tab,indiceDebutJs,0);
+            /* var ob=parseJavascript0(tab,indiceDebutJs,0); */
+            var ob=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:indiceDebutJs});
             if(ob.__xst === true){
                 /*
                   =====================================================================================
@@ -1307,7 +1324,10 @@ class traitements_sur_html{
         }
         if(dansPhp && tab[id][1] === 'source'){
             t+='<?php ';
-            ob=parseJavascript0(tab,id,0);
+            /* ob=parseJavascript0(tab,id,0); */
+            ob=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:id});
+            /*avrif*/            
+            debugger
             parsePhp0(tab,id,0);
             if(ob.__xst === true){
                 t+=ob.__xva;
@@ -1325,7 +1345,10 @@ class traitements_sur_html{
                 "dansCss" : dansCss
             });
         }else if(dansJs && tab[id][1] === 'source'){
-            ob=parseJavascript0(tab,id + 1,0);
+//            ob=parseJavascript0(tab,id + 1,0);
+            ob=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:id+1});
+            /*avrif*/            
+            debugger
             if(ob.__xst === true){
                 t+=CRLF;
                 t+='//<![CDATA[' + CRLF;
@@ -1472,9 +1495,10 @@ class traitements_sur_html{
                                     /*
                                       c'est un script dans un html
                                     */
-                                    niveau++;
-                                    ob=parseJavascript0(tab,indiceDebutJs,niveau);
-                                    niveau--;
+                                    /* ob=parseJavascript0(tab,indiceDebutJs,niveau+1); */
+                                    ob=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:indiceDebutJs});
+                                    /*avrif*/            
+                                    debugger
                                     if(ob.__xst === true){
                                         /*
                                           =====================================
