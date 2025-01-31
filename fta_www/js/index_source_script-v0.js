@@ -141,7 +141,8 @@ function convertSource(objMatSrc){
                 "tabConcatFichier" : tabConcatFichier
             }));
         }else if(type_source == 'src_javascript' && file_extension == 'js'){
-            retProgrammeSource=parseJavascript0(objMatSrc.__xva,idJs + 1,0);
+            retProgrammeSource=__m_rev_vers_js1.c_tab_vers_js(objMatSrc.__xva,{indice_de_debut:idJs + 1});
+            
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{

@@ -970,6 +970,33 @@ class interface1{
       convertir le contenu d'une textearea rev et le mettre le résultat php dans une textarea
       =============================================================================================================
     */
+    convertir_textearea_rev_vers_textarea_php2(nom_zone_source_rev,nom_zone_genere_php,id_source,id_cible){
+        this.raz_des_messages();
+        var a=document.getElementById(nom_zone_source_rev);
+        
+        var startMicro=performance.now();
+        var obj=__m_rev_vers_php1.c_rev_vers_php(a.value,{});
+        var endMicro=performance.now();
+        console.log('%c\n\n=============\nconvertion de rev en php en '+(endMicro - startMicro) + ' ms','background:lightblue;');
+        if(obj.__xst === true){
+            document.getElementById(nom_zone_genere_php).value=obj.__xva;
+            
+            if(id_source!==null && id_cible!== null){
+                var parametres_sauvegarde={"matrice" : obj.matriceFonction ,"chp_provenance_rev" : 'source' ,"chx_source_rev" : id_source ,"id_cible" : id_cible};
+                sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
+            }
+            
+            
+        }else{
+            document.getElementById(nom_zone_genere_php).value='erreur de conversion';
+        }
+        this.remplir_et_afficher_les_messages1('zone_global_messages',nom_zone_source_rev);
+    }
+    /*
+      =============================================================================================================
+      convertir le contenu d'une textearea rev et le mettre le résultat php dans une textarea
+      =============================================================================================================
+    */
     convertir_textearea_rev_vers_textarea_php(nom_zone_source_rev,nom_zone_genere_php,bouton_interface=false){
         this.raz_des_messages();
         var a=document.getElementById(nom_zone_source_rev);
@@ -1023,7 +1050,11 @@ class interface1{
             var obj=__module_php_parseur1.traite_ast(ast_de_php,options_traitement);
             if(obj.__xst === true){
                 document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;
-                var tableau1=iterateCharacters2('php(' + obj.__xva + ')');
+                if(obj.__xva.substr(0,4)!=='php('){
+                    var tableau1=iterateCharacters2('php(' + obj.__xva + ')');
+                }else{
+                    var tableau1=iterateCharacters2(obj.__xva);
+                }
                 var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                 if(matriceFonction.__xst === true){
                     var obj2=arrayToFunct1(matriceFonction.__xva,true);

@@ -44,11 +44,9 @@ $o1='';?>
 $js_a_executer_apres_chargement=array(/* */
     array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar1', 'mode' => 'source')),
     array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar2', 'mode' => 'rev')),
-    array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple'))
 );
 $par=array(/* */
     'js_a_inclure' => array(/* */
-            'js/javascript.js',
             'js/jslib/acorn.js'
         ),
     'module_a_inclure' => array(/* */
@@ -65,6 +63,7 @@ window.addEventListener("load",function(){
                 var fta_indexhtml_javascript_dernier_fichier_charge=localStorage.getItem('fta_indexhtml_javascript_dernier_fichier_charge');
                 if(fta_indexhtml_javascript_dernier_fichier_charge !== null){
                     document.getElementById('txtar1').value=fta_indexhtml_javascript_dernier_fichier_charge;
+                    /* on lance la conversion directement, ça devra être mis en paramètres */
                     __gi1.bouton_transform_textarea_js_en_rev_avec_acorn3( 'txtar1' , 'txtar2' , true )
                 }
             },100);

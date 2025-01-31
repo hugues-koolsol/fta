@@ -1657,6 +1657,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             for( let i=0 ; i < element.increment.length ; i++ ){
                 obj=this.#traite_element(element.increment[i],niveau,element,tab_comm);
                 if(obj.__xst === true){
+                    if(increment!==''){
+                        increment+=',';
+                    }
                     increment+=obj.__xva;
                 }else{
                     return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0779  #traite_for' ,"element" : element}));
@@ -3990,6 +3993,9 @@ class module_conversion_ast_de_php_parser_vers_rev1{
             let niveau=0;
             var obj=this.#traite_ast0(ast_de_php,niveau,null,ast_de_php.comments);
             if(obj.__xst === true){
+                if(obj.__xva.substr(0,4)!=='php('){
+                    obj.__xva='php('+obj.__xva+')';
+                }
                 t+=obj.__xva;
             }else{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '0066 #traite_ast0 expressionstatement'}));

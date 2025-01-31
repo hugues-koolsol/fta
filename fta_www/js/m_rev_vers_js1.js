@@ -1253,7 +1253,7 @@ class m_rev_vers_js1{
                                     if(obj.__xst === true){
                                         contenu_etiquette+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'javascript.js traitement etiquette contenu mauvais ' + JSON.stringify(this.#tb[i])}));
+                                        return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'm_rev_vers_js1.js traitement etiquette contenu mauvais ' + JSON.stringify(this.#tb[i])}));
                                     }
                                 }
                             }
@@ -1261,7 +1261,7 @@ class m_rev_vers_js1{
                         if(nom_etiquette !== ''){
                             t+=nom_etiquette + ':' + contenu_etiquette;
                         }else{
-                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'javascript.js traitement etiquette contenu mauvais ' + JSON.stringify(this.#tb[i])}));
+                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'm_rev_vers_js1.js traitement etiquette contenu mauvais ' + JSON.stringify(this.#tb[i])}));
                         }
                         ne_pas_mettre_de_terminateur=true;
                         break;
@@ -1271,7 +1271,7 @@ class m_rev_vers_js1{
                         if(obj.__xst === true){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'javascript.js traitement importer ' + JSON.stringify(this.#tb[i])}));
+                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'm_rev_vers_js1.js traitement importer ' + JSON.stringify(this.#tb[i])}));
                         }
                         break;
                         
@@ -1282,7 +1282,7 @@ class m_rev_vers_js1{
                             t+='{' + espcLignep1 + obj.__xva + espcLigne + '}';
                             ne_pas_mettre_de_terminateur=true;
                         }else{
-                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : '1210 javascript.js traitement bloc ' + JSON.stringify(this.#tb[i])}));
+                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : '1210 m_rev_vers_js1.js traitement bloc ' + JSON.stringify(this.#tb[i])}));
                         }
                         break;
                         
@@ -1292,7 +1292,7 @@ class m_rev_vers_js1{
                         if(objOperation.__xst === true){
                             t+=objOperation.__xva;
                         }else{
-                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'javascript.js traitement non prévu 1057 ' + JSON.stringify(this.#tb[i])}));
+                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'm_rev_vers_js1.js traitement non prévu 1057 ' + JSON.stringify(this.#tb[i])}));
                         }
                         break;
                         

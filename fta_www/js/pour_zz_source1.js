@@ -160,6 +160,25 @@ function sauvegarder_js_en_ligne2(format_rev,donnees){
 /*
   =====================================================================================================================
 */
+function sauvegarder_php_en_ligne2(format_rev,donnees){
+    var tableau1=iterateCharacters2(format_rev);
+    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+    if(matriceFonction.__xst === false){
+        return(logerreur({"__xst" : false ,"__xme" : 'erreur 167 traitement_apres_ajax_pour_conversion_fichier_php'}));
+    }
+    /* var objPhp=parsePhp0(matriceFonction.__xva,0,0); */
+    var objPhp=__m_rev_vers_php1.c_rev_vers_php(format_rev,{});
+    
+    if(objPhp.__xst === true){
+        sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(donnees.__entree.id_source,format_rev,objPhp.__xva,donnees.__entree.date_de_debut_traitement,objPhp.matriceFonction);
+        return({"__xst" : true});
+    }else{
+        return(logerreur({"__xst" : false ,"__xme" : '0182 erreur pour_zz_source'}));
+    }
+}
+/*
+  =====================================================================================================================
+*/
 function sauvegarder_php_en_ligne(format_rev,donnees){
     var tableau1=iterateCharacters2(format_rev);
     var matriceFonction=functionToArray2(tableau1.out,true,false,'');
@@ -213,6 +232,53 @@ function zz_l1_convertir_un_source_js_sur_disque3(id_source){
                             logerreur({"__xst" : false ,"__xme" : nl1(e)+'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]});
                         }else{
                             logerreur({"__xst" : false ,"__xme" : nl1(e)+' '+e.message});
+                        }
+                    }
+                }
+            }else{
+                console.log(donnees);
+            }
+            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+        });
+}
+/*
+  =====================================================================================================================
+  convertir un php avec php_parser
+*/
+function zz_l1_convertir_un_source_php_sur_disque3(id_source){
+    __gi1.raz_des_messages();
+    var date_de_debut_traitement=new Date();
+    date_de_debut_traitement=date_de_debut_traitement.getTime();
+    var ajax_param={
+        "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,
+        "id_source" : id_source ,
+        "date_de_debut_traitement" : date_de_debut_traitement
+    };
+    async function charger_un_fichier_source_par_son_identifiant1(url="",ajax_param){
+        return(__gi1.recupérer_un_fetch(url,ajax_param));
+    }
+    charger_un_fichier_source_par_son_identifiant1('za_ajax.php?charger_un_fichier_source_par_son_identifiant',ajax_param).then((donnees) => {
+            if(donnees.__xst === true){
+                var nom_source=donnees.db['T0.chp_nom_source'];
+                var type_source=donnees.db['T0.chp_type_source'];
+                if(nom_source.substr(nom_source.length - 4) === '.php'){
+                    var parseur=window.PhpParser.Engine({"parser" : {"extractDoc" : true} ,"ast" : {"withPositions" : true}});
+                    try{
+                        let regex=/\/\*sql_inclure_deb[\s\S]*?sql_inclure_fin\*\//g;
+                        let php_moins_commentaires_sql=donnees.contenu_du_fichier.replace(regex,'');
+                        var ast_de_php=parseur.parseCode(php_moins_commentaires_sql);
+                        var obj=__module_php_parseur1.traite_ast(ast_de_php,{"en_ligne" : true});
+                        if(obj.__xst === true){
+                            var parametres={"__entree" : {"id_source" : donnees.db['T0.chi_id_source'] ,"date_de_debut_traitement" : date_de_debut_traitement}};
+                            var obj2=sauvegarder_php_en_ligne2(obj.__xva,parametres);
+                        }else{
+                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+                        }
+                    }catch(e){
+                        if(e.hasOwnProperty('lineNumber')){
+                            logerreur({"__xst" : false ,"__xme" : 'Il y a une erreur dans le source php "" ' ,"line" : e.lineNumber});
+                        }else{
+                            logerreur({"__xst" : false ,"__xme" : 'Il y a une erreur dans le source php '});
                         }
                     }
                 }

@@ -50,7 +50,7 @@ $o1='';?>
     <tbody>
         <tr>
             <td id="zoneRevFiles" style="max-width:100px;overflow-x: hidden;"></td>
-            <td> 
+            <td>
                 <div class="yyconteneur_de_texte1">
                     <textarea id="zonesource" class="yytextSmall" cols="150" rows="60" spellcheck="false" style="height:75vh;"></textarea>
                 </div>
@@ -77,8 +77,16 @@ $js_a_executer_apres_chargement=array(/* */
     array( 'nomDeLaFonctionAappeler' => 'initialisation_page_rev', 'parametre' => array( 'nom' => 'zonesource', 'mode' => 'rev'))
 );
 $a=array(/* */
-    'js_a_inclure' => array( 'js/php.js', 'js/javascript.js', 'js/sql.js', 'js/index_source_script-v0.js'),
-    'module_a_inclure' => array( 'js/module_html.js'),
+    'js_a_inclure' => array(
+            /**/
+            'js/php.js',
+            'js/sql.js',
+            'js/index_source_script-v0.js'
+        ),
+    'module_a_inclure' => array(/**/
+            'js/module_html.js',
+            'js/m_rev_vers_js1.js'
+        ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
 $o1=concat($o1,html_footer1($a));

@@ -50,7 +50,6 @@ $js_a_executer_apres_chargement=array(/* */
 );
 $par=array(/* */
     'js_a_inclure' => array(/*il peut y avoir du javascript dans le html*/
-/*            'js/javascript.js', */
             'js/jslib/acorn.js'
         ),
     'module_a_inclure' => array(/**/

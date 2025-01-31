@@ -2758,6 +2758,11 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse,options_traitement){
     var esp0=' '.repeat(NBESPACESREV * niveau);
     var esp1=' '.repeat(NBESPACESREV);
     var conditionIf='';
+    /*
+      attention, if($a){}else if($b){}else{} ressort avec ce parseur comme
+                 if($a){}else{if($b){}else{}} ( ça ajoute un niveau!!! )
+    */
+    
     var instructionsDansElseOuElseifIf='';
     if(element.cond){
         var obj=php_traiteCondition1(element.cond,niveau,element,options_traitement);
@@ -4161,7 +4166,11 @@ function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
     if(options.hasOwnProperty('en_ligne') && options.en_ligne === true){
         en_ligne=true;
     }
+
     if(obj.__xst === true){
+        if(obj.__xva.substr(0,4)!=='php('){
+            obj.__xva='php('+obj.__xva+')';
+        }
         if(obj.hasOwnProperty('tableau_de_html_dans_php_a_convertir') && obj.tableau_de_html_dans_php_a_convertir.length > 0){
             /*
               il y a du html dans ce php, on le traite et on le remplace 
@@ -4188,11 +4197,11 @@ function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
             }
         }else{
             if(en_ligne === true){
-                sauvegarder_php_en_ligne('php(' + obj.__xva + ')',options.donnees);
+                sauvegarder_php_en_ligne(obj.__xva ,options.donnees);
                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
             }else{
                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
-                var tableau1=iterateCharacters2('php(' + obj.__xva + ')');
+                var tableau1=iterateCharacters2(obj.__xva);
                 var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                 if(matriceFonction.__xst === true){
                     var obj2=arrayToFunct1(matriceFonction.__xva,true);
@@ -4204,12 +4213,12 @@ function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
                         }
                     }else{
                         if(zone_rev !== null){
-                            document.getElementById(zone_rev).value='php(' + obj.__xva + ')';
+                            document.getElementById(zone_rev).value=obj.__xva;
                         }
                     }
                 }else{
                     if(zone_rev !== null){
-                        document.getElementById(zone_rev).value='php(' + obj.__xva + ')';
+                        document.getElementById(zone_rev).value=obj.__xva;
                     }
                 }
             }

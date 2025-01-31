@@ -736,7 +736,6 @@ class traitements_sur_html{
                                                 }
                                             }
                                         }
-                                        /* var objContenuJs=parseJavascript0(tab,debut,0); */
                                         var objContenuJs=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:debut});
                                         debugger
                                         /*avrif*/
@@ -756,7 +755,6 @@ class traitements_sur_html{
                                                 }
                                             }
                                         }
-                                        /* var objContenuJs=parseJavascript0(tab,debut,0); */
                                         var objContenuJs=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:debut});
                                         /*avrif*/
                                         debugger
@@ -829,7 +827,6 @@ class traitements_sur_html{
                         }
                     }
                 }
-                /* var objContenuJs=parseJavascript0(tab,debut,0); */
                 var objContenuJs=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:debut});
                 debugger
                 /*avrif*/
@@ -853,7 +850,6 @@ class traitements_sur_html{
                         }
                     }
                 }
-                /* var objContenuJs=parseJavascript0(tab,debut,0); */
                 var objContenuJs=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:debut});
                 debugger
                 /*avrif*/
@@ -1273,7 +1269,6 @@ class traitements_sur_html{
             /*
               c'est un script dans un html
             */
-            /* var ob=parseJavascript0(tab,indiceDebutJs,0); */
             var ob=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:indiceDebutJs});
             if(ob.__xst === true){
                 /*
@@ -1324,7 +1319,6 @@ class traitements_sur_html{
         }
         if(dansPhp && tab[id][1] === 'source'){
             t+='<?php ';
-            /* ob=parseJavascript0(tab,id,0); */
             ob=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:id});
             /*avrif*/            
             debugger
@@ -1345,10 +1339,7 @@ class traitements_sur_html{
                 "dansCss" : dansCss
             });
         }else if(dansJs && tab[id][1] === 'source'){
-//            ob=parseJavascript0(tab,id + 1,0);
             ob=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:id+1});
-            /*avrif*/            
-            debugger
             if(ob.__xst === true){
                 t+=CRLF;
                 t+='//<![CDATA[' + CRLF;
@@ -1495,7 +1486,6 @@ class traitements_sur_html{
                                     /*
                                       c'est un script dans un html
                                     */
-                                    /* ob=parseJavascript0(tab,indiceDebutJs,niveau+1); */
                                     ob=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:indiceDebutJs});
                                     /*avrif*/            
                                     debugger

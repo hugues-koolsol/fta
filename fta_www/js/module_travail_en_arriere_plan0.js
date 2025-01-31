@@ -27,11 +27,6 @@ try{
 }
 */
 try{
-    importScripts('./javascript.js');
-}catch(e){
-    debugger;
-}
-try{
     importScripts('./sql.js');
 }catch(e){
     debugger;
@@ -48,6 +43,9 @@ import('./module_html.js').then(function(Module){
     });
 import('./module_requete_sql.js').then(function(Module){
         __module_requete_sql1=new Module.requete_sql('__module_requete_sql1',null);
+    });
+import('./m_rev_vers_js1.js').then(function(Module){
+        __m_rev_vers_js1=new Module.m_rev_vers_js1('__m_rev_vers_js1',null);
     });
 /*
   =====================================================================================================================
@@ -246,7 +244,10 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
                             if(extension === '.html' || extension === '.htm'){
                                 var objSource=__module_html1.tabToHtml1(tab,0,false,0);
                             }else if(extension === '.js'){
-                                var objSource=parseJavascript0(tab,1,0);
+                                /* var objSource=parseJavascript0(tab,1,0); */
+                                /*avrif*/
+                                debugger
+                                var objSource=__m_rev_vers_js1.c_tab_vers_js(tab,{});
                             }else if(extension === '.php'){
                                 var objSource=parsePhp0(tab,0,0);
                             }
@@ -340,7 +341,10 @@ function traite_une_suppression(id_tache,arg){
                             var objSource=__module_html1.tabToHtml1(tab1,0,false,0);
                             console.log('%c on traite un html ','color:red;background:yellow;',objSource.__xst);
                         }else if(extension === '.js'){
-                            var objSource=parseJavascript0(tab,1,0);
+                            /* var objSource=parseJavascript0(tab,1,0); */
+                            /*avrif*/
+                            debugger;
+                            var objSource=__m_rev_vers_js1.c_tab_vers_js(tab,{});
                             console.log('%c on traite un js ','color:red;background:yellow;',objSource.__xst);
                         }else if(extension === '.php'){
                             var objSource=parsePhp0(tab1,0,0);

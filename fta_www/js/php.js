@@ -138,6 +138,36 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
             t+=ma_cst_pour_php(tab[i]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r') + ';';
         }else if(tab[i][2] === 'f'){
             switch (tab[i][1]){
+                case 'php' :
+                    obj=php_tabToPhp1(tab,i + 1,false,false,niveau);
+                    /* ✍ tab,id,dansFonction,dansInitialisation,niveau]{ */
+                    if(obj.__xst === true){
+                        if(tab[tab[i][7]][1] === 'php' && tab[tab[i][7]][2] === 'f'){
+                            t+=obj.__xva + CRLF;
+                        }else{
+                            /* si la dernière ou l'avant dernière instruction est un halt, on ne met pas le tag php de fin */
+                            if(tab[l01 - 1][1] === "__halt_compiler"
+                                       && tab[l01 - 1][2] === 'f'
+                                       && tab[l01 - 1][8] === 0
+                                   || tab[l01 - 2][1] === "__halt_compiler"
+                                       && tab[l01 - 2][2] === 'f'
+                                       && tab[l01 - 2][8] === 1
+                                       && tab[l01 - 1][2] === 'c'
+                            ){
+                                t+='<?' + 'php' + obj.__xva;
+                            }else{
+                                /*
+                                  si il existe un indice dont le niveau est inférieur à ce php()
+                                  alors on ne ferme pas le tag php ... non, on ne ferme pas le tag
+                                  t+='<?' + 'php' + obj.__xva + CRLF + '?>';
+                                */
+                                t+='<?' + 'php' + obj.__xva;
+                            }
+                        }
+                    }else{
+                        return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'php.js erreur 621'}));
+                    }
+                    break;
                 case 'definir' :
                     t+=un_espace;
                     t+='define(';
@@ -580,7 +610,11 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                     t+=contenu;
                     t+=un_espace;
                     for( j=0 ; j < sierreur.length ; j++ ){
-                        t+='}catch(' + sierreur[j].nom_erreur + '){';
+                        if(j>0){
+                            t+='catch(' + sierreur[j].nom_erreur + '){';
+                        }else{
+                            t+='}catch(' + sierreur[j].nom_erreur + '){';
+                        }
                         t+=sierreur[j].contenu;
                         t+=un_espace;
                         t+='}';
@@ -923,36 +957,6 @@ function php_tabToPhp1(tab,id,dansFonction,dansInitialisation,niveau){
                     }
                     break;
                     
-                case 'php' :
-                    obj=php_tabToPhp1(tab,i + 1,false,false,niveau);
-                    /* ✍ tab,id,dansFonction,dansInitialisation,niveau]{ */
-                    if(obj.__xst === true){
-                        if(tab[tab[i][7]][1] === 'php' && tab[tab[i][7]][2] === 'f'){
-                            t+=obj.__xva + CRLF;
-                        }else{
-                            /* si la dernière ou l'avant dernière instruction est un halt, on ne met pas le tag php de fin */
-                            if(tab[l01 - 1][1] === "__halt_compiler"
-                                       && tab[l01 - 1][2] === 'f'
-                                       && tab[l01 - 1][8] === 0
-                                   || tab[l01 - 2][1] === "__halt_compiler"
-                                       && tab[l01 - 2][2] === 'f'
-                                       && tab[l01 - 2][8] === 1
-                                       && tab[l01 - 1][2] === 'c'
-                            ){
-                                t+='<?' + 'php' + obj.__xva;
-                            }else{
-                                /*
-                                  si il existe un indice dont le niveau est inférieur à ce php()
-                                  alors on ne ferme pas le tag php ... non, on ne ferme pas le tag
-                                  t+='<?' + 'php' + obj.__xva + CRLF + '?>';
-                                */
-                                t+='<?' + 'php' + obj.__xva;
-                            }
-                        }
-                    }else{
-                        return(php_logerr({"__xst" : false ,"__xva" : t ,"id" : i ,"tab" : tab ,"__xme" : 'php.js erreur 621'}));
-                    }
-                    break;
                     
                 case 'html_dans_php' :
                     var tag_de_fin='<?' + 'php';
