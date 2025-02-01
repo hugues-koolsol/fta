@@ -1,5 +1,4 @@
 "use strict";
-
 /*
   =====================================================================================================================
 */
@@ -91,7 +90,7 @@ function convertSource(objMatSrc){
             for( var i=idJs + 1 ; i < objMatSrc.__xva.length ; i++ ){
                 if(objMatSrc.__xva[i][7] == idJs && objMatSrc.__xva[i][1] == 'php'){
                     baliseHtmlOuPhpTrouvee=true;
-                    retProgrammeSource=parsePhp0(objMatSrc.__xva,i,0);
+                    retProgrammeSource=__m_rev_vers_php1.c_tab_vers_php(objMatSrc.__xva,{"indice_de_debut" : i});
                     if(retProgrammeSource.__xst === true){
                         t+='<?php' + CRLF + retProgrammeSource.__xva + CRLF + '?>';
                     }else{
@@ -112,7 +111,9 @@ function convertSource(objMatSrc){
                   on a oubblié la balise php ou html, on suppose que c'est du php !
                   
                 */
-                retProgrammeSource=parsePhp0(objMatSrc.__xva,position_de_la_balise_source,0);
+                /* avrif */
+                debugger;
+                retProgrammeSource=__m_rev_vers_php1.c_tab_vers_php(objMatSrc.__xva,{"indice_de_debut" : position_de_la_balise_source});
                 if(retProgrammeSource.__xst === true){
                     t+='<?php' + CRLF + retProgrammeSource.__xva + CRLF + '?>';
                 }else{
@@ -141,8 +142,7 @@ function convertSource(objMatSrc){
                 "tabConcatFichier" : tabConcatFichier
             }));
         }else if(type_source == 'src_javascript' && file_extension == 'js'){
-            retProgrammeSource=__m_rev_vers_js1.c_tab_vers_js(objMatSrc.__xva,{indice_de_debut:idJs + 1});
-            
+            retProgrammeSource=__m_rev_vers_js1.c_tab_vers_js(objMatSrc.__xva,{"indice_de_debut" : idJs + 1});
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{
@@ -496,15 +496,15 @@ function enregistrer2(){
         zoneContenantLeSourceGenere.id='zoneContenantLeSourceGenere';
         zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere);
         var cont01=document.createElement('div');
-            cont01.className='yyconteneur_de_texte1';
-            var zoneContenantLeSourceGenere2=document.createElement('textarea');
-            zoneContenantLeSourceGenere2.rows=30;
-            zoneContenantLeSourceGenere2.cols=120;
-            zoneContenantLeSourceGenere2.style.background='lightcyan';
-            zoneContenantLeSourceGenere2.style.display='none';
-            zoneContenantLeSourceGenere2.id='zoneContenantLeSourceGenere2';
-            cont01.appendChild(zoneContenantLeSourceGenere2);
-            zonedonneesComplementaires.appendChild(cont01);
+        cont01.className='yyconteneur_de_texte1';
+        var zoneContenantLeSourceGenere2=document.createElement('textarea');
+        zoneContenantLeSourceGenere2.rows=30;
+        zoneContenantLeSourceGenere2.cols=120;
+        zoneContenantLeSourceGenere2.style.background='lightcyan';
+        zoneContenantLeSourceGenere2.style.display='none';
+        zoneContenantLeSourceGenere2.id='zoneContenantLeSourceGenere2';
+        cont01.appendChild(zoneContenantLeSourceGenere2);
+        zonedonneesComplementaires.appendChild(cont01);
         voirSourceGenere();
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');

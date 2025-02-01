@@ -54,7 +54,6 @@ if($chi_id_dossier != ''){
 }else if($chp_nom_dossier != ''){
 
     $autofocus='chp_nom_dossier';
-
 }
 
 $o1 .= '<form method="get" class="yyfilterForm">' . PHP_EOL;

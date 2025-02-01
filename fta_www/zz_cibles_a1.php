@@ -3,7 +3,6 @@ define('BNF',basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services(true,true);
 /* sess,bdd*/
-
 function recupere_une_donnees_des_cibles($id){
 
     sql_inclure_reference(34);
@@ -19,7 +18,7 @@ function recupere_une_donnees_des_cibles($id){
     /*sql_inclure_fin*/
     
     $tt=sql_34(array( 'T0_chi_id_cible' => $id));
-
+    
     if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         return false;
@@ -46,17 +45,16 @@ if(APP_KEY === 'fta'
 /*
   =====================================================================================================================
 */
-
 function erreur_dans_champs_saisis_cibles(){
 
     $uneErreur=false;
-
+    
     if($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'] === '1'){
 
 
     }else{
 
-
+        
         if($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'] === ''){
 
             /*
@@ -69,7 +67,7 @@ function erreur_dans_champs_saisis_cibles(){
 
         }
 
-
+        
         if(substr($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'],0,1) === ' '){
 
             ajouterMessage('erreur',__LINE__ . ' : le nom cible ne doit pas commencer par un espace ',BNF);
@@ -77,7 +75,7 @@ function erreur_dans_champs_saisis_cibles(){
 
         }
 
-
+        
         if($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] === ''){
 
             /*
@@ -90,7 +88,7 @@ function erreur_dans_champs_saisis_cibles(){
 
         }
 
-
+        
         if(substr($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'],0,1) === ' '){
 
             ajouterMessage('erreur',__LINE__ . ' : le nom cible ne doit pas commencer par un espace ',BNF);
@@ -123,13 +121,13 @@ if(isset($_POST) && sizeof($_POST) >= 1){
       ============================================= MODIFICATION ==================================================
       =============================================================================================================
     */
-
+    
     if(isset($_POST['__action']) && $_POST['__action'] == '__modification'){
 
-
+        
         if(erreur_dans_champs_saisis_cibles()){
 
-
+            
             if(isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']) && is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'])){
 
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
@@ -143,7 +141,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }
 
-
+        
         if($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'] === '1'){
 
             sql_inclure_reference(47);
@@ -181,7 +179,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             ));
         }
 
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
@@ -189,7 +187,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }else{
 
-
+            
             if($tt['changements'] === 1){
 
                 ajouterMessage('info',' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2),BNF);
@@ -213,7 +211,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         */
         $__id=isset($_POST['__id1']) ? (is_numeric($_POST['__id1']) ? $_POST['__id1'] : 0) : 0;
         $__valeurs=recupere_une_donnees_des_cibles($__id);
-
+        
         if($__valeurs === false){
 
             ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer cet enregistrement ',BNF);
@@ -221,7 +219,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }
 
-
+        
         if($__valeurs['T0.chp_nom_cible'] === 'fta' && $__valeurs['T0.chp_dossier_cible'] === 'fta'){
 
             ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer "fta"');
@@ -241,7 +239,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_fin*/
         
         $tt=sql_38(array());
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',$tt[__xme],BNF);
@@ -264,7 +262,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_fin*/
         
         $tt=sql_14(array( 'chx_cible_rev' => $__id));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',$tt[__xme],BNF);
@@ -299,7 +297,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_fin*/
         
         $tt=sql_41(array( 'chx_cible_id_source' => $__id));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',$tt[__xme],BNF);
@@ -334,7 +332,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_fin*/
         
         $tt=sql_42(array( 'chx_cible_requete' => $__id));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',$tt[__xme],BNF);
@@ -369,7 +367,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_fin*/
         
         $tt=sql_43(array( 'chx_cible_id_basedd' => $__id));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',$tt[__xme],BNF);
@@ -404,7 +402,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_fin*/
         
         $tt=sql_44(array( 'chx_cible_dossier' => $__id));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',$tt[__xme],BNF);
@@ -439,7 +437,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_fin*/
         
         $tt=sql_45(array( 'chi_id_cible' => $__id));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',$tt[__xme],BNF);
@@ -485,14 +483,14 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           =============================== CREATION ============================================================
           =====================================================================================================
         */
-
+        
         if(erreur_dans_champs_saisis_cibles()){
 
             recharger_la_page(BNF . '?__action=__creation');
 
         }
 
-
+        
         if($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'] === 'fta' && $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] === 'fta'){
 
             ajouterMessage('erreur',__LINE__ . ' : le projet fta est la racine et est déjà créé',BNF);
@@ -519,7 +517,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_fin*/
         
         $tt=sql_36(array( array( 'chp_nom_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'], 'chp_dossier_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'], 'chp_commentaire_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible'])));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
@@ -545,7 +543,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_fin*/
             
             $tt37=sql_37(array( array( 'chx_cible_dossier' => $tt['nouvel_id'], 'chp_nom_dossier' => '/')));
-
+            
             if($tt37[__xst] === false){
 
                 ajouterMessage('erreur',__LINE__ . ' : ' . $tt37[__xme],BNF);
@@ -569,26 +567,26 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           =============================== CREATION D'UN DOSSIER ===============================================
           =====================================================================================================
         */
-
+        
         if(isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'])){
 
             $__id=$_SESSION[APP_KEY][NAV][BNF]['chi_id_cible'];
-
+            
             if(isset($_SESSION[APP_KEY][NAV][BNF])){
 
                 unset($_SESSION[APP_KEY][NAV][BNF]);
 
             }
 
-
+            
             if($__id !== 0){
 
                 $__valeurs=recupere_une_donnees_des_cibles($__id);
-
+                
                 if($__valeurs !== false){
 
                     $__dossier='../../' . $__valeurs['T0.chp_dossier_cible'];
-
+                    
                     if(mkdir($__dossier)){
 
                         ajouterMessage('succes',__LINE__ . ' le dossier "' . $__dossier . '" a été créé avec succès !',BNF);
@@ -627,21 +625,21 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           =====================================================================================================
         */
         $__id=(int)($_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
-
+        
         if($__id !== 0 && $__id !== 1){
 
             $__valeurs=recupere_une_donnees_des_cibles($__id);
-
+            
             if($__valeurs !== false){
 
                 $__dossier='../../' . $__valeurs['T0.chp_dossier_cible'];
-
+                
                 if(is_dir($__dossier)){
 
-
+                    
                     if(le_dossier_est_vide($__dossier)){
 
-
+                        
                         if(rmdir($__dossier)){
 
                             ajouterMessage('succes',__LINE__ . ' le dossier "' . $__dossier . '" a été supprimé avec succès !',BNF);
@@ -689,7 +687,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     /*
       on ne devrait pas arriver là car on a normalement capturé tous les cas
     */
-
+    
     if(isset($_SESSION[APP_KEY][NAV][BNF])){
 
         unset($_SESSION[APP_KEY][NAV][BNF]);
@@ -713,7 +711,7 @@ $__id=0;
 if(isset($_GET['__action']) && ($_GET['__action'] === '__suppression' || $_GET['__action'] === '__modification')){
 
     $__id=isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0;
-
+    
     if($__id === 1 && $_GET['__action'] === '__suppression'){
 
         ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer la cible 1');
@@ -721,7 +719,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] === '__suppression' || $_GET['
 
     }
 
-
+    
     if($__id === 0){
 
         ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer ou modifier la cible 0');
@@ -730,7 +728,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] === '__suppression' || $_GET['
     }else{
 
         $__valeurs=recupere_une_donnees_des_cibles($__id);
-
+        
         if($__valeurs === false){
 
             ajouterMessage('erreur',__LINE__ . ' cible non trouvée');
@@ -840,7 +838,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '   <span>' . $__id . '</span>' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
-
+    
     if($__id != '1'){
 
         $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
@@ -879,7 +877,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= '</div>' . PHP_EOL;
     $o1 .= '</form>' . PHP_EOL;
-
+    
     if(APP_KEY === 'fta'
        && basename(dirname(__FILE__,2)) === 'fta'
        && $__valeurs['T0.chp_nom_cible'] === 'fta'
@@ -893,11 +891,11 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     }
 
     $dossier='../../' . $__valeurs['T0.chp_dossier_cible'];
-
+    
     if(is_dir($dossier)){
 
         $o1 .= 'le dossier existe ' . PHP_EOL;
-
+        
         if(le_dossier_est_vide($dossier)){
 
             $o1 .= '<br />le dossier ' . $dossier . ' est vide' . PHP_EOL;
@@ -934,7 +932,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
 }else{
 
-
+    
     if(isset($_GET['__action'])){
 
         $o1 .= $_GET['__action'] . '<br />';

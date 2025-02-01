@@ -5,7 +5,8 @@ session_start();
 $o1='';
 $o1=html_header1(array( 'title' => 'php ⇒ rev', 'description' => 'convertir un php en rev'));
 print($o1);
-$o1='';?>
+$o1='';
+?>
 <div class="menuScroller">
     <ul>
         <li>
@@ -44,7 +45,6 @@ $o1='';?>
     <textarea class="txtar1" id="txtar2" rows="15" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 </div>
 <div class="yyconteneur_de_texte1">
-    <a class="yyinfo" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_php(&quot;txtar2&quot;,&quot;txtar3&quot;,true)">R2P↧</a>
     <a class="yyavertissement" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_php2(&quot;txtar2&quot;,&quot;txtar3&quot;,null,null);" title="convertir rev en php">R2P↧</a>
     <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;txtar3&quot;,1)">aller à la ligne n°</a>
     <a style="float:right;" class="yyinfo" href="javascript:__gi1.aller_a_la_position(&quot;txtar3&quot;)">aller à la position</a>
@@ -59,7 +59,11 @@ $js_a_executer_apres_chargement=array(/* fonctions js à éxécuter un fois que 
     array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar2', 'mode' => 'rev'))
 );
 $par=array(/* éléments à passer au pied de page : le php peut contenir du html et du js, donc on importe tout */
-    'js_a_inclure' => array( 'js/convertit-php-en-rev0.js', 'js/php.js', 'js/jslib/acorn.js', 'js/jslib/php-parser.js'),
+    'js_a_inclure' => array(/**/
+            'js/convertit-php-en-rev0.js',
+            'js/jslib/acorn.js',
+            'js/jslib/php-parser.js'
+        ),
     'module_a_inclure' => array(
             /* */
             'js/module_html.js',
@@ -75,7 +79,7 @@ if(isset($_SESSION[APP_KEY]['cible_courante']['chi_id_cible'])){
 
     $nom_bref='aa_js_sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.js';
     $nom_complet=INCLUDE_PATH . DIRECTORY_SEPARATOR . 'sql/' . $nom_bref;
-
+    
     if(is_file($nom_complet)){
 
         $o1 .= '<script type="text/javascript">' . PHP_EOL . file_get_contents($nom_complet) . '</script>';
@@ -90,6 +94,7 @@ if(isset($_SESSION[APP_KEY]['cible_courante']['chi_id_cible'])){
 
     $o1 .= '<script type="text/javascript">/*' . CRLF . '=====================================' . CRLF . 'ATTENTION veuillez sélectionner une cible' . CRLF . '=====================================================' . CRLF . '*/</script>';
 }
+
 ?>
 <script type="text/javascript">
 //<![CDATA[

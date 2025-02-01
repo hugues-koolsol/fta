@@ -13,7 +13,6 @@ define("BNF",basename(__FILE__));
 require_once('aa_include.php');
 initialiser_les_services( /*session*/ true, /*bdd*/ false);
 /*===================================================================================================================*/
-
 function supprimerLesValeursDeSession(){
 
     unset($_SESSION[APP_KEY]);
@@ -27,7 +26,7 @@ function supprimerLesValeursDeSession(){
 
 if(isset($_POST) && count($_POST) > 0){
 
-
+    
     if(isset($_POST['nom_de_connexion']) && isset($_POST['mot_de_passe'])){
 
         initialiser_les_services( /*session*/ true, /*bdd*/ true);
@@ -68,7 +67,7 @@ if(isset($_POST) && count($_POST) > 0){
         /*sql_inclure_fin*/
         
         $sql1=sql_1(array( 'nom_de_connexion' => $_POST['nom_de_connexion']));
-
+        
         if($sql1[__xst] !== true){
 
             ajouterMessage('erreur',__LINE__ . ' ' . $sql1[__xme],BNF);
@@ -77,7 +76,7 @@ if(isset($_POST) && count($_POST) > 0){
 
         }
 
-
+        
         if(password_verify($_POST['mot_de_passe'],$sql1[__xva][0]['T0.chp_mot_de_passe_utilisateur'])){
 
             /*
@@ -114,7 +113,6 @@ if(isset($_POST) && count($_POST) > 0){
 
         supprimerLesValeursDeSession();
         recharger_la_page(BNF);
-
     }
 
 
@@ -129,7 +127,7 @@ if(isset($_POST) && count($_POST) > 0){
 
 if(isset($_GET) && count($_GET) > 0){
 
-
+    
     if(isset($_GET['a']) && $_GET['a'] == 'logout'){
 
         supprimerLesValeursDeSession();
@@ -169,7 +167,8 @@ if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['
       =============================================================================================================
       ... si oui on lui affiche un formulaire de DEconnexion
       =============================================================================================================
-    */?>
+    */
+    ?>
     <!--  formulaire html en dehors du php  -->
     <form id="boite_de_connexion" method="post" style="margin-top:50px;">
         <input type="hidden" name="logout" id="logout" value="" />
@@ -183,7 +182,8 @@ if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['
       =============================================================================================================
       ... sinon on lui affiche un formulaire de connexion
       =============================================================================================================
-    */?>
+    */
+    ?>
     <!--  formulaire html en dehors du php  -->
     <form id="boite_de_connexion" method="post" onsubmit="return verifier_formulaire_avant_envoi()" style="margin-top:50px;">
         <div>Veuillez indiquer votre nom de connexion et votre mot de passe</div>
@@ -207,7 +207,6 @@ if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['
 //<![CDATA[
 //<source_javascript_rev>
 "use strict";
-
 /*
   normalement j'évite de mettre du js dans du php mais pour l'exemple, je le fais ici
   car le js ci dessous est passe par l'étape rev 

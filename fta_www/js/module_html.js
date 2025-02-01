@@ -1318,11 +1318,13 @@ class traitements_sur_html{
             dansPhp=true;
         }
         if(dansPhp && tab[id][1] === 'source'){
+           
             t+='<?php ';
-            ob=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:id});
-            /*avrif*/            
+            /* ob=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:id}); */
+            ob=__m_rev_vers_php1.c_tab_vers_php(objMatSrc.__xva,{indice_de_debut:id});
+            /*avrif il n'y a pas de raison de passer par ici */
+            console.log('%cpourquoi passe-t-on par ici ????','background:yellow;color:red;')
             debugger
-            parsePhp0(tab,id,0);
             if(ob.__xst === true){
                 t+=ob.__xva;
             }else{

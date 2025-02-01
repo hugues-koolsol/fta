@@ -13,11 +13,6 @@ try{
 }catch(e){
     debugger;
 }
-try{
-    importScripts('./php.js');
-}catch(e){
-    debugger;
-}
 /*
 A remplacer avec le module
 try{
@@ -46,6 +41,9 @@ import('./module_requete_sql.js').then(function(Module){
     });
 import('./m_rev_vers_js1.js').then(function(Module){
         __m_rev_vers_js1=new Module.m_rev_vers_js1('__m_rev_vers_js1',null);
+    });
+import('./m_rev_vers_php1.js').then(function(Module){
+        __m_rev_vers_php1=new Module.m_rev_vers_php1('__m_rev_vers_php1',null);
     });
 /*
   =====================================================================================================================
@@ -249,7 +247,10 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
                                 debugger
                                 var objSource=__m_rev_vers_js1.c_tab_vers_js(tab,{});
                             }else if(extension === '.php'){
-                                var objSource=parsePhp0(tab,0,0);
+                                
+                                /*avrif*/
+                                debugger
+                                var objSource=__m_rev_vers_php1.c_tab_vers_php(tab,{});
                             }
                             if(objSource.__xst === true){
                                 var obj=arrayToFunct1(tab,true);
@@ -344,10 +345,12 @@ function traite_une_suppression(id_tache,arg){
                             /* var objSource=parseJavascript0(tab,1,0); */
                             /*avrif*/
                             debugger;
-                            var objSource=__m_rev_vers_js1.c_tab_vers_js(tab,{});
+                            var objSource=__m_rev_vers_js1.c_tab_vers_js(tab1,{});
                             console.log('%c on traite un js ','color:red;background:yellow;',objSource.__xst);
                         }else if(extension === '.php'){
-                            var objSource=parsePhp0(tab1,0,0);
+                            /*avrif*/
+                            debugger;
+                            var objSource=__m_rev_vers_php1.c_tab_vers_php(tab1,{indice_de_debut:i});
                             console.log('%c on traite un php ','color:red;background:yellow;',objSource.__xst);
                         }
                         if(objSource.__xst === true){

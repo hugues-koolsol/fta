@@ -26,7 +26,7 @@ if(isset($_GET['supprimer_tout']) && $_GET['supprimer_tout'] === '1'){
     /*sql_inclure_fin*/
     
     $tt=sql_14(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
-
+    
     if($tt[__xst] === false){
 
         ajouterMessage('erreur',__LINE__ . ' problème ',BNF);
@@ -84,42 +84,42 @@ if($chp_nom_source1 != ''){
 
 }else{
 
-
+    
     if($chp_provenance_rev != ''){
 
         $autofocus='chp_provenance_rev';
 
     }else{
 
-
+        
         if($chp_nom_source2 != ''){
 
             $autofocus='chp_nom_source2';
 
         }else{
 
-
+            
             if($chx_source_rev != ''){
 
                 $autofocus='chx_source_rev';
 
             }else{
 
-
+                
                 if($chp_valeur_rev != ''){
 
                     $autofocus='chp_valeur_rev';
 
                 }else{
 
-
+                    
                     if($chp_commentaire_rev != ''){
 
                         $autofocus='chp_commentaire_rev';
 
                     }else{
 
-
+                        
                         if($chi_id_rev != ''){
 
                             $autofocus='chi_id_rev';
@@ -264,7 +264,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $__lsttbl .= '<td data-label="" style="text-align:left!important;">';
     $__lsttbl .= '<div class="yyflex1">';
     $__lsttbl .= ' <a class="yyinfo" href="zz_sources_a1.php?__action=__modification&amp;__id=' . $v0['T0.chx_source_rev'] . '" target="_blank" title="modifier">⇒</a>';
-
+    
     if($v0['T0.chp_valeur_rev'] === '#' && $v0['T0.chp_type_rev'] === 'f'){
 
         $__lsttbl .= ' <a class="yydanger" href="javascript:__gi1.supprimer_ce_commentaire_et_recompiler(' . $v0['T0.chx_source_rev'] . ',' . $v0['T0.chi_id_rev'] . ',&quot;' . $v0['T0.chp_provenance_rev'] . '&quot;)"  title="supprimer ce commentaire et recompiler">⚙️</a>';
@@ -283,14 +283,14 @@ foreach($tt[__xva] as $k0 => $v0){
     $__lsttbl .= enti1($v0['T0.chp_provenance_rev']) . '';
     $__lsttbl .= '</td>';
     $__lsttbl .= '<td style="text-align:left;">';
-
+    
     if($v0['T0.chp_provenance_rev'] === 'source'){
 
         $__lsttbl .= enti1($v0['T1.chp_nom_source']) . '';
 
     }else{
 
-
+        
         if($v0['T0.chp_provenance_rev'] === 'sql'){
 
             $__lsttbl .= enti1('requête sql') . '';
@@ -304,10 +304,10 @@ foreach($tt[__xva] as $k0 => $v0){
     $__lsttbl .= $v0['T0.chx_source_rev'] . '';
     $__lsttbl .= '</td>';
     $__lsttbl .= '<td style="text-align:left;">';
-
+    
     if($v0['T0.chp_provenance_rev'] === 'sql'){
 
-
+        
         if($v0['T0.chp_niveau_rev'] == 0){
 
             $__lsttbl .= '<b style="color:red;">' . $v0['T0.chp_valeur_rev'] . '</b>';
@@ -320,7 +320,7 @@ foreach($tt[__xva] as $k0 => $v0){
 
     }else{
 
-
+        
         if($v0['T0.chp_valeur_rev'] === null){
 
             $a='';
@@ -335,20 +335,20 @@ foreach($tt[__xva] as $k0 => $v0){
 
     /* */
     $__lsttbl .= '</td>';
-
+    
     if($chp_valeur_rev != ''){
 
-
+        
         if($v0['T0.chp_provenance_rev'] === 'source'){
 
-
+            
             if(!isset($tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']])){
 
                 $tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
             }else{
 
-
+                
                 if(!isset($tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
 
                     $tableau_pour_webworker_sources[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
@@ -363,20 +363,20 @@ foreach($tt[__xva] as $k0 => $v0){
 
         }else{
 
-
+            
             if($v0['T0.chp_provenance_rev'] === 'sql'){
 
-
+                
                 if('requete_manuelle' !== $v0['T2.chp_type_requete']){
 
-
+                    
                     if(!isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']])){
 
                         $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
 
                     }else{
 
-
+                        
                         if(!isset($tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']])){
 
                             $tableau_pour_webworker_sql[$v0['T0.chp_valeur_rev']][$v0['T0.chx_source_rev']]=1;
@@ -423,7 +423,7 @@ if(count($tableau_pour_webworker_sources) >= 1 && ($__nbEnregs <= $__nbMax || $c
         foreach($v1 as $k2 => $v2){
             $liste_des_taches[]=array( 'id_source' => $k2, 'etat' => 'a_faire');
         }
-
+        
         if($chaine_a_remplacer !== ''){
 
             /*   $o1.='$chaine_a_remplacer='.$chaine_a_remplacer.', $liste_des_taches=' . $liste_des_taches;*/
@@ -456,7 +456,7 @@ if(count($tableau_pour_webworker_sql) >= 1 && ($__nbEnregs <= $__nbMax || $chp_n
         foreach($v1 as $k2 => $v2){
             $liste_des_taches[]=array( 'id_source' => $k2, 'etat' => 'a_faire');
         }
-
+        
         if($chaine_a_remplacer !== ''){
 
             /*   $o1.='$chaine_a_remplacer='.$chaine_a_remplacer.', $liste_des_taches=' . $liste_des_taches;*/

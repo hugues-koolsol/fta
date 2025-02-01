@@ -40,7 +40,7 @@ if(isset($_GET['__action']) && '__recuperer_dossiers' === $_GET['__action']){
     /*sql_inclure_fin*/
     
     $tt=sql_51(array( 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
-
+    
     if($tt[__xst] === false){
 
         ajouterMessage('erreur',__LINE__ . ' : erreur de récupération des dossiers actuels ' . $tt[__xme],BNF);
@@ -48,8 +48,9 @@ if(isset($_GET['__action']) && '__recuperer_dossiers' === $_GET['__action']){
 
     }
 
-    for($i=0;$i < count($tt[__xva]);$i++){
-
+    for( $i=0 ; $i < count($tt[__xva]) ; $i++ ){
+        
+        
         if($tt[__xva][$i]['T0.chp_nom_dossier'] !== '/'){
 
             $listeDesDossiersactuels[$tt[__xva][$i]['T0.chp_nom_dossier']]='present';
@@ -61,7 +62,7 @@ if(isset($_GET['__action']) && '__recuperer_dossiers' === $_GET['__action']){
     $tableau_a_inserer=array();
     foreach($listeDesDossiersSurDisque[1] as $k1 => $v1){
         $nom_du_dossier_a_creer=substr($v1['chemin'],strlen($le_dossier_a_recuperer));
-
+        
         if(isset($listeDesDossiersactuels[$nom_du_dossier_a_creer])){
 
             /* dossier déjà existant */
@@ -83,7 +84,7 @@ if(isset($_GET['__action']) && '__recuperer_dossiers' === $_GET['__action']){
         }
 
     }
-
+    
     if(count($tableau_a_inserer) > 0){
 
         sql_inclure_reference(52);
@@ -103,7 +104,7 @@ if(isset($_GET['__action']) && '__recuperer_dossiers' === $_GET['__action']){
         /*sql_inclure_fin*/
         
         $tt=sql_52($tableau_a_inserer);
-
+        
         if($tt[__xst] === true){
 
             ajouterMessage('succes',__LINE__ . ' : les dossiers ont été importés',BNF);
@@ -126,7 +127,6 @@ if(isset($_GET['__action']) && '__recuperer_dossiers' === $_GET['__action']){
 /*
   =====================================================================================================================
 */
-
 function listerLesDossiers($dir,$niveau=0){
 
     /*    echo __FILE__ . ' ' . __LINE__ . ' $niveau='.$niveau.' , $dir = <pre>' . var_export( $dir , true ) . '</pre>' ; */
@@ -134,7 +134,7 @@ function listerLesDossiers($dir,$niveau=0){
     $ffs=scandir($dir);
     unset($ffs[array_search('.',$ffs,true)]);
     unset($ffs[array_search('..',$ffs,true)]);
-
+    
     if(count($ffs) < 1){
 
         return array( array(), '');
@@ -144,7 +144,7 @@ function listerLesDossiers($dir,$niveau=0){
     $temp=array();
     foreach($ffs as $ff){
         $chemin=$dir . '/' . $ff;
-
+        
         if(is_dir($chemin)){
 
             $temp[$ff]=$chemin;
@@ -154,14 +154,14 @@ function listerLesDossiers($dir,$niveau=0){
     }
     foreach($temp as $k1 => $v1){
         $sousChaineRev='';
-
+        
         if($k1 !== 'vendor'){
 
             /*
               on ne met pas le sous dossier vendor qui contient des bibliothèques importées par composer
             */
             $sousDossiers=listerLesDossiers($v1,$niveau + 1);
-
+            
             if(count($sousDossiers[0]) > 0){
 
                 $temp[$k1]=array( 'chemin' => $v1, 'dossiers' => $sousDossiers[0]);
@@ -176,7 +176,7 @@ function listerLesDossiers($dir,$niveau=0){
 
         }
 
-
+        
         if($chaineRev !== ''){
 
             $chaineRev .= ',';
@@ -184,7 +184,7 @@ function listerLesDossiers($dir,$niveau=0){
         }
 
         $chaineRev .= $k1 . '(';
-
+        
         if($sousChaineRev !== ''){
 
             $chaineRev .= $sousChaineRev;
@@ -193,14 +193,13 @@ function listerLesDossiers($dir,$niveau=0){
 
         $chaineRev .= ')';
     }
-
+    
     if($niveau === 0){
-
 
         function linearise($entree,&$sortie,$niveau=0){
 
             foreach($entree as $k1 => $v1){
-
+                
                 if(isset($v1['chemin'])){
 
                     $sortie[$k1]=array( 'niveau' => $niveau / 2, 'chemin' => $v1['chemin']);
@@ -208,7 +207,7 @@ function listerLesDossiers($dir,$niveau=0){
 
                 }
 
-
+                
                 if(is_array($v1)){
 
                     $niveau++;
@@ -269,7 +268,6 @@ if($chi_id_dossier != ''){
 }else if($chp_nom_dossier != ''){
 
     $autofocus='chp_nom_dossier';
-
 }
 
 $o1 .= '<form method="get" class="yyfilterForm">' . PHP_EOL;
@@ -339,7 +337,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $__lsttbl .= '<tr>' . PHP_EOL;
     $__lsttbl .= '<td data-label="" style="text-align:left!important;">';
     $__lsttbl .= '<div class="yyflex1">';
-
+    
     if($v0['T0.chp_nom_dossier'] !== '/'){
 
         $__lsttbl .= ' <a class="yyinfo" href="zz_dossiers_a1.php?__action=__modification&amp;__id=' . $v0['T0.chi_id_dossier'] . '" title="modifier">✎</a>';

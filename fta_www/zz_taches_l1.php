@@ -5,7 +5,6 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 /*
   =====================================================================================================================
 */
-
 function obtenir_entete_de_la_page(){
 
     $o1='';
@@ -37,7 +36,7 @@ if(isset($_POST['__ordonner_les_taches'])){
     /*sql_inclure_fin*/
     
     $tt=sql_64(array( 'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'T0_chp_priorite_tache' => 50));
-
+    
     if($tt[__xst] === false){
 
         ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
@@ -48,7 +47,7 @@ if(isset($_POST['__ordonner_les_taches'])){
     $nouvelle_priorite=1;
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt[__xva] , true ) . '</pre>' ; exit(0);*/
     foreach($tt[__xva] as $k1 => $v1){
-
+        
         if($nouvelle_priorite < 50){
 
             sql_inclure_reference(65);
@@ -66,7 +65,7 @@ if(isset($_POST['__ordonner_les_taches'])){
             
             /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v1 , true ) . '</pre>' ; exit(0);*/
             $tt2=sql_65(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'c_chi_id_tache' => $v1['T0.chi_id_tache'], 'n_chp_priorite_tache' => $nouvelle_priorite));
-
+            
             if($tt2[__xst] === false){
 
                 ajouterMessage('erreur',__LINE__ . ' : ' . $tt2[__xme]);
@@ -101,7 +100,7 @@ if(isset($_POST['__soustraire_1_aux_priorites'])){
     /*sql_inclure_fin*/
     
     $tt=sql_23(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'n_chp_priorite_tache' => 50));
-
+    
     if($tt[__xst] === false){
 
         ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
@@ -123,7 +122,7 @@ if(isset($_POST['__soustraire_1_aux_priorites'])){
     /*sql_inclure_fin*/
     
     $tt=sql_25(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
-
+    
     if($tt[__xst] === false){
 
         ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
@@ -157,7 +156,7 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
     /*sql_inclure_fin*/
     
     $tt=sql_23(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'n_chp_priorite_tache' => 50));
-
+    
     if($tt[__xst] === false){
 
         ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
@@ -178,7 +177,7 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
     /*sql_inclure_fin*/
     
     $tt=sql_24(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
-
+    
     if($tt[__xst] === false){
 
         ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
@@ -199,7 +198,7 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
 
 if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
 
-
+    
     if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
         sql_inclure_reference(22);
@@ -215,7 +214,7 @@ if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
         /*sql_inclure_fin*/
         
         $tt=sql_22(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'n_chp_priorite_tache' => 99));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
@@ -238,7 +237,7 @@ if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
 
 if(isset($_GET['__action']) && '__mettre_a_0' === $_GET['__action']){
 
-
+    
     if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
         sql_inclure_reference(22);
@@ -254,7 +253,7 @@ if(isset($_GET['__action']) && '__mettre_a_0' === $_GET['__action']){
         /*sql_inclure_fin*/
         
         $tt=sql_22(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'n_chp_priorite_tache' => 0));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
@@ -277,7 +276,7 @@ if(isset($_GET['__action']) && '__mettre_a_0' === $_GET['__action']){
 
 if(isset($_GET['__action']) && '__mettre_a_plus_1' === $_GET['__action']){
 
-
+    
     if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
         sql_inclure_reference(21);
@@ -294,7 +293,7 @@ if(isset($_GET['__action']) && '__mettre_a_plus_1' === $_GET['__action']){
         /*sql_inclure_fin*/
         
         $tt=sql_21(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
@@ -317,7 +316,7 @@ if(isset($_GET['__action']) && '__mettre_a_plus_1' === $_GET['__action']){
 
 if(isset($_GET['__action']) && '__mettre_a_moins_1' === $_GET['__action']){
 
-
+    
     if(isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
         sql_inclure_reference(20);
@@ -334,7 +333,7 @@ if(isset($_GET['__action']) && '__mettre_a_moins_1' === $_GET['__action']){
         /*sql_inclure_fin*/
         
         $tt=sql_20(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
@@ -395,7 +394,6 @@ if($chp_texte_tache != ''){
 }else if($chi_id_tache != ''){
 
     $autofocus='chi_id_tache';
-
 }
 
 $o1 .= '<form method="get" class="yyfilterForm">' . PHP_EOL;
@@ -501,7 +499,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl .= '' . $v0['T0.chi_id_tache'] . '';
     $lsttbl .= '</td>';
     $lsttbl .= '<td style="text-align:left;">';
-
+    
     if($v0['T0.chp_texte_tache'] !== null){
 
         $lsttbl .= '' . enti1(mb_substr($v0['T0.chp_texte_tache'],0,100)) . '';

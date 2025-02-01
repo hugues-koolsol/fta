@@ -8,7 +8,7 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
 if(isset($_GET['__action']) && '__selectionner_cette_cible' === $_GET['__action']){
 
-
+    
     if(isset($_SESSION[APP_KEY]['cible_courante'])){
 
         unset($_SESSION[APP_KEY]['cible_courante']);
@@ -16,7 +16,7 @@ if(isset($_GET['__action']) && '__selectionner_cette_cible' === $_GET['__action'
     }
 
     $__id=isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0;
-
+    
     if($__id !== 0){
 
         sql_inclure_reference(34);
@@ -32,7 +32,7 @@ if(isset($_GET['__action']) && '__selectionner_cette_cible' === $_GET['__action'
         /*sql_inclure_fin*/
         
         $tt=sql_34(array( 'T0_chi_id_cible' => $__id));
-
+        
         if($tt[__xst] === true && count($tt[__xva]) === 1){
 
             $_SESSION[APP_KEY]['cible_courante']=array( 'chi_id_cible' => $tt[__xva][0]['T0.chi_id_cible'], 'chp_nom_cible' => $tt[__xva][0]['T0.chp_nom_cible'], 'chp_dossier_cible' => $tt[__xva][0]['T0.chp_dossier_cible']);
@@ -95,7 +95,6 @@ if($chi_id_cible != ''){
 }else if($chp_commentaire_cible != ''){
 
     $autofocus='chp_commentaire_cible';
-
 }
 
 $o1 .= '<form method="get" class="yyfilterForm">' . PHP_EOL;
@@ -185,11 +184,11 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl .= '<td data-label="" style="text-align:left!important;">';
     $lsttbl .= '<div class="yyflex1">';
     $lsttbl .= ' <a class="yyinfo" href="zz_cibles_a1.php?__action=__modification&amp;__id=' . $v0['T0.chi_id_cible'] . '" title="modifier">✎</a>';
-
+    
     if(isset($_SESSION[APP_KEY]['cible_courante'])){
 
         /* si on est sur fta ou bien que le cible est "1" ou bien qu'on est en train de travailler sur la cible courante, alors on ne peut pas supprimer la cible */
-
+        
         if($v0['T0.chp_nom_cible'] === 'fta'
                && $v0['T0.chp_dossier_cible'] === 'fta'
            || $v0['T0.chi_id_cible'] === 1
@@ -209,7 +208,7 @@ foreach($tt[__xva] as $k0 => $v0){
         $lsttbl .= '<a class="yyunset" title="supprimer">🗑</a>';
     }
 
-
+    
     if(isset($_SESSION[APP_KEY]['cible_courante']['chi_id_cible'])
        && $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] === $v0['T0.chi_id_cible']
     ){
@@ -227,7 +226,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl .= '</td>';
     $lsttbl .= '<td data-label="etat" style="text-align:center;">';
     $listeDesEtats='';
-
+    
     if(!is_dir($dossier)){
 
         $listeDesEtats .= 'Le dossier n\'existe pas ';
@@ -235,7 +234,7 @@ foreach($tt[__xva] as $k0 => $v0){
     }else{
 
         $listeDesEtats .= 'Le dossier existe ';
-
+        
         if(le_dossier_est_vide($dossier)){
 
             $listeDesEtats .= '<br />Le dossier est vide';

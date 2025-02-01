@@ -52,7 +52,8 @@ if($__nbEnregs !== count($tableau_en_entree)){
 $o1='';
 $o1=html_header1(array( 'title' => 'svg de base(s)', 'description' => 'svg de base(s)'));
 print($o1);
-$o1='';?>
+$o1='';
+?>
 <div class="menuScroller">
     <ul>
         <li>

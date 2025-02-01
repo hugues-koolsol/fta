@@ -13,7 +13,6 @@ if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 /*
   =====================================================================================================================
 */
-
 function obtenir_entete_de_la_page(){
 
     $o1='';
@@ -68,7 +67,6 @@ if($chp_nom_source != ''){
 }else if($chi_id_dossier != ''){
 
     $autofocus='chi_id_dossier';
-
 }
 
 $o1 .= '<form method="get" class="yyfilterForm">' . PHP_EOL;
@@ -173,10 +171,10 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl .= '<div class="yyflex1">';
     $lsttbl .= ' <a class="yyinfo" href="zz_sources_a1.php?__action=__modification&amp;__id=' . $v0['T0.chi_id_source'] . '" title="modifier">✎</a>';
     $lsttbl .= ' <a class="yydanger" href="zz_sources_a1.php?__action=__suppression&amp;__id=' . $v0['T0.chi_id_source'] . '" title="supprimer">🗑</a>';
-
+    
     if($v0['T0.chp_type_source'] === 'normal'){
 
-
+        
         if(substr($v0['T0.chp_nom_source'],-5) === '.html'
            || substr($v0['T0.chp_nom_source'],-4) === '.htm'
            || substr($v0['T0.chp_nom_source'],-4) === '.sql'
@@ -190,9 +188,7 @@ foreach($tt[__xva] as $k0 => $v0){
 
         }else if(substr($v0['T0.chp_nom_source'],-4) === '.php'){
 
-            $lsttbl .= ' <a class="yyinfo" data-attendre_message="oui" href="javascript:zz_l1_convertir_un_source_php_sur_disque2(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque avec php_parser">😊</a>';
             $lsttbl .= ' <a class="yyrose" data-attendre_message="oui" href="javascript:zz_l1_convertir_un_source_php_sur_disque3(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque avec php_parser">😊</a>';
-
         }
 
 
@@ -216,7 +212,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl .= '(' . $v0['T0.chx_dossier_id_source'] . ')' . $v0['T2.chp_nom_dossier'] . '';
     $lsttbl .= '</td>';
     $lsttbl .= '<td style="text-align:left;">';
-
+    
     if($v0['T0.chp_commentaire_source'] !== null){
 
         $lsttbl .= '' . enti1(mb_substr($v0['T0.chp_commentaire_source'],0,50,'UTF-8')) . '';
@@ -231,22 +227,27 @@ $o1 .= '<div style="overflow-x:scroll;"><table class="yytableResult1">' . PHP_EO
   =====================================================================================================================
 */
 $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
-$par=array(/**/ 'js_a_inclure' => array(/**/
+$par=array(/**/
+    'js_a_inclure' => array(
+            /**/
             'js/pour_zz_source1.js',
             'js/convertit-php-en-rev0.js',
-            'js/php.js',
             'js/jslib/acorn.js',
             'js/sql.js',
             'js/convertion_sql_en_rev.js',
             'js/jslib/sqlite-parser.js',
             'js/jslib/php-parser.js'
-        ), 'module_a_inclure' => array(/**/
-            'js/module_html.js', 
-            'js/module_conversion_ast_de_php_parser_vers_rev.js', 
+        ),
+    'module_a_inclure' => array(
+            /**/
+            'js/module_html.js',
+            'js/module_conversion_ast_de_php_parser_vers_rev.js',
             'js/module_conversion_ast_de_js_acorn_vers_rev.js',
             'js/m_rev_vers_js1.js',
             'js/m_rev_vers_php1.js'
-        ), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+        ),
+    'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
+);
 $nom_bref='aa_js_sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.js';
 $nom_complet=INCLUDE_PATH . DIRECTORY_SEPARATOR . 'sql/' . $nom_bref;
 

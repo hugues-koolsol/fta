@@ -19,7 +19,7 @@ $requete_en_cours=array();
 if(isset($_GET['__action']) && $_GET['__action'] == '__modification' && isset($_GET['__id']) && is_numeric($_GET['__id'])){
 
     $id_requete=(int)($_GET['__id']);
-
+    
     if($id_requete <= 0){
 
         recharger_la_page('zz_requetes_l1.php');
@@ -41,7 +41,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__modification' && isset($_
     /*sql_inclure_fin*/
     
     $tt=sql_32(array( 'T0_chi_id_requete' => $id_requete, 'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
-
+    
     if($tt[__xst] === true){
 
         $requete_en_cours=$tt[__xva][0];
@@ -55,7 +55,8 @@ $o1 .= '<script type="text/javascript">' . PHP_EOL;
 $o1 .= 'var globale_requete_en_cours=' . json_encode($requete_en_cours,JSON_FORCE_OBJECT) . ';' . PHP_EOL;
 $o1 .= '</script>' . PHP_EOL;
 print($o1);
-$o1='';?>
+$o1='';
+?>
 <div class="menuScroller">
     <ul>
         <li>

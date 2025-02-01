@@ -994,7 +994,7 @@ class interface1{
     }
     /*
       =============================================================================================================
-      convertir le contenu d'une textearea rev et le mettre le résultat php dans une textarea
+      convertir le contenu d'une textearea rev php et le mettre le résultat php dans une textarea
       =============================================================================================================
     */
     convertir_textearea_rev_vers_textarea_php(nom_zone_source_rev,nom_zone_genere_php,bouton_interface=false){
@@ -1007,7 +1007,9 @@ class interface1{
 //        console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
         var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            var objPhp=parsePhp0(matriceFonction.__xva,0,0);
+            var objPhp=__m_rev_vers_php1.c_tab_vers_php(matriceFonction.__xva,{});
+            debugger;
+            /*avrif*/
             if(objPhp.__xst === true){
                 document.getElementById(nom_zone_genere_php).value=objPhp.__xva;
                 if(bouton_interface === true){
@@ -2376,6 +2378,341 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
             "data" : {"matrice" : [] ,"tableau" : [] ,"sourceGenere" : ''}
         };
     }
+    
+    /*
+      =====================================================================================================================
+      vérifie qu'un html est structurellement correct ( pour intégration dans un rev php )
+    */
+    isHTML(str){
+        var i=0;
+        var j=0;
+        var c0='';
+        var cp1='';
+        var cm1='';
+        var dansTag=false;
+        var dansInner=true;
+        var dansNomPropriete=false;
+        var dansValeurPropriete=false;
+        var dansNomTag=false;
+        var caractereDebutProp='';
+        var nomTag='';
+        var dansBaliseFermante=false;
+        var tabTags=[];
+        var presDe='';
+        var dansCdata=false;
+        var dansTextArea=false;
+        var l01=str.length;
+        var niveau=0;
+        var i=0;
+        for( i=0 ; i < l01 ; i++ ){
+            c0=str.substr(i,1);
+            if(i < l01 - 1){
+                cp1=str.substr(i + 1,1);
+            }else{
+                cp1='';
+            }
+            if(i > 0 && l01 > 0){
+                cm1=str.substr(i - 1,1);
+            }else{
+                cm1='';
+            }
+            if(dansCdata === true){
+                /*
+                  =============================================================================================
+                  premier cas spécial : cdata
+                  =============================================================================================
+                */
+                var j=i;
+                for( j=i ; j < l01 ; j++ ){
+                    if(str.substr(j,3) === ']]' + '>'){
+                        i=j + 2;
+                        break;
+                    }
+                }
+                dansCdata=false;
+                nomTag='';
+                dansInner=true;
+                dansTag=false;
+                continue;
+            }else if(dansTextArea === true){
+                /*
+                  =============================================================================================
+                  deuxième cas spécial : textarea
+                  =============================================================================================
+                */
+                var j=i;
+                for( j=i ; j < l01 ; j++ ){
+                    if(str.substr(j,11).toLowerCase() === '</' + 'textarea>'){
+                        i=j - 1;
+                        break;
+                    }
+                }
+                dansTextArea=false;
+                nomTag='';
+                dansInner=true;
+                dansTag=false;
+                continue;
+            }else if(dansTag){
+                if(dansNomPropriete){
+                    if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
+                        if(i > 50){
+                            presDe=str.substr(i - 50,i + 10);
+                        }else{
+                            presDe=str.substr(0,i + 10);
+                        }
+                        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1785 pres de "' + presDe + '"'});
+                    }else if(c0 === '='){
+                        if(cp1 === "'" || cp1 === '"'){
+                            dansValeurPropriete=true;
+                            dansNomPropriete=false;
+                            caractereDebutProp=cp1;
+                            i++;
+                        }else{
+                            if(i > 50){
+                                presDe=str.substr(i - 50,i + 10);
+                            }else{
+                                presDe=str.substr(0,i + 10);
+                            }
+                            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 2864 pres de "' + presDe + '"'});
+                        }
+                    }else{
+                    }
+                }else if(dansValeurPropriete){
+                    if(c0 === caractereDebutProp){
+                        if(cm1 === '\\'){
+                        }else{
+                            dansValeurPropriete=false;
+                        }
+                    }else{
+                    }
+                }else if(dansNomTag){
+                    if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
+                        if(dansCdata === true){
+                            var j=i;
+                            for( j=i ; j < l01 ; j++ ){
+                                if(str.substr(j,3) === ']]' + '>'){
+                                    i=j + 2;
+                                    break;
+                                }
+                            }
+                            dansNomTag=false;
+                            dansTag=false;
+                            dansInner=true;
+                            nomTag='';
+                            continue;
+                        }else{
+                            if(nomTag.toLowerCase() === 'textarea'){
+                                dansTextArea=true;
+                            }
+                            tabTags.push(nomTag);
+                            dansNomTag=false;
+                        }
+                    }else if(c0 === '>'){
+                        if(dansBaliseFermante){
+                            dansNomTag=false;
+                            dansInner=true;
+                            dansTag=false;
+                            if(nomTag === tabTags[tabTags.length - 1]){
+                                /*
+                                  on a bien une balise fermante correspondant à la palise ouvrante précédente
+                                */
+                                tabTags.pop();
+                            }else{
+                                return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 2266 les balises html ne sont pas équilibrées'});
+                            }
+                            nomTag='';
+                            dansBaliseFermante=false;
+                            niveau--;
+                        }else{
+                            if(nomTag === ''){
+                                if(i > 50){
+                                    presDe=str.substr(i - 50,i + 10);
+                                }else{
+                                    presDe=str.substr(0,i + 10);
+                                }
+                                return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1852 pres de "' + presDe + '"'});
+                            }
+                            if(nomTag.toLowerCase() === 'textarea'){
+                                dansTextArea=true;
+                            }
+                            tabTags.push(nomTag);
+                            dansNomTag=false;
+                            dansInner=true;
+                            dansTag=false;
+                            nomTag='';
+                        }
+                    }else if(c0 === '=' || c0 === '"' || c0 === '\''){
+                        if(i > 50){
+                            presDe=str.substr(i - 50,i + 10);
+                        }else{
+                            presDe=str.substr(0,i + 10);
+                        }
+                        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 2926 pres de "' + presDe + '"'});
+                    }else{
+                        nomTag+=c0;
+                        if(nomTag === '![C' + 'DATA['){
+                            dansCdata=true;
+                        }
+                    }
+                }else{
+                    if(nomTag === ''){
+                        if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
+                            if(i > 50){
+                                presDe=str.substr(i - 50,i + 10);
+                            }else{
+                                presDe=str.substr(0,i + 10);
+                            }
+                            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1865 pres de "' + presDe + '"'});
+                        }else{
+                            dansNomTag=true;
+                            nomTag+=c0;
+                        }
+                    }else{
+                        /*
+                          le tag a été fait, maintenant, c'est les propriétés 
+                          ou la fin des propriétés ou un / pour une balise auto fermante ( <br /> )
+                        */
+                        if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
+                        }else if(c0 === '/'){
+                            if(cp1 === '>'){
+                                nomTag='';
+                                if(tabTags.length === 0){
+                                    if(i > 50){
+                                        presDe=str.substr(i - 50,i + 10);
+                                    }else{
+                                        presDe=str.substr(0,i + 10);
+                                    }
+                                    return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1902 pres de "' + presDe + '"'});
+                                }
+                                tabTags.pop();
+                                niveau--;
+                                dansTag=false;
+                                dansInner=true;
+                                i++;
+                            }
+                        }else if(c0 === '>'){
+                            if(nomTag === ''){
+                                if(i > 50){
+                                    presDe=str.substr(i - 50,i + 10);
+                                }else{
+                                    presDe=str.substr(0,i + 10);
+                                }
+                                return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1896 pres de "' + presDe + '"'});
+                            }
+                            dansTag=false;
+                            dansInner=true;
+                            if(tabTags.length === 0){
+                                if(i > 50){
+                                    presDe=str.substr(i - 50,i + 10);
+                                }else{
+                                    presDe=str.substr(0,i + 10);
+                                }
+                                return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1929 pres de "' + presDe + '"'});
+                            }
+                            /*
+                              pas de pop ici, dans <a b="c">d</a>, on est sur le > avant le d
+                            */
+                            nomTag='';
+                        }else{
+                            if(c0 === '=' || c0 === '"' || c0 === '\''){
+                                if(i > 50){
+                                    presDe=str.substr(i - 50,i + 10);
+                                }else{
+                                    presDe=str.substr(0,i + 10);
+                                }
+                                return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1910 pres de "' + presDe + '"'});
+                            }else{
+                                dansNomPropriete=true;
+                            }
+                        }
+                    }
+                }
+            }else if(dansInner){
+                if(c0 === '<'){
+                    if(cp1 === '/'){
+                        if(tabTags.length === 0){
+                            if(i > 50){
+                                presDe=str.substr(i - 50,i + 10);
+                            }else{
+                                presDe=str.substr(0,i + 10);
+                            }
+                            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1982 pres de "' + presDe + '"'});
+                        }
+                        dansBaliseFermante=true;
+                        i++;
+                        dansInner=false;
+                        dansTag=true;
+                    }else{
+                        if(cp1 === '!' && i < l01 - 4 && str.substr(i + 2,1) === '-' && str.substr(i + 3,1) === '-'){
+                            /*
+                              on est dans un commentaire
+                            */
+                            var fin_de_commentaire_trouve=-1;
+                            for( j=i + 4 ; j <= l01 - 3 && fin_de_commentaire_trouve === -1 ; j++ ){
+                                if(str.substr(j,3) === '-->'){
+                                    fin_de_commentaire_trouve=j;
+                                }
+                            }
+                            if(fin_de_commentaire_trouve > 0){
+                                i=fin_de_commentaire_trouve + 2;
+                                dansTag=false;
+                            }else{
+                                niveau+=1;
+                                dansInner=false;
+                                dansTag=true;
+                            }
+                        }else{
+                            niveau+=1;
+                            dansInner=false;
+                            dansTag=true;
+                        }
+                    }
+                }else if(c0 === '>'){
+                    if(niveau === 0){
+                        if(i > 50){
+                            presDe=str.substr(i - 50,i + 10);
+                        }else{
+                            presDe=str.substr(0,i + 10);
+                        }
+                        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1935 pres de "' + presDe + '"'});
+                    }
+                }else{
+                }
+            }else{
+                if(c0 === '<'){
+                }else if(c0 === '>'){
+                    debugger;
+                    niveau-=1;
+                    if(niveau < 0){
+                        if(i > 50){
+                            presDe=str.substr(i - 50,i + 10);
+                        }else{
+                            presDe=str.substr(0,i + 10);
+                        }
+                        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1952 pres de "' + presDe + '"'});
+                    }
+                }
+            }
+        }
+        if(tabTags.length > 0){
+            if(i > 50){
+                presDe=str.substr(i - 50,i + 10);
+            }else{
+                presDe=str.substr(0,i + 10);
+            }
+            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1964 pres de "' + presDe + '"'});
+        }
+        if(dansTag){
+            if(i > 50){
+                presDe=str.substr(i - 50,i + 10);
+            }else{
+                presDe=str.substr(0,i + 10);
+            }
+            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1972 pres de "' + presDe + '"'});
+        }
+        return({"__xst" : true});
+    }
+    
     /*
       =============================================================================================================
     */

@@ -33,10 +33,9 @@ $GLOBALS[__date]=date('Y-m-d H:i:s');
 $GLOBALS[__le_biscuit]=array();
 $GLOBALS[__mode_traque]=false;
 /*===================================================================================================================*/
-
 function initialiser_les_services($initialiser_session,$initialiser_bdd){
 
-
+    
     if($initialiser_bdd === true){
 
         /*
@@ -49,7 +48,7 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
         */
         $sqlite_trouve=false;
         foreach($GLOBALS[BDD] as $k1 => $v1){
-
+            
             if($v1['fournisseur'] === 'sqlite' && $sqlite_trouve === false){
 
                 $db0=new SQLite3('');
@@ -59,7 +58,7 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
 
         }
         $ret=$db0->exec('PRAGMA encoding = "UTF-8";PRAGMA foreign_keys=1;PRAGMA journal_mode=WAL;');
-
+        
         if($ret === false){
 
             echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export(__LINE__,true) . '</pre>' ;
@@ -70,7 +69,7 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
         foreach($GLOBALS[BDD] as $k1 => $v1){
             define('BDD_' . $v1['id'],$v1['id']);
             $GLOBALS[BDD][$k1][LIEN_BDD]=$db0;
-
+            
             if($v1['fournisseur'] === 'sqlite'){
 
                 /*
@@ -86,10 +85,10 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
 
     }
 
-
+    
     if($initialiser_session === true){
 
-
+        
         if(session_status() === PHP_SESSION_NONE){
 
             session_start();
@@ -102,7 +101,6 @@ function initialiser_les_services($initialiser_session,$initialiser_bdd){
 
 }
 /*===================================================================================================================*/
-
 function texte_aleatoire($lng){
 
     $str=random_bytes($lng);
@@ -113,27 +111,25 @@ function texte_aleatoire($lng){
 
 }
 /*===================================================================================================================*/
-
 function cst($a=''){
 
     return $a;
 
 }
 /*===================================================================================================================*/
-
 function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_copie=false){
 
     /*
       Il n'y a qu'ici qu'on trouve unlink.
       Quand on crée un fichier temporaire et qu'on le supprime, on ne fait pas de copie dans le répertoire BACKUP_PATH
     */
-
+    
     if($ne_pas_faire_de_copie){
 
-
+        
         if(is_file($chemin_du_fichier)){
 
-
+            
             if((@unlink($chemin_du_fichier))){
 
                 return true;
@@ -147,11 +143,11 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
     }else{
 
         $repertoire=BACKUP_PATH . DIRECTORY_SEPARATOR . date('Y/m/d');
-
+        
         if(is_dir($repertoire) || mkdir($repertoire,511,true)){
 
             $chemin_fichier_copie=$repertoire . DIRECTORY_SEPARATOR . uniqid() . str_replace('\\','_',str_replace('/','_',str_replace(':','_',$chemin_du_fichier)));
-
+            
             if((@rename($chemin_du_fichier,$chemin_fichier_copie))){
 
                 return true;
@@ -167,11 +163,9 @@ function sauvegarder_et_supprimer_fichier($chemin_du_fichier,$ne_pas_faire_de_co
 
 }
 /*===fonction vide intentionnelle à conserver ===*/
-
 function sql_inclure_source($i){
 }
 /*===fonction vide intentionnelle à conserver ===*/
-
 function sql_inclure_reference($i){
 }
 /*
@@ -179,17 +173,16 @@ function sql_inclure_reference($i){
   quand un champ de recherche contient des id, ils sont séparés par des virgules
   par exemple, 1,2,3  , le where doit être sous la forme WHERE id in ( 1 , 2 , 3 )
 */
-
 function construction_where_sql_sur_id($nom_du_champ,$critere){
 
     $champ_where='';
-
+    
     if(strpos($critere,',') !== false){
 
         $tableau_liste_des_valeurs=explode(',',$critere);
         $chaine_recherche='';
         foreach($tableau_liste_des_valeurs as $k1 => $v1){
-
+            
             if(is_numeric($v1)){
 
                 $chaine_recherche .= ',' . $v1;
@@ -197,7 +190,7 @@ function construction_where_sql_sur_id($nom_du_champ,$critere){
             }
 
         }
-
+        
         if($chaine_recherche !== ''){
 
             $chaine_recherche=substr($chaine_recherche,1);
@@ -213,7 +206,6 @@ function construction_where_sql_sur_id($nom_du_champ,$critere){
     }else if(is_numeric($critere)){
 
         $champ_where .= 'AND ' . sq0($nom_du_champ) . ' = ' . sq0($critere) . ' ';
-
     }
 
     return $champ_where;
@@ -222,12 +214,11 @@ function construction_where_sql_sur_id($nom_du_champ,$critere){
 /*
   =====================================================================================================================
 */
-
 function construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_avant=''){
 
     $o1='';
     $__bouton_enregs_suiv=' <a class="yyunset">&raquo;</a>';
-
+    
     if($__debut + $__nbMax < $__nbEnregs){
 
         $__bouton_enregs_suiv=' <a href="' . BNF . '?__xpage=' . ($__xpage + 1) . $consUrlRedir . '">&raquo;</a>';
@@ -235,14 +226,14 @@ function construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrl
     }
 
     $__bouton_enregs_prec=' <a class="yyunset">&laquo;</a>';
-
+    
     if($__xpage > 0){
 
         $__bouton_enregs_prec=' <a href="' . BNF . '?__xpage=' . ($__xpage - 1) . $consUrlRedir . '">&laquo;</a>';
 
     }
 
-
+    
     if($__nbEnregs > 0){
 
         $o1 .= '<form class="yylistForm1" method="post">' . PHP_EOL;
@@ -265,7 +256,6 @@ function construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrl
 /*
   =====================================================================================================================
 */
-
 function html_du_bouton_rechercher_pour_les_listes(){
 
     $o='    <label for="button_chercher">rechercher</label>' . PHP_EOL;
@@ -276,14 +266,12 @@ function html_du_bouton_rechercher_pour_les_listes(){
 /*
   =====================================================================================================================
 */
-
 function bouton_retour_a_la_liste($url){
 
     return '<a id="__retour_a_la_liste" href="' . $url . '" title="retour à la liste">&nbsp;⬱&nbsp;</a>';
 
 }
 /*===================================================================================================================*/
-
 function recharger_la_page($a){
 
     header("HTTP/1.1 303 See Other");
@@ -297,14 +285,12 @@ function recharger_la_page($a){
   Utilitaire pour repérer les chaines de caractères qui contiennent du html quand on fait du rev
   =====================================================================================================================
 */
-
 function htmlDansPhp($s){
 
     return $s;
 
 }
 /*===================================================================================================================*/
-
 function checkGroupAjaxPages(){
 
     return true;
@@ -314,10 +300,9 @@ function checkGroupAjaxPages(){
   
   =====================================================================================================================
 */
-
 function le_dossier_est_vide($dossier){
 
-
+    
     if(is_dir($dossier)){
 
         return count(scandir($dossier)) == 2;
@@ -330,14 +315,12 @@ function le_dossier_est_vide($dossier){
 
 }
 /*===================================================================================================================*/
-
 function pushkv(&$a,$k,$v){
 
     $a[$k]=$v;
 
 }
 /*===================================================================================================================*/
-
 function concat(...$ps){
 
     $t='';
@@ -348,14 +331,13 @@ function concat(...$ps){
 
 }
 /*========================================================================================================================*/
-
 function recuperer_et_sauvegarder_les_parametres_de_recherche($k,$bnf){
 
     /*
       
       on veut garder les paramètres de navigation des pages
     */
-
+    
     if(!isset($_SESSION[APP_KEY]['__filtres'][BNF])){
 
         $_SESSION[APP_KEY]['__filtres'][BNF]=array();
@@ -363,7 +345,7 @@ function recuperer_et_sauvegarder_les_parametres_de_recherche($k,$bnf){
 
     }
 
-
+    
     if(!isset($_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage'])){
 
         $_SESSION[APP_KEY]['__filtres'][BNF]['champs']['__xpage']=0;
@@ -372,11 +354,11 @@ function recuperer_et_sauvegarder_les_parametres_de_recherche($k,$bnf){
 
     $ret='';
     $ret=$_GET[$k]??'';
-
+    
     if(isset($_GET[$k])){
 
         /* si on a changé un critère de recherche, il faut revenir à la première page */
-
+        
         if(isset($_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k])
            && $_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k] !== $_GET[$k]
         ){
@@ -390,7 +372,7 @@ function recuperer_et_sauvegarder_les_parametres_de_recherche($k,$bnf){
 
     }else if(isset($_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k])){
 
-
+        
         if(isset($_GET['idMenu']) && '__xpage' === $k){
 
             $_SESSION[APP_KEY]['__filtres'][BNF]['champs'][$k]=0;
@@ -405,7 +387,7 @@ function recuperer_et_sauvegarder_les_parametres_de_recherche($k,$bnf){
     }else{
 
         $ret='';
-
+        
         if('__xpage' === $k){
 
             $ret=0;
@@ -418,10 +400,9 @@ function recuperer_et_sauvegarder_les_parametres_de_recherche($k,$bnf){
 
 }
 /*========================================================================================================================*/
-
 function enti1($s){
 
-
+    
     if($s === null){
 
         return '';
@@ -432,10 +413,9 @@ function enti1($s){
 
 }
 /*========================================================================================================================*/
-
 function sq1($s){
 
-
+    
     if(is_numeric($s)){
 
         return $s;
@@ -443,7 +423,6 @@ function sq1($s){
     }else if($s === null){
 
         return 'NULL';
-
     }
 
     $s1=SQLite3::escapeString($s);
@@ -471,7 +450,6 @@ function sq1($s){
 
 }
 /*========================================================================================================================*/
-
 function sq0($s){
 
     $s=SQLite3::escapeString($s);
@@ -501,10 +479,9 @@ function sq0($s){
   
   =====================================================================================================================
 */
-
 function signaler_erreur($tab){
 
-
+    
     if(isset($tab['provenance']) && $tab['provenance'] !== ''){
 
         ajouterMessage('erreur',$tab[__xme],$tab['provenance']);
@@ -520,7 +497,6 @@ function signaler_erreur($tab){
 /*
   =====================================================================================================================
 */
-
 function ajouterMessage($type_de_message,$message,$page=''){
 
     $tableauTypeMessage=array(
@@ -531,10 +507,10 @@ function ajouterMessage($type_de_message,$message,$page=''){
         'danger',
         'avertissement'
     );
-
+    
     if($page === ''){
 
-
+        
         if(!isset($_SESSION[APP_KEY][NAV])){
 
             foreach($tableauTypeMessage as $v1){
@@ -543,7 +519,7 @@ function ajouterMessage($type_de_message,$message,$page=''){
 
         }
 
-
+        
         if(in_array($type_de_message,$tableauTypeMessage)){
 
             $_SESSION[APP_KEY][NAV][$type_de_message][]=$message;
@@ -556,7 +532,7 @@ function ajouterMessage($type_de_message,$message,$page=''){
 
     }else{
 
-
+        
         if(!isset($_SESSION[APP_KEY][NAV][$page])){
 
             foreach($tableauTypeMessage as $v1){
@@ -565,7 +541,7 @@ function ajouterMessage($type_de_message,$message,$page=''){
 
         }
 
-
+        
         if(in_array($type_de_message,$tableauTypeMessage)){
 
             $_SESSION[APP_KEY][NAV][$page][$type_de_message][]=$message;
@@ -583,7 +559,6 @@ function ajouterMessage($type_de_message,$message,$page=''){
   
   =====================================================================================================================
 */
-
 function recupere_les_messages_de_session($bnf){
 
     $les_messages_a_afficher='';
@@ -597,10 +572,10 @@ function recupere_les_messages_de_session($bnf){
     );
     $visible='hidden';
     foreach($tableauTypeMessage as $v1){
-
+        
         if(isset($_SESSION[APP_KEY][NAV][$bnf][$v1])){
 
-
+            
             if(count($_SESSION[APP_KEY][NAV][$bnf][$v1]) > 0){
 
                 foreach($_SESSION[APP_KEY][NAV][$bnf][$v1] as $kerr => $verr){
@@ -614,10 +589,10 @@ function recupere_les_messages_de_session($bnf){
 
         }
 
-
+        
         if(isset($_SESSION[APP_KEY][NAV][$v1])){
 
-
+            
             if(count($_SESSION[APP_KEY][NAV][$v1]) > 0){
 
                 foreach($_SESSION[APP_KEY][NAV][$v1] as $kerr => $verr){
@@ -638,7 +613,6 @@ function recupere_les_messages_de_session($bnf){
 /*
   =====================================================================================================================
 */
-
 function encrypter($donnee){
 
     $donnee=ENCRYPTION_DONNEES_EN_PLUS . $donnee;
@@ -655,7 +629,6 @@ function encrypter($donnee){
 /*
   =====================================================================================================================
 */
-
 function decrypter($entree){
 
     $premiere_cle=base64_decode($_SESSION[APP_KEY]['sess_premiere_cle_chiffrement']);
@@ -667,7 +640,7 @@ function decrypter($entree){
     $first_encrypted=substr($mix,$iv_length + 64);
     $donnee=@openssl_decrypt($first_encrypted,ENCRYPTION_METHODE,$premiere_cle,OPENSSL_RAW_DATA,$iv);
     $second_encrypted_new=hash_hmac('sha3-512',$first_encrypted,$deuxieme_cle,true);
-
+    
     if((@hash_equals($second_encrypted,$second_encrypted_new))){
 
         return substr($donnee,strlen(ENCRYPTION_DONNEES_EN_PLUS));
@@ -680,14 +653,13 @@ function decrypter($entree){
 /*
   =====================================================================================================================
 */
-
 function xcleanSession1($par){
 
-
+    
     if(isset($_SESSION[APP_KEY][NAV])){
 
         foreach($_SESSION[APP_KEY][NAV] as $k => $v){
-
+            
             if($par['except'] != $k){
 
                 unset($_SESSION[APP_KEY][NAV][$k]);
@@ -698,7 +670,7 @@ function xcleanSession1($par){
 
     }
 
-
+    
     if(isset($_SESSION[APP_KEY]['choose'])){
 
         unset($_SESSION[APP_KEY]['choose']);
@@ -710,10 +682,9 @@ function xcleanSession1($par){
 /*
   =====================================================================================================================
 */
-
 function supprimerLesParametresDeNavigationEnSession(){
 
-
+    
     if(isset($_GET['idMenu'])){
 
         $sauf='';
@@ -725,11 +696,11 @@ function supprimerLesParametresDeNavigationEnSession(){
         xcleanSession1(array( 'except' => BNF));
     }
 
-
+    
     if(isset($_SESSION[APP_KEY][NAV])){
 
         foreach($_SESSION[APP_KEY][NAV] as $k => $v){
-
+            
             if($sauf != $k){
 
                 unset($_SESSION[APP_KEY][NAV][$k]);
@@ -740,7 +711,7 @@ function supprimerLesParametresDeNavigationEnSession(){
 
     }
 
-
+    
     if(isset($_SESSION[APP_KEY]['valeurPourChoixCroise'])){
 
         unset($_SESSION[APP_KEY]['valeurPourChoixCroise']);
@@ -754,22 +725,21 @@ function supprimerLesParametresDeNavigationEnSession(){
   quand on fait une maj, il faut vérifier que l'id envoyé en post correspond bien à l'id du formulaire
   =====================================================================================================================
 */
-
 function verifie_id_envoye($nom_du_champ,$page_de_redirection,$bnf,&$post){
 
-
+    
     if(isset($post['__action']) && $post['__action'] == '__creation'){
 
         return;
 
     }
 
-
+    
     if(!isset($_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ])
        || sha1($post[$nom_du_champ]) !== $_SESSION[APP_KEY][NAV][$bnf]['sha1'][$nom_du_champ]
     ){
 
-
+        
         if(isset($post['__action'])
            && $post['__action'] == '__modification'
            && is_numeric($_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ])
@@ -792,10 +762,9 @@ function verifie_id_envoye($nom_du_champ,$page_de_redirection,$bnf,&$post){
 /*
   =====================================================================================================================
 */
-
 function html_header1($parametres){
 
-
+    
     if(!ob_start("ob_gzhandler")){
 
         ob_start();
@@ -827,12 +796,12 @@ function html_header1($parametres){
     $css_hauteur_mini_conteneur=$css_hauteur_mini_bouton + 2 * $css_taille_reference_margin;
     $css_hauteur_menu_defilement=$css_hauteur_mini_bouton + 2 * $css_taille_reference_margin + 11;
     $css_hauteur_grands_boutons=$css_hauteur_menu_defilement - 2 * $css_taille_reference_margin - 1;
-
+    
     if(isset($_COOKIE[APP_KEY . '_biscuit'])){
 
         $json_biscuit_texte=rawurldecode($_COOKIE[APP_KEY . '_biscuit']);
         $le_biscuit=@json_decode($json_biscuit_texte,true);
-
+        
         if($le_biscuit !== null){
 
             $css_taille_reference_generale=isset($le_biscuit['--yyvtrg']) ? (int)(str_replace('px','',$le_biscuit['--yyvtrg'])) : $css_taille_reference_generale;
@@ -866,7 +835,7 @@ function html_header1($parametres){
     }else{
 
         $useragent=$_SERVER['HTTP_USER_AGENT'];
-
+        
         if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i',$useragent)
            || preg_match('/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i',substr($useragent,0,4))
         ){
@@ -919,7 +888,7 @@ function html_header1($parametres){
     /*
       la valeur çi dessous devrait être à false pour ne pas inclure de css dans le html renvoyé      
     */
-
+    
     if(false){
 
         /* dans le cas ou on met tout dans le html reçu */
@@ -934,7 +903,6 @@ function html_header1($parametres){
     }
 
     $o1 .= '<script type="module" src="js/module_interface1.js" onload="demarre_l_interface()"></script>' . PHP_EOL;
-
     $o1 .= '<script type="text/javascript">' . PHP_EOL;
     $o1 .= '//<![CDATA[' . PHP_EOL;
     $o1 .= '"use strict";' . PHP_EOL;
@@ -1013,9 +981,6 @@ function demarre_l_interface(){
      });
 }
 EOT;
-
-
-
     $o1 .= PHP_EOL . '//]]>' . PHP_EOL . '</script>' . PHP_EOL;
     $o1 .= ' </head>' . PHP_EOL;
     $o1 .= ' <body>' . PHP_EOL;
@@ -1023,7 +988,7 @@ EOT;
       pour la phase de conception
       $o1.='<!-- '.$texte_base_css.' -->'.PHP_EOL;
     */
-
+    
     if(!isset($parametres['pas_de_menu'])){
 
         $o1 .= '  <nav id="navbar" class="yynavbar">' . PHP_EOL;
@@ -1035,7 +1000,7 @@ EOT;
         $o1 .= '      <div>' . PHP_EOL;
         $o1 .= '        <ul>' . PHP_EOL;
         $idMenu=0;
-
+        
         if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur']){
 
             $o1 .= '          <li><a class="yytbfixe ' . ('traiteHtml.php' === BNF ? 'yymenusel1' : '') . '" href="traiteHtml.php?idMenu=' . $idMenu++ . '">HTML</a></li>' . PHP_EOL;
@@ -1045,7 +1010,7 @@ EOT;
             $o1 .= '          <li><a class="yytbfixe ' . ('index_source.php' === BNF ? 'yymenusel1' : '') . '" href="index_source.php?idMenu=' . $idMenu++ . '">REV</a></li>' . PHP_EOL;
             $o1 .= '          <li><a class="yytbfixe ' . ('zz_taches_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_taches_l1.php?idMenu=' . $idMenu++ . '&chp_priorite_tache2=99">tâches</a></li>' . PHP_EOL;
             $o1 .= '          <li><a class="yytbfixe ' . ('zz_cibles_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_cibles_l1.php?idMenu=' . $idMenu++ . '">cibles</a></li>' . PHP_EOL;
-
+            
             if(isset($_SESSION[APP_KEY]['cible_courante'])){
 
                 $o1 .= '          <li><a class="yytbfixe ' . ('zz_dossiers_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_dossiers_l1.php?idMenu=' . $idMenu++ . '">dossiers</a></li>' . PHP_EOL;
@@ -1062,7 +1027,7 @@ EOT;
         $o1 .= '        </ul>' . PHP_EOL;
         $o1 .= '      </div>' . PHP_EOL;
         $o1 .= '    </div>' . PHP_EOL;
-
+        
         if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur']){
 
             $o1 .= '    <div class="">' . PHP_EOL;
@@ -1072,7 +1037,6 @@ EOT;
         }else if(BNF !== 'aa_login.php'){
 
             $o1 .= '    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces">🔑</a></div>' . PHP_EOL;
-
         }
 
         $o1 .= '  </nav>' . PHP_EOL;
@@ -1088,7 +1052,6 @@ EOT;
 /*
   =====================================================================================================================
 */
-
 function html_footer1($parametres=array()){
 
     $o1='';
@@ -1101,7 +1064,7 @@ function html_footer1($parametres=array()){
     $o1 .= '</dialog>' . PHP_EOL;
     $o1 .= '<div id="bas_de_page">' . PHP_EOL;
     $o1 .= '<a href="javascript:__gi1.vers_le_haut_de_la_page(0,150)" style="font-size:2em;opacity:0.5;">⇑</a>' . PHP_EOL;
-
+    
     if(!preg_match('/.*_a[0-9]+\.php/',BNF)){
 
         $o1 .= '<a href="javascript:__gi1.fixer_les_dimentions(\'dimension_du_texte\')" style=""   title="taille texte">A' . $GLOBALS['__le_biscuit']['--yyvtrt'] . '</a>' . PHP_EOL;
@@ -1118,11 +1081,11 @@ function html_footer1($parametres=array()){
       d'un point de vue fonctionnel, ce n'est pas util car les modules sont chargés dynamiquement
       mais grâce à ces lignes, le module js est mis en cache et les appels suivants sont plus rapides
     */
-
+    
     if(isset($parametres['module_a_inclure'])){
 
         foreach($parametres['module_a_inclure'] as $k1 => $v1){
-
+            
             if($v1 !== ''){
 
                 $o1 .= '  <script type="module" src="' . $v1 . '"></script>' . PHP_EOL;
@@ -1133,11 +1096,11 @@ function html_footer1($parametres=array()){
 
     }
 
-
+    
     if(isset($parametres['js_a_inclure'])){
 
         foreach($parametres['js_a_inclure'] as $k1 => $v1){
-
+            
             if($v1 !== ''){
 
                 $o1 .= '  <script type="text/javascript" src="' . $v1 . '"></script>' . PHP_EOL;
@@ -1150,16 +1113,16 @@ function html_footer1($parametres=array()){
 
     $o1 .= '<script type="text/javascript">' . PHP_EOL;
     $o1 .= '"use strict";' . PHP_EOL;
-
+    
     if(isset($parametres['js_a_executer_apres_chargement'])){
 
         $o1 .= 'function fonctionDeLaPageAppeleeQuandToutEstCharge(){' . PHP_EOL;
         $txt1='';
         foreach($parametres['js_a_executer_apres_chargement'] as $k1 => $v1){
-
+            
             if(isset($v1['nomDeLaFonctionAappeler'])){
 
-
+                
                 if($txt1 != ''){
 
                     $txt1 .= ',' . PHP_EOL;
@@ -1182,7 +1145,7 @@ function html_footer1($parametres=array()){
 
     $o1 .= '</script>' . PHP_EOL;
     $o1 .= '</body></html>' . PHP_EOL;
-
+    
     if(isset($parametres['ne_pas_supprimer_les_valeurs_de_session_sur_un_choix'])){
 
 

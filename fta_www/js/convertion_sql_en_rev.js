@@ -1,5 +1,4 @@
 "use strict";
-
 function recupere_element_de_ast_sql(element,niveau,parent,options){
     var t='';
     var esp0=' '.repeat(NBESPACESREV * niveau);
@@ -690,9 +689,8 @@ function conversion_de_ast_vers_sql(element,niveau,parent,options={}){
     var t='';
     var esp0=' '.repeat(NBESPACESREV * niveau);
     var esp1=' '.repeat(NBESPACESREV);
-    if(element===null){
-        return(logerreur({"__xst" : false ,"__xme" : nl1()+'conversion_de_ast_vers_sql element null' }));
-     
+    if(element === null){
+        return(logerreur({"__xst" : false ,"__xme" : nl1() + 'conversion_de_ast_vers_sql element null'}));
     }
     element.en_cours_de_traitement=true;
     if(element.traite && element.traite === true){

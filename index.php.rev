@@ -1,7 +1,7 @@
 php(
-   php(
-      #(  exemple de programme très simple en php : on a déjà écrit cette page en html ),
-      appelf( nomf(require_once) , p( 'index.html' )),
-      appelf( nomf(echo) , p( '<!-- fin de fichier -->' ))
+   #(  exemple de programme très simple en php : on a déjà écrit cette page en html ),
+   appelf( nomf(require_once) , p( 'index.html' )),
+   html_dans_php(
+      #( fin de fichier )
    )
 )

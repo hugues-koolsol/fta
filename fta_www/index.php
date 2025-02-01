@@ -6,7 +6,8 @@ $o1='';
 $o1=html_header1(array( 'title' => 'Accueil', 'description' => 'Accueil'));
 print($o1);
 $o1='';
-ob_flush();?>
+ob_flush();
+?>
 <div class="menuScroller">
     <ul>
         <li>

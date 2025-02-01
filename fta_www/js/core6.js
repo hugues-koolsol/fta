@@ -1,5 +1,4 @@
 "use strict";
-
 const DEBUTCOMMENTAIRE='#';
 const DEBUTBLOC='@';
 const CRLF='\r\n';
@@ -249,16 +248,13 @@ function nbre_caracteres2(lettre,chaine){
   numéro de ligne courant du js
   =====================================================================================================================
 */
-
 function nl1(e_originale){
- 
     var e=null;
-    if(e_originale!==undefined){
-     e=e_originale;
+    if(e_originale !== undefined){
+        e=e_originale;
     }else{
-     e=new Error();
+        e=new Error();
     }
-
     if(!e.stack){
         try{
             /* IE ?? */
@@ -270,8 +266,7 @@ function nl1(e_originale){
             }
         }
     }
-
-    if(e_originale!==undefined){
+    if(e_originale !== undefined){
         var stack=e.stack.toString().split(/\r\n|\n/);
         /* We want our caller's frame. It's index into |stack| depends on the */
         /* browser and browser version, so we need to search for the second frame: */
@@ -281,23 +276,22 @@ function nl1(e_originale){
         do{
             var ligne_erreur=stack.shift();
             if(ligne_erreur.indexOf(' at ')){
-             if(modele_champ_erreur2.exec(ligne_erreur)!==null){
-              continuer=-1;
-             }
+                if(modele_champ_erreur2.exec(ligne_erreur) !== null){
+                    continuer=-1;
+                }
             }
-            
-          continuer--;
-        }while(continuer>0);
-        if(continuer===-2){
+            continuer--;
+        }while(continuer > 0);
+        if(continuer === -2){
             /* at nom_fonction (http://localhost/a/b/c/js/fichier.js:25:15) */
-    //        var texte_erreur=stack.shift();
+            /* var texte_erreur=stack.shift(); */
             var texte_erreur=ligne_erreur;
             var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
             var nom_fonction='';
-            if(texte_erreur.match(/ at ([^\.]+) \(/)===null){
-                if(texte_erreur.match(/ at ([^]+) \(/)===null){
-                    if(texte_erreur.match(/([^]+)\/([^]+)/)[2]!==null){
-                     nom_fonction='erreur javascript '+texte_erreur.match(/([^]+)\/([^]+)/)[2];
+            if(texte_erreur.match(/ at ([^\.]+) \(/) === null){
+                if(texte_erreur.match(/ at ([^]+) \(/) === null){
+                    if(texte_erreur.match(/([^]+)\/([^]+)/)[2] !== null){
+                        nom_fonction='erreur javascript ' + texte_erreur.match(/([^]+)\/([^]+)/)[2];
                     }
                 }else{
                     nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
@@ -322,7 +316,7 @@ function nl1(e_originale){
         /* at nom_fonction (http://localhost/a/b/c/js/fichier.js:25:15) */
         var texte_erreur=stack.shift();
         var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
-        if(texte_erreur.match(/ at ([^\.]+) \(/)===null){
+        if(texte_erreur.match(/ at ([^\.]+) \(/) === null){
             var nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
         }else{
             var nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
@@ -1124,7 +1118,7 @@ function formaterErreurRev(obj){
               T[tabCommentaireEtFinParentheses[i][0]][13]=tabCommentaireEtFinParentheses[i][1].replace(rgx1,'\n').replace(rgx2,'\r');
           }
       }
-    */    
+    */
     if(obj.hasOwnProperty('tableauEntree')){
         if(obj.hasOwnProperty('ind')){
             if(obj.ind > 50){
@@ -1164,7 +1158,7 @@ function formaterErreurRev(obj){
             }
         }
     }
-    var T=JSON.parse(chaineTableau);    
+    var T=JSON.parse(chaineTableau);
     return({"__xst" : obj.__xst ,"__xva" : T ,"id" : obj.ind ,"__xme" : obj.__xme + message_ajoute ,"line" : line});
 }
 /*#
@@ -1315,7 +1309,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                       après avoir rempli la fonction, on met les commentaires dans un tableau et on remplira 
                       le tableau principal "T" à la fin
                     */
-                    chaine_tableau_commentaires+=',['+indice+',"'+commentaire.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t')+'"]';
+                    chaine_tableau_commentaires+=',[' + indice + ',"' + commentaire.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t') + '"]';
                     indiceTabCommentaire++;
                     posFerPar=0;
                     /*
@@ -1377,10 +1371,10 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             if(c === '"'){
                 if(autoriserCstDansRacine !== true){
                     if(i === l01 - 1){
-                        /* 
-                         cas : directive("use strict"
+                        /*
+                          cas : directive["use strict"
                         */
-                        if(niveau>0){
+                        if(niveau > 0){
                             return(logerreur(formaterErreurRev({
                                 "__xst" : false ,
                                 "ind" : i ,
@@ -1407,7 +1401,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                                 "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                 "autoriserCstDansRacine" : autoriserCstDansRacine
                             })));
-                         
                         }
                     }
                 }
@@ -1634,8 +1627,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   
                   pour une regex, on met les drapeaux ( g,...) dans la zone commentaire [13]
                 */
-                chaine_tableau_commentaires+=',['+indice+',"'+drapeauRegex.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t')+'"]';
-                
+                chaine_tableau_commentaires+=',[' + indice + ',"' + drapeauRegex.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t') + '"]';
                 indiceTabCommentaire++;
                 typePrecedent='c';
                 niveauPrecedent=niveau;
@@ -2397,7 +2389,6 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         typePrecedent='c';
         niveauPrecedent=niveau;
     }
-    
     /*
       =============================================================================================================
       On reconstruit chaineTableau ici
@@ -2431,7 +2422,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         }
         return({"__xst" : false ,"__xme" : 'pas de correspondance trouvée'});
     }
-    if(chaine_tableau_commentaires!==''){
+    if(chaine_tableau_commentaires !== ''){
         chaine_tableau_commentaires='[' + chaine_tableau_commentaires.substr(1) + ']';
         try{
             tabCommentaireEtFinParentheses=JSON.parse(chaine_tableau_commentaires);
@@ -2443,8 +2434,8 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
           tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire];
           T[indice][13]=commentaire;
         */
-        var rgx1=new RegExp(chLF, "g");
-        var rgx2=new RegExp(chCR, "g");
+        var rgx1=new RegExp(chLF,"g");
+        var rgx2=new RegExp(chCR,"g");
         l01=tabCommentaireEtFinParentheses.length;
         for( i=0 ; i < l01 ; i++ ){
             T[tabCommentaireEtFinParentheses[i][0]][13]=tabCommentaireEtFinParentheses[i][1].replace(rgx1,'\n').replace(rgx2,'\r');
@@ -2525,12 +2516,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       var endMicro = performance.now();
       var temps=parseInt((endMicro - startMicro) * 1000,10) / 1000;
       if(temps >=0.2){
-          console.log(' temps = '+temps +' pour T.length='+T.length);
-          if(false && T.length<=5){
-            console.log('T=',T);
-          }
+      console.log(' temps = '+temps +' pour T.length='+T.length);
+      if(false && T.length<=5){
+      console.log('T=',T);
+      }
       }
     */
-    
     return({"__xst" : true ,"__xva" : T});
 }

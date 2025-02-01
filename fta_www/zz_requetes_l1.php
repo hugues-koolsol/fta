@@ -13,10 +13,9 @@ if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 /*
   =====================================================================================================================
 */
-
 function supprimer_repertoire_et_fichiers_inclus($dirPath){
 
-
+    
     if(substr($dirPath,strlen($dirPath) - 1,1) != '/'){
 
         $dirPath .= '/';
@@ -25,7 +24,7 @@ function supprimer_repertoire_et_fichiers_inclus($dirPath){
 
     $files=glob($dirPath . '*',GLOB_MARK);
     foreach($files as $file){
-
+        
         if(is_dir($file)){
 
             supprimer_repertoire_et_fichiers_inclus($file);
@@ -42,7 +41,6 @@ function supprimer_repertoire_et_fichiers_inclus($dirPath){
 /*
   =====================================================================================================================
 */
-
 function integrer_la_requete_dans_la_table_rev($id_requete,$matrice_requete){
 
     sql_inclure_reference(5);
@@ -63,7 +61,8 @@ function integrer_la_requete_dans_la_table_rev($id_requete,$matrice_requete){
     $tt=sql_5(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'chp_provenance_rev' => 'sql', 'chx_source_rev' => $id_requete));
     $matrice=json_decode($matrice_requete,false);
     /* echo __FILE__ . ' ' . __LINE__ . ' $id_requete =  ' . $id_requete . '<pre> ' . var_export(  $matrice , true ) . '</pre>' ; exit(0);*/
-    for($i=0;$i < count($matrice);$i++){
+    for( $i=0 ; $i < count($matrice) ; $i++ ){
+        
         $tab=$matrice[$i];
         /*
           14 champs pour le rev + id_cible + chp_provenance_rev + chx_source_rev
@@ -141,7 +140,6 @@ function integrer_la_requete_dans_la_table_rev($id_requete,$matrice_requete){
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt , true ) . '</pre>' ; exit(0);*/
 
 }
-
 function gererer_le_fichier_des_requetes($chi_id_cible){
 
     sql_inclure_reference(6);
@@ -159,20 +157,20 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
     
     $retour_sql=sql_6(array( 'T0_chx_cible_requete' => $chi_id_cible));
     /*      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql , true ) . '</pre>' ; exit(0);*/
-
+    
     if($retour_sql[__xst] === true){
 
         $chaine_js='';
         $chaine_php='';
         $repertoire_destination=INCLUDE_PATH . DIRECTORY_SEPARATOR . 'sql';
-
+        
         if(is_dir($repertoire_destination)){
 
             supprimer_repertoire_et_fichiers_inclus($repertoire_destination);
 
         }
 
-
+        
         if(!mkdir($repertoire_destination,511)){
 
             return array( __xst => false, __xme => __LINE__ . ' erreur création du répertoire inc/sql');
@@ -181,10 +179,10 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
 
         foreach($retour_sql[__xva] as $k1 => $v1){
             $nom_fichier=$repertoire_destination . DIRECTORY_SEPARATOR . 'sql_' . $v1['T0.chi_id_requete'] . '.php';
-
+            
             if($fd=fopen($nom_fichier,'w')){
 
-
+                
                 if(fwrite($fd,'<?' . 'php' . PHP_EOL . $v1['T0.cht_php_requete'])){
 
                     fclose($fd);
@@ -205,10 +203,10 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
         }
         $nom_bref='aa_js_sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.js';
         $nom_fichier=$repertoire_destination . DIRECTORY_SEPARATOR . $nom_bref;
-
+        
         if($fd=fopen($nom_fichier,'w')){
 
-
+            
             if(fwrite($fd,'//<![CDATA[' . PHP_EOL . '__aa_js_sql={' . PHP_EOL . $chaine_js . PHP_EOL . '};' . PHP_EOL . '//]]>')){
 
                 fclose($fd);
@@ -226,10 +224,10 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
 
         $nom_bref='aa_php_sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.php';
         $nom_fichier=$repertoire_destination . DIRECTORY_SEPARATOR . $nom_bref;
-
+        
         if($fd=fopen($nom_fichier,'w')){
 
-
+            
             if(fwrite($fd,'<?' . 'php' . PHP_EOL . '$__aa_php_sql=array(' . PHP_EOL . $chaine_php . PHP_EOL . ');' . PHP_EOL . '?>')){
 
                 fclose($fd);
@@ -246,7 +244,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
         }
 
         $zip=new ZipArchive();
-
+        
         if($zip->open($repertoire_destination . DIRECTORY_SEPARATOR . 'sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.zip',ZIPARCHIVE::CREATE) !== true
         ){
 
@@ -257,7 +255,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
         foreach($retour_sql[__xva] as $k1 => $v1){
             $chemin_fichier=realpath($repertoire_destination . DIRECTORY_SEPARATOR . 'sql_' . $v1['T0.chi_id_requete'] . '.php');
             $nom_fichier='sql_' . $v1['T0.chi_id_requete'] . '.php';
-
+            
             if(!$zip->addFile($chemin_fichier,$nom_fichier)){
 
                 $zip->close();
@@ -274,11 +272,11 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
         return array( __xst => false, __xme => __LINE__ . ' erreur sql ' . $retour_sql[__xme]);
     }
 
-
+    
     if($retour_sql[__xst] === true){
 
         foreach($retour_sql[__xva] as $k1 => $v1){
-
+            
             if($v1['T0.cht_matrice_requete'] !== null){
 
                 integrer_la_requete_dans_la_table_rev($v1['T0.chi_id_requete'],$v1['T0.cht_matrice_requete']);
@@ -298,12 +296,12 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
 
 if(isset($_POST) && count($_POST) > 0){
 
-
+    
     if(isset($_POST['__action']) && $_POST['__action'] === '__gererer_les_fichiers_des_requetes'){
 
         $time_start=microtime(true);
         $gen=gererer_le_fichier_des_requetes($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']);
-
+        
         if($gen[__xst] === true){
 
             $time_end=microtime(true);
@@ -320,7 +318,7 @@ if(isset($_POST) && count($_POST) > 0){
 
     }
 
-
+    
     if(isset($_POST['supprimer_une_requete']) && is_numeric($_POST['supprimer_une_requete'])){
 
         sql_inclure_reference(4);
@@ -336,7 +334,7 @@ if(isset($_POST) && count($_POST) > 0){
         /*sql_inclure_fin*/
         
         $tt=sql_4(array( 'chi_id_requete' => $_POST['supprimer_une_requete'], 'chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
-
+        
         if($tt[__xst] !== true){
 
             ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
@@ -360,7 +358,7 @@ if(isset($_POST) && count($_POST) > 0){
         /*sql_inclure_fin*/
         
         $tt=sql_5(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'chp_provenance_rev' => 'sql', 'chx_source_rev' => $_POST['supprimer_une_requete']));
-
+        
         if($tt[__xst] !== true){
 
             ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
@@ -376,7 +374,7 @@ if(isset($_POST) && count($_POST) > 0){
 
     }
 
-
+    
     if(isset($_POST['renuméroter_une_requete'])
        && is_numeric($_POST['renuméroter_une_requete'])
        && isset($_POST['__nouveau_numéro'])
@@ -397,7 +395,7 @@ if(isset($_POST) && count($_POST) > 0){
         /*sql_inclure_fin*/
         
         $tt=sql_3(array( 'c_chi_id_requete' => $_POST['renuméroter_une_requete'], 'c_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'n_chi_id_requete' => $_POST['__nouveau_numéro']));
-
+        
         if($tt[__xst] === true){
 
             ajouterMessage('info',__LINE__ . ' requête renumérotée dans requetes de ' . $_POST['renuméroter_une_requete'] . ' à ' . $_POST['__nouveau_numéro'] . '',BNF);
@@ -422,7 +420,7 @@ if(isset($_POST) && count($_POST) > 0){
         /*sql_inclure_fin*/
         
         $tt=sql_8(array( 'n_chx_source_rev' => $_POST['__nouveau_numéro'], 'c_chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'c_chp_provenance_rev' => 'sql', 'c_chx_source_rev' => $_POST['renuméroter_une_requete']));
-
+        
         if($tt[__xst] !== true){
 
             ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
@@ -444,7 +442,6 @@ if(isset($_POST) && count($_POST) > 0){
 /*
   =====================================================================================================================
 */
-
 function obtenir_entete_de_la_page(){
 
     $o1='';
@@ -517,7 +514,6 @@ if($cht_rev_requete != ''){
 }else if($chi_id_requete != ''){
 
     $autofocus='chi_id_requete';
-
 }
 
 $o1 .= '<form method="get" class="yyfilterForm">' . PHP_EOL;
@@ -612,7 +608,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl .= '<td style="text-align:left;">' . $v0['T0.chp_type_requete'] . '</td>';
     $lsttbl .= '<td style="text-align:center;">' . $v0['T0.cht_commentaire_requete'] . '</td>';
     $lsttbl .= '<td style="text-align:left;">';
-
+    
     if($v0['T0.cht_rev_requete'] !== null){
 
         $lsttbl .= enti1(mb_substr($v0['T0.cht_rev_requete'],0,500));
@@ -621,7 +617,7 @@ foreach($tt[__xva] as $k0 => $v0){
 
     $lsttbl .= '</td>';
     $lsttbl .= '<td style="text-align:left;">';
-
+    
     if($v0['T0.cht_sql_requete'] !== null){
 
         $lsttbl .= enti1(mb_substr($v0['T0.cht_sql_requete'],0,500));

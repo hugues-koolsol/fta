@@ -5,7 +5,8 @@ session_start();
 $o1='';
 $o1=html_header1(array( 'title' => 'convertir un js en rev', 'description' => 'convertir un js en rev'));
 print($o1);
-$o1='';?>
+$o1='';
+?>
 <div class="menuScroller">
     <ul>
         <li>
@@ -43,7 +44,7 @@ $o1='';?>
 <?php
 $js_a_executer_apres_chargement=array(/* */
     array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar1', 'mode' => 'source')),
-    array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar2', 'mode' => 'rev')),
+    array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'txtar2', 'mode' => 'rev'))
 );
 $par=array(/* */
     'js_a_inclure' => array(/* */
@@ -54,7 +55,8 @@ $par=array(/* */
             'js/m_rev_vers_js1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
-);?>
+);
+?>
 <script type="text/javascript">
 //<![CDATA[
 //<source_javascript_rev>
@@ -64,7 +66,7 @@ window.addEventListener("load",function(){
                 if(fta_indexhtml_javascript_dernier_fichier_charge !== null){
                     document.getElementById('txtar1').value=fta_indexhtml_javascript_dernier_fichier_charge;
                     /* on lance la conversion directement, ça devra être mis en paramètres */
-                    __gi1.bouton_transform_textarea_js_en_rev_avec_acorn3( 'txtar1' , 'txtar2' , true )
+                    __gi1.bouton_transform_textarea_js_en_rev_avec_acorn3('txtar1','txtar2',true);
                 }
             },100);
     });

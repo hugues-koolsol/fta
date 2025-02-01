@@ -1,5 +1,4 @@
 "use strict";
-
 /*
   =====================================================================================================================
   conversion d'un AST produit par https://github.com/nikic/PHP-Parser en rev
@@ -12,7 +11,6 @@
   fonction principale php_traite_Stmt_Expression
   =====================================================================================================================
 */
-var contient_du_javascript_dans_html=false;
 var tableau_de_html_dans_php_a_convertir=[];
 /*
   =====================================================================================================================
@@ -359,9 +357,13 @@ function php_traite_Expr_FuncCall(element,niveau){
     if(element.args && element.args.length > 0){
         var i=0;
         for( i=0 ; i < element.args.length ; i++ ){
+            var comm=ajouteCommentairesAvant(element.args[i],niveau);
+            if(comm !== ''){
+                comm+=',';
+            }
             var obj=php_traite_Stmt_Expression(element.args[i],niveau,false,element);
             if(obj.__xst === true){
-                lesArguments+=',p(' + obj.__xva + ')';
+                lesArguments+=',p(' + comm + obj.__xva + ')';
                 tabArgs.push([obj.__xva,element.args[i].value.nodeType]);
                 lesArgumentsCourts+=',' + obj.__xva;
             }else{
@@ -470,12 +472,17 @@ function php_traite_Stmt_ClassMethod(element,niveau,options_traitement){
     if(element.params && element.params.length > 0){
         var i=0;
         for( i=0 ; i < element.params.length ; i++ ){
+            var comm=ajouteCommentairesAvant(element.params[i],niveau);
+            if(comm !== ''){
+                comm+=',';
+            }
             if(element.params[i].var && "Expr_Variable" === element.params[i].var.nodeType){
                 if(element.params[i].byRef && element.params[i].byRef === true){
                     lesArguments+='\n' + esp0 + esp1 + esp1 + 'adresseArgument(';
                 }else{
                     lesArguments+='\n' + esp0 + esp1 + esp1 + 'argument(';
                 }
+                lesArguments+=comm;
                 if(element.params[i].variadic && element.params[i].variadic === true){
                     lesArguments+='...$' + element.params[i].var.name;
                 }else{
@@ -592,9 +599,13 @@ function php_traite_Stmt_Function(element,niveau){
     if(element.params && element.params.length > 0){
         var i=0;
         for( i=0 ; i < element.params.length ; i++ ){
+            var comm=ajouteCommentairesAvant(element.params[i],niveau);
+            if(comm !== ''){
+                comm+=',';
+            }
             if(element.params[i].var && "Expr_Variable" === element.params[i].var.nodeType){
                 if(element.params[i].byRef && element.params[i].byRef === true){
-                    lesArguments+=',\n' + esp0 + esp1 + esp1 + 'adresseArgument($' + element.params[i].var.name;
+                    lesArguments+=',\n' + esp0 + esp1 + esp1 + 'adresseArgument(' + comm + '$' + element.params[i].var.name;
                     if(element.params[i].default){
                         var obj=php_traite_Stmt_Expression(element.params[i].default,niveau,false,element);
                         if(obj.__xst === true){
@@ -618,9 +629,9 @@ function php_traite_Stmt_Function(element,niveau){
                     lesArguments+=')';
                 }else{
                     if(element.params[i].variadic && element.params[i].variadic === true){
-                        lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument(...$' + element.params[i].var.name;
+                        lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument(' + comm + '...$' + element.params[i].var.name;
                     }else{
-                        lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument($' + element.params[i].var.name;
+                        lesArguments+=',\n' + esp0 + esp1 + esp1 + 'argument(' + comm + '$' + element.params[i].var.name;
                     }
                     if(element.params[i].default){
                         var obj=php_traite_Stmt_Expression(element.params[i].default,niveau,false,element);
@@ -971,9 +982,13 @@ function php_traite_Expr_MethodCall(element,niveau){
     if(element.args && element.args.length > 0){
         var i=0;
         for( i=0 ; i < element.args.length ; i++ ){
+            var comm=ajouteCommentairesAvant(element.args[i],niveau);
+            if(comm !== ''){
+                comm+=',';
+            }
             var obj=php_traite_Stmt_Expression(element.args[i],niveau,false,element);
             if(obj.__xst === true){
-                lesArguments+=',p(' + obj.__xva + ')';
+                lesArguments+=',p(' + comm + obj.__xva + ')';
             }else{
                 return(astphp_logerreur({"__xst" : false ,"__xme" : '0673  erreur php_traite_Expr_MethodCall ' ,"element" : element}));
             }
@@ -2760,9 +2775,8 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse,options_traitement){
     var conditionIf='';
     /*
       attention, if($a){}else if($b){}else{} ressort avec ce parseur comme
-                 if($a){}else{if($b){}else{}} ( ça ajoute un niveau!!! )
+      if($a){}else{if($b){}else{}} ( ça ajoute un niveau!!! )
     */
-    
     var instructionsDansElseOuElseifIf='';
     if(element.cond){
         var obj=php_traiteCondition1(element.cond,niveau,element,options_traitement);
@@ -2776,9 +2790,7 @@ function php_traite_Stmt_If(element,niveau,unElseIfOuUnElse,options_traitement){
     }
     var instructionsDansIf='';
     if(element.stmts){
-        niveau+=3;
-        var obj=TransformAstPhpEnRev(element.stmts,niveau,element,false,false,options_traitement);
-        niveau-=3;
+        var obj=TransformAstPhpEnRev(element.stmts,niveau + 3,element,false,false,options_traitement);
         if(obj.__xst === true){
             instructionsDansIf+=obj.__xva;
         }else{
@@ -3165,7 +3177,6 @@ function construit_cle_pour_php(length){
 */
 function TransformAstPhpEnRev(stmts,niveau,parent,dansFor,de_racine,options_traitement){
     if( typeof de_racine !== 'undefined' && de_racine === true){
-        contient_du_javascript_dans_html=false;
         tableau_de_html_dans_php_a_convertir=[];
     }
     var t='';
@@ -3196,9 +3207,10 @@ function TransformAstPhpEnRev(stmts,niveau,parent,dansFor,de_racine,options_trai
                   =====================================================================================
                 */
                 var estTraiteSansErreur=false;
-                var obj=isHTML(stmts[i].value);
+                var obj=__gi1.isHTML(stmts[i].value);
                 if(obj.__xst === true){
-                    var nettoye=stmts[i].value.replace(/\<\!\-\-(.*)\-\-\>/g,'').trim();
+                    /* var nettoye=stmts[i].value.replace(/\<\!\-\-(.*)\-\-\>/g,'').trim(); */
+                    var nettoye=stmts[i].value.replace(/<!--[\s\S]*?-->/g,'').trim();
                 }
                 /* recherche d'au moins un tag dans le texte */
                 var regex=/(<[a-zA-Z0-9\-_]+)/g;
@@ -3279,7 +3291,6 @@ function TransformAstPhpEnRev(stmts,niveau,parent,dansFor,de_racine,options_trai
                                                         if(obj1.content[j].content[k].content){
                                                             var objScr=__gi1.convertit_source_javascript_en_rev(obj1.content[j].content[k].content[0]);
                                                             if(objScr.__xst === true){
-                                                                contient_du_javascript_dans_html=true;
                                                                 if(objScr.__xva === ''){
                                                                     t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + '))';
                                                                 }else{
@@ -3294,7 +3305,6 @@ function TransformAstPhpEnRev(stmts,niveau,parent,dansFor,de_racine,options_trai
                                                             t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + '))';
                                                         }
                                                     }else{
-                                                        contient_du_javascript_dans_html=true;
                                                         var obj=__module_html1.traiteAstDeHtml(obj1.content[j].content[k],0,true,'',tableau_de_javascripts_dans_php_a_convertir);
                                                         if(obj.__xst === true){
                                                             t+='\n' + esp0 + 'html_dans_php(' + obj.__xva + ')';
@@ -3566,351 +3576,14 @@ function TransformAstPhpEnRev(stmts,niveau,parent,dansFor,de_racine,options_trai
       }
     */
     if( typeof de_racine !== 'undefined'){
-        return({
-            "__xst" : true ,
-            "__xva" : t ,
-            "contient_du_javascript_dans_html" : contient_du_javascript_dans_html ,
-            "tableau_de_html_dans_php_a_convertir" : tableau_de_html_dans_php_a_convertir
-        });
+        return({"__xst" : true ,"__xva" : t ,"tableau_de_html_dans_php_a_convertir" : tableau_de_html_dans_php_a_convertir});
     }else{
         return({"__xst" : true ,"__xva" : t});
     }
 }
-/*
+/*#
   =====================================================================================================================
-*/
-function isHTML(str){
-    var i=0;
-    var j=0;
-    var c0='';
-    var cp1='';
-    var cm1='';
-    var dansTag=false;
-    var dansInner=true;
-    var dansNomPropriete=false;
-    var dansValeurPropriete=false;
-    var dansNomTag=false;
-    var caractereDebutProp='';
-    var nomTag='';
-    var dansBaliseFermante=false;
-    var tabTags=[];
-    var presDe='';
-    var dansCdata=false;
-    var dansTextArea=false;
-    var l01=str.length;
-    var niveau=0;
-    var i=0;
-    for( i=0 ; i < l01 ; i++ ){
-        c0=str.substr(i,1);
-        if(i < l01 - 1){
-            cp1=str.substr(i + 1,1);
-        }else{
-            cp1='';
-        }
-        if(i > 0 && l01 > 0){
-            cm1=str.substr(i - 1,1);
-        }else{
-            cm1='';
-        }
-        if(dansCdata === true){
-            /*
-              =============================================================================================
-              premier cas spécial : cdata
-              =============================================================================================
-            */
-            var j=i;
-            for( j=i ; j < l01 ; j++ ){
-                if(str.substr(j,3) === ']]' + '>'){
-                    i=j + 2;
-                    break;
-                }
-            }
-            dansCdata=false;
-            nomTag='';
-            dansInner=true;
-            dansTag=false;
-            continue;
-        }else if(dansTextArea === true){
-            /*
-              =============================================================================================
-              deuxième cas spécial : textarea
-              =============================================================================================
-            */
-            var j=i;
-            for( j=i ; j < l01 ; j++ ){
-                if(str.substr(j,11).toLowerCase() === '</' + 'textarea>'){
-                    i=j - 1;
-                    break;
-                }
-            }
-            dansTextArea=false;
-            nomTag='';
-            dansInner=true;
-            dansTag=false;
-            continue;
-        }else if(dansTag){
-            if(dansNomPropriete){
-                if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
-                    if(i > 50){
-                        presDe=str.substr(i - 50,i + 10);
-                    }else{
-                        presDe=str.substr(0,i + 10);
-                    }
-                    return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1785 pres de "' + presDe + '"'});
-                }else if(c0 === '='){
-                    if(cp1 === "'" || cp1 === '"'){
-                        dansValeurPropriete=true;
-                        dansNomPropriete=false;
-                        caractereDebutProp=cp1;
-                        i++;
-                    }else{
-                        if(i > 50){
-                            presDe=str.substr(i - 50,i + 10);
-                        }else{
-                            presDe=str.substr(0,i + 10);
-                        }
-                        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 2864 pres de "' + presDe + '"'});
-                    }
-                }else{
-                }
-            }else if(dansValeurPropriete){
-                if(c0 === caractereDebutProp){
-                    if(cm1 === '\\'){
-                    }else{
-                        dansValeurPropriete=false;
-                    }
-                }else{
-                }
-            }else if(dansNomTag){
-                if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
-                    if(dansCdata === true){
-                        var j=i;
-                        for( j=i ; j < l01 ; j++ ){
-                            if(str.substr(j,3) === ']]' + '>'){
-                                i=j + 2;
-                                break;
-                            }
-                        }
-                        dansNomTag=false;
-                        dansTag=false;
-                        dansInner=true;
-                        nomTag='';
-                        continue;
-                    }else{
-                        if(nomTag.toLowerCase() === 'textarea'){
-                            dansTextArea=true;
-                        }
-                        tabTags.push(nomTag);
-                        dansNomTag=false;
-                    }
-                }else if(c0 === '>'){
-                    if(dansBaliseFermante){
-                        dansNomTag=false;
-                        dansInner=true;
-                        dansTag=false;
-                        if(nomTag === tabTags[tabTags.length - 1]){
-                            /*
-                              on a bien une balise fermante correspondant à la palise ouvrante précédente
-                            */
-                            tabTags.pop();
-                        }else{
-                            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 2266 les balises html ne sont pas équilibrées'});
-                        }
-                        nomTag='';
-                        dansBaliseFermante=false;
-                        niveau--;
-                    }else{
-                        if(nomTag === ''){
-                            if(i > 50){
-                                presDe=str.substr(i - 50,i + 10);
-                            }else{
-                                presDe=str.substr(0,i + 10);
-                            }
-                            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1852 pres de "' + presDe + '"'});
-                        }
-                        if(nomTag.toLowerCase() === 'textarea'){
-                            dansTextArea=true;
-                        }
-                        tabTags.push(nomTag);
-                        dansNomTag=false;
-                        dansInner=true;
-                        dansTag=false;
-                        nomTag='';
-                    }
-                }else if(c0 === '=' || c0 === '"' || c0 === '\''){
-                    if(i > 50){
-                        presDe=str.substr(i - 50,i + 10);
-                    }else{
-                        presDe=str.substr(0,i + 10);
-                    }
-                    return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 2926 pres de "' + presDe + '"'});
-                }else{
-                    nomTag+=c0;
-                    if(nomTag === '![C' + 'DATA['){
-                        dansCdata=true;
-                    }
-                }
-            }else{
-                if(nomTag === ''){
-                    if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
-                        if(i > 50){
-                            presDe=str.substr(i - 50,i + 10);
-                        }else{
-                            presDe=str.substr(0,i + 10);
-                        }
-                        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1865 pres de "' + presDe + '"'});
-                    }else{
-                        dansNomTag=true;
-                        nomTag+=c0;
-                    }
-                }else{
-                    /*
-                      le tag a été fait, maintenant, c'est les propriétés 
-                      ou la fin des propriétés ou un / pour une balise auto fermante ( <br /> )
-                    */
-                    if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
-                    }else if(c0 === '/'){
-                        if(cp1 === '>'){
-                            nomTag='';
-                            if(tabTags.length === 0){
-                                if(i > 50){
-                                    presDe=str.substr(i - 50,i + 10);
-                                }else{
-                                    presDe=str.substr(0,i + 10);
-                                }
-                                return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1902 pres de "' + presDe + '"'});
-                            }
-                            tabTags.pop();
-                            niveau--;
-                            dansTag=false;
-                            dansInner=true;
-                            i++;
-                        }
-                    }else if(c0 === '>'){
-                        if(nomTag === ''){
-                            if(i > 50){
-                                presDe=str.substr(i - 50,i + 10);
-                            }else{
-                                presDe=str.substr(0,i + 10);
-                            }
-                            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1896 pres de "' + presDe + '"'});
-                        }
-                        dansTag=false;
-                        dansInner=true;
-                        if(tabTags.length === 0){
-                            if(i > 50){
-                                presDe=str.substr(i - 50,i + 10);
-                            }else{
-                                presDe=str.substr(0,i + 10);
-                            }
-                            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1929 pres de "' + presDe + '"'});
-                        }
-                        /*
-                          pas de pop ici, dans <a b="c">d</a>, on est sur le > avant le d
-                        */
-                        nomTag='';
-                    }else{
-                        if(c0 === '=' || c0 === '"' || c0 === '\''){
-                            if(i > 50){
-                                presDe=str.substr(i - 50,i + 10);
-                            }else{
-                                presDe=str.substr(0,i + 10);
-                            }
-                            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1910 pres de "' + presDe + '"'});
-                        }else{
-                            dansNomPropriete=true;
-                        }
-                    }
-                }
-            }
-        }else if(dansInner){
-            if(c0 === '<'){
-                if(cp1 === '/'){
-                    if(tabTags.length === 0){
-                        if(i > 50){
-                            presDe=str.substr(i - 50,i + 10);
-                        }else{
-                            presDe=str.substr(0,i + 10);
-                        }
-                        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1982 pres de "' + presDe + '"'});
-                    }
-                    dansBaliseFermante=true;
-                    i++;
-                    dansInner=false;
-                    dansTag=true;
-                }else{
-                    if(cp1 === '!' && i < l01 - 4 && str.substr(i + 2,1) === '-' && str.substr(i + 3,1) === '-'){
-                        /*
-                          on est dans un commentaire
-                        */
-                        var fin_de_commentaire_trouve=-1;
-                        for( j=i + 4 ; j < l01 - 3 && fin_de_commentaire_trouve === -1 ; j++ ){
-                            if(str.substr(j,3) === '-->'){
-                                fin_de_commentaire_trouve=j;
-                            }
-                        }
-                        if(fin_de_commentaire_trouve > 0){
-                            i=fin_de_commentaire_trouve + 2;
-                            dansTag=false;
-                        }else{
-                            niveau+=1;
-                            dansInner=false;
-                            dansTag=true;
-                        }
-                    }else{
-                        niveau+=1;
-                        dansInner=false;
-                        dansTag=true;
-                    }
-                }
-            }else if(c0 === '>'){
-                if(niveau === 0){
-                    if(i > 50){
-                        presDe=str.substr(i - 50,i + 10);
-                    }else{
-                        presDe=str.substr(0,i + 10);
-                    }
-                    return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1935 pres de "' + presDe + '"'});
-                }
-            }else{
-            }
-        }else{
-            if(c0 === '<'){
-            }else if(c0 === '>'){
-                debugger;
-                niveau-=1;
-                if(niveau < 0){
-                    if(i > 50){
-                        presDe=str.substr(i - 50,i + 10);
-                    }else{
-                        presDe=str.substr(0,i + 10);
-                    }
-                    return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1952 pres de "' + presDe + '"'});
-                }
-            }
-        }
-    }
-    if(tabTags.length > 0){
-        if(i > 50){
-            presDe=str.substr(i - 50,i + 10);
-        }else{
-            presDe=str.substr(0,i + 10);
-        }
-        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1964 pres de "' + presDe + '"'});
-    }
-    if(dansTag){
-        if(i > 50){
-            presDe=str.substr(i - 50,i + 10);
-        }else{
-            presDe=str.substr(0,i + 10);
-        }
-        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1972 pres de "' + presDe + '"'});
-    }
-    return({"__xst" : true});
-}
-/*
-  =====================================================================================================================
-*/
+  est-ce encore utile ???
 async function traiter_html_dans_php1(param){
     console.log('%c on entre dans traiter_html_dans_php1','background:yellow;color:red;');
     if(param.hasOwnProperty('cle_convertie')){
@@ -3937,17 +3610,9 @@ async function traiter_html_dans_php1(param){
             __module_html1.TransformHtmlEnRev(options.a_convertir.valeur,0,options);
         },1000,options);
 }
-/*
-  try{
-  
-  await __module_html1.TransformHtmlEnRev(a_convertir.valeur,0,options);
-  
-  }catch(e){
-  console.error('e=',e);
-  }
-*/
 var globale_tableau_des_php1=[];
 var globale_source_php1='';
+*/
 /*
   =====================================================================================================================
 */
@@ -4071,7 +3736,7 @@ function traiter_html_dans_php2(options){
             }
         }
         if(en_ligne === true){
-            sauvegarder_php_en_ligne(globale_source_php2,options.donnees);
+            sauvegarder_php_en_ligne2(globale_source_php2,options.donnees);
             globale_source_php2='';
             return(logerreur({"__xst" : true ,"__xme" : '3154 le source a été converti en rev'}));
         }else{
@@ -4115,7 +3780,7 @@ function traiter_html_dans_php2(options){
                 /* on transforme le ast du js en rev */
                 var obj0=__module_js_parseur1.traite_ast(obj.body,tableau_des_commentaires_js,{});
                 if(obj0.__xst === true){
-                    globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,'source('+obj0.__xva+')');
+                    globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,'source(' + obj0.__xva + ')');
                 }else{
                     globale_tableau_des_js2=[];
                     return(logerreur({"__xst" : true ,"__xme" : '3154 le source a été converti en rev'}));
@@ -4166,10 +3831,9 @@ function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
     if(options.hasOwnProperty('en_ligne') && options.en_ligne === true){
         en_ligne=true;
     }
-
     if(obj.__xst === true){
-        if(obj.__xva.substr(0,4)!=='php('){
-            obj.__xva='php('+obj.__xva+')';
+        if(obj.__xva.substr(0,4) !== 'php('){
+            obj.__xva='php(' + obj.__xva + ')';
         }
         if(obj.hasOwnProperty('tableau_de_html_dans_php_a_convertir') && obj.tableau_de_html_dans_php_a_convertir.length > 0){
             /*
@@ -4197,7 +3861,7 @@ function traitement_apres_recuperation_ast_de_php2(retour_avec_ast){
             }
         }else{
             if(en_ligne === true){
-                sauvegarder_php_en_ligne(obj.__xva ,options.donnees);
+                sauvegarder_php_en_ligne2(obj.__xva,options.donnees);
                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);
             }else{
                 __gi1.remplir_et_afficher_les_messages1('zone_global_messages',zone_rev);

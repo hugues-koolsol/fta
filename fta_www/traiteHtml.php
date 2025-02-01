@@ -5,7 +5,8 @@ session_start();
 $o1='';
 $o1=html_header1(array( 'title' => 'convertir un html en rev', 'description' => 'convertir un html en rev'));
 print($o1);
-$o1='';?>
+$o1='';
+?>
 <!-- html dans php -->
 <div class="menuScroller">
     <ul>
@@ -56,7 +57,6 @@ $par=array(/* */
             'js/module_html.js',
             'js/module_conversion_ast_de_js_acorn_vers_rev.js',
             'js/m_rev_vers_js1.js'
-            
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

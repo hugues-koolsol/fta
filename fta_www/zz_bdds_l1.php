@@ -44,7 +44,6 @@ if($chi_id_basedd != ''){
 }else if($chp_nom_basedd != ''){
 
     $autofocus='chp_nom_basedd';
-
 }
 
 $o1 .= '<form method="get" class="yyfilterForm">' . PHP_EOL;
@@ -118,7 +117,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl .= '<div class="yyflex1">';
     $lsttbl .= ' <a class="yyinfo" href="zz_bdds_a1.php?__action=__modification&amp;__id=' . $v0['T0.chi_id_basedd'] . '" title="modifier">✎</a>';
     $lsttbl .= ' <a class="yyinfo"  href="svg_de_la_base.php?__id_des_bases=' . $v0['T0.chi_id_basedd'] . '" title="svg">🍥</a>';
-
+    
     if('fta' === APP_KEY && $v0['T0.chi_id_basedd'] == 1){
 
         $lsttbl .= ' <a class="yyunset"  title="supprimer">🗑</a>';
@@ -137,7 +136,7 @@ foreach($tt[__xva] as $k0 => $v0){
     $lsttbl .= '' . $v0['T0.chp_nom_basedd'] . '';
     $lsttbl .= '</td>';
     $lsttbl .= '<td style="text-align:left;">';
-
+    
     if($v0['T0.chp_commentaire_basedd'] !== null){
 
         $lsttbl .= '' . enti1(mb_substr($v0['T0.chp_commentaire_basedd'],0,50,'UTF-8')) . '';

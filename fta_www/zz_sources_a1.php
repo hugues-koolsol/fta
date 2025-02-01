@@ -15,11 +15,10 @@ $js_a_executer_apres_chargement=array();
   
   =====================================================================================================================
 */
-
 function erreur_dans_champs_saisis_sources(){
 
     $uneErreur=false;
-
+    
     if($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'] === ''){
 
         /*
@@ -33,7 +32,7 @@ function erreur_dans_champs_saisis_sources(){
 
     }
 
-
+    
     if(substr($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'],0,1) === ' '){
 
         ajouterMessage('erreur',__LINE__ . ' : le nom source ne doit pas commencer par un espace ',BNF);
@@ -69,7 +68,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']=$_POST['chp_genere_source']??'';
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST['chx_dossier_id_source'] , true ) . '</pre>' ; exit(0);*/
     $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']=isset($_POST['chx_dossier_id_source']) ? ($_POST['chx_dossier_id_source'] === '' ? null : decrypter($_POST['chx_dossier_id_source'])) : '';
-
+    
     if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] === ''){
 
         $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']=null;
@@ -77,7 +76,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     }
 
     verifie_id_envoye('chi_id_source','zz_sources_l1.php',BNF,$_POST);
-
+    
     if(isset($_POST['__importer_le_fichier_source_de_fta'])){
 
         /*
@@ -85,7 +84,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           ============================== IMPORTER LE SOURCE DE FTA ============================================
           =====================================================================================================
         */
-
+        
         if($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta'
            && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta'
         ){
@@ -110,7 +109,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_fin*/
             
             $tt=sql_62(array( 'T0_chi_id_source' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
-
+            
             if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
                 ajouterMessage('erreur',__LINE__ . ' valeurs non trouvées pour cet id');
@@ -120,11 +119,11 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
             $__valeurs=$tt[__xva][0];
             $nom_complet_du_source_dans_fta='../../fta' . $__valeurs['T2.chp_nom_dossier'] . '/' . $__valeurs['T0.chp_nom_source'];
-
+            
             if(is_file($nom_complet_du_source_dans_fta)){
 
                 $nomCompletSource='../../' . $__valeurs['T1.chp_dossier_cible'] . $__valeurs['T2.chp_nom_dossier'] . '/' . $__valeurs['T0.chp_nom_source'];
-
+                
                 if(copy($nom_complet_du_source_dans_fta,$nomCompletSource)){
 
                     ajouterMessage('succes',__LINE__ . ' : le fichier a bien été importé ');
@@ -157,12 +156,12 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           ============================== CONVERTIR UN SQL EN REV ==============================================
           =====================================================================================================
         */
-
+        
         if($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'] !== ''){
 
             require_once('../fta_inc/phplib/sqlite.php');
             $ret=produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_structure($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']);
-
+            
             if($ret[__xst] === true){
 
                 $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']=$ret['value'];
@@ -205,7 +204,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_fin*/
         
         $tt=sql_62(array( 'T0_chi_id_source' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
-
+        
         if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
             ajouterMessage('erreur',__LINE__ . ' valeurs non trouvées pour cet id');
@@ -215,14 +214,14 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         $__valeurs=$tt[__xva][0];
         /*     echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);*/
-
+        
         if($__valeurs['T1.chp_dossier_cible'] !== null && $__valeurs['T2.chp_nom_dossier'] !== null){
 
             $nomCompletSource='../../' . $__valeurs['T1.chp_dossier_cible'] . $__valeurs['T2.chp_nom_dossier'] . '/' . $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'];
-
+            
             if(is_file($nomCompletSource)){
 
-
+                
                 if(!sauvegarder_et_supprimer_fichier($nomCompletSource)){
 
                     ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer le fichier du disque ',BNF);
@@ -234,20 +233,20 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             }
 
             /*      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $nomCompletSource , true ) . '</pre>' ; exit(0);*/
-
+            
             if($fd=fopen($nomCompletSource,'w')){
 
                 /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export($_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);*/
                 $texte_source=$_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'];
                 $alea1=texte_aleatoire(10);
-
+                
                 if(strpos($texte_source,$alea1) !== false){
 
                     ajouterMessage('erreur',__LINE__ . ' : il y a eu un léger problème lors de l\'écriture , veuillez réessayer');
 
                 }else{
 
-
+                    
                     if(strtoupper(substr(PHP_OS,0,3)) === 'WIN'){
 
                         /*
@@ -256,7 +255,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                         */
                         $CHAINE_CR=$alea1 . 'CR' . $alea1;
                         $CHAINE_LF=$alea1 . 'LF' . $alea1;
-
+                        
                         if(strpos($texte_source,"\n") !== false && strpos($texte_source,"\r") !== false){
 
                             /*
@@ -277,32 +276,31 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                         }else if(strpos($texte_source,"\n") === false && strpos($texte_source,"\r") === false){
 
                             /* on ne remplace rien */
-
                         }
 
 
                     }
 
                     $ret=fwrite($fd,$texte_source);
-
+                    
                     if($ret !== false){
 
                         fclose($fd);
                         ajouterMessage('succes',__LINE__ . ' : Le généré a bien été écrit sur le disque');
                         /* si on est dans fta, que l'utilisateur=1 et que le dossier =1, on écrit le source rev aussi */
                         /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);*/
-
+                        
                         if(APP_KEY === 'fta'
                            && $_SESSION[APP_KEY]['sess_id_utilisateur_init'] === 1
                            && $__valeurs['T0.chx_dossier_id_source'] === 1
                         ){
 
                             $nomCompletSource .= '.rev';
-
+                            
                             if($fd=fopen($nomCompletSource,'w')){
 
                                 $ret=fwrite($fd,$_SESSION[APP_KEY][NAV][BNF]['chp_rev_source']);
-
+                                
                                 if($ret !== false){
 
                                     fclose($fd);
@@ -352,11 +350,11 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           =====================================================================================================
         */
         /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);*/
-
+        
         if(erreur_dans_champs_saisis_sources()){
 
             /*   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF] , true ) . '</pre>' ; exit(0);*/
-
+            
             if(isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_source']) && is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'])){
 
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
@@ -391,7 +389,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_fin*/
         
         $tt=sql_62(array( 'T0_chi_id_source' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
-
+        
         if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
             ajouterMessage('erreur',__LINE__ . ' valeurs non trouvées pour cet id');
@@ -402,7 +400,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         $__valeurs=$tt[__xva][0];
         $nom_complet_de_l_ancien_fichier='../../' . $__valeurs['T1.chp_dossier_cible'] . $__valeurs['T2.chp_nom_dossier'] . '/' . $__valeurs['T0.chp_nom_source'];
         /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] , true ) . '</pre>' ; exit(0);*/
-
+        
         if($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] === null){
 
 
@@ -426,7 +424,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             $tt=sql_50(array( 'T0_chi_id_dossier' => $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'], 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
             $nom_dossier='';
-
+            
             if($tt[__xst] === true && count($tt[__xva]) === 1){
 
                 $nouveau_dossier=$tt[__xva][0];
@@ -441,18 +439,18 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             $nom_complet_du_nouveau_fichier='../../' . $nouveau_dossier['T1.chp_dossier_cible'] . $nouveau_dossier['T0.chp_nom_dossier'] . '/' . $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'];
             /*  echo __FILE__ . ' ' . __LINE__ . ' $nom_complet_de_l_ancien_fichier = <pre>' . var_export( $nom_complet_de_l_ancien_fichier , true ) . '</pre>, $nom_complet_du_nouveau_fichier<pre>' . var_export( $nom_complet_du_nouveau_fichier , true ) . '</pre>' ; exit(0);*/
             $deja_renomme=false;
-
+            
             if($nom_complet_du_nouveau_fichier !== $nom_complet_de_l_ancien_fichier){
 
                 /*
                   
                   si on renomme le fichier, il faut aussi le déplacer sur disque s'il existe
                 */
-
+                
                 if(is_file($nom_complet_du_nouveau_fichier)){
 
                     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre>' ; exit(0);*/
-
+                    
                     if(isset($_POST['option']) && $_POST['option'] === 'remplacer_le_fichier'){
 
 
@@ -469,10 +467,10 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                 }
 
                 /*         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] , true ) . '</pre>' ; exit(0);*/
-
+                
                 if($nom_complet_de_l_ancien_fichier !== $nom_complet_du_nouveau_fichier){
 
-
+                    
                     if((@rename($nom_complet_de_l_ancien_fichier,$nom_complet_du_nouveau_fichier))){
 
                         $deja_renomme=true;
@@ -516,17 +514,17 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             'n_chp_genere_source' => $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'] === null ? 'NULL' : $_SESSION[APP_KEY][NAV][BNF]['chp_genere_source'],
             'n_chp_type_source' => $_SESSION[APP_KEY][NAV][BNF]['chp_type_source']
         ));
-
+        
         if($tt[__xst] === true && $tt['changements'] === 1){
 
             ajouterMessage('info',' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2),BNF);
             /* echo __FILE__ . ' ' . __LINE__ . ' $le_fichier_est_renomme = <pre>' . var_export( $le_fichier_est_renomme , true ) . '</pre>  $nom_complet_du_nouveau_fichier = <pre>' . var_export( $nom_complet_du_nouveau_fichier , true ) . '</pre>  $nom_complet_de_l_ancien_fichier = <pre>' . var_export( $nom_complet_de_l_ancien_fichier , true ) . '</pre>' ; exit(0);*/
-
+            
             if($le_fichier_est_renomme){
 
                 /* si on a précédemment renommé le fichier sur disque,*/
                 /* on recrée l'ancien non en espérant qu'un autre utilisateur ne l'a pas renommé entre-temps*/
-
+                
                 if($deja_renomme === false && !(@rename($nom_complet_de_l_ancien_fichier,$nom_complet_du_nouveau_fichier))){
 
                     ajouterMessage('erreur',__LINE__ . ' :  ATTENTION, le nom du fichier original sur disque n\'a pas pu $etre rétabli');
@@ -540,7 +538,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }else{
 
-
+            
             if($tt['code_erreur'] === 19){
 
                 ajouterMessage('erreur',__LINE__ . ' ce nom existe déjà en bdd ',BNF);
@@ -570,7 +568,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           http://localhost/functToArray/fta/fta_www/zz_sources_a1.php?__id=2&__action=__suppression
         */
         /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__id , true ) . '</pre>' ; exit(0);*/
-
+        
         if($_SESSION[APP_KEY][NAV][BNF]['chi_id_source'] !== false){
 
             sql_inclure_reference(62);
@@ -593,7 +591,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_fin*/
             
             $tt=sql_62(array( 'T0_chi_id_source' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
-
+            
             if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
                 ajouterMessage('erreur',__LINE__ . ' valeurs non trouvées pour cet id');
@@ -602,7 +600,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             }
 
             $__valeurs=$tt[__xva][0];
-
+            
             if(APP_KEY !== 'fta' && $__valeurs['T1.chp_dossier_cible'] === 'fta'){
 
                 /*
@@ -618,10 +616,10 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
                 /*      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);*/
                 $nom_complet_de_l_ancien_fichier='../../' . $__valeurs['T1.chp_dossier_cible'] . $__valeurs['T2.chp_nom_dossier'] . '/' . $__valeurs['T0.chp_nom_source'];
-
+                
                 if(is_file($nom_complet_de_l_ancien_fichier)){
 
-
+                    
                     if(!sauvegarder_et_supprimer_fichier($nom_complet_de_l_ancien_fichier)){
 
                         ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer le fichier du disque ',BNF);
@@ -660,7 +658,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_5(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'chp_provenance_rev' => 'source', 'chx_source_rev' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']));
         /*  echo __FILE__ . ' ' . __LINE__ . ' $sql = <pre>' .  $sql  . '</pre>' ; exit(0);*/
-
+        
         if(false === $tt[__xst]){
 
             ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
@@ -682,7 +680,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_fin*/
             
             $tt=sql_39(array( 'chi_id_source' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 'chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
-
+            
             if($tt[__xst] === true || $tt['changements'] === 1){
 
                 ajouterMessage('info','384 l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11));
@@ -705,7 +703,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           =============================== CREATION ============================================================
           =====================================================================================================
         */
-
+        
         if(erreur_dans_champs_saisis_sources()){
 
             recharger_la_page(BNF . '?__action=__creation');
@@ -749,7 +747,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                     'chp_type_source' => $_SESSION[APP_KEY][NAV][BNF]['chp_type_source']
                 ));
         $tt=sql_54($a_inserer);
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
@@ -775,7 +773,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
       
       on ne devrait pas arriver là car on a normalement capturé tous les cas
     */
-
+    
     if(isset($_SESSION[APP_KEY][NAV][BNF])){
 
         unset($_SESSION[APP_KEY][NAV][BNF]);
@@ -799,7 +797,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['__action'] == '__suppression')){
 
     $__id=isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0;
-
+    
     if($__id === 0){
 
         ajouterMessage('erreur',__LINE__ . ' il y a eu un problème ');
@@ -827,7 +825,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['
     /*sql_inclure_fin*/
     
     $tt=sql_62(array( 'T0_chi_id_source' => $__id, 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
-
+    
     if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         ajouterMessage('erreur',__LINE__ . ' valeurs non trouvées pour cet id');
@@ -915,7 +913,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $paramUrl=rawurlencode($paramUrl);
     $o1 .= '   <a href="javascript:__gi1.afficherModale2(\'' . enti1($paramUrl) . '\')" title="selectionner">📁</a>' . PHP_EOL;
     $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.annuler_champ_modale(\'' . enti1($paramUrl) . '\')" title="annuler">🚫</a>' . PHP_EOL;
-
+    
     if($chx_dossier_id_source === '' || $chx_dossier_id_source === false){
 
         $o1 .= '<span id="T0.chp_nom_dossier">source non rattaché à un dossier</span> ' . PHP_EOL;
@@ -940,7 +938,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
         
         $tt50=sql_50(array( 'T0_chi_id_dossier' => $chx_dossier_id_source, 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         /* echo __FILE__ . ' ' . __LINE__ . ' $tt50 = <pre>' . var_export( $tt50 , true ) . '</pre>' ; exit(0);*/
-
+        
         if($tt50[__xst] === false || count($tt50[__xva]) !== 1){
 
             $o1 .= '<span class="yydanger">Problème sur récupération du dossier</span>' . PHP_EOL;
@@ -1010,7 +1008,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $paramUrl=rawurlencode($paramUrl);
     $o1 .= '   <a href="javascript:__gi1.afficherModale2(\'' . enti1($paramUrl) . '\')" title="selectionner">📁</a>' . PHP_EOL;
     $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.annuler_champ_modale(\'' . enti1($paramUrl) . '\')" title="annuler">🚫</a>' . PHP_EOL;
-
+    
     if($__valeurs['T0.chx_dossier_id_source'] === null || $__valeurs['T0.chx_dossier_id_source'] === false){
 
         $o1 .= '<span id="T0.chp_nom_dossier">source non rattaché à un dossier</span> ' . PHP_EOL;
@@ -1053,10 +1051,10 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '  </div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1 yyconteneur_de_texte1">' . PHP_EOL;
     $o1 .= '  <div>' . PHP_EOL;
-
+    
     if($__valeurs['T0.chp_type_source'] === 'normal'){
 
-
+        
         if(strpos($__valeurs['T0.chp_nom_source'],'.js') !== false){
 
             $o1 .= '   <a class="yyinfo" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_js2(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R-&gt;J&#8615;</a>' . PHP_EOL;
@@ -1069,8 +1067,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.php') !== false){
 
-            $o1 .= '   <a class="yyinfo" href="javascript:convertir_rev_en_php_et_sauvegarde_rev(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R2P&#8615;</a>' . PHP_EOL;
-            $o1 .= '   <a class="yydanger" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_php2(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R2P&#8615;</a>' . PHP_EOL;
+            $o1 .= '   <a class="yysucces" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_php2(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R2P&#8615;</a>' . PHP_EOL;
             $o1 .= '   <a class="yyavertissement" title="sans nettoyage html en ligne" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':false}&quot;)">nikic &#8613;P2RS</a>' . PHP_EOL;
             $o1 .= '   <a class="yyavertissement" title="AVEC nettoyage html en ligne" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':true}&quot;)">nikic &#8613;P2RH</a>' . PHP_EOL;
             $o1 .= '   <a class="yyinfo" href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':false}&quot;,false)">phpp htm strict</a>';
@@ -1103,15 +1100,15 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
     }
 
-
+    
     if($__valeurs['T1.chp_dossier_cible'] !== null && $__valeurs['T2.chp_nom_dossier'] !== null){
 
         $nomCompletSource='../../' . $__valeurs['T1.chp_dossier_cible'] . $__valeurs['T2.chp_nom_dossier'] . '/' . $__valeurs['T0.chp_nom_source'];
         /*   echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $nomCompletSource , true ) . '</pre>' ; exit(0);*/
-
+        
         if(is_file($nomCompletSource)){
 
-
+            
             if($__valeurs['T0.chp_type_source'] === 'normal'){
 
                 $o1 .= '   <a href="javascript:lire_un_fichier_du_disque(&quot;' . encrypter(enti1($nomCompletSource)) . '&quot;)" class="yyavertissement">lire du disque</a>' . PHP_EOL;
@@ -1125,13 +1122,13 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
             $o1 .= '   <span>le fichier est absent du disque</span>' . PHP_EOL;
         }
 
-
+        
         if($_SESSION[APP_KEY]['cible_courante']['chp_nom_cible'] === 'fta'
            && $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] !== 'fta'
         ){
 
             $nom_complet_du_source_dans_fta='../../fta' . $__valeurs['T2.chp_nom_dossier'] . '/' . $__valeurs['T0.chp_nom_source'];
-
+            
             if(is_file($nom_complet_du_source_dans_fta)){
 
                 $o1 .= '   <button name="__importer_le_fichier_source_de_fta" class="yyinfo">importer le fichier source de fta</button>' . PHP_EOL;
@@ -1147,15 +1144,9 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
     }
 
-    
-    
     $o1 .= '   </div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
-    
-    
-    
-    
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
     $o1 .= '   <div style="word-break:break-word;">commentaire</div>' . PHP_EOL;
@@ -1168,7 +1159,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '<div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <button type="submit" class="">enregistrer les modifications</button>' . PHP_EOL;
-
+    
     if(isset($_GET['__option']) && $_GET['__option'] === 'remplacer_le_fichier'){
 
         $o1 .= '   <button class="yyavertissement" type="submit" name="option" value="remplacer_le_fichier" class="">remplacer le fichier et enregistrer les modifications</button>' . PHP_EOL;
@@ -1179,7 +1170,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '</div>' . PHP_EOL;
     $o1 .= '</form>' . PHP_EOL;
     $js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => 'initialiserEditeurPourUneTextArea', 'parametre' => array( 'nom' => 'chp_rev_source', 'mode' => 'rev'));
-
+    
     if(isset($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']) && count($_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']) > 0){
 
         /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables'] , true ) . '</pre>' ; */
@@ -1191,7 +1182,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
 }else{
 
-
+    
     if(isset($_GET['__action'])){
 
         $o1 .= $_GET['__action'] . '<br />';
@@ -1210,7 +1201,6 @@ $js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => '#ne_rien_
 $par=array(/**/
     'js_a_inclure' => array(
             /**/
-            'js/php.js',
             'js/convertit-php-en-rev0.js',
             'js/pour_zz_source1.js',
             'js/pour_zz_bdds_action1.js',
@@ -1221,7 +1211,8 @@ $par=array(/**/
             'js/jslib/acorn.js',
             'js/jslib/php-parser.js'
         ),
-    'module_a_inclure' => array(/**/
+    'module_a_inclure' => array(
+            /**/
             'js/module_html.js',
             'js/module_conversion_ast_de_js_acorn_vers_rev.js',
             'js/module_conversion_ast_de_php_parser_vers_rev.js',

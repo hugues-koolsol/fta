@@ -8,7 +8,6 @@ register_shutdown_function('shutdownHandler');
   Fonction retourne le nom du type d'erreur
   =====================================================================================================================
 */
-
 function recupTypeErreur($ty){
 
     $er='UNKNOWN_ERROR';
@@ -27,7 +26,7 @@ function recupTypeErreur($ty){
         E_COMPILE_WARNING => 'E_COMPILE_WARNING',
         E_PARSE => 'E_PARSE'
     );
-
+    
     if(isset($listeDesTypes[$ty])){
 
         $er=$listeDesTypes[$ty];
@@ -42,7 +41,6 @@ function recupTypeErreur($ty){
   Fonction appelée quand il y a un problème de traitement, par exemple une division par zéro
   =====================================================================================================================
 */
-
 function errorHandler($error_level,$error_message,$error_file,$error_line,$error_context){
 
     $error='error : ' . recupTypeErreur($error_level) . " | problème de traitement :" . $error_message . " | line:" . $error_line . " | file:" . basename($error_file) . " (" . $error_file . ")";
@@ -56,12 +54,11 @@ function errorHandler($error_level,$error_message,$error_file,$error_line,$error
   ou bien une erreur dans l'écriture du programme
   =====================================================================================================================
 */
-
 function shutdownHandler(){
 
     $lasterror=error_get_last();
     $nomErreur='UNKNOWN_ERROR';
-
+    
     if(isset($lasterror['type'])){
 
         $dernierMessage=str_replace('#','<br />#',str_replace(RACINE_DU_PROJET,'',$lasterror['message']));
@@ -75,7 +72,6 @@ function shutdownHandler(){
 
 }
 /* ================================================================================================ */
-
 function mylog($error){
 
     $ret=array( __xst => false, __xms => array( $error), __entree => isset($GLOBALS['__entree']) ? $GLOBALS['__entree'] : null);
@@ -100,7 +96,7 @@ if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
     /* les messages sont mis en tableau */
     $ret[__entree]=json_decode($_POST['ajax_param'],true);
     $GLOBALS[__entree]=$ret[__entree];
-
+    
     if(isset($ret[__entree]['call']['funct'])
        && $ret[__entree]['call']['lib'] !== ''
        && $ret[__entree]['call']['file'] !== ''
@@ -108,7 +104,7 @@ if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
     ){
 
         define('BNF','/ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php');
-
+        
         if(!is_file(INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php')){
 
             $ret[__xst]=false;
@@ -116,17 +112,17 @@ if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
 
         }else{
 
-
+            
             if(session_status() == PHP_SESSION_NONE){
 
                 session_start();
 
             }
 
-
+            
             if($ret[__entree]['call']['funct'] !== ''){
 
-
+                
                 if(true === checkGroupAjaxPages()){
 
                     require_once(INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php');
@@ -138,7 +134,7 @@ if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
 
             }else{
 
-
+                
                 if(true === checkGroupAjaxPages()){
 
                     /* inclusion d'un fichier */

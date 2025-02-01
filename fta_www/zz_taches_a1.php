@@ -6,11 +6,10 @@ $js_a_executer_apres_chargement=array();
 /*
   =====================================================================================================================
 */
-
 function erreur_dans_champs_saisis_taches(){
 
     $uneErreur=false;
-
+    
     if($_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'] === ''){
 
         ajouterMessage('erreur',__LINE__ . ' : le texte de la tâche ne doit pas être vide ',BNF);
@@ -35,7 +34,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']=$_POST['chp_priorite_tache']??'0';
     $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']=isset($_POST['chi_id_tache']) ? decrypter($_POST['chi_id_tache']) : '';
     verifie_id_envoye('chi_id_tache','zz_taches_l1.php',BNF,$_POST);
-
+    
     if(isset($_POST['__action']) && $_POST['__action'] == '__modification'){
 
         /*
@@ -43,10 +42,10 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           ============================== MODIFICATION =========================================================
           =====================================================================================================
         */
-
+        
         if(erreur_dans_champs_saisis_taches()){
 
-
+            
             if(isset($_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']) && is_numeric($_SESSION[APP_KEY][NAV][BNF]['chi_id_tache'])){
 
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']);
@@ -74,7 +73,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_fin*/
         
         $tt=sql_29(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'c_chi_id_tache' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache'], 'n_chp_texte_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'], 'n_chp_priorite_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
@@ -82,7 +81,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }else if($tt['changements'] === 1){
 
-
+            
             if(isset($_POST['__enregistrer_les_modifications_et_retour'])){
 
                 ajouterMessage('info',' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2));
@@ -111,7 +110,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         */
         /*  echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $_POST , true ) . '</pre>' ; exit(0);*/
         $__id=isset($_POST['chi_id_tache']) ? decrypter($_POST['chi_id_tache']) : 0;
-
+        
         if($__id !== false){
 
             sql_inclure_reference(31);
@@ -128,7 +127,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_fin*/
             
             $tt=sql_31(array( 'chi_id_tache' => $__id, 'chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
-
+            
             if($tt[__xst] === false){
 
                 ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
@@ -155,7 +154,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
           =============================== CREATION ============================================================
           =====================================================================================================
         */
-
+        
         if(erreur_dans_champs_saisis_taches()){
 
             recharger_la_page(BNF . '?__action=__creation');
@@ -181,7 +180,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_fin*/
         
         $tt=sql_30(array( array( 'chp_texte_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'], 'chp_priorite_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache'], 'chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'])));
-
+        
         if($tt[__xst] === false){
 
             ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
@@ -189,7 +188,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }else{
 
-
+            
             if(isset($_POST['option']) && $_POST['option'] === 'enregistrer_et_revenir_a_la_liste'){
 
                 ajouterMessage('info',__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé');
@@ -203,13 +202,12 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }
 
-
     }
 
     /*
       on ne devrait pas arriver là car on a normalement capturé tous les cas
     */
-
+    
     if(isset($_SESSION[APP_KEY][NAV][BNF])){
 
         unset($_SESSION[APP_KEY][NAV][BNF]);
@@ -233,7 +231,7 @@ $__id=0;
 if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['__action'] == '__suppression')){
 
     $__id=isset($_GET['__id']) ? (is_numeric($_GET['__id']) ? (int)($_GET['__id']) : 0) : 0;
-
+    
     if($__id === 0){
 
         ajouterMessage('erreur',__LINE__ . ' il y a eu un problème ');
@@ -255,7 +253,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['
         /*sql_inclure_fin*/
         
         $tt=sql_28(array( 'T0_chi_id_tache' => $__id, 'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
-
+        
         if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
             ajouterMessage('erreur',__LINE__ . ' on ne peut pas écrire la structure sur disque');
@@ -377,7 +375,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
 }else{
 
-
+    
     if(isset($_GET['__action'])){
 
         $o1 .= $_GET['__action'] . '<br />';

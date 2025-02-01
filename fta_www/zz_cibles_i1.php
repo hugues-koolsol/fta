@@ -83,12 +83,9 @@ $tab=array(
     'fta_www/svg_de_la_base.php' => array(),
     'fta_www/phpliteadmin.config.php' => array(),
     'fta_www/phpliteadmin.php' => array(),
-//    'fta_www/js/c o n v e r t i t - j s - e n - r e v 1.js' => array(),
     'fta_www/js/convertion_sql_en_rev.js' => array(),
     'fta_www/js/convertit-php-en-rev0.js' => array(),
     'fta_www/js/core6.js' => array(),
-//    'fta_www/js/j a v a s c r i p t.js' => array(),
-    'fta_www/js/php.js' => array(),
     'fta_www/js/pour_zz_bdds_action1.js' => array(),
     'fta_www/js/pour_zz_source1.js' => array(),
     'fta_www/js/pour_svg.js' => array(),
@@ -117,13 +114,13 @@ $indice_du_dossier=2;
 $tableau_des_dossiers=array();
 foreach($tab as $k1 => $v1){
     $dossier_cible=$dossier_racine . '/' . substr($k1,0,strrpos($k1,'/'));
-
+    
     if($dossier_cible === '../../ftb/'){
 
 
     }else{
 
-
+        
         if(!isset($tableau_des_dossiers[$dossier_cible])){
 
             $tableau_des_dossiers[$dossier_cible]=$indice_du_dossier;
@@ -140,7 +137,7 @@ foreach($tab as $k1 => $v1){
 /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tab , true ) . '</pre>' ; exit(0);*/
 foreach($tab as $k1 => $v1){
     $contenu=file_get_contents('../' . $k1);
-
+    
     if($contenu === false){
 
         echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export(__LINE__,true) . '</pre>' ;
@@ -149,11 +146,11 @@ foreach($tab as $k1 => $v1){
     }
 
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $contenu , true ) . '</pre>' ; exit(0);*/
-
+    
     if(isset($v1['remplacer'])){
 
         foreach($v1['remplacer'] as $k2 => $v2){
-
+            
             if(isset($v2['a_remplacer_chaine'])){
 
                 /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v2 , true ) . '</pre>' ; exit(0);*/
@@ -174,14 +171,13 @@ foreach($tab as $k1 => $v1){
                   // <p><strong>hello</strong></p>            
                   
                 */
-
             }
 
         }
 
     }
 
-
+    
     if($k1 === 'fta_www/zz_cibles_a1.php'){
 
         /*
@@ -194,7 +190,7 @@ foreach($tab as $k1 => $v1){
     }
 
     $dossier_cible=$dossier_racine . '/' . substr($k1,0,strrpos($k1,'/'));
-
+    
     if(is_dir($dossier_cible)){
 
         /*
@@ -203,7 +199,7 @@ foreach($tab as $k1 => $v1){
 
     }else{
 
-
+        
         if(!mkdir($dossier_cible,0777,true)){
 
             echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export(__LINE__,true) . ' impossible de créer le répertoire "' . $dossier_cible . '" </pre>' ;
@@ -214,10 +210,10 @@ foreach($tab as $k1 => $v1){
     }
 
     $fichier_cible=$dossier_cible . substr($k1,strrpos($k1,'/'));
-
+    
     if($fd=fopen($fichier_cible,'w')){
 
-
+        
         if(fwrite($fd,$contenu)){
 
             fclose($fd);
@@ -235,22 +231,22 @@ foreach($tab as $k1 => $v1){
         exit(0);
     }
 
-
+    
     if(isset($v1['copier_tous_les_fichies_de_ce_repertoire'])){
 
         $fichierSource='../' . $k1;
         $repertoire_source=substr($fichierSource,0,strrpos($fichierSource,'/'));
         $files=glob($repertoire_source . '/*',GLOB_MARK);
         foreach($files as $file){
-
+            
             if(!is_dir($file)){
 
                 $contenu=file_get_contents($file);
                 $fichier_cible=$dossier_cible . substr($file,strrpos($file,'/'));
-
+                
                 if($fd=fopen($fichier_cible,'w')){
 
-
+                    
                     if(fwrite($fd,$contenu)){
 
                         fclose($fd);
@@ -291,7 +287,7 @@ $chemin_base_systeme=realpath($dossier_racine . '/fta_inc/db/sqlite/system.db');
 
 if(is_file($chemin_base_systeme)){
 
-
+    
     if(!unlink($chemin_base_systeme)){
 
         echo __FILE__ . ' ' . __LINE__ . ' unlink base system impossible = <pre>' . var_export(__LINE__,true) . '</pre>' ;
@@ -391,7 +387,7 @@ if(false === $base_ftb->exec($contenu_initialisation)){
 $contenu_table_dossiers='';
 foreach($tableau_des_dossiers as $k1 => $v1){
     /* le dossier racine est déjà créé */
-
+    
     if(substr($k1,strlen('../../ftb')) !== '/'){
 
         $contenu_table_dossiers .= ",('" . $v1 . "','" . substr($k1,strlen('../../ftb')) . "','1')";
@@ -405,7 +401,7 @@ if($contenu_table_dossiers !== ''){
     $contenu_table_dossiers=substr($contenu_table_dossiers,1);
     $contenu_table_dossiers='INSERT INTO `' . cst('tbl_dossiers') . '`( `' . cst('chi_id_dossier') . '`, `' . cst('chp_nom_dossier') . '`, `' . cst('chx_cible_dossier') . '`) VALUES ' . $contenu_table_dossiers;
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $contenu_table_dossiers , true ) . '</pre>' ; exit(0);*/
-
+    
     if(false === $base_ftb->exec($contenu_table_dossiers)){
 
         echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export(__LINE__,true) . '</pre>' ;
@@ -422,10 +418,10 @@ if($contenu_table_dossiers !== ''){
 
 $contenu_table_sources='';
 foreach($tab as $k1 => $v1){
-
+    
     if($v1['dossier'] === 1){
 
-
+        
         if(isset($v1['chp_type_source'])){
 
             $contenu_table_sources .= ",('" . $k1 . "','1','" . $v1['dossier'] . "' , '" . $v1['chp_type_source'] . "')\r\n";
@@ -438,7 +434,7 @@ foreach($tab as $k1 => $v1){
 
     }else{
 
-
+        
         if(isset($v1['chp_type_source'])){
 
             $contenu_table_sources .= ",('" . substr($k1,strrpos($k1,'/') + 1) . "','1','" . $v1['dossier'] . "' , '" . $v1['chp_type_source'] . "')\r\n";
@@ -459,7 +455,7 @@ if($contenu_table_sources !== ''){
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . enti1( $contenu_table_sources ) . '</pre>' ; exit(0);*/
     $contenu_table_sources='INSERT INTO `' . cst('tbl_sources') . '`( `' . cst('chp_nom_source') . '` , `' . cst('chx_cible_id_source') . '`, `' . cst('chx_dossier_id_source') . '` , `' . cst('chp_type_source') . '` ) VALUES ' . $contenu_table_sources;
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . enti1( $contenu_table_sources ) . '</pre>' ; exit(0);*/
-
+    
     if(false === $base_ftb->exec($contenu_table_sources)){
 
         echo __FILE__ . ' ' . __LINE__ . ' erreur de création des valeurs dans la bdd system = <pre>' . var_export(__LINE__,true) . '</pre>' ;
@@ -500,7 +496,7 @@ $contenu_fichier_acces_pour_bdd .= ');' . PHP_EOL;
 
 if($fd=fopen($chemin_fichier_acces_pour_bdd,'w')){
 
-
+    
     if(fwrite($fd,$contenu_fichier_acces_pour_bdd)){
 
         fclose($fd);
