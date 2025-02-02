@@ -6,7 +6,7 @@
   point d'entrée = traite_ast
   =====================================================================================================================
 */
-class module_conversion_ast_de_php_parser_vers_rev1{
+class c_astphpparseur_vers_rev1{
     #nom_de_la_variable='';
     #options_traitement=null;
     /*
@@ -484,7 +484,7 @@ class module_conversion_ast_de_php_parser_vers_rev1{
                         }
                     }
                     /* on transforme le ast du js en rev */
-                    var obj0=__module_js_parseur1.traite_ast(obj.body,tableau_des_commentaires_js,{});
+                    var obj0=__m_astjs_vers_rev1.traite_ast(obj.body,tableau_des_commentaires_js,{});
                     if(obj0.__xst === true){
                         globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,'source('+obj0.__xva+')');
                     }else{
@@ -4016,4 +4016,4 @@ class module_conversion_ast_de_php_parser_vers_rev1{
       =============================================================================================================
     */
 }
-export{module_conversion_ast_de_php_parser_vers_rev1};
+export{c_astphpparseur_vers_rev1};

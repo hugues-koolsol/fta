@@ -1118,7 +1118,7 @@ class traitements_sur_html{
                                     }
                                 }
                                 /* on transforme le ast du js en rev */
-                                var obj1=__module_js_parseur1.traite_ast(obj0.body,tableau_des_commentaires_js,{});
+                                var obj1=__m_astjs_vers_rev1.traite_ast(obj0.body,tableau_des_commentaires_js,{});
                                 if(obj1.__xst === true){
                                     /* puis on remplace la chaine */
                                     var phrase_a_remplacer='#(cle_javascript_a_remplacer,' + tableau_de_javascripts_a_convertir[indjs].cle + ')';

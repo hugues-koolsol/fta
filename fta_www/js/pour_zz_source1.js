@@ -99,7 +99,7 @@ function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_sou
         /* on transforme le javascript en ast */
         var obj=parseur_javascript.parse(a.value,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
         /* on transforme le ast en rev */
-        var obj=__module_js_parseur1.traite_ast(obj.body,tabComment,{});
+        var obj=__m_astjs_vers_rev1.traite_ast(obj.body,tabComment,{});
         if(obj.__xst === true){
             document.getElementById(chp_rev_source).value=obj.__xva;
             var tableau1=iterateCharacters2(obj.__xva);
@@ -196,7 +196,7 @@ function zz_l1_convertir_un_source_js_sur_disque3(id_source){
                         /* on transforme le javascript en ast */
                         var obj=parseur_javascript.parse(donnees.contenu_du_fichier,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
                         /* on transforme le ast en rev */
-                        var obj=__module_js_parseur1.traite_ast(obj.body,tabComment,{});
+                        var obj=__m_astjs_vers_rev1.traite_ast(obj.body,tabComment,{});
                         if(obj.__xst === true){
                             var parametres={"__entree" : {"id_source" : donnees.db['T0.chi_id_source'] ,"date_de_debut_traitement" : date_de_debut_traitement}};
                             var obj2=sauvegarder_js_en_ligne2(obj.__xva,parametres);
@@ -244,7 +244,7 @@ function zz_l1_convertir_un_source_php_sur_disque3(id_source){
                         let regex=/\/\*sql_inclure_deb[\s\S]*?sql_inclure_fin\*\//g;
                         let php_moins_commentaires_sql=donnees.contenu_du_fichier.replace(regex,'');
                         var ast_de_php=parseur.parseCode(php_moins_commentaires_sql);
-                        var obj=__module_php_parseur1.traite_ast(ast_de_php,{"en_ligne" : true});
+                        var obj=__m_astphpparseur_vers_rev1.traite_ast(ast_de_php,{"en_ligne" : true});
                         if(obj.__xst === true){
                             var parametres={"__entree" : {"id_source" : donnees.db['T0.chi_id_source'] ,"date_de_debut_traitement" : date_de_debut_traitement}};
                             var obj2=sauvegarder_php_en_ligne2(obj.__xva,parametres);

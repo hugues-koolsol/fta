@@ -6,7 +6,7 @@
   point d'entrée = traite_ast, #traite_element
   =====================================================================================================================
 */
-class module_conversion_ast_de_js_acorn_vers_rev1{
+class c_astjs_vers_rev1{
     #nom_de_la_variable='';
     #options_traitement=null;
     /*
@@ -325,9 +325,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 obj=a2F1(nouveauTableau,0,false,1);
                 if(obj.__xst === true){
                     t=obj.__xva;
+                }else{
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_BinaryExpression ' ,"element" : element}));
                 }
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0324 #traite_BinaryExpression ' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_BinaryExpression ' ,"element" : element}));
             }
         }
         if(t.substr(0,10) === 'plus(plus('
@@ -668,7 +670,11 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
             if(commentaire !== ''){
                 lesPar+=',' + commentaire;
             }
-            if(element.elements[i].type === 'Literal'){
+            if(element.elements[i]===null){
+                this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' ATTENTION, CE N\'EST PAS UNE ERREUR MAIS... élément vide dans un tableau' ,"element" : element});
+                lesPar+=',p()';
+             
+            }else if(element.elements[i].type === 'Literal'){
                 lesPar+=',p(' + element.elements[i].raw + ')';
                 if(element.elements[i].raw.substr(0,1) === '\''
                        || element.elements[i].raw.substr(0,1) === '"'
@@ -864,10 +870,46 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                 if(type_objet === 'CallExpression'){
                     /* pour traiter le d de "a.b(c).d" */
                     if(objet.substr(0,7) === 'appelf('){
-                        /* on retire la dernière parenthèse et on ajoute la propriété */
+                        /* 
+                           Cas le plus général : on retire la dernière parenthèse et on ajoute la propriété 
+                        */
                         t=objet.substr(0,objet.length - 1) + 'prop(' + propriete + '))';
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                        /*
+                         cas tordu : il y a un commentaire dans un tableau vu dans htmx
+                          a= [(/** /(elt.getRootNode())).host];
+                          => affecte(  a, defTab( #() p( appelf( element(elt) , nomf(getRootNode) , p() , prop(host) )) ) ),
+                        */
+                        obj=functionToArray(objet,true,false,'');
+                        
+                        if(obj.__xst===true){
+                            /* on retire les commentaires au niveau 1 */
+                            var nouveauTableau=obj.__xva;
+                            var commentaire='';
+                            for(var i=nouveauTableau.length-1;i>=1;i--){
+                                if(nouveauTableau[i][2]==='f' && nouveauTableau[i][1]==='#' && nouveauTableau[i][3]===0 ){
+                                   commentaire+=nouveauTableau[i][13].trim().replace(/\(/g,'[').replace(/\)/g,']');
+                                   nouveauTableau=supprimer_un_element_de_la_matrice(nouveauTableau,i,0);
+                                }
+                            }                             
+                            if(nouveauTableau.length>0 && nouveauTableau[1][1]==='appelf' && nouveauTableau[1][2]==='f'){
+                                var nouvelle_fonction=a2F1(nouveauTableau,0,false,1);
+                                if(nouvelle_fonction.__xst===true){
+                                    if(commentaire!==''){
+                                        t='#('+commentaire+')'+nouvelle_fonction.__xva.substr(0,nouvelle_fonction.__xva.length - 1) + 'prop(' + propriete + '))';
+                                    }else{
+                                        t=nouvelle_fonction.__xva.substr(0,nouvelle_fonction.__xva.length - 1) + 'prop(' + propriete + '))';
+                                    }
+                                }else{
+                                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                                }
+                            }else{
+                                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                            }
+                        }else{
+                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                        }
+                        
                     }
                 }else if(type_objet === 'MemberExpression'){
                     /* pour traiter le d de "a.b(c).d" */
@@ -892,6 +934,9 @@ class module_conversion_ast_de_js_acorn_vers_rev1{
                     }
                 }else if(type_objet === 'LogicalExpression' || type_objet === 'AssignmentExpression' || type_objet === 'NewExpression'){
                     t=objet.substr(0,objet.length - 1) + ',prop(' + propriete + '))';
+                }else if(type_objet === 'Literal'){
+                    /* cas (rare) a=' '.length  trouvé dans htmx => affecte(a , valeur_constante(' ',prop(length) ) ) */
+                    t='valeur_constante('+objet+',prop(' + propriete + '))';
                 }else if(type_objet === null){
                     /* cas let x10 = a.b ?. c; */
                     t=propriete;
@@ -3081,4 +3126,4 @@ let x16=a.b ?. c(a.b);
       =============================================================================================================
     */
 }
-export{module_conversion_ast_de_js_acorn_vers_rev1};
+export{c_astjs_vers_rev1};

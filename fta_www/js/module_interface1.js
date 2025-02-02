@@ -873,7 +873,7 @@ class interface1{
                     }
                 }
                 /* on transforme le ast du js en rev */
-                var obj1=__module_js_parseur1.traite_ast(obj.body,tableau_des_commentaires_js,{});
+                var obj1=__m_astjs_vers_rev1.traite_ast(obj.body,tableau_des_commentaires_js,{});
                 if(obj1.__xst === true){
                     return({"__xst" : true ,"__xva" : obj1.__xva});
                 }else{
@@ -908,7 +908,7 @@ class interface1{
             /* on transforme le javascript en ast */
             var obj=parseur_javascript.parse(a.value,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
             /* on transforme le ast en rev */
-            var obj=__module_js_parseur1.traite_ast(obj.body,tabComment,{});
+            var obj=__m_astjs_vers_rev1.traite_ast(obj.body,tabComment,{});
             if(obj.__xst === true){
                 document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;
                 var tableau1=iterateCharacters2(obj.__xva);
@@ -1049,7 +1049,7 @@ class interface1{
             let regex=/\/\*sql_inclure_deb[\s\S]*?sql_inclure_fin\*\//g;
             let php_moins_commentaires_sql=a.value.replace(regex,'');
             var ast_de_php=parseur.parseCode(php_moins_commentaires_sql);
-            var obj=__module_php_parseur1.traite_ast(ast_de_php,options_traitement);
+            var obj=__m_astphpparseur_vers_rev1.traite_ast(ast_de_php,options_traitement);
             if(obj.__xst === true){
                 document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;
                 if(obj.__xva.substr(0,4)!=='php('){

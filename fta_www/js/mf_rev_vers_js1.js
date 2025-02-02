@@ -5,7 +5,7 @@
   point d'entrée = c_rev_vers_js
   =====================================================================================================================
 */
-class m_rev_vers_js1{
+class c_rev_vers_js1{
     #nom_de_la_variable='';
     #tb=[];
     #l02=0;
@@ -1221,12 +1221,9 @@ class m_rev_vers_js1{
                         /*
                           dans le cas d'un !function(){} !!! si si , ça existe !!!
                         */
-                        (obj=this.#tb),i + 1,false,true,niveau,false;
+                        obj=this.#js_traiteInstruction1(niveau,i,{});
                         if(obj.__xst === true){
-                            if(obj.__xva.substr(0,2) === CRLF){
-                                obj.__xva=obj.__xva.substr(2);
-                            }
-                            t+='!' + obj.__xva;
+                            t+=obj.__xva;
                         }else{
                             return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'erreur  1647'}));
                         }
@@ -1253,15 +1250,15 @@ class m_rev_vers_js1{
                                     if(obj.__xst === true){
                                         contenu_etiquette+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'm_rev_vers_js1.js traitement etiquette contenu mauvais ' + JSON.stringify(this.#tb[i])}));
+                                        return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : ' traitement etiquette contenu mauvais ' + JSON.stringify(this.#tb[i])}));
                                     }
                                 }
                             }
                         }
                         if(nom_etiquette !== ''){
-                            t+=nom_etiquette + ':' + contenu_etiquette;
+                            t+=nom_etiquette + ':' +espcLignep1+ contenu_etiquette;
                         }else{
-                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'm_rev_vers_js1.js traitement etiquette contenu mauvais ' + JSON.stringify(this.#tb[i])}));
+                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : ' traitement etiquette contenu mauvais ' + JSON.stringify(this.#tb[i])}));
                         }
                         ne_pas_mettre_de_terminateur=true;
                         break;
@@ -1271,7 +1268,7 @@ class m_rev_vers_js1{
                         if(obj.__xst === true){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'm_rev_vers_js1.js traitement importer ' + JSON.stringify(this.#tb[i])}));
+                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : ' traitement importer ' + JSON.stringify(this.#tb[i])}));
                         }
                         break;
                         
@@ -1282,7 +1279,7 @@ class m_rev_vers_js1{
                             t+='{' + espcLignep1 + obj.__xva + espcLigne + '}';
                             ne_pas_mettre_de_terminateur=true;
                         }else{
-                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : '1210 m_rev_vers_js1.js traitement bloc ' + JSON.stringify(this.#tb[i])}));
+                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : '1210  traitement bloc ' + JSON.stringify(this.#tb[i])}));
                         }
                         break;
                         
@@ -1292,7 +1289,7 @@ class m_rev_vers_js1{
                         if(objOperation.__xst === true){
                             t+=objOperation.__xva;
                         }else{
-                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'm_rev_vers_js1.js traitement non prévu 1057 ' + JSON.stringify(this.#tb[i])}));
+                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + ' traitement non prévu 1057 ' + JSON.stringify(this.#tb[i])}));
                         }
                         break;
                         
@@ -1453,17 +1450,17 @@ class m_rev_vers_js1{
                                 return({"__xst" : true ,"__xva" : type + ' ' + this.#macst_pour_javascript(this.#tb[j])});
                             }
                         }
-                        return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : '1717 erreur sur js_traiteInstruction1 pour ' + this.#tb[id][1]}));
+                        return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1()+'declare_constante ou variable ' + this.#tb[id][1]}));
                     }else if(this.#tb[this.#tb[id][7]][1] === 'dans'){
                         for( var j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                             if(this.#tb[j][2] === 'c'){
                                 return({"__xst" : true ,"__xva" : type + ' ' + this.#macst_pour_javascript(this.#tb[j])});
                             }
                         }
-                        return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : '2439 erreur sur js_traiteInstruction1 pour ' + this.#tb[id][1]}));
+                        return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1()+'declare_constante ou variable ' + this.#tb[id][1]}));
                     }else{
                         debugger;
-                        return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : '2432 erreur sur js_traiteInstruction1 pour ' + this.#tb[id][1]}));
+                        return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1()+'declare_constante ou variable ' + this.#tb[id][1]}));
                     }
                     break;
                     
@@ -1488,6 +1485,32 @@ class m_rev_vers_js1{
                     }
                     break;
                     
+                case 'valeur_constante' : 
+                    /* cas (rare) a=' '.length  trouvé dans htmx => affecte(a , valeur_constante(' ',prop(length) ) ) */
+                    var valeur_constante='';
+                    var propriete='';
+                    for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
+                        if(this.#tb[j][2] === 'c'){
+                            valeur_constante=this.#macst_pour_javascript(this.#tb[j]);
+                        }else{
+                            if(this.#tb[j][1] === '#'){
+                            }else if(this.#tb[j][1] === 'prop'){
+                                obj=this.#js_traiteInstruction1(niveau,j+1,{});
+                                if(obj.__xst === true){
+                                    propriete+='.'+obj.__xva;
+                                }else{
+                                    return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1() + ' constante'}));
+                                }
+                            }else{
+                                return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1() + ' constante'}));
+                            }
+                        }
+                    }
+                    t+=valeur_constante+propriete;
+                
+                
+                    break;
+                    
                 case 'postinc' : 
                 case 'postdec' : 
                 case 'preinc' : 
@@ -1500,7 +1523,7 @@ class m_rev_vers_js1{
                         if(obj.__xst === true){
                             valeur=obj.__xva;
                         }else{
-                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + ' postinc/preinc/...'}));
+                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1() + ' postinc/preinc/...'}));
                         }
                     }
                     if(this.#tb[id][1] === 'preinc'){
@@ -1703,7 +1726,7 @@ class m_rev_vers_js1{
         var proprietes='';
         var nombre_de_parametres=0;
         var nombre_de_proprietes=0;
-        var seule_propriete='';
+        var seul_element='';
         var comptage=0;
         for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
             if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
@@ -1723,37 +1746,54 @@ class m_rev_vers_js1{
         for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
             valeur='';
             if(this.#tb[j][1] === 'p' && this.#tb[j][2] === 'f'){
-                for( var k=j + 1 ; k < this.#l02 ; k=this.#tb[k][12] ){
-                    if(this.#tb[k][1] === '#' && this.#tb[k][2] === 'f'){
-                        if(nombre_de_parametres === 0 || precedent_est_commentaire === true){
-                        }else{
-                            textObj+=',';
-                        }
-                        mettre_des_sauts=true;
-                        textObj+=espacesn(true,niveau + 1);
-                        valeur=espacesn(true,niveau + 1);
-                        var commt=traiteCommentaire2(this.#tb[k][13],niveau,j);
-                        textObj+='/*' + commt + '*/';
-                        valeur+='/*' + commt + '*/';
+                if(this.#tb[j][8]===0){
+                    nombre_de_parametres++;
+                    if(precedent_est_commentaire === true){
+                        precedent_est_commentaire=false;
                     }else{
-                        nombre_de_parametres++;
-                        obje=this.#js_traiteInstruction1(niveau + 2,k,{});
-                        if(obje.__xst === true){
-                            if(precedent_est_commentaire === true){
-                                precedent_est_commentaire=false;
+                        textObj+=',';
+                    }
+                    if(mettre_des_sauts){
+                        textObj+=espacesn(true,niveau + 1);
+                    }
+                    textObj+='';
+                    this.#rev_js_logerreur({"__xst" : false ,"id" : j ,"__xme" : nl1()+'attention CE N\'EST PAS UNE ERREUR MAIS..., paramètre vide dans un tableau '});
+                    
+                }else{
+                    for( var k=j + 1 ; k < this.#l02 ; k=this.#tb[k][12] ){
+                        
+                        if(this.#tb[k][1] === '#' && this.#tb[k][2] === 'f'){
+                            if(nombre_de_parametres === 0 || precedent_est_commentaire === true){
                             }else{
                                 textObj+=',';
                             }
-                            if(mettre_des_sauts){
-                                textObj+=espacesn(true,niveau + 1);
-                            }
-                            textObj+=obje.__xva;
-                            /* textObj+=','; */
+                            mettre_des_sauts=true;
+                            textObj+=espacesn(true,niveau + 1);
+                            valeur=espacesn(true,niveau + 1);
+                            var commt=traiteCommentaire2(this.#tb[k][13],niveau,j);
+                            textObj+='/*' + commt + '*/';
+                            valeur+='/*' + commt + '*/';
+                            precedent_est_commentaire=true;
                         }else{
-                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : j ,"__xme" : 'this.#js_traiteDefinitiontableau 1140 '}));
-                        }
-                        if(this.#tb[k][2] === 'c'){
-                            seule_propriete=this.#macst_pour_javascript(this.#tb[k]);
+                            nombre_de_parametres++;
+                            obje=this.#js_traiteInstruction1(niveau + 2,k,{});
+                            if(obje.__xst === true){
+                                if(precedent_est_commentaire === true){
+                                    precedent_est_commentaire=false;
+                                }else{
+                                    textObj+=',';
+                                }
+                                if(mettre_des_sauts){
+                                    textObj+=espacesn(true,niveau + 1);
+                                }
+                                textObj+=obje.__xva;
+                                /* textObj+=','; */
+                            }else{
+                                return(this.#rev_js_logerreur({"__xst" : false ,"id" : j ,"__xme" : 'this.#js_traiteDefinitiontableau 1140 '}));
+                            }
+                            if(this.#tb[k][2] === 'c'){
+                                seul_element=this.#macst_pour_javascript(this.#tb[k]);
+                            }
                         }
                     }
                 }
@@ -1795,11 +1835,11 @@ class m_rev_vers_js1{
                 }
             }
         }
-        if(nombre_de_parametres === 1 && nombre_de_proprietes === 0 && seule_propriete !== '' && isNumeric(seule_propriete)){
+        if(nombre_de_parametres === 1 && nombre_de_proprietes === 0 && seul_element !== '' && isNumeric(seul_element)){
             if(this.#tb[this.#tb[id][7]][1] === 'new' && this.#tb[this.#tb[id][7]][2] === 'f'){
-                t='Array(' + seule_propriete + ')';
+                t='Array(' + seul_element + ')';
             }else{
-                t='new Array(' + seule_propriete + ')';
+                t='new Array(' + seul_element + ')';
             }
         }else{
             t+='[';
@@ -2945,4 +2985,4 @@ class m_rev_vers_js1{
         }
     }
 }
-export{m_rev_vers_js1};
+export{c_rev_vers_js1};

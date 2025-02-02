@@ -1214,10 +1214,10 @@ $par=array(/**/
     'module_a_inclure' => array(
             /**/
             'js/module_html.js',
-            'js/module_conversion_ast_de_js_acorn_vers_rev.js',
-            'js/module_conversion_ast_de_php_parser_vers_rev.js',
-            'js/m_rev_vers_js1.js',
-            'js/m_rev_vers_php1.js'
+            'js/mf_astjs_vers_rev1.js',
+            'js/mf_astphpparseur_vers_rev1.js',
+            'js/mf_rev_vers_js1.js',
+            'js/mf_rev_vers_php1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

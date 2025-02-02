@@ -39,10 +39,10 @@ import('./module_html.js').then(function(Module){
 import('./module_requete_sql.js').then(function(Module){
         __module_requete_sql1=new Module.requete_sql('__module_requete_sql1',null);
     });
-import('./m_rev_vers_js1.js').then(function(Module){
-        __m_rev_vers_js1=new Module.m_rev_vers_js1('__m_rev_vers_js1',null);
+import('./mf_rev_vers_js1.js').then(function(Module){
+        __m_rev_vers_js1=new Module.c_rev_vers_js1('__m_rev_vers_js1',null);
     });
-import('./m_rev_vers_php1.js').then(function(Module){
+import('./mf_rev_vers_php1.js').then(function(Module){
         __m_rev_vers_php1=new Module.m_rev_vers_php1('__m_rev_vers_php1',null);
     });
 /*

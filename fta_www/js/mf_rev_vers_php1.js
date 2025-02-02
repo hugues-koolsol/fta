@@ -5,7 +5,7 @@
   point d'entrée = c_rev_vers_php , c_tab_vers_php
   =====================================================================================================================
 */
-class m_rev_vers_php1{
+class c_rev_vers_php1{
     #nom_de_la_variable='';
     #tb=[];
     #l02=0;
@@ -3048,4 +3048,4 @@ class m_rev_vers_php1{
         }
     }
 }
-export{m_rev_vers_php1};
+export{c_rev_vers_php1};
