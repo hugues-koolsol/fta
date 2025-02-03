@@ -936,6 +936,7 @@ let __m_astphpparseur_vers_rev1=null;
 let __m_astjs_vers_rev1=null;
 let __m_rev_vers_js1=null;
 let __m_rev_vers_php1=null;
+let __m_astphpnikic_vers_rev1=null;
 /*       document.addEventListener("DOMContentLoaded",function(event){});     */
 /*
   =====================================================================================================================
@@ -962,6 +963,10 @@ function demarre_l_interface(){
                  }else if(element.src && element.src.indexOf("js/mf_astphpparseur_vers_rev1.js") >= 0){
                      import('./js/mf_astphpparseur_vers_rev1.js').then(function(Module){
                          __m_astphpparseur_vers_rev1=new Module.c_astphpparseur_vers_rev1('__m_astphpparseur_vers_rev1');
+                     });
+                 }else if(element.src && element.src.indexOf("js/mf_astphpnikic_vers_rev1.js") >= 0){
+                     import('./js/mf_astphpnikic_vers_rev1.js').then(function(Module){
+                         __m_astphpnikic_vers_rev1=new Module.c_astphpnikic_vers_rev1('__m_astphpnikic_vers_rev1');
                      });
                  }else if(element.src && element.src.indexOf("js/mf_astjs_vers_rev1.js") >= 0){
                      import('./js/mf_astjs_vers_rev1.js').then(function(Module){

@@ -165,6 +165,11 @@ class interface1{
             global_messages.lines.splice(0,1);
             affichagesPresents=true;
         }
+        while(global_messages.lignes.length > 0){
+            zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages.lignes[i] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + global_messages.lignes[i] + '</a>&nbsp;' + zon.innerHTML;
+            global_messages.lignes.splice(0,1);
+            affichagesPresents=true;
+        }
         if(global_messages.data.matrice && global_messages.data.matrice.__xva){
             for( i=0 ; i < global_messages.ids.length && nombre_de_boutons_affiches <= 3 ; i++ ){
                 var id=global_messages.ids[i];
@@ -1171,14 +1176,109 @@ class interface1{
     /*
       =============================================================================================================
     */
+    traitement_apres_recuperation_ast_de_php2_ok(par){
+        console.log(par)
+        var options=par.__entree.call.opt;
+        try{
+            var json_de_ast=JSON.parse(par.__xva);
+            var obj=__m_astphpnikic_vers_rev1.traite_ast_nikic(json_de_ast,options);
+            if(obj.__xst===true){
+                console.log(obj);
+                if(options.hasOwnProperty('nom_de_la_text_area_rev')){
+                    document.getElementById(options.nom_de_la_text_area_rev).value=obj.__xva;
+                    
+
+                    if(obj.__xva.substr(0,4)!=='php('){
+                        var tableau1=iterateCharacters2('php(' + obj.__xva + ')');
+                    }else{
+                        var tableau1=iterateCharacters2(obj.__xva);
+                    }
+                    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+                    if(matriceFonction.__xst === true){
+                        var obj2=arrayToFunct1(matriceFonction.__xva,true);
+                        if(obj2.__xst === true){
+                            document.getElementById(options.nom_de_la_text_area_rev).value=obj2.__xva;
+                        }else{
+                            this.remplir_et_afficher_les_messages1('zone_global_messages',options.nom_de_la_text_area_rev);
+                        }
+                    }else{
+                        this.remplir_et_afficher_les_messages1('zone_global_messages',options.nom_de_la_text_area_rev);
+                    }
+                }
+            }else{
+                debugger
+                console.log(obj);
+            }
+        }catch(e){
+            logerreur({"__xst" : false ,"__xme" : nl1(e)+'<br />'+e.message});
+        }
+        
+        this.remplir_et_afficher_les_messages1('zone_global_messages');
+    }
+    /*
+      =============================================================================================================
+    */
+    traitement_apres_recuperation_ast_de_php2_ko(reponse_ajax,json_de_reponse=null){
+       if(json_de_reponse!==null){
+            if(json_de_reponse.hasOwnProperty('__xms')){
+                for(var i in json_de_reponse.__xms){
+                    if(json_de_reponse.__xms[i].indexOf(' on line ')>=0){
+                        var num_ligne=parseInt(json_de_reponse.__xms[i].substr(json_de_reponse.__xms[i].indexOf(' on line ')+9),10);
+                        logerreur({"__xst" : false ,"__xme" : json_de_reponse.__xms[i] , "ligne":num_ligne});
+                    }else{
+                        logerreur({"__xst" : false ,"__xme" : json_de_reponse.__xms[i]});
+                    }
+                }
+                if(json_de_reponse.hasOwnProperty('__entree') && json_de_reponse.__entree.hasOwnProperty('call') && json_de_reponse.__entree.call.hasOwnProperty('opt')){
+                    var options=json_de_reponse.__entree.call.opt;
+                    if(options.hasOwnProperty('nom_de_la_text_area_php')){
+                        this.remplir_et_afficher_les_messages1('zone_global_messages',options.nom_de_la_text_area_php);
+                    }else{
+                        this.remplir_et_afficher_les_messages1('zone_global_messages');
+                    }
+                }else{
+                    this.remplir_et_afficher_les_messages1('zone_global_messages');
+                }
+            }else{
+                debugger;
+                this.remplir_et_afficher_les_messages1('zone_global_messages');
+            }
+        }else{
+            debugger
+            console.log('%cERREUR','background:yellow;color:red;',par)
+            this.remplir_et_afficher_les_messages1('zone_global_messages');
+        }
+    }
+    
+    /*
+      =============================================================================================================
+    */
+    bouton_convertir_text_area_php_en_rev_avec_nikic2(nom_de_la_text_area_php,nom_de_la_text_area_rev,options_traitement,mettre_en_local_storage){
+        var options_traitement=JSON.parse(options_traitement.replace(/\'/g,'"'));
+        options_traitement.nom_de_la_text_area_php=nom_de_la_text_area_php;
+        options_traitement.nom_de_la_text_area_rev=nom_de_la_text_area_rev;
+        document.getElementById(nom_de_la_text_area_rev).value='Veuillez patienter !';
+        this.raz_des_messages();
+        var a=document.getElementById(nom_de_la_text_area_php);
+        if(mettre_en_local_storage){
+            localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
+        }
+        __m_astphpnikic_vers_rev1.recupere_ast_de_php_du_serveur(
+             a.value,
+             options_traitement,
+             this.traitement_apres_recuperation_ast_de_php2_ok.bind(this) , 
+             this.traitement_apres_recuperation_ast_de_php2_ko.bind(this)
+        );
+    }
+    /*
+      =============================================================================================================
+    */
     convertir_text_area_php_en_rev_avec_nikic(nom_de_la_text_area_php,nom_de_la_text_area_rev,options_traitement){
         var options_traitement=JSON.parse(options_traitement.replace(/\'/g,'"'));
         document.getElementById(nom_de_la_text_area_rev).value='Veuillez patienter !';
         this.raz_des_messages();
         var a=document.getElementById(nom_de_la_text_area_php);
         localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
-        var lines=a.value.split(/\r|\r\n|\n/);
-        var count=lines.length;
         try{
             var ret=recupereAstDePhp2(a.value,{"zone_php" : nom_de_la_text_area_php ,"zone_rev" : nom_de_la_text_area_rev ,"options_traitement" : options_traitement},traitement_apres_recuperation_ast_de_php2);
             if(ret.__xst === false){
@@ -2369,6 +2469,7 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
             "avertissements" : [] ,
             "infos" : [] ,
             "lines" : [] ,
+            "lignes" : [] ,
             "tabs" : [] ,
             "ids" : [] ,
             "ranges" : [] ,

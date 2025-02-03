@@ -13,6 +13,7 @@ var global_messages={
     "infos" : [] ,
     "masquees" : [] ,
     "lines" : [] ,
+    "lignes" : [] ,
     "tabs" : [] ,
     "ids" : [] ,
     "ranges" : [] ,
@@ -21,28 +22,6 @@ var global_messages={
     "calls" : '' ,
     "data" : {"matrice" : [] ,"tableau" : [] ,"sourceGenere" : ''}
 };
-/*
-  =====================================================================================================================
-*/
-function raz_messages(zone_message){
-    if(zone_message && document.getElementById(zone_message)){
-        document.getElementById(zone_message).innerHTML='';
-    }
-    global_messages={
-        "errors" : [] ,
-        "avertissements" : [] ,
-        "infos" : [] ,
-        "masquees" : [] ,
-        "lines" : [] ,
-        "tabs" : [] ,
-        "ids" : [] ,
-        "ranges" : [] ,
-        "plages" : [] ,
-        "positions_caracteres" : [] ,
-        "calls" : '' ,
-        "data" : {"matrice" : [] ,"tableau" : [] ,"sourceGenere" : ''}
-    };
-}
 /*
   =====================================================================================================================
   met les valeurs dans la variable global_messages
@@ -89,6 +68,9 @@ function logerreur(o){
     }
     if(o.hasOwnProperty('line') && o.line >= 0){
         global_messages['lines'].push(o.line);
+    }
+    if(o.hasOwnProperty('ligne') && o.ligne >= 0){
+        global_messages['lignes'].push(o.ligne);
     }
     if(o.hasOwnProperty('position_caractere')){
         global_messages['positions_caracteres'].push(o.tabs);

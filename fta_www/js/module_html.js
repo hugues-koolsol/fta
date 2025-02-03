@@ -191,7 +191,7 @@ class traitements_sur_html{
                             if(!(source_js.trim() === '//' || source_js === '\n' || source_js === '')){
                                 var cle=this.#construit_cle(10);
                                 tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js1" ,"cle" : cle});
-                                contenu+='#(cle_javascript_a_remplacer,' + cle + ')';
+                                contenu+='source(#(cle_javascript_a_remplacer,' + cle + '))';
                             }
                         }else if(!jsonDeHtml.content[i].hasOwnProperty('type')){
                             /*
@@ -1120,9 +1120,9 @@ class traitements_sur_html{
                                 /* on transforme le ast du js en rev */
                                 var obj1=__m_astjs_vers_rev1.traite_ast(obj0.body,tableau_des_commentaires_js,{});
                                 if(obj1.__xst === true){
-                                    /* puis on remplace la chaine */
-                                    var phrase_a_remplacer='#(cle_javascript_a_remplacer,' + tableau_de_javascripts_a_convertir[indjs].cle + ')';
-                                    obj.__xva=obj.__xva.replace(phrase_a_remplacer,'source('+obj1.__xva+')');
+                                    /* puis on remplace la chaine source() */
+                                    var phrase_a_remplacer='#(cle_javascript_a_remplacer,' + tableau_de_javascripts_a_convertir[indjs].cle + ')'; 
+                                    obj.__xva=obj.__xva.replace(phrase_a_remplacer,''+obj1.__xva+'');
                                 }else{
                                     console.error('erreur de conversion de ast vers js e=',e);
                                     return({"__xst" : false ,"__xme" : '1093 il y a un problème dans la transformation de ast js vers rev dans un source javascript'});

@@ -13,11 +13,21 @@ $o1='';
             <a href="javascript:__gi1.remplir_une_textarea_avex_un_source_de_test_php(&quot;txtar1&quot;)">source de test</a>
         </li>
         <li>
-            <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_nikic(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{}&quot;)" class="yysucces">nicky conv htm</a>
+            <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_nikic(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{}&quot;)" class="yysucces">nicky htm strict</a>
         </li>
         <li>
-            <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_nikic(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">nicky conv htm</a>
+            <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_nikic(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">nicky htm echo</a>
         </li>
+        
+        <li>
+            <a href="javascript:__gi1.bouton_convertir_text_area_php_en_rev_avec_nikic2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':false}&quot;,true)" class="yysucces">nicky htm strict 2 </a>
+        </li>
+        <li>
+            <a href="javascript:__gi1.bouton_convertir_text_area_php_en_rev_avec_nikic2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;,true)" class="yysucces">nicky htm echo 2</a>
+        </li>
+        
+        
+        
         <li>
             <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':false}&quot;)" class="yyinfo">php conv htm</a>
         </li>
@@ -70,7 +80,8 @@ $par=array(/* éléments à passer au pied de page : le php peut contenir du htm
             'js/mf_astphpparseur_vers_rev1.js',
             'js/mf_astjs_vers_rev1.js',
             'js/mf_rev_vers_js1.js',
-            'js/mf_rev_vers_php1.js'
+            'js/mf_rev_vers_php1.js',
+            'js/mf_astphpnikic_vers_rev1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

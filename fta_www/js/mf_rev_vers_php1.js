@@ -888,6 +888,7 @@ class c_rev_vers_php1{
                         break;
                         
                     case 'html_dans_php' :
+
                         var tag_de_fin='<?' + 'php';
                         /* si c'est la dernière instruction alors on ne met pas de tag de fin */
                         if(this.#tb[i][8] === 0){
@@ -917,7 +918,8 @@ class c_rev_vers_php1{
                                     break;
                                 }
                             }
-                            if(trouve === false){
+                            if(trouve === false && this.#tb[i][3]<=1){
+                                /* si on est à la racine php */
                                 tag_de_fin='';
                             }else{
                                 tag_de_fin=CRLF + '<?' + 'php';
@@ -1474,6 +1476,7 @@ class c_rev_vers_php1{
                 break;
                 
             case 'html_dans_php' :
+                debugger
                 obj=__module_html1.tabToHtml1(this.#tb,ind,true,0);
                 if(obj.__xst === true){
                     t='html_dans_php(\'' + obj.__xva.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
