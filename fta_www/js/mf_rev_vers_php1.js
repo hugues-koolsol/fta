@@ -281,13 +281,13 @@ class c_rev_vers_php1{
                                             }else if(this.#tb[k][1] === 'type_argument' && this.#tb[k][8] === 1 && this.#tb[k + 1][2] === 'c'){
                                                 type_argument=this.#tb[k + 1][1].replace(/\\\\/g,'\\') + ' ';
                                             }else if(this.#tb[k][1] === '#'){
-                                                comm='/*' + traiteCommentaire2(this.#tb[k][13],niveau,k) + '*/'
+                                                comm='/*' + traiteCommentaire2(this.#tb[k][13],niveau,k) + '*/';
                                             }else{
                                                 return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : '0330 les arguments passés à la fonction '}));
                                             }
                                         }
                                     }
-                                    argumentsFonction+=','+comm + type_argument + nom_argument + valeur_argument;
+                                    argumentsFonction+=',' + comm + type_argument + nom_argument + valeur_argument;
                                 }
                             }
                             if(nomFonction != ''){
@@ -888,7 +888,6 @@ class c_rev_vers_php1{
                         break;
                         
                     case 'html_dans_php' :
-
                         var tag_de_fin='<?' + 'php';
                         /* si c'est la dernière instruction alors on ne met pas de tag de fin */
                         if(this.#tb[i][8] === 0){
@@ -918,7 +917,7 @@ class c_rev_vers_php1{
                                     break;
                                 }
                             }
-                            if(trouve === false && this.#tb[i][3]<=1){
+                            if(trouve === false && this.#tb[i][3] <= 1){
                                 /* si on est à la racine php */
                                 tag_de_fin='';
                             }else{
@@ -933,7 +932,7 @@ class c_rev_vers_php1{
                                 }
                                 t+='?>' + CRLF + obj.__xva + tag_de_fin;
                             }else{
-                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1()+'erreur dans un html en 643'}));
+                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'erreur dans un html en 643'}));
                             }
                         }
                         ne_pas_mettre_de_terminateur=true;
@@ -985,13 +984,13 @@ class c_rev_vers_php1{
                                                 InstructionsCas+=un_espacep1;
                                                 InstructionsCas+=obj.__xva;
                                             }else{
-                                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : j ,"__xme" : nl1()+'erreur dans faire  '}));
+                                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : j ,"__xme" : nl1() + 'erreur dans faire  '}));
                                             }
                                         }else{
                                             InstructionsCas='';
                                         }
                                     }else{
-                                        return(this.#rev_php_logerreur({"__xst" : false ,"id" : j ,"__xme" : nl1()+'erreur dans bascule/est  il ne doit y avoir que "valeur" et "faire" '}));
+                                        return(this.#rev_php_logerreur({"__xst" : false ,"id" : j ,"__xme" : nl1() + 'erreur dans bascule/est  il ne doit y avoir que "valeur" et "faire" '}));
                                     }
                                 }
                                 valeursCase+=espacesn(true,niveau + 1);
@@ -1016,7 +1015,7 @@ class c_rev_vers_php1{
                             }else if(this.#tb[j][1] === '#'){
                                 les_commentaires_avant.push(this.#tb[j]);
                             }else{
-                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1()+'erreur  dans bascule il ne doit y avoir que "quand" et "est" '}));
+                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'erreur  dans bascule il ne doit y avoir que "quand" et "est" '}));
                             }
                         }
                         t+='switch (' + valeurQuand + '){';
@@ -1060,10 +1059,10 @@ class c_rev_vers_php1{
                                                         cleEtOuValeur=obj1.__xva + ' as ' + cleEtOuValeur;
                                                     }
                                                 }else{
-                                                    return(this.#rev_php_logerreur({"__xst" : false ,"id" : k ,"__xme" : nl1()+' dans boucleSurTableau 1024 '}));
+                                                    return(this.#rev_php_logerreur({"__xst" : false ,"id" : k ,"__xme" : nl1() + ' dans boucleSurTableau 1024 '}));
                                                 }
                                             }else{
-                                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : k ,"__xme" : nl1()+' dans boucleSurTableau 1014 '}));
+                                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : k ,"__xme" : nl1() + ' dans boucleSurTableau 1014 '}));
                                             }
                                         }
                                     }
@@ -1076,7 +1075,7 @@ class c_rev_vers_php1{
                                         Instructions+=un_espacep1;
                                         Instructions+=obj.__xva;
                                     }else{
-                                        return(this.#rev_php_logerreur({"__xst" : false ,"id" : j ,"__xme" : nl1()+' dans boucleSurTableau  '}));
+                                        return(this.#rev_php_logerreur({"__xst" : false ,"id" : j ,"__xme" : nl1() + ' dans boucleSurTableau  '}));
                                     }
                                 }else{
                                     Instructions='';
@@ -1476,7 +1475,7 @@ class c_rev_vers_php1{
                 break;
                 
             case 'html_dans_php' :
-                debugger
+                debugger;
                 obj=__module_html1.tabToHtml1(this.#tb,ind,true,0);
                 if(obj.__xst === true){
                     t='html_dans_php(\'' + obj.__xva.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
@@ -1629,7 +1628,7 @@ class c_rev_vers_php1{
                     }else if(this.#tb[j][1] === 'siFaux'){
                         testEnLigne.push([j,this.#tb[j][1],ind]);
                     }else{
-                        return(this.#rev_php_logerreur({"__xst" : false ,"ind" : ind ,"__xme" : nl1()+'1639 testEnLigne'}));
+                        return(this.#rev_php_logerreur({"__xst" : false ,"ind" : ind ,"__xme" : nl1() + '1639 testEnLigne'}));
                     }
                 }
                 if(testEnLigne.length !== 3){
@@ -2588,7 +2587,7 @@ class c_rev_vers_php1{
                 avantEgal=elt;
             }else{
                 if(apresEgal !== ''){
-                    return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1()+' vérifiez les paramètres de affecteop   '}));
+                    return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + ' vérifiez les paramètres de affecteop   '}));
                 }else{
                     apresEgal=elt;
                 }
@@ -2599,11 +2598,7 @@ class c_rev_vers_php1{
         }
         t+=avantEgal + ' ' + operation + ' ' + apresEgal;
         if(this.#tb[i][8] === 4 && commentaire === ''){
-            return(this.#rev_php_logerreur({
-                "__xst" : false ,
-                "id" : i ,
-                "__xme" : nl1()+' affecte ne doit contenir que 2 ou 3 arguments et le 3ème doit être un commentaire non vide '
-            }));
+            return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + ' affecte ne doit contenir que 2 ou 3 arguments et le 3ème doit être un commentaire non vide '}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2635,7 +2630,7 @@ class c_rev_vers_php1{
                 avantEgal=elt;
             }else{
                 if(apresEgal !== ''){
-                    return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1()+' 2492 vérifiez les paramètres de affecte ( 2 + commentaires uniquement )  '}));
+                    return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + ' 2492 vérifiez les paramètres de affecte ( 2 + commentaires uniquement )  '}));
                 }else{
                     apresEgal=elt;
                 }
@@ -2658,11 +2653,7 @@ class c_rev_vers_php1{
             t=commentaire + t;
         }
         if(this.#tb[i][8] === 3 && commentaire === ''){
-            return(this.#rev_php_logerreur({
-                "__xst" : false ,
-                "id" : i ,
-                "__xme" : nl1()+' affecte ne doit contenir que 2 ou 3 arguments et le 3ème doit être un commentaire non vide '
-            }));
+            return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + ' affecte ne doit contenir que 2 ou 3 arguments et le 3ème doit être un commentaire non vide '}));
         }
         return({"__xst" : true ,"__xva" : t});
     }

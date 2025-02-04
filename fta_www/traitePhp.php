@@ -8,33 +8,11 @@ print($o1);
 $o1='';
 ?>
 <div class="menuScroller">
-    <ul>
-        <li>
-            <a href="javascript:__gi1.remplir_une_textarea_avex_un_source_de_test_php(&quot;txtar1&quot;)">source de test</a>
-        </li>
-        <li>
-            <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_nikic(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{}&quot;)" class="yysucces">nicky htm strict</a>
-        </li>
-        <li>
-            <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_nikic(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yysucces">nicky htm echo</a>
-        </li>
-        
-        <li>
-            <a href="javascript:__gi1.bouton_convertir_text_area_php_en_rev_avec_nikic2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':false}&quot;,true)" class="yysucces">nicky htm strict 2 </a>
-        </li>
-        <li>
-            <a href="javascript:__gi1.bouton_convertir_text_area_php_en_rev_avec_nikic2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;,true)" class="yysucces">nicky htm echo 2</a>
-        </li>
-        
-        
-        
-        <li>
-            <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':false}&quot;)" class="yyinfo">php conv htm</a>
-        </li>
-        <li>
-            <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yyinfo">php conv htm</a>
-        </li>
-    </ul>
+    <a href="javascript:__gi1.remplir_une_textarea_avex_un_source_de_test_php(&quot;txtar1&quot;)">source de test</a>
+    <a href="javascript:__gi1.bouton_convertir_text_area_php_en_rev_avec_nikic2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':false}&quot;,true)" class="yysucces">nicky htm strict 2</a>
+    <a href="javascript:__gi1.bouton_convertir_text_area_php_en_rev_avec_nikic2(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;,true)" class="yysucces">nicky htm echo 2</a>
+    <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':false}&quot;)" class="yyinfo">php conv htm</a>
+    <a href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;txtar1&quot;,&quot;txtar2&quot;,&quot;{'nettoyer_html':true}&quot;)" class="yyinfo">php conv htm</a>
 </div>
 <h1>Convertir un php en rev</h1>
 <div class="yyconteneur_de_texte1">
@@ -70,7 +48,6 @@ $js_a_executer_apres_chargement=array(/* fonctions js à éxécuter un fois que 
 );
 $par=array(/* éléments à passer au pied de page : le php peut contenir du html et du js, donc on importe tout */
     'js_a_inclure' => array(/**/
-            'js/convertit-php-en-rev0.js',
             'js/jslib/acorn.js',
             'js/jslib/php-parser.js'
         ),

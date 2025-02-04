@@ -231,8 +231,8 @@ class interface1{
         };
         try{
             var response=await fetch(url,en_entree).catch((err) => {
-                /*console.error('err interface recupérer_un_fetch ',err);*/
-                logerreur({"__xst" : false ,"__xme" : nl1()+ ' recupérer_un_fetch <br/>'+err});
+                /* console.error('err interface recupérer_un_fetch ',err); */
+                logerreur({"__xst" : false ,"__xme" : nl1() + ' recupérer_un_fetch <br/>' + err});
             }).finally(() => {
                 /* vide */
             });
@@ -934,11 +934,11 @@ class interface1{
             }
         }catch(e){
             /* console.error('e=',e); */
-            debugger
+            debugger;
             if(e.pos){
-                logerreur({"__xst" : false ,"__xme" : nl1(e)+'"' + e.message + '"' ,"plage" : [e.pos,e.pos]});
+                logerreur({"__xst" : false ,"__xme" : nl1(e) + '"' + e.message + '"' ,"plage" : [e.pos,e.pos]});
             }else{
-                logerreur({"__xst" : false ,"__xme" : nl1(e)+'"' + e.message + '"'});
+                logerreur({"__xst" : false ,"__xme" : nl1(e) + '"' + e.message + '"'});
             }
         }
         this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_js);
@@ -951,20 +951,16 @@ class interface1{
     convertir_textearea_rev_vers_textarea_js2(chp_rev_source,chp_genere_source,id_source,id_cible){
         this.raz_des_messages();
         var a=document.getElementById(chp_rev_source);
-        
         var startMicro=performance.now();
         var obj=__m_rev_vers_js1.c_rev_vers_js(a.value,{});
         var endMicro=performance.now();
         /* console.log('%c\n\n=============\nconvertion de rev en js ='+(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms','background:lightblue;'); */
         if(obj.__xst === true){
             document.getElementById(chp_genere_source).value=obj.__xva;
-            
-            if(id_source!==null && id_cible!== null){
+            if(id_source !== null && id_cible !== null){
                 var parametres_sauvegarde={"matrice" : obj.matriceFonction ,"chp_provenance_rev" : 'source' ,"chx_source_rev" : id_source ,"id_cible" : id_cible};
                 sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
             }
-            
-            
         }else{
             document.getElementById(chp_genere_source).value='erreur de conversion';
         }
@@ -978,20 +974,16 @@ class interface1{
     convertir_textearea_rev_vers_textarea_php2(nom_zone_source_rev,nom_zone_genere_php,id_source,id_cible){
         this.raz_des_messages();
         var a=document.getElementById(nom_zone_source_rev);
-        
         var startMicro=performance.now();
         var obj=__m_rev_vers_php1.c_rev_vers_php(a.value,{});
         var endMicro=performance.now();
-        console.log('%c\n\n=============\nconvertion de rev en php en '+(endMicro - startMicro) + ' ms','background:lightblue;');
+        console.log('%c\n\n=============\nconvertion de rev en php en ' + (endMicro - startMicro) + ' ms','background:lightblue;');
         if(obj.__xst === true){
             document.getElementById(nom_zone_genere_php).value=obj.__xva;
-            
-            if(id_source!==null && id_cible!== null){
+            if(id_source !== null && id_cible !== null){
                 var parametres_sauvegarde={"matrice" : obj.matriceFonction ,"chp_provenance_rev" : 'source' ,"chx_source_rev" : id_source ,"id_cible" : id_cible};
                 sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
             }
-            
-            
         }else{
             document.getElementById(nom_zone_genere_php).value='erreur de conversion';
         }
@@ -1009,12 +1001,12 @@ class interface1{
         var tableau1=iterateCharacters2(a.value);
         global_messages.data.tableau=tableau1;
         var endMicro=performance.now();
-//        console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
+        /* console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms'); */
         var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
             var objPhp=__m_rev_vers_php1.c_tab_vers_php(matriceFonction.__xva,{});
             debugger;
-            /*avrif*/
+            /* avrif */
             if(objPhp.__xst === true){
                 document.getElementById(nom_zone_genere_php).value=objPhp.__xva;
                 if(bouton_interface === true){
@@ -1041,7 +1033,7 @@ class interface1{
         document.getElementById(nom_de_la_text_area_rev).value='Veuillez patienter !';
         this.raz_des_messages();
         var a=document.getElementById(nom_de_la_text_area_php);
-        if(sauvegarder_en_stockage_local!==false){
+        if(sauvegarder_en_stockage_local !== false){
             localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
         }
         var lines=a.value.split(/\r|\r\n|\n/);
@@ -1057,7 +1049,7 @@ class interface1{
             var obj=__m_astphpparseur_vers_rev1.traite_ast(ast_de_php,options_traitement);
             if(obj.__xst === true){
                 document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;
-                if(obj.__xva.substr(0,4)!=='php('){
+                if(obj.__xva.substr(0,4) !== 'php('){
                     var tableau1=iterateCharacters2('php(' + obj.__xva + ')');
                 }else{
                     var tableau1=iterateCharacters2(obj.__xva);
@@ -1177,18 +1169,16 @@ class interface1{
       =============================================================================================================
     */
     traitement_apres_recuperation_ast_de_php2_ok(par){
-        console.log(par)
+        /* console.log(par); */
         var options=par.__entree.call.opt;
         try{
             var json_de_ast=JSON.parse(par.__xva);
             var obj=__m_astphpnikic_vers_rev1.traite_ast_nikic(json_de_ast,options);
-            if(obj.__xst===true){
-                console.log(obj);
+            if(obj.__xst === true){
+                /* console.log(obj); */
                 if(options.hasOwnProperty('nom_de_la_text_area_rev')){
                     document.getElementById(options.nom_de_la_text_area_rev).value=obj.__xva;
-                    
-
-                    if(obj.__xva.substr(0,4)!=='php('){
+                    if(obj.__xva.substr(0,4) !== 'php('){
                         var tableau1=iterateCharacters2('php(' + obj.__xva + ')');
                     }else{
                         var tableau1=iterateCharacters2(obj.__xva);
@@ -1206,30 +1196,32 @@ class interface1{
                     }
                 }
             }else{
-                debugger
+                debugger;
                 console.log(obj);
             }
         }catch(e){
-            logerreur({"__xst" : false ,"__xme" : nl1(e)+'<br />'+e.message});
+            logerreur({"__xst" : false ,"__xme" : nl1(e) + '<br />' + e.message});
         }
-        
         this.remplir_et_afficher_les_messages1('zone_global_messages');
     }
     /*
       =============================================================================================================
     */
     traitement_apres_recuperation_ast_de_php2_ko(reponse_ajax,json_de_reponse=null){
-       if(json_de_reponse!==null){
+        if(json_de_reponse !== null){
             if(json_de_reponse.hasOwnProperty('__xms')){
                 for(var i in json_de_reponse.__xms){
-                    if(json_de_reponse.__xms[i].indexOf(' on line ')>=0){
-                        var num_ligne=parseInt(json_de_reponse.__xms[i].substr(json_de_reponse.__xms[i].indexOf(' on line ')+9),10);
-                        logerreur({"__xst" : false ,"__xme" : json_de_reponse.__xms[i] , "ligne":num_ligne});
+                    if(json_de_reponse.__xms[i].indexOf(' on line ') >= 0){
+                        var num_ligne=parseInt(json_de_reponse.__xms[i].substr(json_de_reponse.__xms[i].indexOf(' on line ') + 9),10);
+                        logerreur({"__xst" : false ,"__xme" : json_de_reponse.__xms[i] ,"ligne" : num_ligne});
                     }else{
                         logerreur({"__xst" : false ,"__xme" : json_de_reponse.__xms[i]});
                     }
                 }
-                if(json_de_reponse.hasOwnProperty('__entree') && json_de_reponse.__entree.hasOwnProperty('call') && json_de_reponse.__entree.call.hasOwnProperty('opt')){
+                if(json_de_reponse.hasOwnProperty('__entree')
+                       && json_de_reponse.__entree.hasOwnProperty('call')
+                       && json_de_reponse.__entree.call.hasOwnProperty('opt')
+                ){
                     var options=json_de_reponse.__entree.call.opt;
                     if(options.hasOwnProperty('nom_de_la_text_area_php')){
                         this.remplir_et_afficher_les_messages1('zone_global_messages',options.nom_de_la_text_area_php);
@@ -1244,12 +1236,15 @@ class interface1{
                 this.remplir_et_afficher_les_messages1('zone_global_messages');
             }
         }else{
-            debugger
-            console.log('%cERREUR','background:yellow;color:red;',par)
+            /* on retire les caractéristiques graphiques sur les messages php */
+            if(reponse_ajax !== ''){
+                reponse_ajax=reponse_ajax.replace("<font size='1'>",'<font>');
+                reponse_ajax=reponse_ajax.replace("font-size: x-large;",'');
+                logerreur({"__xst" : false ,"__xme" : reponse_ajax});
+            }
             this.remplir_et_afficher_les_messages1('zone_global_messages');
         }
     }
-    
     /*
       =============================================================================================================
     */
@@ -1263,32 +1258,7 @@ class interface1{
         if(mettre_en_local_storage){
             localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
         }
-        __m_astphpnikic_vers_rev1.recupere_ast_de_php_du_serveur(
-             a.value,
-             options_traitement,
-             this.traitement_apres_recuperation_ast_de_php2_ok.bind(this) , 
-             this.traitement_apres_recuperation_ast_de_php2_ko.bind(this)
-        );
-    }
-    /*
-      =============================================================================================================
-    */
-    convertir_text_area_php_en_rev_avec_nikic(nom_de_la_text_area_php,nom_de_la_text_area_rev,options_traitement){
-        var options_traitement=JSON.parse(options_traitement.replace(/\'/g,'"'));
-        document.getElementById(nom_de_la_text_area_rev).value='Veuillez patienter !';
-        this.raz_des_messages();
-        var a=document.getElementById(nom_de_la_text_area_php);
-        localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
-        try{
-            var ret=recupereAstDePhp2(a.value,{"zone_php" : nom_de_la_text_area_php ,"zone_rev" : nom_de_la_text_area_rev ,"options_traitement" : options_traitement},traitement_apres_recuperation_ast_de_php2);
-            if(ret.__xst === false){
-                return(astphp_logerreur({"__xst" : false ,"__xme" : 'il y a une erreur d\'envoie du source php à convertir'}));
-            }
-            this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_rev);
-        }catch(e){
-            console.log('erreur transform 0178',e);
-            ret=false;
-        }
+        __m_astphpnikic_vers_rev1.recupere_ast_de_php_du_serveur(a.value,options_traitement,this.traitement_apres_recuperation_ast_de_php2_ok.bind(this),this.traitement_apres_recuperation_ast_de_php2_ko.bind(this));
     }
     /*
       =============================================================================================================
@@ -1330,8 +1300,8 @@ class interface1{
                 if(compacteOriginal.__xst === true && compacteReecrit.__xst === true){
                     if(compacteOriginal.__xva == compacteReecrit.__xva){
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
-//                        diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(compacteOriginal.__xva) + '</textarea>';
-                          resultat_compacte_ok=strToHtml(compacteOriginal.__xva);
+                        /* diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(compacteOriginal.__xva) + '</textarea>'; */
+                        resultat_compacte_ok=strToHtml(compacteOriginal.__xva);
                         logerreur({"__xst" : true ,"__xme" : '👍 sources compactés Egaux : ' + tempsTraitement});
                     }else{
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">💥sources compactés différents</b>';
@@ -1347,18 +1317,13 @@ class interface1{
             var endMicro=performance.now();
             console.log('tests compactes=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
             document.getElementById('resultat1').appendChild(diResultatsCompactes);
-            
-            if(resultat_compacte_ok!==''){
+            if(resultat_compacte_ok !== ''){
                 var di_texte_compacte=document.createElement('div');
                 di_texte_compacte.className='yyconteneur_de_texte1';
                 di_texte_compacte.innerHTML='<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">' + resultat_compacte_ok + '</textarea>';
                 document.getElementById('resultat1').appendChild(di_texte_compacte);
-                
-             
             }
-            
-            
-            /* */
+            /*  */
             var fonctionReecriteAvecEtColoration1=arrayToFunct1(matriceFonction1.__xva,true);
             var difonctionReecriteAvecRetour1=document.createElement('div');
             difonctionReecriteAvecRetour1.className='yyconteneur_de_texte1';
@@ -1369,7 +1334,7 @@ class interface1{
                 difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(fonctionReecriteAvecRetour1.message) + '</textarea>';
             }
             document.getElementById('resultat1').appendChild(difonctionReecriteAvecRetour1);
-            /* */
+            /*  */
             var t0=document.createElement('div');
             t0.style.overflowX='scroll';
             var t1=document.createElement('table');
@@ -1508,7 +1473,7 @@ use PhpParser\\Error;
 use PhpParser\\NodeDumper;
 use PhpParser\\ParserFactory;
 
-function recupererAstDePhp(&$data){
+function toto(&$data){
     $parser = (new ParserFactory())->createForNewestSupportedVersion();
     try {
         $ast = $parser->parse($data[__entree]['texteSource']);
@@ -1555,13 +1520,13 @@ while($i<5){
     */
     remplir_une_textarea_avex_un_source_de_test_rev(nom_de_la_text_area_rev){
         /*
-          "àà" <- dans l'excellent notepad++ de windows, ces deux a avec un accent grave 
+          "àà" <- dans l'excellent notepad++ de windows, ces deux a avec un accent grave 
           n'ont pas le même aspect car ils ont un encodage différent.
           J'aimerais bien que les navigateurs fassent la même chose.
         */
         var t=`#( début aaaa  debut),
 a(
-  #(test , 👍,𤭢,àà),
+  #(test , 👍,𤭢,àà),
   b(
     xx(
       y(
@@ -1594,7 +1559,7 @@ blu),
   ),
   #(Iñtërnâtiônàà̀lizætiøn ☃ 💩 ❤ 😁 👍),
   f(g),
-  #(👍😁💥💪👎☀🌞🟥🟩"àà")
+  #(👍😁💥💪👎☀🌞🟥🟩"àà")
 )
 a( p(/ " \\' \\" \\n \\r \\\\r \\\\n \\\\\\\\ /g) , p(" \\\\ \\" \\\\\\" \\n \\r '") , p(' \\\\ \\' \\n \\r "  ') ),
 #(
@@ -2479,9 +2444,8 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
             "data" : {"matrice" : [] ,"tableau" : [] ,"sourceGenere" : ''}
         };
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
       vérifie qu'un html est structurellement correct ( pour intégration dans un rev php )
     */
     isHTML(str){
@@ -2519,9 +2483,9 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
             }
             if(dansCdata === true){
                 /*
-                  =============================================================================================
+                  =====================================================================================
                   premier cas spécial : cdata
-                  =============================================================================================
+                  =====================================================================================
                 */
                 var j=i;
                 for( j=i ; j < l01 ; j++ ){
@@ -2537,9 +2501,9 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
                 continue;
             }else if(dansTextArea === true){
                 /*
-                  =============================================================================================
+                  =====================================================================================
                   deuxième cas spécial : textarea
-                  =============================================================================================
+                  =====================================================================================
                 */
                 var j=i;
                 for( j=i ; j < l01 ; j++ ){
@@ -2813,7 +2777,6 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
         }
         return({"__xst" : true});
     }
-    
     /*
       =============================================================================================================
     */
@@ -3046,11 +3009,10 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
                 console.log('e=',e);
                 return;
             }
-            that=this;
             this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
                 console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
-                that.traite_message_recupere_du_worker(message_recu_du_worker);
-            };
+                this.traite_message_recupere_du_worker(message_recu_du_worker);
+            }.bind(this);
         }
         var json_param=JSON.parse(parametre);
         if("replacer_des_chaines1" === json_param.nom_du_travail_en_arriere_plan){
@@ -3061,7 +3023,7 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
             }
             if(liste_des_id_des_sources != ''){
                 liste_des_id_des_sources=liste_des_id_des_sources.substr(1);
-                var remplacer_par=prompt('remplacer "' + json_param.chaine_a_remplacer + '" dans les sources(' + liste_des_id_des_sources + ') par :');
+                var remplacer_par=prompt('remplacer "' + json_param.chaine_a_remplacer + '" dans les sources(' + liste_des_id_des_sources + ') par :' , json_param.chaine_a_remplacer );
                 if(remplacer_par !== null){
                     json_param.remplacer_par=remplacer_par;
                     console.log(json_param);
@@ -3093,7 +3055,7 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
                 }
             }
         }else if(message_recu_du_worker.data.hasOwnProperty('donnees_recues_du_message')){
-            console.log('%cconfirmation de la réception d\'un message=','background:lightpink;',message_recu_du_worker);
+            console.log('%cconfirmation de la réception d\'un message=','background:lightpink;',message_recu_du_worker.data);
         }else{
             console.log('traitement non prévu');
         }
@@ -3106,41 +3068,18 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
             return;
         }
         setTimeout(function(){
-                if(__gi1.#programme_en_arriere_plan === null){
-                    console.log('on charge le worker 1111');
-                    __gi1.#programme_en_arriere_plan=new Worker("./js/module_travail_en_arriere_plan0.js");
+                if(this.#programme_en_arriere_plan === null){
+//                    console.log('on charge le worker 1111');
+                    this.#programme_en_arriere_plan=new Worker("./js/module_travail_en_arriere_plan0.js");
                 }
-                var that=__gi1;
-                __gi1.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
-                    console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
-                    that.traite_message_recupere_du_worker(message_recu_du_worker);
-                };
-                __gi1.#programme_en_arriere_plan.postMessage({"type_de_message" : 'recuperer_les_travaux_en_session' ,"parametres" : {}});
-                console.log('pas d\'erreur !');
-            },1500);
+                this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
+                    console.log("dans le module interface , message_recu_du_worker",message_recu_du_worker.data);
+                    this.traite_message_recupere_du_worker(message_recu_du_worker);
+                }.bind(this);
+                this.#programme_en_arriere_plan.postMessage({"type_de_message" : 'recuperer_les_travaux_en_session' ,"parametres" : {}});
+                /*console.log('pas d\'erreur !');*/
+            }.bind(this),1500);
     }
-    /*
-      =============================================================================================================
-      #charger_le_module_des_taches_en_arrière_plan(par){
-      if( !(window.Worker)){
-      return;
-      }
-      //        console.log('#charger_le_module_des_taches_en_arrière_plan');
-      if(this.#programme_en_arriere_plan === null){
-      console.log('on charge le worker');
-      this.#programme_en_arriere_plan= new Worker("./js/module_travail_en_arriere_plan0.js");
-      }
-      //        console.log(this.#programme_en_arriere_plan);
-      var that=this;
-      this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
-      console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
-      that.traite_message_recupere_du_worker(message_recu_du_worker);
-      };
-      this.#programme_en_arriere_plan.postMessage({'type_de_message':'recuperer_les_travaux_en_session','parametres':{}});
-      console.log('pas d\'erreur !');
-      }
-      =============================================================================================================
-    */
     executerCesActionsPourLaPageLocale2(par){
         var i=0;
         for( i=0 ; i < par.length ; i++ ){

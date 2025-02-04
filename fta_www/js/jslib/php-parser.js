@@ -3485,17 +3485,18 @@
                       * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                       * @url http://glayzzle.com
                     */
-                    function _typeof(o){"@babel/helpers - typeof"
+                    function _typeof(o){
+                        "@babel/helpers - typeof";
                         return((_typeof="function" ==  typeof Symbol && "symbol" ==  typeof Symbol.iterator ?
-                          ( 
+                              ( 
                                 function(o){
                                         return( typeof o);
                                     } )
-                        : ( 
+                            : ( 
                                 function(o){
                                         return(o && "function" ==  typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? ( "symbol" ) : (  typeof o ));
                                     } 
-                        )),_typeof(o));
+                            )),_typeof(o));
                     }
                     var lexer=__webpack_require__(9108);
                     var parser=__webpack_require__(7259);
@@ -3736,17 +3737,18 @@
                       * @property {object} keywords List of php keyword
                       * @property {object} castKeywords List of php keywords for type casting
                     */
-                    function _typeof(o){"@babel/helpers - typeof"
+                    function _typeof(o){
+                        "@babel/helpers - typeof";
                         return((_typeof="function" ==  typeof Symbol && "symbol" ==  typeof Symbol.iterator ?
-                          ( 
+                              ( 
                                 function(o){
                                         return( typeof o);
                                     } )
-                        : ( 
+                            : ( 
                                 function(o){
                                         return(o && "function" ==  typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? ( "symbol" ) : (  typeof o ));
                                     } 
-                        )),_typeof(o));
+                            )),_typeof(o));
                     }
                     var Lexer=function Lexer(engine){
                         this.engine=engine;
@@ -3908,7 +3910,7 @@
                              /* for backward compatible */
                              /* istanbul ignore next */
                             "toString" : function toString(){
-                            this.label
+                                this.label;
                             }
                         };
                         return this;
@@ -6565,9 +6567,10 @@
                     }
                     function _iterableToArrayLimit(r,l){
                         var t=null == r ?
-                          ( null )
+                          ( 
+                            null )
                         : ( 
-                                "undefined" !=  typeof Symbol && r[Symbol.iterator] || r["@@iterator"] 
+                            "undefined" !=  typeof Symbol && r[Symbol.iterator] || r["@@iterator"] 
                         );
                         if(null != t){
                             var e;
@@ -6585,6 +6588,7 @@
                                     f=!1;
                                 }else if(!(f=(e=i.call(t)).done) && (a.push(e.value),a.length !== l)){
                                     for(  ; !(f=(e=i.call(t)).done) && (a.push(undefined),undefined !== l) ; f=!0 ){
+                                        
                                     }
                                 }
                             }catch(r){
@@ -6622,10 +6626,11 @@
                             }
                             var t={}.toString.call(r).slice(8,-1);
                             return("Object" === t && r.constructor && (t=r.constructor.name),("Map" === t || "Set" === t ?
-                              ( Array.from(r) )
-                            : ( 
+                                  ( 
+                                    Array.from(r) )
+                                : ( 
                                     "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? ( _arrayLikeToArray(r,a) ) : ( void(0) ) 
-                            )));
+                                )));
                         }
                     }
                     function _iterableToArray(r){
@@ -6822,13 +6827,13 @@
                                     this.expect([",",";","="]);
                                     return(result(propName,null,nullable,type,attrs || []));
                                 }
-                            }, /*   
+                            }, /*     
      * Reads a variable declaration
      *
      * ```ebnf
      *  variable_declaration ::= T_VARIABLE '=' scalar
      * ```
-        */ ",");
+          */ ",");
                             return(result(null,properties,flags));
                         } ,
                          /*
@@ -6862,14 +6867,14 @@
                                     value=this.next().read_expr();
                                 }
                                 return(result(constName,value));
-                            }, /*   
+                            }, /*     
      * Reads a constant declaration
      *
      * ```ebnf
      *  constant_declaration ::= (T_STRING | IDENTIFIER) '=' expr
      * ```
      * @return {Constant} [:link:](AST.md#constant)
-        */ ",");
+          */ ",");
                             return(result(null,items,flags,nullable,type,attrs || []));
                         } ,
                          /*
@@ -8125,7 +8130,7 @@
                           * ```
                          */
                         "read_function" : function read_function(closure,flag,attrs,locStart){
-                            var result=this.read_function_declaration(closure ? ( 1 ) : ( (flag ? ( 2 ) : ( 0 )) ),flag && flag[1] === 1,attrs || [],locStart);
+                            var result=this.read_function_declaration(closure ? ( 1 ) : ( flag ? ( 2 ) : ( 0 ) ),flag && flag[1] === 1,attrs || [],locStart);
                             if(flag && flag[2] == 1){
                                 /* abstract function : */
                                 result.parseFlags(flag);
@@ -9342,8 +9347,9 @@
                                 /* if this.lexer.heredoc_label.first_encaps_node -> remove first indents */
                                 result=result("string",false,this.version >= 703 && !this.lexer.heredoc_label.finished ?
                                   ( 
-                                        this.remove_heredoc_leading_whitespace_chars(this.resolve_special_chars(text,isDoubleQuote),this.lexer.heredoc_label.indentation,this.lexer.heredoc_label.indentation_uses_spaces,this.lexer.heredoc_label.first_encaps_node) )
-                                : ( text 
+                                    this.remove_heredoc_leading_whitespace_chars(this.resolve_special_chars(text,isDoubleQuote),this.lexer.heredoc_label.indentation,this.lexer.heredoc_label.indentation_uses_spaces,this.lexer.heredoc_label.first_encaps_node) )
+                                : ( 
+                                    text 
                                 ),false,text);
                             }else if(this.token === this.tok.T_DOLLAR_OPEN_CURLY_BRACES){
                                 syntax="simple";
@@ -9739,8 +9745,9 @@
                                         var value=this.text();
                                         var prevChar=this.lexer.yylloc.first_offset > 0 ?
                                           ( 
-                                                this.lexer._input[this.lexer.yylloc.first_offset - 1] )
-                                        : ( null 
+                                            this.lexer._input[this.lexer.yylloc.first_offset - 1] )
+                                        : ( 
+                                            null 
                                         );
                                         var fixFirstLine=prevChar === "\r" || prevChar === "\n";
                                         /* revert back the first stripped line */
@@ -10450,7 +10457,7 @@
                                                 break;
                                             }
                                             
-                                        default: break recursive_scan_loop ;
+                                        default: break recursive_scan_loop;
                                     }
                                 }
                             return result;
@@ -10582,25 +10589,26 @@
                       * @enum {number}
                       *
                     */
-                    function _typeof(o){"@babel/helpers - typeof"
+                    function _typeof(o){
+                        "@babel/helpers - typeof";
                         return((_typeof="function" ==  typeof Symbol && "symbol" ==  typeof Symbol.iterator ?
-                          ( 
+                              ( 
                                 function(o){
                                         return( typeof o);
                                     } )
-                        : ( 
+                            : ( 
                                 function(o){
                                         return(o && "function" ==  typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? ( "symbol" ) : (  typeof o ));
                                     } 
-                        )),_typeof(o));
+                            )),_typeof(o));
                     }
                     function ownKeys(e,r){
                         var t=Object.keys(e);
                         if(Object.getOwnPropertySymbols){
                             var o=Object.getOwnPropertySymbols(e);
                             r && (o=o.filter(function(r){
-                                        return(Object.getOwnPropertyDescriptor(e,r).enumerable);
-                                    })),t.push.apply(t,o);
+                                            return(Object.getOwnPropertyDescriptor(e,r).enumerable);
+                                        })),t.push.apply(t,o);
                         }
                         return t;
                     }
@@ -10609,28 +10617,29 @@
                             var t=null != arguments[r] ? ( arguments[r] ) : ( {} );
                             r% 2 ?
                               ( 
-                                    ownKeys(Object(t),!0).forEach(function(r){
-                                            _defineProperty(e,r,t[r]);
-                                        }) )
+                                ownKeys(Object(t),!0).forEach(function(r){
+                                        _defineProperty(e,r,t[r]);
+                                    }) )
                             : ( 
-                                    Object.getOwnPropertyDescriptors ?
-                                      ( 
-                                            Object.defineProperties(e,Object.getOwnPropertyDescriptors(t)) )
-                                    : ( 
-                                            ownKeys(Object(t)).forEach(function(r){
-                                                    Object.defineProperty(e,r,Object.getOwnPropertyDescriptor(t,r));
-                                                }) 
-                                    ) 
+                                Object.getOwnPropertyDescriptors ?
+                                  ( 
+                                    Object.defineProperties(e,Object.getOwnPropertyDescriptors(t)) )
+                                : ( 
+                                    ownKeys(Object(t)).forEach(function(r){
+                                            Object.defineProperty(e,r,Object.getOwnPropertyDescriptor(t,r));
+                                        }) 
+                                ) 
                             );
                         }
                         return e;
                     }
                     function _defineProperty(e,r,t){
                         return(((r=_toPropertyKey(r)) in e ?
-                          ( 
+                              ( 
                                 Object.defineProperty(e,r,{"value" : t ,"enumerable" : !0 ,"configurable" : !0 ,"writable" : !0}) )
-                        : ( e[r]=t 
-                        )),e);
+                            : ( 
+                                e[r]=t 
+                            )),e);
                     }
                     function _toPropertyKey(t){
                         var i=_toPrimitive(t,"string");
@@ -10663,10 +10672,11 @@
                             }
                             var t={}.toString.call(r).slice(8,-1);
                             return("Object" === t && r.constructor && (t=r.constructor.name),("Map" === t || "Set" === t ?
-                              ( Array.from(r) )
-                            : ( 
+                                  ( 
+                                    Array.from(r) )
+                                : ( 
                                     "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? ( _arrayLikeToArray(r,a) ) : ( void(0) ) 
-                            )));
+                                )));
                         }
                     }
                     function _arrayLikeToArray(r,a){
@@ -10678,9 +10688,10 @@
                     }
                     function _iterableToArrayLimit(r,l){
                         var t=null == r ?
-                          ( null )
+                          ( 
+                            null )
                         : ( 
-                                "undefined" !=  typeof Symbol && r[Symbol.iterator] || r["@@iterator"] 
+                            "undefined" !=  typeof Symbol && r[Symbol.iterator] || r["@@iterator"] 
                         );
                         if(null != t){
                             var e;
@@ -10698,6 +10709,7 @@
                                     f=!1;
                                 }else if(!(f=(e=i.call(t)).done) && (a.push(e.value),a.length !== l)){
                                     for(  ; !(f=(e=i.call(t)).done) && (a.push(undefined),undefined !== l) ; f=!0 ){
+                                        
                                     }
                                 }
                             }catch(r){
@@ -10916,4 +10928,5 @@
             var __webpack_exports__=__webpack_require__(5362);
             __webpack_exports__=__webpack_exports__["default"];
             return __webpack_exports__;
-        })());});
+        })());
+    });

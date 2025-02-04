@@ -1,5 +1,4 @@
 "use strict";
-
 /*
   =====================================================================================================================
   conversion d'un ast produit par https://github.com/glayzzle/php-parser en rev
@@ -223,9 +222,8 @@ class c_astphpparseur_vers_rev1{
         }
         return({"__xst" : true ,"__xva" : t});
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     #php_construit_cle(l){
         let resultat='';
@@ -239,7 +237,6 @@ class c_astphpparseur_vers_rev1{
         }
         return('_' + resultat);
     }
-    
     /*
       =============================================================================================================
     */
@@ -263,7 +260,6 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             /* var nettoye=contenu.replace(/\<\!\-\-(.*)\-\-\>/g,'').trim(); */
             var nettoye=contenu.replace(/<!--[\s\S]*?-->/g,'').trim();
-
         }
         /* recherche d'au moins un tag dans le texte */
         var regex=/(<[a-zA-Z0-9\-_]+)/g;
@@ -286,16 +282,12 @@ class c_astphpparseur_vers_rev1{
                    && this.#options_traitement.nettoyer_html === true
             ){
             }else{
-                return(this.#astphp_logerreur({
-                    "__xst" : false ,
-                    "__xme" : nl1()+'ATTENTION, ce php contient du html en ligne qui n\'est pas complet' ,
-                    "element" : element
-                }));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'ATTENTION, ce php contient du html en ligne qui n\'est pas complet' ,"element" : element}));
             }
             var cle=this.#php_construit_cle(10);
             this.#astphp_logerreur({
                     "__xst" : false ,
-                    "__xme" : nl1()+'ATTENTION, ce php contient du html en ligne qui n\'est pas complet et qui est converti en echo "' + cle + '"'
+                    "__xme" : nl1() + 'ATTENTION, ce php contient du html en ligne qui n\'est pas complet et qui est converti en echo "' + cle + '"'
                 });
             if(contenu.indexOf('<?') >= 0){
                 /*
@@ -304,7 +296,7 @@ class c_astphpparseur_vers_rev1{
                   est prise dans le inline or le "short open tag" est un probléme
                   
                 */
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'les "tags php courts ne sont pas admis' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'les "tags php courts ne sont pas admis' ,"element" : element}));
             }
             if(contenu.toLowerCase().indexOf('<script') < 0){
                 t+='#( === transformation html incomplet en echo voir ci dessous pour la clé = "' + cle + '")';
@@ -382,7 +374,6 @@ class c_astphpparseur_vers_rev1{
             }
         }
         var globale_tableau_des_js2=[];
-
         if(tableau_de_html_dans_php_a_convertir.length > 0){
             obj=this.#traiter_html_dans_php2(tableau_de_html_dans_php_a_convertir,t,globale_tableau_des_js2);
             if(obj.__xst === true){
@@ -487,7 +478,7 @@ class c_astphpparseur_vers_rev1{
                     /* on transforme le ast du js en rev */
                     var obj0=__m_astjs_vers_rev1.traite_ast(obj.body,tableau_des_commentaires_js,{});
                     if(obj0.__xst === true){
-                        /* source() retiré*/
+                        /* source() retiré */
                         globale_source_php2=globale_source_php2.replace(phrase_a_remplacer,obj0.__xva);
                     }else{
                         globale_tableau_des_js2=[];
@@ -732,7 +723,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     variable+=obj.__xva + ',';
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+' what' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' what' ,"element" : element}));
                 }
             }
         }
@@ -741,7 +732,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 variable+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'variable' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'variable' ,"element" : element}));
             }
         }
         if(element.body){
@@ -749,7 +740,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 contenu=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+' body' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' body' ,"element" : element}));
             }
         }
         t+='err(' + variable + '),faire(' + contenu + ')';
@@ -768,17 +759,17 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+' body' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' body' ,"element" : element}));
             }
         }else if(element.kind === 'block'){
             obj=this.#traite_ast0(element,niveau + 1,element,tab_comm);
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+' body' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' body' ,"element" : element}));
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+' ni body ni block' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' ni body ni block' ,"element" : element}));
         }
         if(element.catches && element.catches.length && element.catches.length > 0){
             for( let i=0 ; i < element.catches.length ; i++ ){
@@ -786,7 +777,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     catches.push(obj.__xva);
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'catches' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'catches' ,"element" : element}));
                 }
             }
         }
@@ -856,20 +847,20 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 offset+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'offset' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'offset' ,"element" : element}));
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'pas de offset' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'pas de offset' ,"element" : element}));
         }
         if(element.what){
             obj=this.#traite_element(element.what,niveau,element,tab_comm);
             if(obj.__xst === true){
                 what+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'what' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'what' ,"element" : element}));
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'pas de what' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'pas de what' ,"element" : element}));
         }
         if(what.substr(0,1) === '\''){
             t='valeur_constante(' + what.substr(0,what.length - 1) + '::' + offset + '\')';
@@ -893,14 +884,14 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             condition+=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'test' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'test' ,"element" : element}));
         }
         if(element.trueExpr){
             obj=this.#traite_element(element.trueExpr,niveau,element,tab_comm);
             if(obj.__xst === true){
                 si_vrai+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'true' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'true' ,"element" : element}));
             }
         }else{
             si_vrai='';
@@ -909,7 +900,7 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             si_faux+=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'false' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'false' ,"element" : element}));
         }
         t='testEnLigne( condition( ' + condition + ' ) , siVrai(' + si_vrai + ') , siFaux(' + si_faux + '))';
         return({"__xst" : true ,"__xva" : t});
@@ -966,16 +957,16 @@ class c_astphpparseur_vers_rev1{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
         }
         if(element.byref !== false){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+' byref' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' byref' ,"element" : element}));
         }
         if(element.isStatic !== false){
             statique='statique()';
         }
         if(element.nullable !== false){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'nullable' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'nullable' ,"element" : element}));
         }
         if(element.attrGroups.length !== 0){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'attrGroups' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'attrGroups' ,"element" : element}));
         }
         if(element.uses.length !== 0){
             for( let i=0 ; i < element.uses.length ; i++ ){
@@ -983,25 +974,25 @@ class c_astphpparseur_vers_rev1{
                 obj=this.#traite_element(element.uses[i],niveau,element,tab_comm);
                 if(obj.__xst === true){
                     if(element.uses[i].hasOwnProperty('curly') && element.uses[i].curly !== false){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'curly' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'curly' ,"element" : element}));
                     }
                     if(element.uses[i].hasOwnProperty('variadic') && element.uses[i].variadic !== false){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'variadic' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'variadic' ,"element" : element}));
                     }
                     if(element.uses[i].hasOwnProperty('flags') && element.uses[i].flags !== false){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'flags' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'flags' ,"element" : element}));
                     }
                     if(element.uses[i].hasOwnProperty('nullable') && element.uses[i].nullable !== false){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'nullable' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'nullable' ,"element" : element}));
                     }
                     if(element.uses[i].hasOwnProperty('readonly') && element.uses[i].readonly !== false){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'readonly' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'readonly' ,"element" : element}));
                     }
                     if(element.uses[i].hasOwnProperty('type') && element.uses[i].type !== false){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" :  nl1()+'type' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'type' ,"element" : element}));
                     }
                     if(element.uses[i].hasOwnProperty('value')){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" :  nl1()+'value' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'value' ,"element" : element}));
                     }
                     if(element.uses[i].byref && element.uses[i].byref === true){
                         les_utilisations+='utilise_par_adresse(' + obj.__xva + ')';
@@ -1009,7 +1000,7 @@ class c_astphpparseur_vers_rev1{
                         les_utilisations+='utilise(' + obj.__xva + ')';
                     }
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" :  nl1()+'uses' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'uses' ,"element" : element}));
                 }
             }
         }
@@ -1017,7 +1008,7 @@ class c_astphpparseur_vers_rev1{
             if(element.type.kind === 'typereference'){
                 type_retour='type_retour(\'' + element.type.name.replace(/\\/g,'\\\\') + '\')';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'type' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'type' ,"element" : element}));
             }
         }
         if(element.body){
@@ -1033,7 +1024,7 @@ class c_astphpparseur_vers_rev1{
                     contenu=',contenu(' + obj.__xva + ')';
                 }
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'body' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'body' ,"element" : element}));
             }
         }
         t='cloturée(';
@@ -1056,7 +1047,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 t+='appelf(nomf(clone),p(' + obj.__xva + '))';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'what' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'what' ,"element" : element}));
             }
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
@@ -1099,16 +1090,16 @@ class c_astphpparseur_vers_rev1{
         let obj=null;
         let visibility='';
         if(element.attrGroups && element.attrGroups.length > 0){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'attrGroups' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'attrGroups' ,"element" : element}));
         }
         if(element.final){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'final' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'final' ,"element" : element}));
         }
         if(element.nullable){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'nullable' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'nullable' ,"element" : element}));
         }
         if(element.type){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'type' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'type' ,"element" : element}));
         }
         if(element.visibility){
             if(element.visibility === 'private'){
@@ -1118,25 +1109,17 @@ class c_astphpparseur_vers_rev1{
             }else if(element.visibility === 'protected'){
                 visibility='constante(protégée(),';
             }else{
-                return(this.#astphp_logerreur({
-                    "__xst" : false ,
-                    "__xme" : nl1()+'visibilitée non traité "' + element.visibility + '"' ,
-                    "element" : element
-                }));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'visibilitée non traité "' + element.visibility + '"' ,"element" : element}));
             }
         }else{
-            return(this.#astphp_logerreur({
-                "__xst" : false ,
-                "__xme" : nl1()+'visibilitée' ,
-                "element" : element
-            }));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'visibilitée' ,"element" : element}));
         }
         for( let i=0 ; i < element.constants.length ; i++ ){
             obj=this.#traite_element(element.constants[i],niveau,element,tab_comm);
             if(obj.__xst === true){
                 t+=(visibility + obj.__xva) + ')';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'constants' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'constants' ,"element" : element}));
             }
         }
         return({"__xst" : true ,"__xva" : t});
@@ -1154,14 +1137,14 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 valeur=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'defaultValue' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'defaultValue' ,"element" : element}));
             }
         }
         obj=this.#traite_element(element.variable,niveau,element,tab_comm);
         if(obj.__xst === true){
             variable=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'variable' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'variable' ,"element" : element}));
         }
         t='static(' + variable + ',' + valeur + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -1229,13 +1212,13 @@ class c_astphpparseur_vers_rev1{
         if(element.name && element.name !== '' && element.name.kind == 'identifier'){
             nom_de_l_interface=element.name.name;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'name' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'name' ,"element" : element}));
         }
         if(element.extends && element.extends !== null){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'extends' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'extends' ,"element" : element}));
         }
         if(element.attrGroups && element.attrGroups.length > 0){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'attrGroups' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'attrGroups' ,"element" : element}));
         }
         if(element.body && element.body.length > 0){
             for( i=0 ; i < element.body.length ; i++ ){
@@ -1243,7 +1226,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     faire+=',' + obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'body' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'body' ,"element" : element}));
                 }
             }
         }
@@ -1662,7 +1645,7 @@ class c_astphpparseur_vers_rev1{
             for( let i=0 ; i < element.increment.length ; i++ ){
                 obj=this.#traite_element(element.increment[i],niveau,element,tab_comm);
                 if(obj.__xst === true){
-                    if(increment!==''){
+                    if(increment !== ''){
                         increment+=',';
                     }
                     increment+=obj.__xva;
@@ -2786,7 +2769,6 @@ class c_astphpparseur_vers_rev1{
         let type_argument='';
         let nom_argument='';
         let nullable='';
-
         for( let i=0 ; i < element.arguments.length ; i++ ){
             t+=',';
             valeur_par_defaut='';
@@ -2798,7 +2780,7 @@ class c_astphpparseur_vers_rev1{
                     return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1514 #traite_arguments' ,"element" : element}));
                 }
             }
-            /*on traite le variadic dans #traite_element. */
+            /* on traite le variadic dans #traite_element. */
             obj=this.#traite_element(element.arguments[i].name,niveau,element.arguments[i],tab_comm);
             if(obj.__xst === true){
                 nom_argument=obj.__xva;
@@ -2832,7 +2814,7 @@ class c_astphpparseur_vers_rev1{
                     }
                 }
                 if(element.arguments[i].byref === true){
-                    t+='adresseArgument(' +  nom_argument + valeur_par_defaut + type_argument + ')';
+                    t+='adresseArgument(' + nom_argument + valeur_par_defaut + type_argument + ')';
                 }else{
                     t+='argument(' + nom_argument + valeur_par_defaut + type_argument + ')';
                 }
@@ -3006,7 +2988,6 @@ class c_astphpparseur_vers_rev1{
         }
         obj=this.#traite_arguments(element,niveau,parent,tab_comm,'argument');
         if(obj.__xst === true){
-         
             les_arguments+=obj.__xva;
         }else{
             return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '1198 #traite_method arguments' ,"element" : element}));
@@ -3356,11 +3337,11 @@ class c_astphpparseur_vers_rev1{
                 
             case 'identifier' :
                 /* par exemple un nom de fonction à appeler */
-                if(parent.kind==='parameter'){
-                    if(parent.variadic===true){
-                        t+=( t === '' ? ( '' ) : (','))+'...$' + element.name;
+                if(parent.kind === 'parameter'){
+                    if(parent.variadic === true){
+                        t+=(t === '' ? ( '' ) : ( ',' )) + '...$' + element.name;
                     }else{
-                        t+=( t === '' ? ( '' ) : (','))+'$' + element.name;
+                        t+=(t === '' ? ( '' ) : ( ',' )) + '$' + element.name;
                     }
                 }else{
                     t+=element.name;
@@ -4002,8 +3983,8 @@ class c_astphpparseur_vers_rev1{
             let niveau=0;
             var obj=this.#traite_ast0(ast_de_php,niveau,null,ast_de_php.comments);
             if(obj.__xst === true){
-                if(obj.__xva.substr(0,4)!=='php('){
-                    obj.__xva='php('+obj.__xva+')';
+                if(obj.__xva.substr(0,4) !== 'php('){
+                    obj.__xva='php(' + obj.__xva + ')';
                 }
                 t+=obj.__xva;
             }else{

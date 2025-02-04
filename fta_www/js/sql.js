@@ -1,5 +1,4 @@
 "use strict";
-
 /*
   
   sur sqlite
@@ -881,10 +880,11 @@ function tabToSql0(tab,id,niveau,options){
                     if(tab[i][1] === 'supprimer'){
                         if(options.au_format_php === true){
                             t+='DELETE ' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + 'FROM ' + (nom_de_la_base !== '' ?
-                              ( 
+                                  ( 
                                     '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.' )
-                            : ( '' 
-                            )) + nom_de_la_table + '';
+                                : ( 
+                                    '' 
+                                )) + nom_de_la_table + '';
                         }else{
                             t+='DELETE ' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + 'FROM ' + (nom_de_la_base !== '' ? ( nom_de_la_base + '.' ) : ( '' )) + nom_de_la_table + '';
                         }
@@ -899,10 +899,11 @@ function tabToSql0(tab,id,niveau,options){
                         if(sous_requete_insert === true){
                             if(options.au_format_php === true){
                                 t+='INSERT ' + ignorer + '' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + 'INTO ' + (nom_de_la_base !== '' ?
-                                  ( 
+                                      ( 
                                         '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.' )
-                                : ( '' 
-                                )) + '`' + nom_de_la_table + '`';
+                                    : ( 
+                                        '' 
+                                    )) + '`' + nom_de_la_table + '`';
                                 if(liste_des_champs_pour_insert !== ''){
                                     t+='(' + liste_des_champs_pour_insert + CRLF + ') ';
                                 }else{
@@ -910,10 +911,11 @@ function tabToSql0(tab,id,niveau,options){
                                 }
                                 t+=la_valeur.replace(/\n/g,' ').replace(/\r/g,' ') + ';';
                                 options.debut_sql_pour_insert='INSERT ' + ignorer + ' INTO ' + (nom_de_la_base !== '' ?
-                                  ( 
+                                      ( 
                                         '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.' )
-                                : ( '' 
-                                )) + '`' + nom_de_la_table + '`';
+                                    : ( 
+                                        '' 
+                                    )) + '`' + nom_de_la_table + '`';
                                 if(liste_des_champs_pour_insert !== ''){
                                     options.debut_sql_pour_insert+='(' + liste_des_champs_pour_insert + CRLF + ')  ';
                                 }else{
@@ -931,16 +933,18 @@ function tabToSql0(tab,id,niveau,options){
                         }else{
                             if(options.au_format_php === true){
                                 t+='INSERT ' + ignorer + '' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + 'INTO ' + (nom_de_la_base !== '' ?
-                                  ( 
+                                      ( 
                                         '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.' )
-                                : ( '' 
-                                )) + '`' + nom_de_la_table + '`(';
+                                    : ( 
+                                        '' 
+                                    )) + '`' + nom_de_la_table + '`(';
                                 t+='' + liste_des_champs_pour_insert + CRLF + ') VALUES (' + liste_des_valeurs_pour_insert + CRLF + ');';
                                 options.debut_sql_pour_insert='INSERT ' + ignorer + ' INTO ' + (nom_de_la_base !== '' ?
-                                  ( 
+                                      ( 
                                         '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.' )
-                                : ( '' 
-                                )) + '`' + nom_de_la_table + '`(' + liste_des_champs_pour_insert + CRLF + ') VALUES ';
+                                    : ( 
+                                        '' 
+                                    )) + '`' + nom_de_la_table + '`(' + liste_des_champs_pour_insert + CRLF + ') VALUES ';
                             }else{
                                 t+='INSERT ' + ignorer + '' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + 'INTO ' + (nom_de_la_base !== '' ? ( nom_de_la_base + '.' ) : ( '' )) + '`' + nom_de_la_table + '`(';
                                 t+=(liste_des_champs_pour_insert + CRLF) + ') VALUES (' + liste_des_valeurs_pour_insert + CRLF + ');';
@@ -949,10 +953,11 @@ function tabToSql0(tab,id,niveau,options){
                     }else{
                         if(options.au_format_php === true){
                             t+='UPDATE ' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + '' + (nom_de_la_base !== '' ?
-                              ( 
+                                  ( 
                                     '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.' )
-                            : ( '' 
-                            )) + nom_de_la_table + ' SET ' + la_valeur + '';
+                                : ( 
+                                    '' 
+                                )) + nom_de_la_table + ' SET ' + la_valeur + '';
                         }else{
                             t+='UPDATE ' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + '' + (nom_de_la_base !== '' ? ( nom_de_la_base + '.' ) : ( '' )) + nom_de_la_table + ' SET ' + la_valeur + '';
                         }

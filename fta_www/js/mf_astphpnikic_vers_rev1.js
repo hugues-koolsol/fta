@@ -3,6 +3,8 @@
   =====================================================================================================================
   conversion d'un AST produit par https://github.com/nikic/PHP-Parser en rev
   point d'entrée = traite_ast_nikic
+  todo
+  $c=$a<=>$b; // echo "a" <=> "b"; // -1 , ,,,, echo "a" <=> "a"; // 0 ,,,,, echo "b" <=> "a"; // 1
   =====================================================================================================================
 */
 class c_astphpnikic_vers_rev1{
@@ -1210,7 +1212,7 @@ class c_astphpnikic_vers_rev1{
                    || "Expr_ArrayDimFetch" === element.var.nodeType
                    || 'Expr_PropertyFetch' === element.var.nodeType
             ){
-                t=simplifie_tableau(nom_variable,parametres,num);
+                t=this.#php_simplifie_tableau(nom_variable,parametres,num);
             }else{
                 t='tableau(' + nom_variable + parametres + ')';
             }
@@ -1219,7 +1221,7 @@ class c_astphpnikic_vers_rev1{
                    || "Expr_ArrayDimFetch" === element.var.nodeType
                    || 'Expr_PropertyFetch' === element.var.nodeType
             ){
-                t=simplifie_tableau(nom_variable,parametres,num);
+                t=this.#php_simplifie_tableau(nom_variable,parametres,num);
             }else{
                 t=nom_variable + parametres;
             }
@@ -1229,7 +1231,7 @@ class c_astphpnikic_vers_rev1{
     /*
       =============================================================================================================
     */
-    #simplifie_tableau(nom_variable,parametres,num){
+    #php_simplifie_tableau(nom_variable,parametres,num){
         var t='';
         var obj_nom_tableau=functionToArray(nom_variable,true,true,'');
         if(obj_nom_tableau.__xst === true){
@@ -3555,8 +3557,9 @@ class c_astphpnikic_vers_rev1{
                 }
             }
         }
-        console.log('stmts');
+        /* console.log('stmts'); */
         return({"__xst" : true ,"__xva" : t});
+        /* fin de traitement de la boucle principale #traite_ast_nikic0 */
     }
     /*
       =============================================================================================================
@@ -3624,6 +3627,8 @@ class c_astphpnikic_vers_rev1{
     }
     /*
       =============================================================================================================
+      point d'entrée
+      =============================================================================================================
     */
     traite_ast_nikic(ast_de_php,options_traitement){
         let t='';
@@ -3632,6 +3637,11 @@ class c_astphpnikic_vers_rev1{
             this.#options_traitement=options_traitement;
         }
         this.#tableau_de_html_dans_php_a_convertir=[];
+        /*
+          =====================================================================================================
+          on boucle sur chaque élément
+          =====================================================================================================
+        */
         if(ast_de_php.length > 0){
             obj=this.#traite_ast_nikic0(ast_de_php,0,null,false,true,options_traitement);
             if(obj.__xst === true){
@@ -3640,8 +3650,11 @@ class c_astphpnikic_vers_rev1{
                 return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : ast_de_php}));
             }
         }
-        /* console.log(this.#tableau_de_html_dans_php_a_convertir); */
-        /* on remplace les html en ligne par du rev */
+        /*
+          =====================================================================================================
+          on remplace les html en ligne par du rev
+          =====================================================================================================
+        */
         var globale_tableau_des_js2=[];
         for( var i=0 ; i < this.#tableau_de_html_dans_php_a_convertir.length ; i++ ){
             obj=this.#transforme_html_de_php_en_rev(this.#tableau_de_html_dans_php_a_convertir[i].valeur,0,globale_tableau_des_js2);
@@ -3652,6 +3665,11 @@ class c_astphpnikic_vers_rev1{
                 return(logerreur({"__xst" : false ,"__xme" : '3052 erreur dans la convertion de html dans php'}));
             }
         }
+        /*
+          =====================================================================================================
+          on remplace les javascript dans les html
+          =====================================================================================================
+        */
         if(globale_tableau_des_js2.length > 0){
             var parseur_javascript=window.acorn.Parser;
             for( var i=0 ; i < globale_tableau_des_js2.length ; i++ ){
@@ -3712,25 +3730,63 @@ class c_astphpnikic_vers_rev1{
     */
     recupere_ast_de_php_du_serveur(source_php,opt,fonction_traitement_apres_recuperation_ast_de_php2_ok,fonction_traitement_apres_recuperation_ast_de_php2_ko){
         opt.masquer_les_messages_du_serveur=false;
-        var ajax_param={"call" : {"lib" : 'php' ,"file" : 'ast' ,"funct" : 'recupererAstDePhp2' ,"opt" : opt} ,"source_php" : source_php};
+        var ajax_param={"call" : {"lib" : 'php' ,"file" : 'ast' ,"funct" : 'recuperer_ast_de_php2' ,"opt" : opt} ,"source_php" : source_php};
         var r=new XMLHttpRequest();
         r.onerror=function(e){
+            debugger;
+            console.error('e=',e);
+            return({"__xst" : false});
+        };
+        r.onabort=function(e){
+            debugger;
+            console.error('e=',e);
+            return({"__xst" : false});
+        };
+        r.ontimeout=function(e){
+            debugger;
             console.error('e=',e);
             return({"__xst" : false});
         };
         try{
-            r.open("POST",'za_ajax.php?recupererAstDePhp',true);
+            var numero_de_message=0;
+            var page='za_ajax.php?recupererAstDePhp';
+            r.open("POST",page,true);
             r.setRequestHeader("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
             r.onreadystatechange=function(){
-                if(r.readyState != 4 || r.status != 200){
+                /*
+                  0 unsent	UNSENT (numeric value 0)	The object has been constructed.
+                  1 opened	OPENED (numeric value 1)	The open() method has been successfully invoked. During this state request headers can be set using setRequestHeader() and the fetch can be initiated using the send() method.
+                  2 headers received	HEADERS_RECEIVED (numeric value 2)	All redirects (if any) have been followed and all headers of a response have been received.
+                  3 loading	LOADING (numeric value 3)	The response body is being received.
+                  4 done	DONE (numeric value 4)	The data transfer has been completed or something went wrong during the transfer (e.g., infinite redirects).
+                */
+                if(r.readyState === 4 && r.status === 200){
+                    /* tout est normal, on a tout reçu et on continue le traitement plus bas */
+                }else{
                     if(r.status === 404){
-                        logerreur({"__xst" : false ,"__xme" : ' === <b>Vérifiez l\'url de l\'appel synchrone </b> === , conv js 3131 url non trouvée '});
-                        return({"__xst" : false ,"__xme" : 'conv js 3131url non trouvée '});
-                    }else{
+                        if(0 === numero_de_message++){
+                            logerreur({"__xst" : false ,"__xme" : nl1() + '<br />404 page "' + page + '" non trouvée'});
+                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                        }
                         return;
-                    }
-                    if(r.readyState === 2){
-                        debugger;
+                    }else if(r.status >= 500){
+                        if(0 === numero_de_message++){
+                            logerreur({"__xst" : false ,"__xme" : nl1() + '<br />erreur du serveur, peut-être une limite de temps de traitement atteinte'});
+                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                        }
+                        /*
+                          ici return est en commentaire car si par exemple il y a une erreur dans un source,
+                          alors elle sera traitée dans un boucle suivante car on capture les erreurs php
+                        */
+                        /* return */
+                    }else{
+                        if(r.readyState === 0 || r.readyState === 1 || r.readyState === 2 || r.readyState === 3){
+                            /* on sort,  on reboucle pour traiter l'état suivant */
+                            return;
+                        }else{
+                            /* afr */
+                            debugger;
+                        }
                     }
                 }
                 try{

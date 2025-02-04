@@ -1068,10 +1068,6 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.php') !== false){
 
             $o1 .= '   <a class="yysucces" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_php2(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R2P&#8615;</a>' . PHP_EOL;
-/*
-            $o1 .= '   <a class="yyavertissement" title="sans nettoyage html en ligne" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':false}&quot;)">nikic &#8613;P2RS</a>' . PHP_EOL;
-            $o1 .= '   <a class="yyavertissement" title="AVEC nettoyage html en ligne" href="javascript:convertir_php_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':true}&quot;)">nikic &#8613;P2RH</a>' . PHP_EOL;
-*/
             $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.bouton_convertir_text_area_php_en_rev_avec_nikic2(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':false}&quot;,true)">nicky htm strict 2 </a>' . PHP_EOL;
             $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.bouton_convertir_text_area_php_en_rev_avec_nikic2(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':true}&quot;,true)">nicky htm echo 2</a>' . PHP_EOL;
             $o1 .= '   <a class="yyinfo" href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':false}&quot;,false)">phpp htm strict</a>';
@@ -1205,7 +1201,6 @@ $js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => '#ne_rien_
 $par=array(/**/
     'js_a_inclure' => array(
             /**/
-            'js/convertit-php-en-rev0.js',
             'js/pour_zz_source1.js',
             'js/pour_zz_bdds_action1.js',
             'js/sql.js',

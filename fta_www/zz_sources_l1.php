@@ -231,7 +231,6 @@ $par=array(/**/
     'js_a_inclure' => array(
             /**/
             'js/pour_zz_source1.js',
-            'js/convertit-php-en-rev0.js',
             'js/jslib/acorn.js',
             'js/sql.js',
             'js/convertion_sql_en_rev.js',

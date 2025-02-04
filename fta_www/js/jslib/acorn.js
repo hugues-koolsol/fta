@@ -1,5 +1,4 @@
 "use strict";
-
 /*
   =====================================================================================================================
   ================================ https://github.com/acornjs/acorn ===================================================
@@ -7,13 +6,15 @@
 */
 (function(global,factory){
          typeof exports === 'object' &&  typeof module !== 'undefined' ?
-          ( factory(exports) )
+          ( 
+            factory(exports) )
         : ( 
-                 typeof define === 'function' && define.amd ?
-                  ( define(['exports'],factory) )
-                : ( 
-                        (global= typeof globalThis !== 'undefined' ? ( globalThis ) : ( global || self )),factory(global.acorn={}) 
-                ) 
+             typeof define === 'function' && define.amd ?
+              ( 
+                define(['exports'],factory) )
+            : ( 
+                (global= typeof globalThis !== 'undefined' ? ( globalThis ) : ( global || self )),factory(global.acorn={}) 
+            ) 
         );
 })(this,function(exports){
         "use strict";
@@ -336,11 +337,11 @@
         var hasOwnProperty=ref.hasOwnProperty;
         var toString=ref.toString;
         var hasOwn=Object.hasOwn || function(obj,propName){
-            return(hasOwnProperty.call(obj,propName));
-        };
+                return(hasOwnProperty.call(obj,propName));
+            };
         var isArray=Array.isArray || function(obj){
-            return(toString.call(obj) === "[object Array]");
-        };
+                return(toString.call(obj) === "[object Array]");
+            };
         var regexpCache=Object.create(null);
         function wordsRegexp(words){
             return(regexpCache[words] || (regexpCache[words]=new RegExp("^(?:" + words.replace(/ /g,"|") + ")$")));
@@ -570,13 +571,14 @@
             this.options=options=getOptions(options);
             this.sourceFile=options.sourceFile;
             this.keywords=wordsRegexp(keywords$1[options.ecmaVersion >= 6 ?
-              ( 6 )
+              ( 
+                6 )
             : ( 
-                    options.sourceType === "module" ? ( "5module" ) : ( 5 ) 
+                options.sourceType === "module" ? ( "5module" ) : ( 5 ) 
             )]);
             var reserved="";
             if(options.allowReserved !== true){
-                reserved=reservedWords[options.ecmaVersion >= 6 ? ( 6 ) : ( (options.ecmaVersion === 5 ? ( 5 ) : ( 3 )) )];
+                reserved=reservedWords[options.ecmaVersion >= 6 ? ( 6 ) : ( options.ecmaVersion === 5 ? ( 5 ) : ( 3 ) )];
                 if(options.sourceType === "module"){
                     reserved+=" await";
                 }
@@ -1366,9 +1368,10 @@
                 }
             }
             var kind=this.type.isLoop ?
-              ( "loop" )
+              ( 
+                "loop" )
             : ( 
-                    this.type === types$1._switch ? ( "switch" ) : ( null ) 
+                this.type === types$1._switch ? ( "switch" ) : ( null ) 
             );
             for( var i=this.labels.length - 1 ; i >= 0 ; i-- ){
                 var label$1=this.labels[i];
@@ -1383,8 +1386,9 @@
             this.labels.push({"name" : maybeName ,"kind" : kind ,"statementStart" : this.start});
             node.body=this.parseStatement(context ?
               ( 
-                    context.indexOf("label") === -1 ? ( context + "label" ) : ( context ) )
-            : ( "label" 
+                context.indexOf("label") === -1 ? ( context + "label" ) : ( context ) )
+            : ( 
+                "label" 
             ));
             this.labels.pop();
             node.label=expr;
@@ -1534,8 +1538,9 @@
                     */
                     this.checkLValSimple(node.id,this.strict || node.generator || node.async ?
                           ( 
-                                this.treatFunctionsAsVar ? ( BIND_VAR ) : ( BIND_LEXICAL ) )
-                        : ( BIND_FUNCTION 
+                            this.treatFunctionsAsVar ? ( BIND_VAR ) : ( BIND_LEXICAL ) )
+                        : ( 
+                            BIND_FUNCTION 
                         ));
                 }
             }
@@ -2793,9 +2798,10 @@
                 return expr;
             }
             return(expr.start === startPos && expr.type === "ArrowFunctionExpression" ?
-              ( expr )
+              ( 
+                expr )
             : ( 
-                    this.parseExprOp(expr,startPos,startLoc,-1,forInit) 
+                this.parseExprOp(expr,startPos,startLoc,-1,forInit) 
             ));
         };
         /*
@@ -3113,7 +3119,7 @@
                 case types$1._true : 
                 case types$1._false :
                     node=this.startNode();
-                    node.value=this.type === types$1._null ? ( null ) : ( (this.type === types$1._true) );
+                    node.value=this.type === types$1._null ? ( null ) : ( this.type === types$1._true );
                     node.raw=this.type.keyword;
                     this.next();
                     return(this.finishNode(node,"Literal"));
@@ -3499,9 +3505,10 @@
             }
             if(this.eat(types$1.colon)){
                 prop.value=isPattern ?
-                  ( this.parseMaybeDefault(this.start,this.startLoc) )
+                  ( 
+                    this.parseMaybeDefault(this.start,this.startLoc) )
                 : ( 
-                        this.parseMaybeAssign(false,refDestructuringErrors) 
+                    this.parseMaybeAssign(false,refDestructuringErrors) 
                 );
                 prop.kind="init";
             }else if(this.options.ecmaVersion >= 6 && this.type === types$1.parenL){
@@ -3562,9 +3569,10 @@
                 }
             }
             return(prop.key=this.type === types$1.num || this.type === types$1.string ?
-              ( this.parseExprAtom() )
+              ( 
+                this.parseExprAtom() )
             : ( 
-                    this.parseIdent(this.options.allowReserved !== "never") 
+                this.parseIdent(this.options.allowReserved !== "never") 
             ));
         };
         /* ✍ Initialize empty function node. */
@@ -4306,6 +4314,7 @@
         /* ✍ https://www.ecma-international.org/ecma-262/8.0/#prod-Alternative */
         pp$1.regexp_alternative=function(state){
             while(state.pos < state.source.length && this.regexp_eatTerm(state)){
+                
             }
         };
         /* ✍ https://www.ecma-international.org/ecma-262/8.0/#prod-annexB-Term */
@@ -5649,7 +5658,7 @@
                                     
                                 case 47 : this.skipLineComment(2);
                                     break;
-                                default: break loop ;
+                                default: break loop;
                             }
                             break;
                             
@@ -5657,7 +5666,7 @@
                             if(ch > 8 && ch < 14 || ch >= 5760 && nonASCIIwhitespace.test(String.fromCharCode(ch))){
                                 ++this.pos;
                             }else{
-                                break loop ;
+                                break loop;
                             }
                             
                     }

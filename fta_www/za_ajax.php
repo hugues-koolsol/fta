@@ -45,7 +45,7 @@ function errorHandler($error_level,$error_message,$error_file,$error_line,$error
 
     $error='error : ' . recupTypeErreur($error_level) . " | problème de traitement :" . $error_message . " | line:" . $error_line . " | file:" . basename($error_file) . " (" . $error_file . ")";
     /* , error_context:".str_replace("\r",'',str_replace("\n",'',var_export($error_context,true))); */
-    mylog($error);
+    ma_trace($error);
 
 }
 /*
@@ -61,18 +61,19 @@ function shutdownHandler(){
     
     if(isset($lasterror['type'])){
 
+        $dernier_fichier=str_replace(RACINE_DU_PROJET,'',$lasterror['file']);
         $dernierMessage=str_replace('#','<br />#',str_replace(RACINE_DU_PROJET,'',$lasterror['message']));
-        $error='shutdown : ' . recupTypeErreur($lasterror['type']) . ' problème dans le source <b>"' . basename($lasterror['file']) . '"</b> en ligne <b>"' . $lasterror['line'] . '"</b> <br />';
-        $error .= ' msg:' . '<span style="text-wrap:wrap;">' . $dernierMessage . '</span> ';
+        $error='<b>erreur dans un source du serveur</b> : ' . recupTypeErreur($lasterror['type']) . ' problème dans le source <b>"' . $dernier_fichier . '"</b> en ligne <b>"' . $lasterror['line'] . '"</b> <br />';
+        $error .= ' message : ' . '<span style="text-wrap:wrap;">' . $dernierMessage . '</span> ';
         /* $error.= '<br />ligne:' . $lasterror['line'] . ' <br /> fichier:' . basename($lasterror['file']) . ' (' . $lasterror['file'] . ')'; */
-        mylog($error);
+        ma_trace($error);
 
     }
 
 
 }
 /* ================================================================================================ */
-function mylog($error){
+function ma_trace($error){
 
     $ret=array( __xst => false, __xms => array( $error), __entree => isset($GLOBALS['__entree']) ? $GLOBALS['__entree'] : null);
     header('Content-Type: application/json; charset=utf-8');
@@ -82,6 +83,18 @@ function mylog($error){
     exit(0);
 
 }
+/*
+  =====================================================================================================================
+  ====================== un temps de traitement supérieur à 2 secondes est suspect ====================================
+  =====================================================================================================================
+*/
+set_time_limit(2);
+/*#
+// simulation d'un traitement supérieur à deux secondes pour mes tests: la fonction password_verify prend du temps
+for($i=0;$i<50;$i++){
+    password_verify('admin','$2y$13$511GXb2mv6/lIM8yBiyGte7CNn.rMaTvD0aPNW6BF/GYlmv946RVK');
+}
+*/
 /* ================================================================================================ */
 require_once('aa_include.php');
 initialiser_les_services(false,true);

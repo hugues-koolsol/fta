@@ -558,9 +558,10 @@ class requete_sql{
                 that.#globale_rev_requete=globale_requete_en_cours['T0.cht_rev_requete'];
                 that.#globale_type_requete=globale_requete_en_cours['T0.chp_type_requete'];
                 that.#globale_commentaire_requete=globale_requete_en_cours['T0.cht_commentaire_requete'] === null ?
-                  ( '' )
+                  ( 
+                    '' )
                 : ( 
-                        globale_requete_en_cours['T0.cht_commentaire_requete'] 
+                    globale_requete_en_cours['T0.cht_commentaire_requete'] 
                 );
                 that.#enrichir_tableau_des_bases_tables_champs(that,init);
                 that.convertir_rev_pour_construction(that,init);

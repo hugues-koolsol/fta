@@ -1,5 +1,4 @@
 'use strict';
-
 function comparer_deux_tableaux_de_bases_sqlite(par){
     console.log('dans comparer_deux_tableaux_de_bases_sqlite');
     __gi1.raz_des_messages();

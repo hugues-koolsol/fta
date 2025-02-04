@@ -1,5 +1,4 @@
 "use strict";
-
 /*
   entête[
   ['id','id'                                 ,''], // 00

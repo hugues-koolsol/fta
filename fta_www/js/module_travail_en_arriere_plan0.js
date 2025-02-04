@@ -1,3 +1,7 @@
+/*
+  Ceci est un "web worker" appelé par l'interface quand on est sur le menu rev
+  Il permet de faire des remplacements de chaines dans les rev
+*/
 try{
     importScripts('./jslib/acorn.js');
 }catch(e){
@@ -9,19 +13,6 @@ try{
     debugger;
 }
 try{
-    importScripts('./convertit-php-en-rev0.js');
-}catch(e){
-    debugger;
-}
-/*
-A remplacer avec le module
-try{
-    importScripts('./c o n v e r t i t - j s - e n - r e v 1 . j s');
-}catch(e){
-    debugger;
-}
-*/
-try{
     importScripts('./sql.js');
 }catch(e){
     debugger;
@@ -32,6 +23,8 @@ var travail_en_cours=false;
 var tache_en_cours=false;
 var __module_html1=null;
 var __module_requete_sql1=null;
+var __m_rev_vers_php1=null;
+var __m_rev_vers_js1=null;
 var __aa_js_sql={};
 import('./module_html.js').then(function(Module){
         __module_html1=new Module.traitements_sur_html('__module_html1');
@@ -43,7 +36,7 @@ import('./mf_rev_vers_js1.js').then(function(Module){
         __m_rev_vers_js1=new Module.c_rev_vers_js1('__m_rev_vers_js1',null);
     });
 import('./mf_rev_vers_php1.js').then(function(Module){
-        __m_rev_vers_php1=new Module.m_rev_vers_php1('__m_rev_vers_php1',null);
+        __m_rev_vers_php1=new Module.c_rev_vers_php1('__m_rev_vers_php1',null);
     });
 /*
   =====================================================================================================================
@@ -242,14 +235,8 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
                             if(extension === '.html' || extension === '.htm'){
                                 var objSource=__module_html1.tabToHtml1(tab,0,false,0);
                             }else if(extension === '.js'){
-                                /* var objSource=parseJavascript0(tab,1,0); */
-                                /*avrif*/
-                                debugger
                                 var objSource=__m_rev_vers_js1.c_tab_vers_js(tab,{});
                             }else if(extension === '.php'){
-                                
-                                /*avrif*/
-                                debugger
                                 var objSource=__m_rev_vers_php1.c_tab_vers_php(tab,{});
                             }
                             if(objSource.__xst === true){
@@ -343,14 +330,14 @@ function traite_une_suppression(id_tache,arg){
                             console.log('%c on traite un html ','color:red;background:yellow;',objSource.__xst);
                         }else if(extension === '.js'){
                             /* var objSource=parseJavascript0(tab,1,0); */
-                            /*avrif*/
+                            /* avrif */
                             debugger;
                             var objSource=__m_rev_vers_js1.c_tab_vers_js(tab1,{});
                             console.log('%c on traite un js ','color:red;background:yellow;',objSource.__xst);
                         }else if(extension === '.php'){
-                            /*avrif*/
+                            /* avrif */
                             debugger;
-                            var objSource=__m_rev_vers_php1.c_tab_vers_php(tab1,{indice_de_debut:i});
+                            var objSource=__m_rev_vers_php1.c_tab_vers_php(tab1,{"indice_de_debut" : i});
                             console.log('%c on traite un php ','color:red;background:yellow;',objSource.__xst);
                         }
                         if(objSource.__xst === true){
@@ -784,8 +771,9 @@ function recuperer_les_travaux_en_session(){
     }
     recuperer_les_travaux_en_arriere_plan_de_la_session1('../za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session',ajax_param).then((donnees) => {
             if(donnees.__xst === true){
-                console.log('donnees.__xva=',donnees.__xva);
-                aa_js_sql=donnees.__xva.aa_js_sql;
+                /* console.log('donnees.__xva=',donnees.__xva); */
+                __aa_js_sql=donnees.__xva.__aa_js_sql;
+                /* console.log('__aa_js_sql[1]=' , __aa_js_sql[1] ); */
                 var tableau_des_travaux=[];
                 var i={};
                 for(i in donnees.__xva.sess_travaux_en_arriere_plan){
@@ -806,14 +794,15 @@ function recuperer_les_travaux_en_session(){
   =====================================================================================================================
 */
 onmessage=function(message_recu){
-    console.log('dans le worker, message_recu=',message_recu.data);
     var donnees_recues_du_message=JSON.parse(JSON.stringify(message_recu.data));
     if(donnees_recues_du_message.type_de_message === "déclencher_un_travail"){
+        console.log('dans le worker, message_recu=',message_recu.data);
         var maintenant=new Date().getTime();
         var ms=performance.now();
         var cle=maintenant + ms;
         liste_des_travaux_en_arriere_plan.push({"clé" : cle ,"etat_du_travail" : 'travail_en_arriere_plan_reçu' ,"donnees_recues_du_message" : donnees_recues_du_message.parametres});
     }else if("integrer_les_travaux_en_session" === donnees_recues_du_message.type_de_message){
+        console.log('dans le worker, message_recu=',message_recu.data);
         var i={};
         for(i in donnees_recues_du_message.tableau_des_travaux){
             donnees_recues_du_message.tableau_des_travaux[i].etat_du_travail='travail_en_arriere_plan_enregistré_en_session';

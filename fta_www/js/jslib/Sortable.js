@@ -6,13 +6,15 @@
 */
 (function(global,factory){
          typeof exports === 'object' &&  typeof module !== 'undefined' ?
-          ( module.exports=factory() )
+          ( 
+            module.exports=factory() )
         : ( 
-                 typeof define === 'function' && define.amd ?
-                  ( define(factory) )
-                : ( 
-                        (global=global || self),(global.Sortable=factory()) 
-                ) 
+             typeof define === 'function' && define.amd ?
+              ( 
+                define(factory) )
+            : ( 
+                (global=global || self),(global.Sortable=factory()) 
+            ) 
         );
 })(this,function(){
         "use strict";
@@ -46,7 +48,8 @@
             }
             return target;
         }
-        function _typeof(obj){"@babel/helpers - typeof"
+        function _typeof(obj){
+            "@babel/helpers - typeof";
             if( typeof Symbol === "function" &&  typeof Symbol.iterator === "symbol"){
                 _typeof=function(obj){
                     return( typeof obj);
@@ -68,16 +71,16 @@
         }
         function _extends(){
             _extends=Object.assign || function(target){
-                for( var i=1 ; i < arguments.length ; i++ ){
-                    var source=arguments[i];
-                    for(var key in source){
-                        if(Object.prototype.hasOwnProperty.call(source,key)){
-                            target[key]=source[key];
+                    for( var i=1 ; i < arguments.length ; i++ ){
+                        var source=arguments[i];
+                        for(var key in source){
+                            if(Object.prototype.hasOwnProperty.call(source,key)){
+                                target[key]=source[key];
+                            }
                         }
                     }
-                }
-                return target;
-            };
+                    return target;
+                };
             return(_extends.apply(this,arguments));
         }
         function _objectWithoutPropertiesLoose(source,excluded){
@@ -1200,8 +1203,9 @@
             "_getDirection" : function _getDirection(evt,target){
                 return( typeof this.options.direction === 'function' ?
                   ( 
-                        this.options.direction.call(this,evt,target,dragEl) )
-                : ( this.options.direction 
+                    this.options.direction.call(this,evt,target,dragEl) )
+                : ( 
+                    this.options.direction 
                 ));
             } ,
             "_onTapStart" : function _onTapStart( /*  Event|TouchEvent  */ evt){
@@ -1451,15 +1455,17 @@
                     var scaleY=ghostEl && ghostMatrix && ghostMatrix.d;
                     var relativeScrollOffset=PositionGhostAbsolutely && ghostRelativeParent && getRelativeScrollOffset(ghostRelativeParent);
                     var dx=((touch.clientX - tapEvt.clientX) + fallbackOffset.x) / (scaleX || 1) + (relativeScrollOffset ?
-                          ( 
+                              ( 
                                 relativeScrollOffset[0] - ghostRelativeParentInitialScroll[0] )
-                        : ( 0 
-                        )) / (scaleX || 1);
+                            : ( 
+                                0 
+                            )) / (scaleX || 1);
                     var dy=((touch.clientY - tapEvt.clientY) + fallbackOffset.y) / (scaleY || 1) + (relativeScrollOffset ?
-                          ( 
+                              ( 
                                 relativeScrollOffset[1] - ghostRelativeParentInitialScroll[1] )
-                        : ( 0 
-                        )) / (scaleY || 1);
+                            : ( 
+                                0 
+                            )) / (scaleY || 1);
                     if(!Sortable.active && !awaitingDragStarted){
                         if(fallbackTolerance
                                && Math.max(Math.abs(touch.clientX - this._lastX),Math.abs(touch.clientY - this._lastY)) < fallbackTolerance
@@ -1710,9 +1716,10 @@
                 if(activeSortable
                        && !options.disabled
                        && (isOwner ?
-                          ( canSort || (revert=parentEl !== rootEl) )
+                          ( 
+                            canSort || (revert=parentEl !== rootEl) )
                         : ( 
-                                putSortable === this || (this.lastPutMode=activeGroup.checkPull(this,activeSortable,dragEl,evt)) && group.checkPut(this,activeSortable,dragEl,evt) 
+                            putSortable === this || (this.lastPutMode=activeGroup.checkPull(this,activeSortable,dragEl,evt)) && group.checkPut(this,activeSortable,dragEl,evt) 
                         ))
                 ){
                     vertical=this._getDirection(evt,target) === 'vertical';
@@ -2144,9 +2151,9 @@
             var spacer=10;
             return(vertical ?
               ( 
-                    evt.clientX < childContainingRect.left - spacer || evt.clientY < firstElRect.top && evt.clientX < firstElRect.right )
+                evt.clientX < childContainingRect.left - spacer || evt.clientY < firstElRect.top && evt.clientX < firstElRect.right )
             : ( 
-                    evt.clientY < childContainingRect.top - spacer || evt.clientY < firstElRect.bottom && evt.clientX < firstElRect.left 
+                evt.clientY < childContainingRect.top - spacer || evt.clientY < firstElRect.bottom && evt.clientX < firstElRect.left 
             ));
         }
         function _ghostIsLast(evt,vertical,sortable){
@@ -2155,9 +2162,9 @@
             var spacer=10;
             return(vertical ?
               ( 
-                    evt.clientX > childContainingRect.right + spacer || evt.clientY > lastElRect.bottom && evt.clientX > lastElRect.left )
+                evt.clientX > childContainingRect.right + spacer || evt.clientY > lastElRect.bottom && evt.clientX > lastElRect.left )
             : ( 
-                    evt.clientY > childContainingRect.bottom + spacer || evt.clientX > lastElRect.right && evt.clientY > lastElRect.top 
+                evt.clientY > childContainingRect.bottom + spacer || evt.clientX > lastElRect.right && evt.clientY > lastElRect.top 
             ));
         }
         function _getSwapDirection(evt,target,targetRect,vertical,swapThreshold,invertedSwapThreshold,invertSwap,isLastTarget){
@@ -2171,15 +2178,15 @@
                     if(!pastFirstInvertThresh
                            && (lastDirection === 1 ?
                               ( 
-                                    mouseOnAxis > targetS1 + (targetLength * invertedSwapThreshold) / 2 )
+                                mouseOnAxis > targetS1 + (targetLength * invertedSwapThreshold) / 2 )
                             : ( 
-                                    mouseOnAxis < targetS2 - (targetLength * invertedSwapThreshold) / 2 
+                                mouseOnAxis < targetS2 - (targetLength * invertedSwapThreshold) / 2 
                             ))
                     ){
                         pastFirstInvertThresh=true;
                     }
                     if(!pastFirstInvertThresh){
-                        if((lastDirection === 1 ? ( (mouseOnAxis < targetS1 + targetMoveDistance) ) : ( (mouseOnAxis > targetS2 - targetMoveDistance) ))
+                        if((lastDirection === 1 ? ( mouseOnAxis < targetS1 + targetMoveDistance ) : ( mouseOnAxis > targetS2 - targetMoveDistance ))
                         ){
                             return(-lastDirection);
                         }

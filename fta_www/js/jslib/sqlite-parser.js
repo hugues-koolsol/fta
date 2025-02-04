@@ -165,13 +165,13 @@
                     })();
                         var _typeof= typeof Symbol === "function" &&  typeof Symbol.iterator === "symbol" ?
                           ( 
-                                function(obj){
-                                        return( typeof obj);
-                                    } )
+                            function(obj){
+                                    return( typeof obj);
+                                } )
                         : ( 
-                                function(obj){
-                                        return(obj &&  typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? ( "symbol" ) : (  typeof obj ));
-                                    } 
+                            function(obj){
+                                    return(obj &&  typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? ( "symbol" ) : (  typeof obj ));
+                                } 
                         );
                         function peg$subclass(child,parent){
                             function ctor(){
@@ -2852,8 +2852,9 @@
                                 }
                                 throw peg$buildStructuredError(peg$maxFailExpected,peg$maxFailPos < input.length ? ( input.charAt(peg$maxFailPos) ) : ( null ),peg$maxFailPos < input.length ?
                                   ( 
-                                        peg$computeLocation(peg$maxFailPos,peg$maxFailPos + 1) )
-                                : ( peg$computeLocation(peg$maxFailPos,peg$maxFailPos) 
+                                    peg$computeLocation(peg$maxFailPos,peg$maxFailPos + 1) )
+                                : ( 
+                                    peg$computeLocation(peg$maxFailPos,peg$maxFailPos) 
                                 ));
                             }
                         }
