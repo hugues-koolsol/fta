@@ -22,12 +22,10 @@ class c_astphpnikic_vers_rev1{
       =============================================================================================================
     */
     #astphp_logerreur(o){
-        logerreur(o);
-        if(o.hasOwnProperty('element') && o.element && o.element.hasOwnProperty('loc') && o.element.loc.hasOwnProperty('start')){
-            if(global_messages['lines'].length < 5){
-                global_messages['lines'].push(o.element.loc.start.line);
-            }
+        if(o.hasOwnProperty('element') && o.element && o.element.hasOwnProperty('attributes') && o.element.attributes.hasOwnProperty('startFilePos') && o.element.attributes.hasOwnProperty('endFilePos')){
+            o.plage=[o.element.attributes.startFilePos,o.element.attributes.endFilePos];            
         }
+        logerreur(o);
         return o;
     }
     /*
@@ -3215,11 +3213,11 @@ class c_astphpnikic_vers_rev1{
                             if(estTraiteSansErreur === false){
                                 if(options_traitement && options_traitement.hasOwnProperty('nettoyer_html') && options_traitement.nettoyer_html === true){
                                 }else{
-                                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : '2230 ATTENTION, ce php contient du html en ligne qui n\'est pas strict<br /> utilisez l\'option echo'}));
+                                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'ATTENTION, ce php contient du html en ligne qui n\'est pas strict',"element" : stmts[i]}));
                                 }
                                 var cle=this.#php_construit_cle(10);
                                 t+='#( === transformation html incomplet en echo voir ci dessous pour la clé = "' + cle + '")';
-                                logerreur({"__xst" : false ,"__xme" : "2848 ATTENTION, ce php contient du html incomplet qui est converti en echo (" + cle + ") !"});
+                                this.#astphp_logerreur({"__xst" : true ,"__xav" : nl1()+"ATTENTION, ce php contient du html incomplet qui est converti en echo (" + cle + ") !" ,"element" : stmts[i]});
                                 /*
                                   numeroLigneCourantStmtHtmlStartLine=stmts[i].attributes.startLine;
                                   numeroLigneCourantStmtHtmlEndLine=stmts[i].attributes.endLine;
@@ -3765,13 +3763,13 @@ class c_astphpnikic_vers_rev1{
                 }else{
                     if(r.status === 404){
                         if(0 === numero_de_message++){
-                            logerreur({"__xst" : false ,"__xme" : nl1() + '<br />404 page "' + page + '" non trouvée'});
+                            this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + '<br />404 page "' + page + '" non trouvée'});
                             __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                         }
                         return;
                     }else if(r.status >= 500){
                         if(0 === numero_de_message++){
-                            logerreur({"__xst" : false ,"__xme" : nl1() + '<br />erreur du serveur, peut-être une limite de temps de traitement atteinte'});
+                            this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + '<br />erreur du serveur, peut-être une limite de temps de traitement atteinte'});
                             __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
                         }
                         /*

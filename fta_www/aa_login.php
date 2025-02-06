@@ -104,6 +104,7 @@ if(isset($_POST) && count($_POST) > 0){
             */
             supprimerLesValeursDeSession();
             ajouterMessage('erreur',__LINE__ . ' la combinaison de l\'identifiant et du mot de passe est inconnue',BNF);
+            /*on fait patienter l'utilisateur pendant deux secondes pour qu'il réfléchisse ! */
             sleep(2);
             recharger_la_page(BNF . '?raz1');
         }

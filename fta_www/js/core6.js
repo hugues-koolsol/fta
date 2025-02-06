@@ -33,30 +33,30 @@ function logerreur(o){
         if(o.__xst === false){
             if(o.hasOwnProperty('__xme')){
                 if(o.hasOwnProperty('__xav') && o.__xav === true){
-                    global_messages['avertissements'].push({"__xme" : o.__xme ,"masquee" : masquee});
+                    global_messages['avertissements'].push({"__xme" : o.__xme ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage')?o.plage:null});
                 }else{
-                    global_messages['errors'].push({"__xme" : o.__xme ,"masquee" : masquee});
+                    global_messages['errors'].push({"__xme" : o.__xme ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage')?o.plage:null});
                 }
             }
             if(o.hasOwnProperty('message')){
-                global_messages['errors'].push({"__xme" : o.message ,"masquee" : masquee});
+                global_messages['errors'].push({"__xme" : o.message ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage')?o.plage:null});
             }
             if(o.hasOwnProperty('id')){
                 global_messages['ids'].push(o.id);
             }
             if(o.hasOwnProperty('__xms')){
                 for(var i in o.__xms){
-                    global_messages['errors'].push({"__xme" : o.o.__xms[i] ,"masquee" : masquee});
+                    global_messages['errors'].push({"__xme" : o.o.__xms[i] ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage')?o.plage:null});
                 }
             }
         }else{
             if(o.hasOwnProperty(__xme)){
                 if(o.__xme !== ''){
-                    global_messages['infos'].push({"__xme" : o.__xme ,"masquee" : masquee});
+                    global_messages['infos'].push({"__xme" : o.__xme ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage')?o.plage:null});
                 }
             }else if(o.hasOwnProperty('__xav')){
                 if(o.__xav !== ''){
-                    global_messages['avertissements'].push({"__xav" : o.__xav ,"masquee" : masquee});
+                    global_messages['avertissements'].push({"__xav" : o.__xav ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage')?o.plage:null });
                 }
             }else{
                 /* on ne fait rien */
@@ -78,9 +78,11 @@ function logerreur(o){
     if(o.hasOwnProperty('range')){
         global_messages['ranges'].push(o.range);
     }
+/*    
     if(o.hasOwnProperty('plage')){
         global_messages['plages'].push(o.plage);
     }
+*/    
     /*#
       if(o.hasOwnProperty('tab') && o.hasOwnProperty('id')){
            //* à faire ? , à voir 
@@ -248,6 +250,7 @@ function nl1(e_originale){
             }
         }
     }
+    var nom_fonction='';
     if(e_originale !== undefined){
         var stack=e.stack.toString().split(/\r\n|\n/);
         /* We want our caller's frame. It's index into |stack| depends on the */
@@ -269,7 +272,7 @@ function nl1(e_originale){
             /* var texte_erreur=stack.shift(); */
             var texte_erreur=ligne_erreur;
             var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
-            var nom_fonction='';
+            nom_fonction='';
             if(texte_erreur.match(/ at ([^\.]+) \(/) === null){
                 if(texte_erreur.match(/ at ([^]+) \(/) === null){
                     if(texte_erreur.match(/([^]+)\/([^]+)/)[2] !== null){
@@ -299,9 +302,20 @@ function nl1(e_originale){
         var texte_erreur=stack.shift();
         var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
         if(texte_erreur.match(/ at ([^\.]+) \(/) === null){
-            var nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
+            if(texte_erreur.match(/ at ([^]+) \(/)===null){
+                /* 
+                  dans firefox, il n'y a pas de " at ":
+                  #traite_inline@http://www.exemple.fr/toto.js:290:31
+                */
+                if(texte_erreur.match(/([^]+)@/)){
+                    nom_fonction=texte_erreur.match(/([^]+)@/)[1];
+                }
+            }else{
+            
+                nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
+            }
         }else{
-            var nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
+            nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
         }
         var numero_de_ligne=modele_champ_erreur.exec(texte_erreur)[1];
         return('^G ' + nom_fichier + ' ' + nom_fonction + ' ' + numero_de_ligne + ' ');
@@ -690,7 +704,11 @@ function strToHtml(s){
         f1( f2( nomf(x1) , p(x2) , p(x3) , p(x4) ))
      ),
      f5()
-  )  
+  )
+  - quand un tableau contient un commentaire, chaque élément est sur un nouvelle ligne
+  - quand un tableau contient plus de 5 éléments, chaque élément est sur une nouvelle ligne
+  - quand un tableau contient un commentaire tbel ( tableau en ligne ) les éléments   sont regroupés
+       en 10 + 10 sur chaque ligne. Ceci permet d'avoir les gros tableaux plus concentrés
   =====================================================================================================================
 */
 function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_ligne=[],contient_un_defTab_tbel=null,ne_prendre_qu_un_element=false){
@@ -978,7 +996,9 @@ function iterateCharacters2(str){
     for( i=0 ; i < l01 ; i++ ){
         codeCaractere=str.charCodeAt(i);
         /*
-          zero width space , vertical tab
+          on ne traite pas les zero width space , vertical tab
+          8203 = 0x200B
+          11   = 0x0B
         */
         if(!(codeCaractere === 8203 || codeCaractere === 11)){
             /*
@@ -1027,19 +1047,19 @@ function reconstruitChaine(tab,debut,fin){
   =====================================================================================================================
 */
 function formaterErreurRev(obj){
-    /*
+    /*#
       exemple de donnée en entrée
       {
-      type:'rev',
-      __xst:false,
-      ind:i,
-      __xme : '1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
-      texte:texte,
-      chaineTableau:chaineTableau,
-      chaine_tableau_commentaires:chaine_tableau_commentaires
-      tableauEntree:tableauEntree,
-      quitterSiErreurNiveau:quitterSiErreurNiveau,
-      autoriserCstDansRacine:autoriserCstDansRacine
+        type:'rev',
+        __xst:false,
+        ind:i,
+        __xme : '1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
+        texte:texte,
+        chaineTableau:chaineTableau,
+        chaine_tableau_commentaires:chaine_tableau_commentaires
+        tableauEntree:tableauEntree,
+        quitterSiErreurNiveau:quitterSiErreurNiveau,
+        autoriserCstDansRacine:autoriserCstDansRacine
       }
     */
     var t='';
@@ -1223,7 +1243,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     var dansCstDouble=false;
     var dansCstModele=false;
     var dansCstRegex=false;
-    var dsComment=false;
+    var dans_commentaire=false;
     var dsBloc=false;
     var constanteQuotee=0;
     var constanteQuoteePrecedente=0;
@@ -1257,16 +1277,16 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       
       
       la première version avec push était :
-      T.push(Array(0,texte,'INIT',-1,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
+      T.push(Array(0,texte,'__I',-1,constanteQuotee,premier,dernier,0,0,0,0,posOuvPar,posFerPar,''));
     */
-    chaineTableau+='[0,"' + texte + '","INIT",-1,' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
-    typePrecedent='INIT';
+    chaineTableau+='[0,"' + texte + '","__I",-1,' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + posOuvPar + ',0,""]';
+    typePrecedent='__I';
     niveauPrecedent=niveau;
     var l01=tableauEntree.length;
     /*
       =============================================================================================================
       =============================================================================================================
-      boucle principale sur tous les caractères du texte passé en argument,
+      boucle principale sur tous les caractères du tableau passé en argument,
       on commence par analyser les cas ou on est dans  des commentaires ou des chaines, 
       puis on analyse les caractères
       =============================================================================================================
@@ -1274,7 +1294,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     */
     for( i=0 ; i < l01 ; i++ ){
         c=tableauEntree[i][0];
-        if(dsComment){
+        if(dans_commentaire===true){
             /*
               
               
@@ -1299,7 +1319,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                       T[indice][13]=commentaire;
                     */
                     commentaire='';
-                    dsComment=false;
+                    dans_commentaire=false;
                     niveau=niveau - 1;
                     if(drapeauParenthese){
                         if(i === l01 - 1){
@@ -1896,11 +1916,11 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 */
                 posOuvPar=tableauEntree[i][2];
                 if(texte === DEBUTCOMMENTAIRE){
-                    dsComment=true;
+                    dans_commentaire=true;
                     niveauDebutCommentaire=niveau;
                 }
                 if(texte === DEBUTBLOC){
-                    dsComment=true;
+                    dans_commentaire=true;
                     niveauDebutCommentaire=niveau;
                 }
                 if(drapeauParenthese){

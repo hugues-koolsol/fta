@@ -85,7 +85,7 @@ Les commentaires sont inclus dans la fonction spéciale "#"
 ```
 0       1                2      3   4     5      6     7   8   9  10     11   12  13
 [
- [ 0 , ""            , "INIT" , -1, 0 ,    0 ,    0 ,  0 , 6 , 0 , 0 ,    0 ,  0 , ""] , 
+ [ 0 , ""            , "__I" , -1, 0 ,    0 ,    0 ,  0 , 6 , 0 , 0 ,    0 ,  0 , ""] , 
  [ 1 , "#"           ,  "f"   , 0 , 0 ,    0 ,    0 ,  0 , 0 , 1 , 0 ,    1 ,  2 , "😊ceci est un arbre"] , 
  [ 2 , "a"           ,  "f"   , 0 , 0 ,   23 ,   23 ,  0 , 1 , 2 , 3 ,   25 , 10 , ""] , 
  [ 3 , "b"           ,  "f"   , 1 , 0 ,   25 ,   25 ,  2 , 2 , 1 , 2 ,   27 , 66 , ""] , 
@@ -175,13 +175,13 @@ a,
 
 et on obtiendra le tableau suivant  
 ```
-0id	1val	2typ	3niv	4coQ	5pre	6der	7pId	8nbE	9nuE	10pro	11pop	12efs	13com
-0		 INIT	 -1  0	   0	    0	   0	   5	   0	   0	   0	   0	
-1	  a	     c	 0	   0	    0	   0	   0   	0	   1	   0	   0	    2	
-2	  a	     c	 0	   1	    6	   6	   0	   0	   2	   0	   0	    3	
-3	  a	     c	 0	   3	   13	  13	   0	   0	   3	   0	   0	    4	
-4	  a	     c	 0	   2	   20	  20	   0	   0	   4	   0	   0	    5	
-5	  a	     c	 0	   4	   27	  31	   0	   0	   5	   0	   0	    6	    gi
+0id 1val 2typ 3niv 4coQ 5pre 6der 7pId 8nbE 9nuE 10pro 11pop 12efs 13com
+0        __I  -1     0     0    0    0    5    0    0    0     0 
+1   a      c   0     0     0    0    0    0    1    0    0     2 
+2   a      c   0     1     6    6    0    0    2    0    0     3 
+3   a      c   0     3    13   13    0    0    3    0    0     4 
+4   a      c   0     2    20   20    0    0    4    0    0     5 
+5   a      c   0     4    27   31    0    0    5    0    0     6     gi
 ```
 
 Cela dit, on évitera d'écrire des constantes à la racine car ça ne sert généralement pas à grand chose et ce n'est pas autorisé par défaut.   
@@ -209,24 +209,28 @@ directive( texte( 'strict_types=1' ))
 Elle peuvent contenir 0 ou n arguments, ces arguments peuvent être des fonctions ou des constantes
 
 On pourra avoir par exemple :  
+
+```
 a(),  
 a( a , 'a'),  
 a( "a" , a( \`a\` , /a/gi ) )  
 
+```
+
 et on obtiendra le tableau suivant  
 
 ```
-0id	1val	2typ	3niv	4coQ	5pre	6der	7pId	8nbE	9nuE	10pro	11pop	12efs	13com
-0		 INIT	 -1	 0	   0	    0	   0	   0   3	   0	   0	    0	    0	
-1	  a	     f	 0	   0	    0	   0	   0	  0	   1	   0	    1	    2	
-2	  a	     f	 0	   0	    5	   5	   0	  2	   2	   1	    6	    5	
-3	  a	     c	 1	   0	    8	   8	   2	  0	   1	   0	    0	    4	
-4	  a	     c	 1	   1	   13	  13	   2	  0	   2	   0	    6	   10	
-5	  a	     f	 0	   0	   18	  18	   0	  2	   3	   2	   19	   10	
-6	  a	     c	 1	   3	   22	  22	   5	  0	   1	   0	   19	    7	
-7	  a	     f	 1	   0	   27	  27	   5	  2	   2	   1	   28	   10	
-8	  a	     c	 2	   2	   31	  31	   7	  0	   1	   0	   28	    9	
-9	  a	     c	 2	   4	   37	  41	   7	  0	   2	   0	   28	   10	     gi
+0id 1val 2typ 3niv 4coQ 5pre 6der 7pId 8nbE 9nuE 10pro 11pop 12efs 13com
+0        __I   -1    0     0    0    0   3    0    0     0     0 
+1   a      f    0    0     0    0    0   0    1    0     1     2 
+2   a      f    0    0     5    5    0   2    2    1     6     5 
+3   a      c    1    0     8    8    2   0    1    0     0     4 
+4   a      c    1    1    13   13    2   0    2    0     6    10 
+5   a      f    0    0    18   18    0   2    3    2    19    10 
+6   a      c    1    3    22   22    5   0    1    0    19     7 
+7   a      f    1    0    27   27    5   2    2    1    28    10 
+8   a      c    2    2    31   31    7   0    1    0    28     9 
+9   a      c    2    4    37   41    7   0    2    0    28    10      gi
 ```
 
 

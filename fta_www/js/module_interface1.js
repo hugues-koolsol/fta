@@ -115,51 +115,41 @@ class interface1{
         var numLignePrecedente=-1;
         var nombre_de_boutons_affiches=0;
         var il_existe_des_messages_masques=false;
-        while(global_messages.errors.length > 0){
-            if(global_messages.errors[i].hasOwnProperty('__xme')){
-                if(global_messages.errors[i].hasOwnProperty('masquee') && global_messages.errors[i].masquee === true){
+        var tt='';
+        var tab_cas_erreur=[
+            {type:'errors',css_cls:'yyerreur' , nom_zone:'__xme'},
+            {type:'avertissements',css_cls:'yyavertissement' , nom_zone:'__xav'},
+            {type:'infos',css_cls:'yysucces' , nom_zone:'__xme'}
+        ];
+        for( let cas in tab_cas_erreur){
+            var le_cas=tab_cas_erreur[cas]
+            while(global_messages[le_cas.type].length > 0){
+                tt='';
+                if(global_messages[le_cas.type][i].hasOwnProperty('masquee') && global_messages[le_cas.type][i].masquee === true){
                     il_existe_des_messages_masques=true;
-                    zon.innerHTML+='<div class="yyerreur" style="display:none;" data-masquable="1">' + global_messages.errors[i].__xme + '</div>';
+                    tt+='<div class="'+le_cas.css_cls+'" style="display:none;" data-masquable="1">';
                 }else{
-                    zon.innerHTML+='<div class="yyerreur" >' + global_messages.errors[i].__xme + '</div>';
+                    tt+='<div class="'+le_cas.css_cls+'" >';
                 }
-            }else{
-                zon.innerHTML+='<div class="yyerreur">' + global_messages.errors[i] + '</div>';
+                if(global_messages[le_cas.type][i].plage && nomDeLaTextAreaContenantLeTexteSource!==''){
+                    tt+='<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages[le_cas.type][i].plage[0] + ',' + global_messages[le_cas.type][i].plage[1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
+                    tt+=' class="'+le_cas.css_cls+'" style="border:2px red outset;">plage ' + global_messages[le_cas.type][i].plage[0] + ',' + global_messages[le_cas.type][i].plage[1] + '</a>';
+                }
+                if(global_messages[le_cas.type][i].hasOwnProperty(le_cas.nom_zone)){
+                    tt+=global_messages[le_cas.type][i][le_cas.nom_zone] + '</div>';
+                }else{
+                    tt+=global_messages[le_cas.type][i] + '</div>';
+                }
+                zon.innerHTML+=tt;
+                global_messages[le_cas.type].splice(0,1);
+                affichagesPresents=true;
             }
-            global_messages.errors.splice(0,1);
-            affichagesPresents=true;
+         
         }
         if(il_existe_des_messages_masques === true){
             zon.innerHTML+='<div class="yyavertissement">' + '<span id="message_masquer_les_details">le détail des erreurs n\'est pas visible</span> <a id="bouton_voir_les_messages_masques" data-masque="1" class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.afficher_les_erreurs_masquees()">voir</a>' + '</div>';
         }
-        while(global_messages.avertissements.length > 0){
-            if(global_messages.avertissements[i].hasOwnProperty('__xav')){
-                if(global_messages.avertissements[i].hasOwnProperty('masquee') && global_messages.avertissements[i].masquee === true){
-                    zon.innerHTML+='<div class="yyavertissement" style="display:none;" data-masquable="1">' + global_messages.avertissements[i].__xav + '</div>';
-                    il_existe_des_messages_masques=true;
-                }else{
-                    zon.innerHTML+='<div class="yyavertissement">' + global_messages.avertissements[i].__xav + '</div>';
-                }
-            }else{
-                zon.innerHTML+='<div class="yyavertissement">' + global_messages.avertissements[i] + '</div>';
-            }
-            global_messages.avertissements.splice(0,1);
-            affichagesPresents=true;
-        }
-        while(global_messages.infos.length > 0){
-            if(global_messages.infos[i].hasOwnProperty('__xme')){
-                if(global_messages.infos[i].hasOwnProperty('masquee') && global_messages.infos[i].masquee === true){
-                    zon.innerHTML+='<div class="yysucces" style="display:none;" data-masquable="1">' + global_messages.infos[i].__xme + '</div>';
-                    il_existe_des_messages_masques=true;
-                }else{
-                    zon.innerHTML+='<div class="yysucces">' + global_messages.infos[i].__xme + '</div>';
-                }
-            }else{
-                zon.innerHTML+='<div class="yysucces">' + global_messages.infos[i] + '</div>';
-            }
-            global_messages.infos.splice(0,1);
-            affichagesPresents=true;
-        }
+
         while(global_messages.lines.length > 0){
             zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages.lines[i] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + global_messages.lines[i] + '</a>&nbsp;' + zon.innerHTML;
             global_messages.lines.splice(0,1);
@@ -526,7 +516,8 @@ class interface1{
             "nombre_de_lignes" : nombre_de_lignes
         };
         async function definir_le_nombre_de_lignes_a_afficher_pour_une_liste1(url="",ajax_param){
-            return(__gi1.recupérer_un_fetch(url,ajax_param));
+            var a=__gi1.recupérer_un_fetch(url,ajax_param);
+            return(a);
         }
         definir_le_nombre_de_lignes_a_afficher_pour_une_liste1('za_ajax.php?definir_le_nombre_de_lignes_a_afficher_pour_une_liste',ajax_param).then((donnees) => {
                 if(donnees.__xst === true){
@@ -536,7 +527,6 @@ class interface1{
                     debugger;
                 }
             });
-        return({"__xst" : true});
     }
     /*
       =============================================================================================================
@@ -1171,12 +1161,21 @@ class interface1{
     traitement_apres_recuperation_ast_de_php2_ok(par){
         /* console.log(par); */
         var options=par.__entree.call.opt;
+        var nom_de_la_text_area_rev='';
+        var nom_de_la_text_area_php='';
+        if(options.hasOwnProperty('nom_de_la_text_area_rev')){
+         nom_de_la_text_area_rev=options.nom_de_la_text_area_rev;
+        }
+        if(options.hasOwnProperty('nom_de_la_text_area_php')){
+         nom_de_la_text_area_php=options.nom_de_la_text_area_php;
+        }
+        
         try{
             var json_de_ast=JSON.parse(par.__xva);
             var obj=__m_astphpnikic_vers_rev1.traite_ast_nikic(json_de_ast,options);
             if(obj.__xst === true){
                 /* console.log(obj); */
-                if(options.hasOwnProperty('nom_de_la_text_area_rev')){
+                if(nom_de_la_text_area_rev!==''){
                     document.getElementById(options.nom_de_la_text_area_rev).value=obj.__xva;
                     if(obj.__xva.substr(0,4) !== 'php('){
                         var tableau1=iterateCharacters2('php(' + obj.__xva + ')');
@@ -1202,7 +1201,7 @@ class interface1{
         }catch(e){
             logerreur({"__xst" : false ,"__xme" : nl1(e) + '<br />' + e.message});
         }
-        this.remplir_et_afficher_les_messages1('zone_global_messages');
+        this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_php);
     }
     /*
       =============================================================================================================

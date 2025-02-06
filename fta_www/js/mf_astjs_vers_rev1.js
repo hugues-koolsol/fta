@@ -19,12 +19,10 @@ class c_astjs_vers_rev1{
       =============================================================================================================
     */
     #astjs_logerreur(o){
-        logerreur(o);
         if(o.hasOwnProperty('element') && o.element.hasOwnProperty('end') && o.element.hasOwnProperty('start')){
-            if(global_messages['plages'].length < 5){
-                global_messages['plages'].push([o.element.start,o.element.end]);
-            }
+            o.plage=[o.element.start,o.element.end];            
         }
+        logerreur(o);
         return o;
     }
     /*
@@ -42,17 +40,17 @@ class c_astjs_vers_rev1{
             asynchrone='asynchrone(),';
         }
         if(element.expression !== false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0044 #traite_FunctionExpression expression' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
         }
         if(element.generator !== false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0047 #traite_FunctionExpression generator' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
         }
         if(element.id){
             obj=this.#traite_element(element.id,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 id+=obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0055 #traite_FunctionExpression' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
             }
         }
         if(element.params && Array.isArray(element.params)){
@@ -65,7 +63,7 @@ class c_astjs_vers_rev1{
                     if(obj.__xst === true){
                         les_arguments+=',p(' + le_commentaire + obj.__xva + ')';
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_FunctionExpression' ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
                     }
                 }
             }
@@ -75,7 +73,7 @@ class c_astjs_vers_rev1{
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0055 #traite_FunctionExpression' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
             }
         }
         if(id !== ''){
@@ -116,7 +114,7 @@ class c_astjs_vers_rev1{
                     if(obj.__xst === true){
                         les_arguments+='p(' + le_commentaire + obj.__xva + ')';
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0114 traiteCallExpression1 ' ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
                     }
                 }
             }else{
@@ -129,10 +127,10 @@ class c_astjs_vers_rev1{
             if(obj.__xst === true){
                 nom_de_la_fonction+=obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0114 traiteCallExpression1 ' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0125 traiteCallExpression1' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
         }
         if(element.body){
             obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
@@ -141,7 +139,7 @@ class c_astjs_vers_rev1{
                     le_contenu=',contenu(' + contenu + ')';
                 }
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : 'erreur dans traiteCallExpression1 pour body' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+'body' ,"element" : element}));
             }
         }
         if(element.optional === true){
@@ -178,14 +176,14 @@ class c_astjs_vers_rev1{
         }
         est_expression=element.expression;
         if(element.generator !== false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0047 #traite_ArrowFunctionExpression generator' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' generator' ,"element" : element}));
         }
         if(element.id){
             obj=this.#traite_element(element.id,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 id+=obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0099 #traite_ArrowFunctionExpression' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
             }
         }
         if(element.body){
@@ -194,14 +192,14 @@ class c_astjs_vers_rev1{
                 if(obj.__xst === true){
                     contenu+='retourner(' + obj.__xva + ')';
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0130 #traite_ArrowFunctionExpression' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
                 }
             }else{
                 obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0097 #traite_ArrowFunctionExpression' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
                 }
             }
         }
@@ -215,7 +213,7 @@ class c_astjs_vers_rev1{
                     if(obj.__xst === true){
                         les_arguments+=',p(' + le_commentaire + obj.__xva + ')';
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0123 #traite_CallExpression' ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
                     }
                 }
             }
@@ -829,7 +827,8 @@ class c_astjs_vers_rev1{
                 lesPar+=',' + commentaire;
             }
             if(element.elements[i] === null){
-                this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' ATTENTION, CE N\'EST PAS UNE ERREUR MAIS... élément vide dans un tableau' ,"element" : element});
+
+                this.#astjs_logerreur({"__xst" : true ,"__xav" : nl1() + ' ATTENTION, CE N\'EST PAS UNE ERREUR MAIS... élément vide dans un tableau' ,"element" : element});
                 lesPar+=',p()';
             }else if(element.elements[i].type === 'Literal'){
                 lesPar+=',p(' + element.elements[i].raw + ')';
@@ -2058,7 +2057,19 @@ let x16=a.b ?. c(a.b);
             if(element.kind === "get" || element.kind === "set"){
                 t+='type(' + (element.kind === 'get' ? ( 'lire' ) : ( 'écrire' )) + '),';
             }
-            t+=statique+'nom(' + element.key.name + '),';
+            if(element.computed){
+                t+='format_tableau(),';
+            }
+            if(element.key.name===undefined){
+                obj=this.#traite_element(element.key,niveau,element,tab_comm,false);
+                if(obj.__xst===false){
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                }
+                t+=statique+'nom(' + obj.__xva + '),';
+             
+            }else{
+                t+=statique+'nom(' + element.key.name + '),';
+            }
             if(element.key.type === "PrivateIdentifier"){
                 t+='mode(privée),';
             }
@@ -2416,7 +2427,7 @@ let x16=a.b ?. c(a.b);
             /*
               tab[1,1] est super dangereux, on le signale mais ça passe
             */
-            this.#astjs_logerreur({"__xst" : false ,"__xme" : '2008 l\'opérateur virgule est dangereux dans un tableau !' ,"element" : element});
+            this.#astjs_logerreur({"__xst" : true ,"__xav" : '2008 l\'opérateur virgule est dangereux dans un tableau !' ,"element" : element});
         }
         for( let i=0 ; i < element.expressions.length ; i++ ){
             obj=this.#traite_element(element.expressions[i],niveau + 2,element,tab_comm,false);
@@ -2490,7 +2501,7 @@ let x16=a.b ?. c(a.b);
                     }else{
                         /* il faut traiter les valeurs entre quotes qui terminent par un \ */
                         if(element.raw.indexOf('\\\n') >= 0){
-                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1744 #traite_element Literal veuillez réécrire ces lignes JS qui terminent par un \\' ,"element" : element}));
+                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+'veuillez réécrire ces lignes JS qui terminent par un \\' ,"element" : element}));
                         }else{
                             valeur=element.raw;
                         }
@@ -2508,7 +2519,7 @@ let x16=a.b ?. c(a.b);
                     if(element.label.type === 'Identifier'){
                         t+='break(' + element.label.name + ')';
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1758 #traite_element BreakStatement' ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                     }
                 }else{
                     t+='break()';
@@ -2528,7 +2539,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element LabeledStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2537,7 +2548,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element SequenceExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2546,7 +2557,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2053 #traite_element ThrowStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2555,7 +2566,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1990 #traite_element AwaitExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2564,7 +2575,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2000 #traite_element AssignmentPattern ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2573,7 +2584,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2010 #traite_element TryStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2582,7 +2593,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1883 #traite_element NewExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2591,7 +2602,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1862 #traite_element TemplateLiteral ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2600,7 +2611,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2093 #traite_element TemplateElement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2609,7 +2620,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1837 #traite_element ExportNamedDeclaration ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2618,7 +2629,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2071 #traite_element SwitchStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2627,7 +2638,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1716 #traite_element ForInStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2636,7 +2647,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2137 #traite_element ForOfStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2645,7 +2656,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1698 #traite_element PrivateIdentifier ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2654,7 +2665,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1671 #traite_element ConditionalExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2663,7 +2674,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1173 #traite_element MethodDefinition ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2672,7 +2683,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1173 #traite_element PropertyDefinition ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2681,7 +2692,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1124 #traite_element ClassDeclaration ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2690,7 +2701,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0898 #traite_element IfStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2699,7 +2710,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0898 #traite_element UpdateExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2708,7 +2719,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2082 #traite_element DoWhileStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2717,7 +2728,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2082 #traite_element WhileStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2726,7 +2737,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0898 #traite_element ForStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2735,7 +2746,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0828 #traite_element UnaryExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2744,7 +2755,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0689 #traite_element LogicalExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2753,7 +2764,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0539 #traite_element MemberExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2762,7 +2773,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0477 #traite_element FunctionDeclaration ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2771,7 +2782,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0487 #traite_element ArrayExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2780,7 +2791,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0388 #traite_element ObjectExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2789,7 +2800,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0327 #traite_element VariableDeclaration ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2798,7 +2809,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0288 #traite_element BinaryExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2807,7 +2818,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0251 #traite_element ReturnStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2816,7 +2827,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0138 #traite_element AssignmentExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2825,7 +2836,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0185 #traite_element ArrowFunctionExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2834,7 +2845,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0095 #traite_element FunctionExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2843,7 +2854,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0059 #traite_element CallExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2852,7 +2863,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2397 #traite_element ChainExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2861,7 +2872,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2446 #traite_element ObjectPattern ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2870,7 +2881,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2496 #traite_element RestElement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2879,7 +2890,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2558 #traite_element SpreadElement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2888,7 +2899,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2567 #traite_element ImportDeclaration ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2897,7 +2908,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2620 #traite_element ImportSpecifier ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2906,7 +2917,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2674 #traite_element ImportDefaultSpecifier ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2915,7 +2926,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2703 #traite_element ImportNamespaceSpecifier ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2924,7 +2935,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2716 #traite_element ImportExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2933,7 +2944,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2747 #traite_element MetaProperty ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2942,7 +2953,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+'ExportDefaultDeclaration' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2952,7 +2963,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+'ArrayPattern' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2961,7 +2972,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+'TaggedTemplateExpression' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2970,7 +2981,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+'ClassExpression' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2978,7 +2989,7 @@ let x16=a.b ?. c(a.b);
                 
             case 'BlockStatement' :
                 /*# 
-                  de temps en temps, on peut passer pas là mais je ne vois pas l'utilité : exemple :
+                  de temps en temps, on peut passer pas là, exemple :
                   switch(a) {
                    case b:
                      { // pourquoi cette accolade ?
@@ -2986,19 +2997,18 @@ let x16=a.b ?. c(a.b);
                      } // pourquoi cette accolade ?
                      break;
                   }
-                  c'est peut-être quand on veut isoler des variables ...
                 */
                 obj=this.#traite_BlockStatement(element,niveau,parent,tab_comm);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2551 #traite_element BlockStatement ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+element.type ,"element" : element}));
                 }
                 break;
                 
             default:
                 debugger;
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '2500 #traite_element non prévu "' + element.type + '" ' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' non prévu "' + element.type + '" ' ,"element" : element}));
                 break;
                 
         }
