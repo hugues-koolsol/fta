@@ -243,7 +243,8 @@ $par=array(/**/
             'js/mf_astphpparseur_vers_rev1.js',
             'js/mf_astjs_vers_rev1.js',
             'js/mf_rev_vers_js1.js',
-            'js/mf_rev_vers_php1.js'
+            'js/mf_rev_vers_php1.js',
+            'js/mf_rev_vers_sql1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

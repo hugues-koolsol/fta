@@ -135,6 +135,10 @@ class interface1{
                     tt+='<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages[le_cas.type][i].plage[0] + ',' + global_messages[le_cas.type][i].plage[1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
                     tt+=' class="'+le_cas.css_cls+'" style="border:2px red outset;">plage ' + global_messages[le_cas.type][i].plage[0] + ',' + global_messages[le_cas.type][i].plage[1] + '</a>';
                 }
+                if(global_messages[le_cas.type][i].ligne && nomDeLaTextAreaContenantLeTexteSource!==''){
+                    tt+='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages[le_cas.type][i].ligne+ ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
+                    tt+=' class="'+le_cas.css_cls+'" style="border:2px red outset;">ligne ' + global_messages[le_cas.type][i].ligne +  '</a>';
+                }
                 if(global_messages[le_cas.type][i].hasOwnProperty(le_cas.nom_zone)){
                     tt+=global_messages[le_cas.type][i][le_cas.nom_zone] + '</div>';
                 }else{
@@ -1244,6 +1248,75 @@ class interface1{
             this.remplir_et_afficher_les_messages1('zone_global_messages');
         }
     }
+    
+    /*
+      =====================================================================================================================
+    */
+    transform_rev_de_textarea_en_sql2(nom_de_la_textarea_rev,nom_de_la_textarea_sql){
+        var tableau1=iterateCharacters2(document.getElementById(nom_de_la_textarea_rev).value);
+        var obj1=functionToArray2(tableau1.out,false,true,'');
+        if(obj1.__xst === true){
+            /* ancien tabToSql1( */
+            var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
+            if(obj2.__xst === true){
+                obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
+                document.getElementById(nom_de_la_textarea_sql).value=obj2.__xva;
+                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
+                return;
+            }
+        }
+        __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
+    }
+    
+    /*
+      =====================================================================================================================
+    */
+    transform_sql_de_textarea_en_rev1(nom_de_la_textarea_sql,nom_de_la_textarea_rev){
+        this.raz_des_messages();
+        var texte=document.getElementById(nom_de_la_textarea_sql).value;
+        localStorage.setItem('fta_traiteSql_dernier_fichier_charge',texte);
+        try{
+            var obj=convertion_texte_sql_en_rev(texte);
+            if(obj.__xst === true){
+                document.getElementById(nom_de_la_textarea_rev).value=obj.__xva;
+                var tableau1=iterateCharacters2(obj.__xva);
+                var obj1=functionToArray2(tableau1.out,false,true,'');
+                if(obj1.__xst === true){
+                    var obj2=tabToSql1(obj1.__xva,0,0,false);
+                    if(obj2.__xst === true){
+                        logerreur({"__xst" : true ,"__xme" : 'sql => rev ok et rev => sql  OK'});
+                        this.remplir_et_afficher_les_messages1('zone_global_messages');
+                        obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
+                        document.getElementById('txtar3').value=obj2.__xva;
+                    }else{
+                        this.remplir_et_afficher_les_messages1('zone_global_messages');
+                        return;
+                    }
+                }else{
+                    this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
+                    return;
+                }
+            }else{
+                logerreur({"__xst" : false ,"__xme" : 'erreur de reconstruction du sql'});
+                this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
+                return;
+            }
+        }catch(e){
+            debugger;
+            console.error('e=',e);
+            if(e.hasOwnProperty('location')
+                   && e.location.hasOwnProperty('start')
+                   && e.location.start.hasOwnProperty('line')
+                   && e.location.start.line > 0
+            ){
+                logerreur({"__xst" : false ,"__xme" : 'erreur dans le sql' ,"ligne" : e.location.start.line});
+            }else{
+                logerreur({"__xst" : false ,"__xme" : 'erreur dans le sql'});
+            }
+            this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
+            return;
+        }
+    }    
     /*
       =============================================================================================================
     */
@@ -1582,6 +1655,53 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
         var lines=t.split(/\r|\r\n|\n/);
         var count=lines.length;
         document.getElementById(nom_de_la_text_area_rev).setAttribute('rows',count + 1);
+    }
+    
+    /*
+      =============================================================================================================
+    */
+    charger_source_de_test_sql(nom_de_la_textarea){
+        var t=`
+delete FROM ma_belle_table where (x = 1 and y=2) or z=3;
+
+UPDATE ma_belle_table SET champ1 = NULL , c2=1 , c3=(3+5) where ((x = 1 and y=2) or z=3);
+
+INSERT INTO ma_belle_table(a,b,c) values( 1 , '2' , null ),(4,5,6),(1+2,3,4);
+
+SELECT "T0".\`chi_id_dossier\` , \`chp_nom_dossier\` , \`chx_cible_dossier\` , T1.chp_dossier_cible , * , a+2,
+concat( '=>' , \`chi_id_dossier\` , '<=') , count(*) , 5
+FROM \`tbl_dossiers\` T0, 
+      tata T2
+      LEFT JOIN tbl_cibles   T1 ON T1.chi_id_cible  = T0.\`chx_cible_dossier\`
+WHERE \`T0\`.\`chi_id_dossier\` = 1 and t2.id=t0.chi_id_dossier
+ORDER BY chp_nom_dossier DESC , chx_cible_dossier ASC
+LIMIT roro OFFSET 3;
+
+BEGIN TRANSACTION;
+
+    CREATE TABLE tbl_cibles (
+    
+        /**/ chi_id_cible INTEGER PRIMARY KEY ,
+         chp_nom_cible STRING,
+         chp_commentaire_cible STRING,
+         chp_dossier_cible CHARACTER(3) NOT NULL DEFAULT  'xxx' 
+    );
+    
+    CREATE  UNIQUE INDEX  idx_dossier_cible ON tbl_cibles( chp_dossier_cible ) ;
+    
+    CREATE TABLE tbl_dossiers (
+    
+        /**/ chi_id_dossier INTEGER PRIMARY KEY ,
+         chp_nom_dossier CHARACTER(256) NOT NULL DEFAULT  '' ,
+         chx_cible_dossier INTEGER REFERENCES 'tbl_cibles'('chi_id_cible') 
+    );
+    
+    CREATE  UNIQUE INDEX  idx_cible_et_nom ON tbl_dossiers( chx_cible_dossier , chp_nom_dossier ) ;
+    
+COMMIT;
+
+  `;
+        document.getElementById(nom_de_la_textarea).value=t;
     }
     /*
       =============================================================================================================
@@ -2793,8 +2913,9 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
         var zoneSource=document.getElementById(e.target.id);
         this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
         var ttt=zoneSource.getBoundingClientRect();
-        this.#div_des_positions_du_curseur.style.top=((parseInt(ttt.bottom,10) + document.documentElement.scrollTop) - 10) + 'px';
-        this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px';
+        this.#div_des_positions_du_curseur.style.top=((parseInt(ttt.bottom,10) + document.documentElement.scrollTop) - 12) + 'px';
+        this.#div_des_positions_du_curseur.style.left=((parseInt(ttt.left,10) + document.documentElement.scrollLeft) ) + 'px';
+//        this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px';
         return false;
     }
     /*
@@ -3079,9 +3200,19 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
                 /*console.log('pas d\'erreur !');*/
             }.bind(this),1500);
     }
+    /*
+      =============================================================================================================
+    */
+    #traite_tableau_de_la_base(par){
+     setTimeout(function(){
+       __m_rev_vers_sql1.traite_le_tableau_de_la_base_sqlite_v3(par);
+     }.bind(this),250);
+    }
+    /*
+      =============================================================================================================
+    */
     executerCesActionsPourLaPageLocale2(par){
-        var i=0;
-        for( i=0 ; i < par.length ; i++ ){
+        for( var i=0 ; i < par.length ; i++ ){
             switch (par[i].nomDeLaFonctionAappeler){
                 case 'initialisation_page_rev' : initialisation_page_rev(par[i].parametre);
                     break;
@@ -3095,7 +3226,7 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
                     break;
                 case 'initialiserEditeurPourUneTextArea' : this.#initialiser_editeur_pour_une_textarea1(par[i].parametre);
                     break;
-                case 'traite_le_tableau_de_la_base_sqlite_v2' : traite_le_tableau_de_la_base_sqlite_v2(par[i].parametre);
+                case 'traite_le_tableau_de_la_base_sqlite_v2' : this.#traite_tableau_de_la_base(par[i].parametre);
                     break;
                 case 'comparer_deux_tableaux_de_bases_sqlite' : comparer_deux_tableaux_de_bases_sqlite(par[i].parametre);
                     break;

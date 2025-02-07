@@ -88,6 +88,9 @@ $par=array(/* */
             'js/pour_svg.js',
             'js/jslib/Sortable.js'
         ),
+    'module_a_inclure' => array(/* */
+            'js/mf_rev_vers_sql1.js'
+    ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
 $o1 .= '';

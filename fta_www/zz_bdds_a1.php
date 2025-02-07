@@ -1105,7 +1105,17 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
   =====================================================================================================================
 */
 $js_a_executer_apres_chargement[]=array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple'));
-$par=array( 'module_a_inclure' => array( 'js/module_svg_bdd.js'), 'js_a_inclure' => array( 'js/pour_zz_bdds_action1.js', 'js/sql.js'), 'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement);
+$par=array(/**/
+    'module_a_inclure' => array(/**/
+            'js/module_svg_bdd.js',
+            'js/mf_rev_vers_sql1.js'
+        ),
+    'js_a_inclure' => array(/**/
+            'js/pour_zz_bdds_action1.js',
+            'js/sql.js'
+        ),
+    'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
+);
 $o1 .= html_footer1($par);
 print($o1);
 $o1='';

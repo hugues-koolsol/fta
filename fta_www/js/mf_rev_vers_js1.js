@@ -3172,7 +3172,7 @@ class c_rev_vers_js1{
     }
     /*
       =============================================================================================================
-      point d'entrée : convertion du texte au format rev vers un texte format js
+      point d'entrée : convertion du texte au format tableau rev vers un texte format js
       =============================================================================================================
     */
     c_tab_vers_js(tab,les_options){
@@ -3203,7 +3203,7 @@ class c_rev_vers_js1{
     }
     /*
       =============================================================================================================
-      point d'entrée : convertion du texte au format rev vers un texte format js
+      point d'entrée : convertion du texte au format texte rev vers un texte format js
       =============================================================================================================
     */
     c_rev_vers_js(source_rev,les_options){

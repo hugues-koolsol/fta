@@ -124,18 +124,32 @@ $o1='';
 $js_a_executer_apres_chargement=array( array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple')));
 $par=array(/**/
     'module_a_inclure' => array(/**/
-            'js/module_requete_sql.js'
+            'js/module_requete_sql.js',
+            'js/mf_rev_vers_sql1.js'
         ),
     'js_a_inclure' => array(
             /**/
             'js/sql.js',
             'js/convertion_sql_en_rev.js',
             'js/jslib/sqlite_parser_from_demo.js',
-            'js/pour_requete_sql.js',
             'js/jslib/Sortable.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
+?>
+<script >
+//<![CDATA[
+//<source_javascript_rev>
+window.addEventListener('load',function(){
+        import('./js/module_requete_sql.js').then(function(Module){
+                __module_requete_sql1=new Module.requete_sql('__module_requete_sql1','div_de_travail');
+            });
+    });
+//</source_javascript_rev>
+//]]>
+</script>
+    
+<?php    
 $o1 .= '';
 $o1 .= html_footer1($par);
 print($o1);

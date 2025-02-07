@@ -38,6 +38,10 @@ import('./mf_rev_vers_js1.js').then(function(Module){
 import('./mf_rev_vers_php1.js').then(function(Module){
         __m_rev_vers_php1=new Module.c_rev_vers_php1('__m_rev_vers_php1',null);
     });
+import('./mf_rev_vers_sql1.js').then(function(Module){
+        __m_rev_vers_sql1=new Module.c_rev_vers_sql1('__m_rev_vers_sql1',null);
+    });
+
 /*
   =====================================================================================================================
   function recupérer_un_fetch
@@ -190,7 +194,8 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
                     ){
                         tache_en_cours=true;
                         if(provenance === 'sql'){
-                            var objSource=tabToSql1(tab,0,0,false);
+                            /*var objSource=tabToSql1(tab,0,0,false);*/
+                            var objSource=__m_rev_vers_sql1.c_tab_vers_js(tab,{});
                             if(objSource.__xst === true){
                                 var obj1=a2F1(tab,0,true,1);
                                 if(obj1.__xst === true){

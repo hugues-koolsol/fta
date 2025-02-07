@@ -1711,7 +1711,8 @@ class requete_sql{
         var tableau1=iterateCharacters2(document.getElementById('txtar1').value);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
-            var obj2=tabToSql1(obj1.__xva,0,0,false);
+            /* var obj2=tabToSql1(obj1.__xva,0,0,false); */
+            var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
                 var ajax_param={
                     "call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'modifier_la_requete_en_base'} ,
@@ -1752,7 +1753,8 @@ class requete_sql{
         var tableau1=iterateCharacters2(document.getElementById('txtar1').value);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
-            var obj2=tabToSql1(obj1.__xva,0,0,false);
+            /* var obj2=tabToSql1(obj1.__xva,0,0,false); */
+            var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
                 var ajax_param={
                     "call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'enregistrer_la_requete_en_base'} ,
@@ -2520,7 +2522,8 @@ class requete_sql{
         var tableau1=iterateCharacters2(source_rev);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
-            var obj2=tabToSql1(obj1.__xva,0,0,false);
+            /* var obj2=tabToSql1(obj1.__xva,0,0,false); */
+            var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
                 obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
                 if(obj2.__xva.indexOf('WHERE ') >= 0){
@@ -2535,7 +2538,8 @@ class requete_sql{
                     }
                     obj2.__xva=str1 + str2;
                 }
-                var obj3=tabToSql1(obj1.__xva,0,0,true);
+                /* var obj3=tabToSql1(obj1.__xva,0,0,true); */
+                var obj3=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{"au_format_php" : true});
                 if(obj3.__xst === true){
                     var i=0;
                     for( i=0 ; i < obj3.tableau_des_tables_utilisees.length ; i++ ){

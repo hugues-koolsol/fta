@@ -8,14 +8,8 @@ print($o1);
 $o1='';
 ?>
 <div class="menuScroller">
-    <ul>
-        <li>
-            <a href="javascript:__gi1.remplir_une_textarea_avex_un_source_de_test_js('txtar1')">source de test</a>
-        </li>
-        <li>
-            <a href="javascript:__gi1.bouton_transform_textarea_js_en_rev_avec_acorn3( 'txtar1' , 'txtar2' , true )" class="yysucces">convertir module acorn 3</a>
-        </li>
-    </ul>
+    <a href="javascript:__gi1.remplir_une_textarea_avex_un_source_de_test_js('txtar1')">source de test</a>
+    <a href="javascript:__gi1.bouton_transform_textarea_js_en_rev_avec_acorn3( 'txtar1' , 'txtar2' , true )" class="yysucces">convertir module acorn 3</a>
 </div>
 <h1>Convertir un js en rev</h1>
 <div class="yyconteneur_de_texte1">

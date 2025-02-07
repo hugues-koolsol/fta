@@ -232,6 +232,16 @@ function construction_where_sql_sur_id($nom_du_champ,$critere){
 /*
   =====================================================================================================================
 */
+function nfp1($n){
+
+    $t=number_format($n,0,',',' ');
+    return '<div style="display:inline-block;min-width:2em;text-align:right;margin-left:3px;">'.$t.'</div>';
+ 
+}
+
+/*
+  =====================================================================================================================
+*/
 function construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_avant=''){
 
     $o1='';
@@ -257,7 +267,7 @@ function construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrl
         $o1 .= '<form class="yylistForm1" method="post">' . PHP_EOL;
         $o1 .= $boutons_avant;
         $o1 .= $__bouton_enregs_prec . PHP_EOL . $__bouton_enregs_suiv . PHP_EOL . ' <div style="display:inline-block;">' . PHP_EOL;
-        $o1 .= '  page ' . number_format($__xpage + 1,0,',',' ') . '/' . number_format(ceil($__nbEnregs / $__nbMax),0,',',' ') . ' (' . number_format($__nbEnregs,0,',',' ') . ' enregistrements )' . PHP_EOL;
+        $o1 .= ' page' . nfp1($__xpage + 1) . '/' . number_format(ceil($__nbEnregs / $__nbMax),0,',',' ') . ' (' . number_format($__nbEnregs,0,',',' ') . ' enregistrements )' . PHP_EOL;
         $o1 .= ' </div>' . PHP_EOL;
         $o1 .= '</form>' . PHP_EOL;
 
@@ -967,6 +977,7 @@ let __m_astphpparseur_vers_rev1=null;
 let __m_astjs_vers_rev1=null;
 let __m_rev_vers_js1=null;
 let __m_rev_vers_php1=null;
+let __m_rev_vers_sql1=null;
 let __m_astphpnikic_vers_rev1=null;
 /*       document.addEventListener("DOMContentLoaded",function(event){});     */
 /*
@@ -1010,6 +1021,10 @@ function demarre_l_interface(){
                  }else if(element.src && element.src.indexOf("js/mf_rev_vers_php1.js") >= 0){
                      import('./js/mf_rev_vers_php1.js').then(function(Module){
                          __m_rev_vers_php1=new Module.c_rev_vers_php1('__m_rev_vers_php1');
+                     });
+                 }else if(element.src && element.src.indexOf("js/mf_rev_vers_sql1.js") >= 0){
+                     import('./js/mf_rev_vers_sql1.js').then(function(Module){
+                         __m_rev_vers_sql1=new Module.c_rev_vers_sql1('__m_rev_vers_sql1');
                      });
                  }
              }
@@ -1171,7 +1186,7 @@ function html_footer1($parametres=array()){
 
         }
         $o1 .= ' var arrayLocalJs=[' . PHP_EOL . $txt1 . PHP_EOL . ' ];' . PHP_EOL;
-        $o1 .= ' __gi1.executerCesActionsPourLaPageLocale2(arrayLocalJs);' . PHP_EOL;
+        $o1 .= ' setTimeout(__gi1.executerCesActionsPourLaPageLocale2(arrayLocalJs),100);' . PHP_EOL;
         $o1 .= '}' . PHP_EOL;
 
     }else{

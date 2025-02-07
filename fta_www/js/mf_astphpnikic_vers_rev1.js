@@ -3198,7 +3198,7 @@ class c_astphpnikic_vers_rev1{
                             /* recherche d'au moins un tag dans le texte */
                             var regex=/(<[a-zA-Z0-9\-_]+)/g;
                             var found=stmts[i].value.match(regex);
-                            if(obj.__xst === true && (stmts[i].value.indexOf('<') >= 0 && found && found.length > 0 || nettoye === '')){
+                            if(obj.__xst === true && ((stmts[i].value.indexOf('<') >= 0 && found && found.length > 0 || nettoye === '') || ( contenu.indexOf('<')<0 && contenu.indexOf('>')<0 ) )){
                                 var cle=this.#php_construit_cle(10);
                                 this.#tableau_de_html_dans_php_a_convertir.push({"cle" : cle ,"valeur" : stmts[i].value});
                                 t+='\n' + esp0 + 'html_dans_php(#(cle_html_dans_php_a_remplacer,' + cle + '))';

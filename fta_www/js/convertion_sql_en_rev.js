@@ -31,7 +31,6 @@ function recupere_element_de_ast_sql(element,niveau,parent,options){
                 t+='\n' + esp0 + esp1 + esp1 + esp1 + 'source(' + obj1.__xva;
                 t+='\n' + esp0 + esp1 + esp1 + esp1 + ')';
             }else{
-                t+='#(TODO 0034 "' + JSON.stringify(json_partiel(element.source)) + '")';
                 return(logerreur({"__xst" : false ,"__xme" : '0034 convertit_sql_select_de_ast_vers_rev  : "' + JSON.stringify(json_partiel(element.source)) + '"'}));
             }
         }else{
@@ -1027,71 +1026,6 @@ function convertion_texte_sql_en_rev(texte_du_sql){
 }
 /*
   =====================================================================================================================
-*/
-function charger_source_de_test_sql(nom_de_la_textarea){
-    var t=`
-    
-
-  delete FROM ma_belle_table where (x = 1 and y=2) or z=3;
-    
-/*    
-
-UPDATE ma_belle_table SET champ1 = NULL , c2=1 , c3=(3+5) where ((x = 1 and y=2) or z=3);
-
-INSERT INTO ma_belle_table(a,b,c) values( 1 , '2' , null ),(4,5,6),(1+2,3,4);
-
-  
-
-
-SELECT "T0".\`chi_id_dossier\` , \`chp_nom_dossier\` , \`chx_cible_dossier\` , T1.chp_dossier_cible , * , a+2,
-concat( '=>' , \`chi_id_dossier\` , '<=') , count(*) , 5
-FROM \`tbl_dossiers\` T0, 
-      tata T2
-      LEFT JOIN tbl_cibles   T1 ON T1.chi_id_cible  = T0.\`chx_cible_dossier\`
-WHERE \`T0\`.\`chi_id_dossier\` = 1 and t2.id=t0.chi_id_dossier
-ORDER BY chp_nom_dossier DESC , chx_cible_dossier ASC
-LIMIT roro OFFSET 3;
-
-
-
-BEGIN TRANSACTION;
-    CREATE TABLE tbl_cibles (
-    
-        /**/ chi_id_cible INTEGER PRIMARY KEY ,
-         chp_nom_cible STRING,
-         chp_commentaire_cible STRING,
-         chp_dossier_cible CHARACTER(3) NOT NULL DEFAULT  'xxx' 
-    );
-    
-    CREATE  UNIQUE INDEX  idx_dossier_cible ON tbl_cibles( chp_dossier_cible ) ;
-    
-    
-    
-    CREATE TABLE tbl_dossiers (
-    
-        /**/ chi_id_dossier INTEGER PRIMARY KEY ,
-         chp_nom_dossier CHARACTER(256) NOT NULL DEFAULT  '' ,
-         chx_cible_dossier INTEGER REFERENCES 'tbl_cibles'('chi_id_cible') 
-    );
-    
-    CREATE  UNIQUE INDEX  idx_cible_et_nom ON tbl_dossiers( chx_cible_dossier , chp_nom_dossier ) ;
-COMMIT;
-*/
-  `;
-    document.getElementById(nom_de_la_textarea).value=t;
-}
-/*
-  =====================================================================================================================
-*/
-function charger_le_dernier_source_sql(nom_de_la_textarea){
-    var fta_traiteSql_dernier_fichier_charge=localStorage.getItem("fta_traiteSql_dernier_fichier_charge");
-    if(fta_traiteSql_dernier_fichier_charge !== null){
-        document.getElementById(nom_de_la_textarea).value=fta_traiteSql_dernier_fichier_charge;
-    }
-}
-/*
-  =====================================================================================================================
-*/
 function transform_rev_de_textarea_en_sql(nom_de_la_textarea_rev,nom_de_la_textarea_sql){
     var tableau1=iterateCharacters2(document.getElementById(nom_de_la_textarea_rev).value);
     var obj1=functionToArray2(tableau1.out,false,true,'');
@@ -1106,51 +1040,4 @@ function transform_rev_de_textarea_en_sql(nom_de_la_textarea_rev,nom_de_la_texta
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
 }
-/*
-  =====================================================================================================================
 */
-function transform_sql_de_textarea_en_rev(nom_de_la_textarea_sql,nom_de_la_textarea_rev){
-    __gi1.raz_des_messages();
-    var texte=document.getElementById(nom_de_la_textarea_sql).value;
-    localStorage.setItem('fta_traiteSql_dernier_fichier_charge',texte);
-    try{
-        var obj=convertion_texte_sql_en_rev(texte);
-        if(obj.__xst === true){
-            document.getElementById(nom_de_la_textarea_rev).value=obj.__xva;
-            var tableau1=iterateCharacters2(obj.__xva);
-            var obj1=functionToArray2(tableau1.out,false,true,'');
-            if(obj1.__xst === true){
-                var obj2=tabToSql1(obj1.__xva,0,0,false);
-                if(obj2.__xst === true){
-                    logerreur({"__xst" : true ,"__xme" : 'sql => rev ok et rev => sql  OK'});
-                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-                    obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
-                    document.getElementById('txtar3').value=obj2.__xva;
-                }else{
-                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
-                    return;
-                }
-            }else{
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
-                return;
-            }
-        }else{
-            logerreur({"__xst" : false ,"__xme" : 'erreur de reconstruction du sql'});
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
-            return;
-        }
-    }catch(e){
-        debugger;
-        console.error('e=',e);
-        logerreur({"__xst" : false ,"__xme" : 'erreur dans le sql'});
-        if(e.hasOwnProperty('location')
-               && e.location.hasOwnProperty('start')
-               && e.location.start.hasOwnProperty('line')
-               && e.location.start.line > 0
-        ){
-            logerreur({"__xst" : false ,"line" : e.location.start.line});
-        }
-        __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
-        return;
-    }
-}

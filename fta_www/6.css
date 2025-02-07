@@ -260,6 +260,11 @@ tr:hover {
 .yyunset,.yyunset_temporaire{
   opacity:0.5;
   cursor:default;
+  /* 
+    surtout pas car si on fait un double click sur un lien, on sélectionne le texte voisin
+    pointer-events: none;  
+  */
+  user-select:none;
  }
 thead tr{background-color:#B0BEC5;color:#263238;}
 thead th{padding:8px 3px;}

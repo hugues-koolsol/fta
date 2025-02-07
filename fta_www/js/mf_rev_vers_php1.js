@@ -1476,6 +1476,7 @@ class c_rev_vers_php1{
                 
             case 'html_dans_php' :
                 debugger;
+                /* dans quel cas passe-t-on par ici ? */
                 obj=__module_html1.tabToHtml1(this.#tb,ind,true,0);
                 if(obj.__xst === true){
                     t='html_dans_php(\'' + obj.__xva.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
@@ -1485,7 +1486,8 @@ class c_rev_vers_php1{
                 break;
                 
             case 'sql' :
-                obj=tabToSql1(this.#tb,ind,niveau,false);
+                /*obj=tabToSql1(this.#tb,ind,niveau,false);*/
+                obj=__m_rev_vers_sql1.c_tab_vers_js(this.#tb,ind,{});
                 if(obj.__xst === true){
                     t='sql_dans_php(\'' + obj.__xva.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
                 }else{

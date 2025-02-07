@@ -86,6 +86,7 @@ $a=array(/* */
             'js/module_html.js',
             'js/mf_rev_vers_js1.js',
             'js/mf_rev_vers_php1.js'
+            'js/mf_rev_vers_sql1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
