@@ -434,7 +434,6 @@ function convertit_sql_update_sqlite_de_ast_vers_rev(element,niveau,parent,optio
         t+='\n' + esp0 + esp1 + ')';
     }
     t+='\n' + esp0 + ')';
-    console.log('modifier element=',element);
     return({"__xst" : true ,"__xva" : t});
 }
 /*
@@ -1024,20 +1023,3 @@ function convertion_texte_sql_en_rev(texte_du_sql){
         return(logerreur({"__xst" : false ,"__xme" : '0026 erreur de conversion de ast vers rev'}));
     }
 }
-/*
-  =====================================================================================================================
-function transform_rev_de_textarea_en_sql(nom_de_la_textarea_rev,nom_de_la_textarea_sql){
-    var tableau1=iterateCharacters2(document.getElementById(nom_de_la_textarea_rev).value);
-    var obj1=functionToArray2(tableau1.out,false,true,'');
-    if(obj1.__xst === true){
-        var obj2=tabToSql1(obj1.__xva,0,0,false);
-        if(obj2.__xst === true){
-            obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
-            document.getElementById(nom_de_la_textarea_sql).value=obj2.__xva;
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
-            return;
-        }
-    }
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
-}
-*/

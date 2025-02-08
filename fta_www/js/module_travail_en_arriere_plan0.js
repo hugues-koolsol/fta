@@ -12,11 +12,6 @@ try{
 }catch(e){
     debugger;
 }
-try{
-    importScripts('./sql.js');
-}catch(e){
-    debugger;
-}
 var liste_des_travaux_en_arriere_plan=[];
 var liste_des_taches_en_arriere_plan=[];
 var travail_en_cours=false;
@@ -194,7 +189,6 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
                     ){
                         tache_en_cours=true;
                         if(provenance === 'sql'){
-                            /*var objSource=tabToSql1(tab,0,0,false);*/
                             var objSource=__m_rev_vers_sql1.c_tab_vers_js(tab,{});
                             if(objSource.__xst === true){
                                 var obj1=a2F1(tab,0,true,1);

@@ -1256,7 +1256,6 @@ class interface1{
         var tableau1=iterateCharacters2(document.getElementById(nom_de_la_textarea_rev).value);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
-            /* ancien tabToSql1( */
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
                 obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
@@ -1271,6 +1270,28 @@ class interface1{
     /*
       =====================================================================================================================
     */
+    transform_sql_de_textarea_en_rev2(nom_de_la_textarea_sql,nom_de_la_textarea_rev){
+        this.raz_des_messages();
+        var texte=document.getElementById(nom_de_la_textarea_sql).value;
+        localStorage.setItem('fta_traiteSql_dernier_fichier_charge',texte);
+        try{
+            texte=texte.replace(/\/\*\*\//g,'');
+            var ast=window.sqliteParser(texte,{});
+            var obj=__m_astsqliteparseur_vers_rev1.traite_ast_de_sqliteparseur(ast);
+            if(obj.__xst === true){
+                document.getElementById(nom_de_la_textarea_rev).value=obj.__xva;
+                this.remplir_et_afficher_les_messages1('zone_global_messages');
+                return;
+            }else{
+                debugger
+            }
+        }catch(e){
+            debugger;
+        }
+    }
+    /*
+      =====================================================================================================================
+    */
     transform_sql_de_textarea_en_rev1(nom_de_la_textarea_sql,nom_de_la_textarea_rev){
         this.raz_des_messages();
         var texte=document.getElementById(nom_de_la_textarea_sql).value;
@@ -1282,7 +1303,7 @@ class interface1{
                 var tableau1=iterateCharacters2(obj.__xva);
                 var obj1=functionToArray2(tableau1.out,false,true,'');
                 if(obj1.__xst === true){
-                    var obj2=tabToSql1(obj1.__xva,0,0,false);
+                    var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
                     if(obj2.__xst === true){
                         logerreur({"__xst" : true ,"__xme" : 'sql => rev ok et rev => sql  OK'});
                         this.remplir_et_afficher_les_messages1('zone_global_messages');

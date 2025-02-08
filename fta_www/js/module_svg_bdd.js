@@ -716,7 +716,6 @@ class module_svg_bdd{
         var rev_texte='add_index(' + document.getElementById(id_svg_rectangle_de_l_index).getAttribute('donnees_rev_de_l_index') + ')';
         var obj1=rev_texte_vers_matrice(rev_texte);
         if(obj1.__xst === true){
-            /*var obj2=tabToSql1(obj1.__xva,0,0);*/
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
                 var source_sql=obj2.__xva;
@@ -750,7 +749,6 @@ class module_svg_bdd{
             definition_du_champ+='sql(field(' + a.getAttribute('donnees_rev_du_champ') + '))';
             var obj1=rev_texte_vers_matrice(definition_du_champ);
             if(obj1.__xst === true){
-                /* var obj2=tabToSql1(obj1.__xva,0,0);*/
                 var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
                 if(obj2.__xst === true){
                     async function ajouter_en_bdd_le_champ(url="",donnees,that){
@@ -1728,7 +1726,6 @@ class module_svg_bdd{
         if(obj1.__xst === true){
             var obj2=rev_texte_vers_matrice(obj1.__xva);
             if(obj2.__xst === true){
-                /* var obj3=tabToSql1(obj2.__xva,0,0); */
                 var obj3=__m_rev_vers_sql1.c_tab_vers_js(obj2.__xva,{});
                 if(obj3.__xst === true){
                     async function recuperer_les_tableaux_des_bases(url="",donnees,that){
@@ -1774,7 +1771,6 @@ class module_svg_bdd{
             var texte_rev=obj.__xva;
             var obj2=rev_texte_vers_matrice(texte_rev);
             if(obj2.__xst === true){
-                /* var obj3=tabToSql1(obj2.__xva,0,0); */
                 var obj3=__m_rev_vers_sql1.c_tab_vers_js(obj2.__xva,{});
                 if(obj3.__xst === true){
                     var source_sql_de_la_base=obj3.__xva;
@@ -1824,7 +1820,6 @@ class module_svg_bdd{
             var texte_rev=obj.__xva;
             var obj2=rev_texte_vers_matrice(texte_rev);
             if(obj2.__xst === true){
-                /*var obj3=tabToSql1(obj2.__xva,0,0);*/
                 var obj3=__m_rev_vers_sql1.c_tab_vers_js(obj2.__xva,{});
                 if(obj3.__xst === true){
                     var source_sql_de_la_base=obj3.__xva;
@@ -2008,7 +2003,6 @@ class module_svg_bdd{
         var chaine_create_table='';
         var obj1=rev_texte_vers_matrice(nouveau_rev);
         if(obj1.__xst === true){
-            /* var obj2=tabToSql1(obj1.__xva,0,0); */
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
                 chaine_create_table=obj2.__xva;
@@ -2022,7 +2016,6 @@ class module_svg_bdd{
         for( i=0 ; i < tab_des_index_rev.length ; i++ ){
             var obj1=rev_texte_vers_matrice(tab_des_index_rev[i]);
             if(obj1.__xst === true){
-                /*var obj2=tabToSql1(obj1.__xva,0,0); */
                 var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
                 if(obj2.__xst === true){
                     tab_des_index_sql.push(obj2.__xva);

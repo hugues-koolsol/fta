@@ -13,7 +13,6 @@ function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cibl
     var matriceFonction=functionToArray2(tableau1.out,true,false,'');
     global_messages.data.matrice=matriceFonction;
     if(matriceFonction.__xst === true){
-        /*var objSql=tabToSql1(matriceFonction.__xva,0,0,false);*/
         var objSql=__m_rev_vers_sql1.c_tab_vers_js(matriceFonction.__xva,{});
         if(objSql.__xst === true){
             document.getElementById(chp_genere_source).value=objSql.__xva;
@@ -79,7 +78,6 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
         var tableau1=iterateCharacters2(objRev.__xva);
         var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            /*var objSql=tabToSql1(matriceFonction.__xva,0,0,false);*/
             var objSql=__m_rev_vers_sql1.c_tab_vers_js(matriceFonction.__xva,{});
             if(objSql.__xst === true){
                 var contenu=objSql.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');

@@ -232,7 +232,6 @@ $par=array(/**/
             /**/
             'js/pour_zz_source1.js',
             'js/jslib/acorn.js',
-            'js/sql.js',
             'js/convertion_sql_en_rev.js',
             'js/jslib/sqlite-parser.js',
             'js/jslib/php-parser.js'

@@ -23,7 +23,6 @@ function bdd_convertir_rev_en_sql(nom_zone_source,nom_zone_genere,id_bdd,id_cibl
     var startMicro=performance.now();
     var matriceFonction=functionToArray2(tableau1.out,true,false,'');
     if(matriceFonction.__xst === true){
-        /*var objSql=tabToSql1(matriceFonction.__xva,0,0,false);*/
         var objSql=__m_rev_vers_sql1.c_tab_vers_js(matriceFonction.__xva,{});
         if(objSql.__xst === true){
             var contenu=objSql.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');

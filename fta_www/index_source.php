@@ -79,13 +79,12 @@ $js_a_executer_apres_chargement=array(/* */
 );
 $a=array(/* */
     'js_a_inclure' => array(/**/
-            'js/sql.js',
             'js/index_source_script-v0.js'
         ),
     'module_a_inclure' => array(/**/
             'js/module_html.js',
             'js/mf_rev_vers_js1.js',
-            'js/mf_rev_vers_php1.js'
+            'js/mf_rev_vers_php1.js',
             'js/mf_rev_vers_sql1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement

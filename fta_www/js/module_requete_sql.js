@@ -1711,7 +1711,6 @@ class requete_sql{
         var tableau1=iterateCharacters2(document.getElementById('txtar1').value);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
-            /* var obj2=tabToSql1(obj1.__xva,0,0,false); */
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
                 var ajax_param={
@@ -1753,7 +1752,6 @@ class requete_sql{
         var tableau1=iterateCharacters2(document.getElementById('txtar1').value);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
-            /* var obj2=tabToSql1(obj1.__xva,0,0,false); */
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
                 var ajax_param={
@@ -1851,7 +1849,7 @@ class requete_sql{
                                            || tab[j][1] === 'infegal'
                                            || tab[j][1] === 'dans')
                                 ){
-                                    var obj=traite_sqlite_fonction_de_champ(tab,j,0,options);
+                                    var obj=__m_rev_vers_sql1.traite_sqlite_fonction_de_champ(tab,j,0,options);
                                     if(obj.__xst === true){
                                         var parametre=obj.__xva.match(/\$par\[(.*)\]/);
                                         if(parametre === null){
@@ -1890,7 +1888,7 @@ class requete_sql{
                                || tab[i][1] === 'infegal'
                                || tab[i][1] === 'dans')
                     ){
-                        var obj=traite_sqlite_fonction_de_champ(tab,i,0,options);
+                        var obj=__m_rev_vers_sql1.traite_sqlite_fonction_de_champ(tab,i,0,options);
                         if(obj.__xst === true){
                             var parametre=obj.__xva.match(/\$par\[(.*)\]/);
                             if(parametre === null){
@@ -2081,7 +2079,7 @@ class requete_sql{
                                             nom_du_champ=tab[m + 1][1];
                                         }else{
                                             if(tab[m][2] === 'f'){
-                                                var obj=traite_sqlite_fonction_de_champ(tab,m,0,options);
+                                                var obj=__m_rev_vers_sql1.traite_sqlite_fonction_de_champ(tab,m,0,options);
                                                 if(obj.__xst === true){
                                                     valeur_du_champ=obj.__xva;
                                                 }else{
@@ -2248,6 +2246,7 @@ class requete_sql{
                 }
             }
             t+='    $sql0.=$where0;' + CRLF;
+
             if(this.#obj_webs.complements.length === 0){
             }else{
                 if(obj3.liste_des_tris !== ''){
@@ -2369,7 +2368,7 @@ class requete_sql{
                                                    || tab[j][1] === 'dans'
                                                    || tab[j][1] === 'pas_comme')
                                         ){
-                                            var obj=traite_sqlite_fonction_de_champ(tab,j,0,options);
+                                            var obj=__m_rev_vers_sql1.traite_sqlite_fonction_de_champ(tab,j,0,options);
                                             if(obj.__xst === true){
                                                 var parametre=obj.__xva.match(/\$par\[(.*)\]/);
                                                 if(parametre === null){
@@ -2407,7 +2406,7 @@ class requete_sql{
                                        || tab[i][1] === 'dans'
                                        || tab[i][1] === 'pas_comme')
                             ){
-                                var obj=traite_sqlite_fonction_de_champ(tab,i,0,options);
+                                var obj=__m_rev_vers_sql1.traite_sqlite_fonction_de_champ(tab,i,0,options);
                                 if(obj.__xst === true){
                                     var parametre=obj.__xva.match(/\$par\[(.*)\]/);
                                     if(parametre === null){
@@ -2522,7 +2521,6 @@ class requete_sql{
         var tableau1=iterateCharacters2(source_rev);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
-            /* var obj2=tabToSql1(obj1.__xva,0,0,false); */
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
                 obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
@@ -2538,7 +2536,6 @@ class requete_sql{
                     }
                     obj2.__xva=str1 + str2;
                 }
-                /* var obj3=tabToSql1(obj1.__xva,0,0,true); */
                 var obj3=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{"au_format_php" : true});
                 if(obj3.__xst === true){
                     var i=0;
@@ -2696,4 +2693,4 @@ class requete_sql{
             });
     }
 }
-export{requete_sql};
+export{requete_sql as requete_sql};

@@ -1111,8 +1111,7 @@ $par=array(/**/
             'js/mf_rev_vers_sql1.js'
         ),
     'js_a_inclure' => array(/**/
-            'js/pour_zz_bdds_action1.js',
-            'js/sql.js'
+            'js/pour_zz_bdds_action1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

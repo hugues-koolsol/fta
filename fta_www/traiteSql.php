@@ -10,6 +10,7 @@ $o1='';
 <div class="menuScroller">
     <a href="javascript:__gi1.charger_source_de_test_sql('txtar1')">source de test</a>
     <a href="javascript:__gi1.transform_sql_de_textarea_en_rev1('txtar1' , 'txtar2')" class="yysucces">convertir</a>
+    <a href="javascript:__gi1.transform_sql_de_textarea_en_rev2('txtar1' , 'txtar2')" class="yysucces">convertir2</a>
 </div>
 <h1>Convertir un sql en rev</h1>
 <div class="yyconteneur_de_texte1">
@@ -41,12 +42,12 @@ $js_a_executer_apres_chargement=array(/* */
 );
 $par=array(/* */
     'js_a_inclure' => array(/*  */
-            'js/sql.js',
             'js/convertion_sql_en_rev.js',
             'js/jslib/sqlite-parser.js'
         ),
     'module_a_inclure' => array(/* */
-            'js/mf_rev_vers_sql1.js'
+            'js/mf_rev_vers_sql1.js',
+            'js/mf_astsqliteparseur_vers_rev1.js'
     ),
         
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement

@@ -80,17 +80,16 @@ $js_a_executer_apres_chargement=array(/* */
     array( 'nomDeLaFonctionAappeler' => '#ne_rien_faire1', 'parametre' => array( 'c\'est pour', 'l\'exemple'))
 );
 $par=array(/* */
-    'module_a_inclure' => array( 'js/module_svg_bdd.js'),
+    'module_a_inclure' => array(/**/
+            'js/module_svg_bdd.js',
+            'js/mf_rev_vers_sql1.js'
+        ),
     'js_a_inclure' => array(
-            'js/sql.js',
             'js/convertion_sql_en_rev.js',
             'js/jslib/sqlite_parser_from_demo.js',
             'js/pour_svg.js',
             'js/jslib/Sortable.js'
         ),
-    'module_a_inclure' => array(/* */
-            'js/mf_rev_vers_sql1.js'
-    ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
 $o1 .= '';

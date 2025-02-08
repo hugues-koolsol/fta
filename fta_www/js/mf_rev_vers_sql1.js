@@ -92,23 +92,22 @@ class c_rev_vers_sql1{
         }else if(op === 'min'){
             t='min';
         }else{
-            debugger;
-            t=' sql.js 0118 inconnu opérateur "' + op + '"';
+            return(this.#rev_sql_logerreur({__xst:false,__xme:nl1()+' inconnu opérateur "' + op + '"'}));
         }
-        return t;
+        return({__xst:true,__xva:t});
     }
 
     /*
       =============================================================================================================
     */
-    #traite_sqlite_fonction_de_champ(id,niveau,options){
+    traite_sqlite_fonction_de_champ(tab,id,niveau,options){
         var t='';
-        if(this.#tb[id][1] === 'champ' && this.#tb[id][2] === 'f'){
-            if(this.#tb[id][8] === 1 && this.#tb[id + 1][2] === 'c'){
-                t+=maConstante(this.#tb[id + 1]);
+        if(tab[id][1] === 'champ' && tab[id][2] === 'f'){
+            if(tab[id][8] === 1 && tab[id + 1][2] === 'c'){
+                t+=maConstante(tab[id + 1]);
                 return({"__xst" : true ,"__xva" : t});
-            }else if(this.#tb[id][8] === 2 && this.#tb[id + 1][2] === 'c' && this.#tb[id + 2][2] === 'c'){
-                t+=maConstante(this.#tb[id + 1]) + '.' + maConstante(this.#tb[id + 2]);
+            }else if(tab[id][8] === 2 && tab[id + 1][2] === 'c' && tab[id + 2][2] === 'c'){
+                t+=maConstante(tab[id + 1]) + '.' + maConstante(tab[id + 2]);
                 if(options.au_format_php === true
                        && options.hasOwnProperty('pour_where')
                        && options.pour_where === true
@@ -116,11 +115,11 @@ class c_rev_vers_sql1{
                        && options.tableau_des_tables_utilisees.length > 0
                 ){
                     for( var i=0 ; i < options.tableau_des_tables_utilisees.length ; i++ ){
-                        if(options.tableau_des_tables_utilisees[i].nom_de_l_alias === this.#tb[id + 1][1]){
+                        if(options.tableau_des_tables_utilisees[i].nom_de_l_alias === tab[id + 1][1]){
                             for( var j=0 ; i < options.tableau_des_tables_utilisees[i].champs.length ; j++ ){
-                                if(options.tableau_des_tables_utilisees[i].champs[j].nom_du_champ === this.#tb[id + 2][1]){
+                                if(options.tableau_des_tables_utilisees[i].champs[j].nom_du_champ === tab[id + 2][1]){
                                     options.type_de_champ_pour_where=options.tableau_des_tables_utilisees[i].champs[j].type;
-                                    options.nom_du_champ_pour_where=maConstante(this.#tb[id + 1]) + '.' + maConstante(this.#tb[id + 2]);
+                                    options.nom_du_champ_pour_where=maConstante(tab[id + 1]) + '.' + maConstante(tab[id + 2]);
                                     break;
                                 }
                             }
@@ -132,104 +131,115 @@ class c_rev_vers_sql1{
                 return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : '0114 traite_sqlite_fonction_de_champ'}));
             }
         }
-        var operateur_rev=this.#tb[id][1];
+        var operateur_rev=tab[id][1];
         if(operateur_rev === 'sql'){
-            /* un sql dans un autre sql , par exemple select * from a where id in (select id from b); */
-            var obj=this.#rev_sql1(id,niveau,options);
-            if(obj.__xst === true){
-                if(obj.__xva.substr(obj.__xva.length - 1,1) === ';'){
-                    obj.__xva=obj.__xva.substr(0,obj.__xva.length - 1);
-                }
-                t+=obj.__xva;
-            }else{
-                return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : 'sql.js 0186 traite_sqlite_fonction_de_champ'}));
-            }
-            return({"__xst" : true ,"__xva" : t ,"operateur" : operateur_rev});
+            /* 
+              un sql dans un autre sql , par exemple select * from a where id in (select id from b); 
+              afr, il faut instancier un nouvel objet
+            */
+            debugger
+            
+            return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1()+'problème sur sql dans sql '}));
+            /*#            
+              var obj=this.#rev_sql1(id,niveau,options);
+              if(obj.__xst === true){
+                  if(obj.__xva.substr(obj.__xva.length - 1,1) === ';'){
+                      obj.__xva=obj.__xva.substr(0,obj.__xva.length - 1);
+                  }
+                  t+=obj.__xva;
+              }else{
+                  return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1()}));
+              }
+              return({"__xst" : true ,"__xva" : t ,"operateur" : operateur_rev});
+            */
         }
-        var operateur=this.#recuperer_operateur_sqlite(this.#tb[id][1]);
+        var operateur='';
+        var obj_op=this.#recuperer_operateur_sqlite(tab[id][1]);
+        if(obj_op.__xst===true){
+            operateur=obj_op.__xva;
+        }else{
+            return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1()+'problème sur l\'opérateur'}));
+        }
         var premierChamp=true;
-        var i=id + 1;
-
-        for( i=id + 1 ; i < this.#l02 && this.#tb[i][3] > this.#tb[id][3] ; i++ ){
-            if(this.#tb[i][7] === id){
-                if(premierChamp === false){
-                    if(operateur === 'concat' || operateur === 'max' || operateur === 'min'){
-                        t+=',';
-                    }else if(operateur === 'LIMIT'){
-                        t=' LIMIT ' + t;
-                    }else if(operateur === '' && this.#tb[this.#tb[i][7]][1] === '' && this.#tb[this.#tb[i][7]][2] === 'f' && this.#tb[this.#tb[id][7]][1] === 'dans'){
-                        /* suite d'éléments comme dans un IN () */
-                        t+=',';
+        var l01=tab.length;
+        for( var i=id + 1 ; i < l01 ; i=tab[i][12] ){
+            if(premierChamp === false){
+                if(operateur === 'concat' || operateur === 'max' || operateur === 'min'){
+                    t+=',';
+                }else if(operateur === 'LIMIT'){
+                    t=' LIMIT ' + t;
+                }else if(operateur === '' && tab[tab[i][7]][1] === '' && tab[tab[i][7]][2] === 'f' && tab[tab[id][7]][1] === 'dans'){
+                    /* suite d'éléments comme dans un IN () */
+                    t+=',';
+                }else{
+                    t+=operateur;
+                }
+            }
+            if(tab[i][2] === 'c'){
+                if(tab[i][1].toLowerCase() === 'null'){
+                    t+='NULL';
+                }else{
+                    if(tab[i][4] === 0){
+                        if(options.au_format_php === true){
+                            if(tab[i][1].substr(0,1) === ':'){
+                                if(operateur_rev === '' && tab[tab[id][7]][1] === 'dans' || operateur_rev === 'dans'){
+                                    debugger;
+                                    t+='\'.sq0($par[\'' + tab[i][1].substr(1) + '\']).\'';
+                                }else{
+                                    t+='\'.sq1($par[\'' + tab[i][1].substr(1) + '\']).\'';
+                                }
+                            }else{
+                                if(operateur_rev === 'moins' && tab[tab[i][7]][8] === 1){
+                                    t+='-' + tab[i][1];
+                                }else{
+                                    t+=tab[i][1];
+                                }
+                            }
+                        }else{
+                            if(operateur_rev === 'moins' && tab[tab[i][7]][8] === 1){
+                                t+='-' + tab[i][1];
+                            }else{
+                                t+=tab[i][1];
+                            }
+                        }
                     }else{
-                        t+=operateur;
+                        if(options.au_format_php === true){
+                            if(tab[i][1].substr(0,1) === ':'){
+                                if(operateur_rev === '' && tab[tab[id][7]][1] === 'dans' || operateur_rev === 'dans'){
+                                    debugger;
+                                    t+='\'.sq0($par[\'' + tab[i][1].substr(1).replace(/\'/g,"''") + '\']).\'';
+                                }else{
+                                    t+='\'.sq1($par[\'' + tab[i][1].substr(1).replace(/\'/g,"''") + '\']).\'';
+                                }
+                            }else{
+                                t+='\'' + tab[i][1].replace(/\'/g,"''") + '\'';
+                            }
+                        }else{
+                            t+='\'' + tab[i][1].replace(/\'/g,"''") + '\'';
+                        }
                     }
                 }
-                if(this.#tb[i][2] === 'c'){
-                    if(this.#tb[i][1].toLowerCase() === 'null'){
-                        t+='NULL';
+                premierChamp=false;
+            }else{
+                var obj=this.traite_sqlite_fonction_de_champ(tab,i,niveau,options);
+                if(obj.__xst === true){
+                    if(premierChamp === false && tab[i][1] === 'sql' && tab[i][2] === 'f'){
+                        t+='(' + obj.__xva + ')';
                     }else{
-                        if(this.#tb[i][4] === 0){
-                            if(options.au_format_php === true){
-                                if(this.#tb[i][1].substr(0,1) === ':'){
-                                    if(operateur_rev === '' && this.#tb[this.#tb[id][7]][1] === 'dans' || operateur_rev === 'dans'){
-                                        debugger;
-                                        t+='\'.sq0($par[\'' + this.#tb[i][1].substr(1) + '\']).\'';
-                                    }else{
-                                        t+='\'.sq1($par[\'' + this.#tb[i][1].substr(1) + '\']).\'';
-                                    }
-                                }else{
-                                    if(operateur_rev === 'moins' && this.#tb[this.#tb[i][7]][8] === 1){
-                                        t+='-' + this.#tb[i][1];
-                                    }else{
-                                        t+=this.#tb[i][1];
-                                    }
-                                }
-                            }else{
-                                if(operateur_rev === 'moins' && this.#tb[this.#tb[i][7]][8] === 1){
-                                    t+='-' + this.#tb[i][1];
-                                }else{
-                                    t+=this.#tb[i][1];
-                                }
-                            }
-                        }else{
-                            if(options.au_format_php === true){
-                                if(this.#tb[i][1].substr(0,1) === ':'){
-                                    if(operateur_rev === '' && this.#tb[this.#tb[id][7]][1] === 'dans' || operateur_rev === 'dans'){
-                                        debugger;
-                                        t+='\'.sq0($par[\'' + this.#tb[i][1].substr(1).replace(/\'/g,"''") + '\']).\'';
-                                    }else{
-                                        t+='\'.sq1($par[\'' + this.#tb[i][1].substr(1).replace(/\'/g,"''") + '\']).\'';
-                                    }
-                                }else{
-                                    t+='\'' + this.#tb[i][1].replace(/\'/g,"''") + '\'';
-                                }
-                            }else{
-                                t+='\'' + this.#tb[i][1].replace(/\'/g,"''") + '\'';
-                            }
-                        }
+                        t+=obj.__xva;
                     }
-                    premierChamp=false;
+                    if(obj.operateur && obj.operateur === '#' && premierChamp === true){
+                        /*
+                          cas d'un commentaire avant les contitions,
+                          / *  * /`T0`.`chi_id_test` = :par0 AND `T0`.`chp_nom_test` = :par1
+                          le commentaire n'est pas un premier champ
+                        */
+                        t+=' ';
+                    }else{
+                        premierChamp=false;
+                    }
                 }else{
-                    var obj=this.#traite_sqlite_fonction_de_champ(i,niveau,options);
-                    if(obj.__xst === true){
-                        if(premierChamp === false && this.#tb[i][1] === 'sql' && this.#tb[i][2] === 'f'){
-                            t+='(' + obj.__xva + ')';
-                        }else{
-                            t+=obj.__xva;
-                        }
-                        if(obj.operateur && obj.operateur === '#' && premierChamp === true){
-                            /*
-                              cas d'un commentaire avant les contitions,
-                              / *  * /`T0`.`chi_id_test` = :par0 AND `T0`.`chp_nom_test` = :par1
-                              le commentaire n'est pas un premier champ
-                            */
-                            t+=' ';
-                        }else{
-                            premierChamp=false;
-                        }
-                    }else{
-                        return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : '0078 traite_sqlite_fonction_de_champ "' + this.#tb[i][1] + '"'}));
-                    }
+                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : '0078 traite_sqlite_fonction_de_champ "' + tab[i][1] + '"'}));
                 }
             }
         }
@@ -253,7 +263,7 @@ class c_rev_vers_sql1{
             t='max(' + t + ')';
         }else if(operateur === 'concat'){
             t='concat(' + t + ')';
-        }else if(operateur === '' && this.#tb[this.#tb[id][7]][1] === 'dans' && this.#tb[this.#tb[id][7]][2] === 'f'){
+        }else if(operateur === '' && tab[tab[id][7]][1] === 'dans' && tab[tab[id][7]][2] === 'f'){
             t='(' + t + ')';
         }else if(operateur === 'OFFSET'){
             t=' OFFSET ' + t + ' ';
@@ -419,7 +429,7 @@ class c_rev_vers_sql1{
                                          for( m=l + 1 ; m < this.#l02 ; m=this.#tb[m][12] ){
                                              if(this.#tb[m][1] === 'contrainte'){
                                                  options.tableau_des_alias=tableau_des_alias;
-                                                 obj=this.#traite_sqlite_fonction_de_champ(m + 1,niveau,options);
+                                                 obj=this.traite_sqlite_fonction_de_champ(this.#tb,m + 1,niveau,options);
                                                  if(obj.__xst === true){
                                                      liste_des_tables+=' ON ' + obj.__xva + '\n';
                                                  }else{
@@ -530,7 +540,7 @@ class c_rev_vers_sql1{
                                      }else{
                                          if(this.#tb[l][2] === 'f'){
                                              options.tableau_des_alias=tableau_des_alias;
-                                             obj=this.#traite_sqlite_fonction_de_champ(l,niveau,options);
+                                             obj=this.traite_sqlite_fonction_de_champ(this.#tb,l,niveau,options);
                                              if(obj.__xst === true){
                                                  nom_du_champ=obj.__xva;
                                                  if(options.au_format_php === true){
@@ -585,7 +595,7 @@ class c_rev_vers_sql1{
                          for( j=i + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                              if(this.#tb[j][1] === 'conditions' && this.#tb[j][8] >= 1){
                                  options.tableau_des_alias=tableau_des_alias;
-                                 obj=this.#traite_sqlite_fonction_de_champ(j,niveau,options);
+                                 obj=this.traite_sqlite_fonction_de_champ(this.#tb,j,niveau,options);
                                  if(obj.__xst === true){
                                      liste_des_conditions=obj.__xva;
                                  }else{
@@ -604,7 +614,7 @@ class c_rev_vers_sql1{
                                      if(this.#tb[k][1] === 'trier_par' && this.#tb[k][8] >= 1){
                                          for( l=k + 1 ; l < this.#l02 ; l=this.#tb[l][12] ){
                                              options.tableau_des_alias=tableau_des_alias;
-                                             obj=this.#traite_sqlite_fonction_de_champ(l,niveau,options);
+                                             obj=this.traite_sqlite_fonction_de_champ(this.#tb,l,niveau,options);
                                              if(obj.__xst === true){
                                                  if(obj.operateur && (obj.operateur === 'ASC' || obj.operateur === 'DESC')){
                                                      liste_des_tris+=' ' + obj.__xva;
@@ -629,10 +639,10 @@ class c_rev_vers_sql1{
                          var liste_des_limites='';
                          for( j=i + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                              if(this.#tb[j][1] === 'complements'){
-                                 for( k=j + 1 ; k < this.#l02 && this.#tb[k][3] > this.#tb[k][3] ; k++ ){
+                                 for( k=j + 1 ; k < this.#l02  ; k=this.#tb[k][12] ){
                                      if(this.#tb[k][1] === 'limité_à' && this.#tb[k][8] >= 1){
                                          options.tableau_des_alias=tableau_des_alias;
-                                         obj=this.#traite_sqlite_fonction_de_champ(k,niveau,options);
+                                         obj=this.traite_sqlite_fonction_de_champ(this.#tb,k,niveau,options);
                                          if(obj.__xst === true){
                                              liste_des_limites+=',' + obj.__xva;
                                          }else{
@@ -742,7 +752,7 @@ class c_rev_vers_sql1{
                                      }
                                      la_valeur+=obj.__xva;
                                  }else{
-                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : 'sql.js 828 insert update delete '}));
+                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1()+'insert update delete'}));
                                  }
                                  if(this.#tb[i][1] === 'insérer'){
                                      /* insert into a(x0,x1) select * from d; */
@@ -764,7 +774,7 @@ class c_rev_vers_sql1{
                                                  nom_du_champ=this.#tb[m + 1][1];
                                              }else{
                                                  if(this.#tb[m][2] === 'f'){
-                                                     obj=this.#traite_sqlite_fonction_de_champ(m,niveau,options);
+                                                     obj=this.traite_sqlite_fonction_de_champ(this.#tb,m,niveau,options);
                                                      if(obj.__xst === true){
                                                          valeur_du_champ=obj.__xva;
                                                      }else{
@@ -833,7 +843,7 @@ class c_rev_vers_sql1{
                                          conditions+=' , ';
                                      }
                                      if(this.#tb[l][2] === 'f'){
-                                         obj=this.#traite_sqlite_fonction_de_champ(l,niveau,options);
+                                         obj=this.traite_sqlite_fonction_de_champ(this.#tb,l,niveau,options);
                                          if(obj.__xst === true){
                                              conditions+=obj.__xva;
                                          }else{
@@ -975,7 +985,7 @@ class c_rev_vers_sql1{
                                      meta+='/* meta(' + obj.__xva + ') */';
                                      meta+=espacesn(true,niveau + 2);
                                  }else{
-                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : '0930 sql.js erreur dans un meta'}));
+                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1()+'index meta'}));
                                  }
                              }
                          }
@@ -1010,7 +1020,7 @@ class c_rev_vers_sql1{
                                          }
                                      }
                                  }else{
-                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : 'sql.js erreur dans un sql définit dans un php'}));
+                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1()+'change_field'}));
                                  }
                              }
                          }
@@ -1044,7 +1054,7 @@ class c_rev_vers_sql1{
                              t+='use ' + this.#tb[i + 1][1] + ';';
                              j++;
                          }else{
-                             return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : 'sql.js erreur dans un sql(use) définit dans un php'}));
+                             return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1()+'use'}));
                          }
                    break;
                     case 'set' :
@@ -1062,7 +1072,7 @@ class c_rev_vers_sql1{
                              }
                              t+=';';
                          }else{
-                             return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : 'sql.js cas non prévu dans un SET()'}));
+                             return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1()+'set'}));
                          }
                    break;
                     case 'field' :
@@ -1142,7 +1152,7 @@ class c_rev_vers_sql1{
                                              "__xst" : false ,
                                              "__xva" : t ,
                                              "id" : i ,
-                                             "__xme" : '0914 sql.js on admet que les constantes quotées par des apostrophes pour les valeurs de texte par défaut'
+                                             "__xme" : nl1()+'field'
                                          }));
                                      }
                                  }
@@ -1163,7 +1173,7 @@ class c_rev_vers_sql1{
                                          if(this.#tb[j + 2][2] === 'c'){
                                              definition_sql_du_champ+=' ' + this.#tb[j + 1][1] + '(' + this.#tb[j + 2][1] + ')';
                                          }else{
-                                             return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : '0732 sql.js erreur dans un type'}));
+                                             return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1()+'field type'}));
                                          }
                                      }
                                  }else if(this.#tb[j][8] === 2){
@@ -1171,7 +1181,7 @@ class c_rev_vers_sql1{
                                      variables_pour_tableau_tables.type.nom=this.#tb[j + 1][1];
                                      variables_pour_tableau_tables.type.longueur=this.#tb[j + 2][1];
                                  }else{
-                                     return(this.#rev_sql_logerreur({"__xst" : false ,"id" : i ,"__xme" : '0271 sql.js erreur dans un field'}));
+                                     return(this.#rev_sql_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1()+'field type'}));
                                  }
                              }else if(this.#tb[j][1] === 'meta' && this.#tb[j][8] > 0){
                                  obj=a2F1(this.#tb,j,false,j + 1);
@@ -1186,10 +1196,10 @@ class c_rev_vers_sql1{
                                          }
                                      }
                                  }else{
-                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : '0930 sql.js erreur dans un meta'}));
+                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1()+'field meta'}));
                                  }
                              }else{
-                                 return(this.#rev_sql_logerreur({"__xst" : false ,"id" : i ,"__xme" : '0275 sql.js erreur dans un field pour ' + this.#tb[j][1]}));
+                                 return(this.#rev_sql_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1()+'field ' + this.#tb[j][1]}));
                              }
                          }
                          if(options.dans_definition_de_table === true){
@@ -1269,20 +1279,8 @@ class c_rev_vers_sql1{
                                      */
                                      definitions_des_champs=obj.__xva.substr(1);
                                  }else{
-                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : 'sql.js erreur dans un sql définit dans un php'}));
+                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1()+'create table field'}));
                                  }
-                                 /* t+='' + ((engine === '')?'':(' ' + engine)) + ((auto_increment === '')?'':(' ' + auto_increment)) + ((charset === '')?'':(' ' + charset)) + ((collate === '')?'':(' ' + collate)); */
-                                 /* afr pourquoi çi dessous ???? */
-                                 /*
-                                   for( k=j + 1 ; k < this.#l02 ; k++ ){
-                                   if(this.#tb[k][3] > this.#tb[j][3]){
-                                   }else{
-                                   j=k - 1;
-                                   debugger
-                                   break;
-                                   }
-                                   }
-                                 */
                                  options.dans_definition_de_table=false;
                              }else if(this.#tb[j][1] === 'meta' && this.#tb[j][8] > 0){
                                  obj=a2F1(this.#tb,j,false,j + 1);
@@ -1294,10 +1292,10 @@ class c_rev_vers_sql1{
                                          }
                                      }
                                  }else{
-                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : '0930 sql.js erreur dans un meta'}));
+                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1()+'create_table meta'}));
                                  }
                              }else{
-                                 t+=' todo sql.js repere 0350 ' + this.#tb[j][1];
+                                 return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1()+'create table '+this.#tb[j][1]}));
                              }
                          }
                          t+='CREATE TABLE ' + if_exists + ' ' + nom_table_en_cours + '(';
@@ -1320,7 +1318,7 @@ class c_rev_vers_sql1{
                                  t+=' ' + this.#tb[j + 1][1] + '';
                                  j++;
                              }else{
-                                 t+=' todo sql.js repere 0375 "' + this.#tb[j][1] + '" ';
+                                 return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1()+'drop table '+this.#tb[j][1]}));
                              }
                          }
                          t+=';';
@@ -1344,7 +1342,7 @@ class c_rev_vers_sql1{
                                      t+=' COLLATE ' + this.#tb[j + 1][1] + '';
                                      j++;
                                  }else{
-                                     t+=' todo sql.js repere 1374 "' + this.#tb[j][1] + '"';
+                                     return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1()+'create_database '+this.#tb[j][1]}));
                                  }
                              }
                          }
@@ -1366,7 +1364,7 @@ class c_rev_vers_sql1{
                              t+=obj.__xva;
                              t+=espacesn(true,niveau);
                          }else{
-                             return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : 'sql.js erreur dans un sql définit dans un php'}));
+                             return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl()+'transaction'}));
                          }
                    break;
                     case '#':
@@ -1385,7 +1383,7 @@ class c_rev_vers_sql1{
                              t+='/* meta(' + obj.__xva + ') */';
                              t+=espacesn(true,niveau);
                          }else{
-                             return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : '1057 sql.js erreur dans un meta'}));
+                             return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1()+'meta'}));
                          }
                  
                  

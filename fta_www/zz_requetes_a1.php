@@ -129,7 +129,6 @@ $par=array(/**/
         ),
     'js_a_inclure' => array(
             /**/
-            'js/sql.js',
             'js/convertion_sql_en_rev.js',
             'js/jslib/sqlite_parser_from_demo.js',
             'js/jslib/Sortable.js'
