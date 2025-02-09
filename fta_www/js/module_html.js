@@ -1405,9 +1405,6 @@ class traitements_sur_html{
                                   =====================================================
                                 */
                                 temp+=' ' + tab[i + 1][1] + '="' + tab[i + 2][1].replace(/\"/g,'&quot;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\') + '"';
-                                if(tab[i + 1][1] == 'data-lang' && (tab[i + 2][1] == 'fr' || tab[i + 2][1] == 'en')){
-                                    globale_LangueCourante=tab[i + 2][1];
-                                }
                             }else if(tab[i][8] == 1 && tab[i + 1][2] == 'c'){
                                 if(tab[i + 1][1] == 'doctype'){
                                     doctype='<!DOCTYPE html>';
@@ -1667,4 +1664,4 @@ class traitements_sur_html{
         }
     }
 }
-export{traitements_sur_html};
+export{traitements_sur_html as traitements_sur_html};

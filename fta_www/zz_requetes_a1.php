@@ -127,16 +127,14 @@ $par=array(/**/
             'js/module_requete_sql.js',
             'js/mf_rev_vers_sql1.js'
         ),
-    'js_a_inclure' => array(
-            /**/
-            'js/convertion_sql_en_rev.js',
+    'js_a_inclure' => array(/* */
             'js/jslib/sqlite_parser_from_demo.js',
             'js/jslib/Sortable.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
 ?>
-<script >
+<script>
 //<![CDATA[
 //<source_javascript_rev>
 window.addEventListener('load',function(){
@@ -147,8 +145,8 @@ window.addEventListener('load',function(){
 //</source_javascript_rev>
 //]]>
 </script>
-    
-<?php    
+
+<?php
 $o1 .= '';
 $o1 .= html_footer1($par);
 print($o1);

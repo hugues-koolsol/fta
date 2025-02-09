@@ -33,30 +33,30 @@ function logerreur(o){
         if(o.__xst === false){
             if(o.hasOwnProperty('__xme')){
                 if(o.hasOwnProperty('__xav') && o.__xav === true){
-                    global_messages['avertissements'].push({"__xme" : o.__xme ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage')?o.plage:null});
+                    global_messages['avertissements'].push({"__xme" : o.__xme ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null )});
                 }else{
-                    global_messages['errors'].push({"__xme" : o.__xme ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage')?o.plage:null});
+                    global_messages['errors'].push({"__xme" : o.__xme ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null )});
                 }
             }
             if(o.hasOwnProperty('message')){
-                global_messages['errors'].push({"__xme" : o.message ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage')?o.plage:null});
+                global_messages['errors'].push({"__xme" : o.message ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null )});
             }
             if(o.hasOwnProperty('id')){
                 global_messages['ids'].push(o.id);
             }
             if(o.hasOwnProperty('__xms')){
                 for(var i in o.__xms){
-                    global_messages['errors'].push({"__xme" : o.o.__xms[i] ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage')?o.plage:null});
+                    global_messages['errors'].push({"__xme" : o.o.__xms[i] ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null )});
                 }
             }
         }else{
             if(o.hasOwnProperty(__xme)){
                 if(o.__xme !== ''){
-                    global_messages['infos'].push({"__xme" : o.__xme ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage')?o.plage:null});
+                    global_messages['infos'].push({"__xme" : o.__xme ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null )});
                 }
             }else if(o.hasOwnProperty('__xav')){
                 if(o.__xav !== ''){
-                    global_messages['avertissements'].push({"__xav" : o.__xav ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage')?o.plage:null });
+                    global_messages['avertissements'].push({"__xav" : o.__xav ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null )});
                 }
             }else{
                 /* on ne fait rien */
@@ -78,11 +78,11 @@ function logerreur(o){
     if(o.hasOwnProperty('range')){
         global_messages['ranges'].push(o.range);
     }
-/*    
-    if(o.hasOwnProperty('plage')){
-        global_messages['plages'].push(o.plage);
-    }
-*/    
+    /*
+      if(o.hasOwnProperty('plage')){
+      global_messages['plages'].push(o.plage);
+      }
+    */
     /*#
       if(o.hasOwnProperty('tab') && o.hasOwnProperty('id')){
            //* à faire ? , à voir 
@@ -302,8 +302,8 @@ function nl1(e_originale){
         var texte_erreur=stack.shift();
         var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
         if(texte_erreur.match(/ at ([^\.]+) \(/) === null){
-            if(texte_erreur.match(/ at ([^]+) \(/)===null){
-                /* 
+            if(texte_erreur.match(/ at ([^]+) \(/) === null){
+                /*
                   dans firefox, il n'y a pas de " at ":
                   #traite_inline@http://www.exemple.fr/toto.js:290:31
                 */
@@ -311,7 +311,6 @@ function nl1(e_originale){
                     nom_fonction=texte_erreur.match(/([^]+)@/)[1];
                 }
             }else{
-            
                 nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
             }
         }else{
@@ -1294,7 +1293,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     */
     for( i=0 ; i < l01 ; i++ ){
         c=tableauEntree[i][0];
-        if(dans_commentaire===true){
+        if(dans_commentaire === true){
             /*
               
               

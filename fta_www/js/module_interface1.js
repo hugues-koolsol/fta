@@ -117,27 +117,28 @@ class interface1{
         var il_existe_des_messages_masques=false;
         var tt='';
         var tab_cas_erreur=[
-            {type:'errors',css_cls:'yyerreur' , nom_zone:'__xme'},
-            {type:'avertissements',css_cls:'yyavertissement' , nom_zone:'__xav'},
-            {type:'infos',css_cls:'yysucces' , nom_zone:'__xme'}
+            /*  */
+            {"type" : 'errors' ,"css_cls" : 'yyerreur' ,"nom_zone" : '__xme'},
+            {"type" : 'avertissements' ,"css_cls" : 'yyavertissement' ,"nom_zone" : '__xav'},
+            {"type" : 'infos' ,"css_cls" : 'yysucces' ,"nom_zone" : '__xme'}
         ];
-        for( let cas in tab_cas_erreur){
-            var le_cas=tab_cas_erreur[cas]
+        for(let cas in tab_cas_erreur){
+            var le_cas=tab_cas_erreur[cas];
             while(global_messages[le_cas.type].length > 0){
                 tt='';
                 if(global_messages[le_cas.type][i].hasOwnProperty('masquee') && global_messages[le_cas.type][i].masquee === true){
                     il_existe_des_messages_masques=true;
-                    tt+='<div class="'+le_cas.css_cls+'" style="display:none;" data-masquable="1">';
+                    tt+='<div class="' + le_cas.css_cls + '" style="display:none;" data-masquable="1">';
                 }else{
-                    tt+='<div class="'+le_cas.css_cls+'" >';
+                    tt+='<div class="' + le_cas.css_cls + '" >';
                 }
-                if(global_messages[le_cas.type][i].plage && nomDeLaTextAreaContenantLeTexteSource!==''){
+                if(global_messages[le_cas.type][i].plage && nomDeLaTextAreaContenantLeTexteSource !== ''){
                     tt+='<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages[le_cas.type][i].plage[0] + ',' + global_messages[le_cas.type][i].plage[1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
-                    tt+=' class="'+le_cas.css_cls+'" style="border:2px red outset;">plage ' + global_messages[le_cas.type][i].plage[0] + ',' + global_messages[le_cas.type][i].plage[1] + '</a>';
+                    tt+=' class="' + le_cas.css_cls + '" style="border:2px red outset;">plage ' + global_messages[le_cas.type][i].plage[0] + ',' + global_messages[le_cas.type][i].plage[1] + '</a>';
                 }
-                if(global_messages[le_cas.type][i].ligne && nomDeLaTextAreaContenantLeTexteSource!==''){
-                    tt+='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages[le_cas.type][i].ligne+ ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
-                    tt+=' class="'+le_cas.css_cls+'" style="border:2px red outset;">ligne ' + global_messages[le_cas.type][i].ligne +  '</a>';
+                if(global_messages[le_cas.type][i].ligne && nomDeLaTextAreaContenantLeTexteSource !== ''){
+                    tt+='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages[le_cas.type][i].ligne + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
+                    tt+=' class="' + le_cas.css_cls + '" style="border:2px red outset;">ligne ' + global_messages[le_cas.type][i].ligne + '</a>';
                 }
                 if(global_messages[le_cas.type][i].hasOwnProperty(le_cas.nom_zone)){
                     tt+=global_messages[le_cas.type][i][le_cas.nom_zone] + '</div>';
@@ -148,12 +149,10 @@ class interface1{
                 global_messages[le_cas.type].splice(0,1);
                 affichagesPresents=true;
             }
-         
         }
         if(il_existe_des_messages_masques === true){
             zon.innerHTML+='<div class="yyavertissement">' + '<span id="message_masquer_les_details">le détail des erreurs n\'est pas visible</span> <a id="bouton_voir_les_messages_masques" data-masque="1" class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.afficher_les_erreurs_masquees()">voir</a>' + '</div>';
         }
-
         while(global_messages.lines.length > 0){
             zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages.lines[i] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + global_messages.lines[i] + '</a>&nbsp;' + zon.innerHTML;
             global_messages.lines.splice(0,1);
@@ -521,7 +520,7 @@ class interface1{
         };
         async function definir_le_nombre_de_lignes_a_afficher_pour_une_liste1(url="",ajax_param){
             var a=__gi1.recupérer_un_fetch(url,ajax_param);
-            return(a);
+            return a;
         }
         definir_le_nombre_de_lignes_a_afficher_pour_une_liste1('za_ajax.php?definir_le_nombre_de_lignes_a_afficher_pour_une_liste',ajax_param).then((donnees) => {
                 if(donnees.__xst === true){
@@ -1168,18 +1167,17 @@ class interface1{
         var nom_de_la_text_area_rev='';
         var nom_de_la_text_area_php='';
         if(options.hasOwnProperty('nom_de_la_text_area_rev')){
-         nom_de_la_text_area_rev=options.nom_de_la_text_area_rev;
+            nom_de_la_text_area_rev=options.nom_de_la_text_area_rev;
         }
         if(options.hasOwnProperty('nom_de_la_text_area_php')){
-         nom_de_la_text_area_php=options.nom_de_la_text_area_php;
+            nom_de_la_text_area_php=options.nom_de_la_text_area_php;
         }
-        
         try{
             var json_de_ast=JSON.parse(par.__xva);
             var obj=__m_astphpnikic_vers_rev1.traite_ast_nikic(json_de_ast,options);
             if(obj.__xst === true){
                 /* console.log(obj); */
-                if(nom_de_la_text_area_rev!==''){
+                if(nom_de_la_text_area_rev !== ''){
                     document.getElementById(options.nom_de_la_text_area_rev).value=obj.__xva;
                     if(obj.__xva.substr(0,4) !== 'php('){
                         var tableau1=iterateCharacters2('php(' + obj.__xva + ')');
@@ -1248,9 +1246,8 @@ class interface1{
             this.remplir_et_afficher_les_messages1('zone_global_messages');
         }
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     transform_rev_de_textarea_en_sql2(nom_de_la_textarea_rev,nom_de_la_textarea_sql){
         var tableau1=iterateCharacters2(document.getElementById(nom_de_la_textarea_rev).value);
@@ -1266,9 +1263,8 @@ class interface1{
         }
         __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
     */
     transform_sql_de_textarea_en_rev2(nom_de_la_textarea_sql,nom_de_la_textarea_rev){
         this.raz_des_messages();
@@ -1280,26 +1276,7 @@ class interface1{
             var obj=__m_astsqliteparseur_vers_rev1.traite_ast_de_sqliteparseur(ast);
             if(obj.__xst === true){
                 document.getElementById(nom_de_la_textarea_rev).value=obj.__xva;
-                this.remplir_et_afficher_les_messages1('zone_global_messages');
-                return;
-            }else{
-                debugger
-            }
-        }catch(e){
-            debugger;
-        }
-    }
-    /*
-      =====================================================================================================================
-    */
-    transform_sql_de_textarea_en_rev1(nom_de_la_textarea_sql,nom_de_la_textarea_rev){
-        this.raz_des_messages();
-        var texte=document.getElementById(nom_de_la_textarea_sql).value;
-        localStorage.setItem('fta_traiteSql_dernier_fichier_charge',texte);
-        try{
-            var obj=convertion_texte_sql_en_rev(texte);
-            if(obj.__xst === true){
-                document.getElementById(nom_de_la_textarea_rev).value=obj.__xva;
+                this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
                 var tableau1=iterateCharacters2(obj.__xva);
                 var obj1=functionToArray2(tableau1.out,false,true,'');
                 if(obj1.__xst === true){
@@ -1310,34 +1287,73 @@ class interface1{
                         obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
                         document.getElementById('txtar3').value=obj2.__xva;
                     }else{
+                        logerreur({"__xst" : false ,"__xme" : nl1()});
                         this.remplir_et_afficher_les_messages1('zone_global_messages');
                         return;
                     }
                 }else{
+                    logerreur({"__xst" : false ,"__xme" : nl1()});
                     this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
                     return;
                 }
             }else{
-                logerreur({"__xst" : false ,"__xme" : 'erreur de reconstruction du sql'});
+                logerreur({"__xst" : false ,"__xme" : nl1()});
                 this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
-                return;
             }
         }catch(e){
-            debugger;
-            console.error('e=',e);
-            if(e.hasOwnProperty('location')
-                   && e.location.hasOwnProperty('start')
-                   && e.location.start.hasOwnProperty('line')
-                   && e.location.start.line > 0
-            ){
-                logerreur({"__xst" : false ,"__xme" : 'erreur dans le sql' ,"ligne" : e.location.start.line});
-            }else{
-                logerreur({"__xst" : false ,"__xme" : 'erreur dans le sql'});
-            }
+            logerreur({"__xst" : false ,"__xme" : nl1(e) + 'erreur de reconstruction du sql<br />' + e.message});
             this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
-            return;
         }
-    }    
+    }
+    /*
+      =============================================================================================================
+      transform_sql_de_textarea_en_rev1(nom_de_la_textarea_sql,nom_de_la_textarea_rev){
+      this.raz_des_messages();
+      var texte=document.getElementById(nom_de_la_textarea_sql).value;
+      localStorage.setItem('fta_traiteSql_dernier_fichier_charge',texte);
+      try{
+      var obj=convertion_texte_sql_en_rev(texte);
+      if(obj.__xst === true){
+      document.getElementById(nom_de_la_textarea_rev).value=obj.__xva;
+      var tableau1=iterateCharacters2(obj.__xva);
+      var obj1=functionToArray2(tableau1.out,false,true,'');
+      if(obj1.__xst === true){
+      var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
+      if(obj2.__xst === true){
+      logerreur({"__xst" : true ,"__xme" : 'sql => rev ok et rev => sql  OK'});
+      this.remplir_et_afficher_les_messages1('zone_global_messages');
+      obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
+      document.getElementById('txtar3').value=obj2.__xva;
+      }else{
+      this.remplir_et_afficher_les_messages1('zone_global_messages');
+      return;
+      }
+      }else{
+      this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
+      return;
+      }
+      }else{
+      logerreur({"__xst" : false ,"__xme" : 'erreur de reconstruction du sql'});
+      this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
+      return;
+      }
+      }catch(e){
+      debugger;
+      console.error('e=',e);
+      if(e.hasOwnProperty('location')
+      && e.location.hasOwnProperty('start')
+      && e.location.start.hasOwnProperty('line')
+      && e.location.start.line > 0
+      ){
+      logerreur({"__xst" : false ,"__xme" : 'erreur dans le sql' ,"ligne" : e.location.start.line});
+      }else{
+      logerreur({"__xst" : false ,"__xme" : 'erreur dans le sql'});
+      }
+      this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
+      return;
+      }
+      }    
+    */
     /*
       =============================================================================================================
     */
@@ -1677,7 +1693,6 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
         var count=lines.length;
         document.getElementById(nom_de_la_text_area_rev).setAttribute('rows',count + 1);
     }
-    
     /*
       =============================================================================================================
     */
@@ -2935,8 +2950,8 @@ COMMIT;
         this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
         var ttt=zoneSource.getBoundingClientRect();
         this.#div_des_positions_du_curseur.style.top=((parseInt(ttt.bottom,10) + document.documentElement.scrollTop) - 12) + 'px';
-        this.#div_des_positions_du_curseur.style.left=((parseInt(ttt.left,10) + document.documentElement.scrollLeft) ) + 'px';
-//        this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px';
+        this.#div_des_positions_du_curseur.style.left=(parseInt(ttt.left,10) + document.documentElement.scrollLeft) + 'px';
+        /* this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px'; */
         return false;
     }
     /*
@@ -3164,7 +3179,7 @@ COMMIT;
             }
             if(liste_des_id_des_sources != ''){
                 liste_des_id_des_sources=liste_des_id_des_sources.substr(1);
-                var remplacer_par=prompt('remplacer "' + json_param.chaine_a_remplacer + '" dans les sources(' + liste_des_id_des_sources + ') par :' , json_param.chaine_a_remplacer );
+                var remplacer_par=prompt('remplacer "' + json_param.chaine_a_remplacer + '" dans les sources(' + liste_des_id_des_sources + ') par :',json_param.chaine_a_remplacer);
                 if(remplacer_par !== null){
                     json_param.remplacer_par=remplacer_par;
                     console.log(json_param);
@@ -3210,7 +3225,7 @@ COMMIT;
         }
         setTimeout(function(){
                 if(this.#programme_en_arriere_plan === null){
-//                    console.log('on charge le worker 1111');
+                    /* console.log('on charge le worker 1111'); */
                     this.#programme_en_arriere_plan=new Worker("./js/module_travail_en_arriere_plan0.js");
                 }
                 this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
@@ -3218,16 +3233,16 @@ COMMIT;
                     this.traite_message_recupere_du_worker(message_recu_du_worker);
                 }.bind(this);
                 this.#programme_en_arriere_plan.postMessage({"type_de_message" : 'recuperer_les_travaux_en_session' ,"parametres" : {}});
-                /*console.log('pas d\'erreur !');*/
+                /* console.log('pas d\'erreur !'); */
             }.bind(this),1500);
     }
     /*
       =============================================================================================================
     */
     #traite_tableau_de_la_base(par){
-     setTimeout(function(){
-       __m_rev_vers_sql1.traite_le_tableau_de_la_base_sqlite_v3(par);
-     }.bind(this),250);
+        setTimeout(function(){
+                __m_rev_vers_sql1.traite_le_tableau_de_la_base_sqlite_v3(par);
+            }.bind(this),250);
     }
     /*
       =============================================================================================================
@@ -3259,4 +3274,4 @@ COMMIT;
         }
     }
 }
-export{interface1};
+export{interface1 as interface1};

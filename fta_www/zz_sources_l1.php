@@ -232,7 +232,7 @@ $par=array(/**/
             /**/
             'js/pour_zz_source1.js',
             'js/jslib/acorn.js',
-            'js/convertion_sql_en_rev.js',
+            /* 'js/convertion_sql_en_rev.js',*/
             'js/jslib/sqlite-parser.js',
             'js/jslib/php-parser.js'
         ),
@@ -243,7 +243,8 @@ $par=array(/**/
             'js/mf_astjs_vers_rev1.js',
             'js/mf_rev_vers_js1.js',
             'js/mf_rev_vers_php1.js',
-            'js/mf_rev_vers_sql1.js'
+            'js/mf_rev_vers_sql1.js',
+            'js/mf_astsqliteparseur_vers_rev1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

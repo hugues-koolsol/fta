@@ -981,6 +981,50 @@ let __m_rev_vers_sql1=null;
 let __m_astphpnikic_vers_rev1=null;
 let __m_astsqliteparseur_vers_rev1=null; // 
 /*       document.addEventListener("DOMContentLoaded",function(event){});     */
+
+function initialiser_le_module_apres_chargement(element){
+    if(element.src.indexOf("js/module_html.js") >= 0){
+        import(element.src).then(function(Module){
+                __module_html1=new Module.traitements_sur_html('__module_html1');
+            });
+    }else if(element.src.indexOf("js/mf_astphpparseur_vers_rev1.js") >= 0){
+        import(element.src).then(function(Module){
+                __m_astphpparseur_vers_rev1=new Module.c_astphpparseur_vers_rev1('__m_astphpparseur_vers_rev1');
+            });
+    }else if(element.src.indexOf("js/mf_astsqliteparseur_vers_rev1.js") >= 0){
+         import(element.src).then(function(Module){
+                __m_astsqliteparseur_vers_rev1=new Module.c_astsqliteparseur_vers_rev1('__m_astsqliteparseur_vers_rev1');
+            });
+    }else if(element.src.indexOf("js/mf_astphpnikic_vers_rev1.js") >= 0){
+          import(element.src).then(function(Module){
+                __m_astphpnikic_vers_rev1=new Module.c_astphpnikic_vers_rev1('__m_astphpnikic_vers_rev1');
+            });
+    }else if(element.src.indexOf("js/mf_astsqliteparseur_vers_rev1.js") >= 0){
+         import(element.src).then(function(Module){
+                __m_astsqliteparseur_vers_rev1=new Module.c_astsqliteparseur_vers_rev1('__m_astsqliteparseur_vers_rev1');
+            });
+    }else if(element.src.indexOf("js/mf_astjs_vers_rev1.js") >= 0){
+         import(element.src).then(function(Module){
+                __m_astjs_vers_rev1=new Module.c_astjs_vers_rev1('__m_astjs_vers_rev1');
+            });
+    }else if(element.src.indexOf("js/mf_rev_vers_php1.js") >= 0){
+         import(element.src).then(function(Module){
+                __m_rev_vers_php1=new Module.c_rev_vers_php1('__m_rev_vers_php1');
+            });
+    }else if(element.src.indexOf("js/mf_rev_vers_js1.js") >= 0){
+         import(element.src).then(function(Module){
+                __m_rev_vers_js1=new Module.c_rev_vers_js1('__m_rev_vers_js1');
+            });
+    }else if(element.src.indexOf("js/mf_rev_vers_sql1.js") >= 0){
+         import(element.src).then(function(Module){
+                __m_rev_vers_sql1=new Module.c_rev_vers_sql1('__m_rev_vers_sql1');
+         });
+    }else{
+      console.log('il faut initialiser '+element.src);
+    }
+    
+ 
+}
 /*
   =====================================================================================================================
 */
@@ -994,6 +1038,7 @@ function demarre_l_interface(){
              __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
          },500);
          
+/*              
          let liste_des_scripts = document.getElementsByTagName('script');
          let i=0;
          for( i=0 ; i < liste_des_scripts.length ; i++ ){
@@ -1003,37 +1048,38 @@ function demarre_l_interface(){
                      import('./js/module_html.js').then(function(Module){
                          __module_html1=new Module.traitements_sur_html('__module_html1');
                      });
-                 }else if(element.src && element.src.indexOf("js/mf_astphpparseur_vers_rev1.js") >= 0){
+                 if(element.src && element.src.indexOf("js/mf_astphpparseur_vers_rev1.js") >= 0){
                      import('./js/mf_astphpparseur_vers_rev1.js').then(function(Module){
                          __m_astphpparseur_vers_rev1=new Module.c_astphpparseur_vers_rev1('__m_astphpparseur_vers_rev1');
                      });
-                 }else if(element.src && element.src.indexOf("js/mf_astphpnikic_vers_rev1.js") >= 0){
+                 if(element.src && element.src.indexOf("js/mf_astphpnikic_vers_rev1.js") >= 0){
                      import('./js/mf_astphpnikic_vers_rev1.js').then(function(Module){
                          __m_astphpnikic_vers_rev1=new Module.c_astphpnikic_vers_rev1('__m_astphpnikic_vers_rev1');
                      });
-                 }else if(element.src && element.src.indexOf("js/mf_astsqliteparseur_vers_rev1.js") >= 0){
+                 if(element.src && element.src.indexOf("js/mf_astsqliteparseur_vers_rev1.js") >= 0){
                      import('./js/mf_astsqliteparseur_vers_rev1.js').then(function(Module){
                          __m_astsqliteparseur_vers_rev1=new Module.c_astsqliteparseur_vers_rev1('__m_astsqliteparseur_vers_rev1');
                      });
-                 }else if(element.src && element.src.indexOf("js/mf_astjs_vers_rev1.js") >= 0){
+                 if(element.src && element.src.indexOf("js/mf_astjs_vers_rev1.js") >= 0){
                      import('./js/mf_astjs_vers_rev1.js').then(function(Module){
                          __m_astjs_vers_rev1=new Module.c_astjs_vers_rev1('__m_astjs_vers_rev1');
                      });
-                 }else if(element.src && element.src.indexOf("js/mf_rev_vers_js1.js") >= 0){
+                 if(element.src && element.src.indexOf("js/mf_rev_vers_js1.js") >= 0){
                      import('./js/mf_rev_vers_js1.js').then(function(Module){
                          __m_rev_vers_js1=new Module.c_rev_vers_js1('__m_rev_vers_js1');
                      });
-                 }else if(element.src && element.src.indexOf("js/mf_rev_vers_php1.js") >= 0){
+                 if(element.src && element.src.indexOf("js/mf_rev_vers_php1.js") >= 0){
                      import('./js/mf_rev_vers_php1.js').then(function(Module){
                          __m_rev_vers_php1=new Module.c_rev_vers_php1('__m_rev_vers_php1');
                      });
-                 }else if(element.src && element.src.indexOf("js/mf_rev_vers_sql1.js") >= 0){
+                 if(element.src && element.src.indexOf("js/mf_rev_vers_sql1.js") >= 0){
                      import('./js/mf_rev_vers_sql1.js').then(function(Module){
                          __m_rev_vers_sql1=new Module.c_rev_vers_sql1('__m_rev_vers_sql1');
                      });
                  }
              }
          }
+*/                     
      });
 }
 EOT;
@@ -1144,7 +1190,7 @@ function html_footer1($parametres=array()){
             
             if($v1 !== ''){
 
-                $o1 .= '  <script type="module" src="' . $v1 . '"></script>' . PHP_EOL;
+                $o1 .= '  <script type="module" src="' . $v1 . '" onload="initialiser_le_module_apres_chargement(this)"></script>' . PHP_EOL;
 
             }
 

@@ -26,7 +26,10 @@ function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cibl
 */
 function convertir_sqlite_en_rev(chp_rev_source,chp_genere_source){
     var source_sqlite=document.getElementById(chp_genere_source).value;
-    var obj=convertion_texte_sql_en_rev(source_sqlite);
+    /* var obj=convertion_texte_sql_en_rev(source_sqlite); */
+    source_sqlite=source_sqlite.replace(/\/\*\*\//g,'');
+    var ast=window.sqliteParser(source_sqlite,{});
+    var obj=__m_astsqliteparseur_vers_rev1.traite_ast_de_sqliteparseur(ast);
     if(obj.__xst === true){
         document.getElementById(chp_rev_source).value=obj.__xva;
     }else{
@@ -73,7 +76,10 @@ async function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_so
   =====================================================================================================================
 */
 function traitement_apres_ajax_pour_conversion_fichier_sql(par){
-    var objRev=convertion_texte_sql_en_rev(par.contenu_du_fichier);
+    /* var objRev=convertion_texte_sql_en_rev(par.contenu_du_fichier); */
+    var source_sqlite=par.contenu_du_fichier.replace(/\/\*\*\//g,'');
+    var ast=window.sqliteParser(source_sqlite,{});
+    var objRev=__m_astsqliteparseur_vers_rev1.traite_ast_de_sqliteparseur(ast);
     if(objRev.__xst === true){
         var tableau1=iterateCharacters2(objRev.__xva);
         var matriceFonction=functionToArray2(tableau1.out,true,false,'');

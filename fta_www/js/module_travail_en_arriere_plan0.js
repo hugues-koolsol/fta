@@ -36,7 +36,6 @@ import('./mf_rev_vers_php1.js').then(function(Module){
 import('./mf_rev_vers_sql1.js').then(function(Module){
         __m_rev_vers_sql1=new Module.c_rev_vers_sql1('__m_rev_vers_sql1',null);
     });
-
 /*
   =====================================================================================================================
   function recupérer_un_fetch

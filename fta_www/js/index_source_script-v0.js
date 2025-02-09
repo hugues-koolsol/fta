@@ -172,7 +172,8 @@ function convertSource(objMatSrc){
                 "tabConcatFichier" : tabConcatFichier
             }));
         }else if(type_source == 'src_sql' && file_extension == 'sql'){
-            retProgrammeSource=__m_rev_vers_sql1.c_tab_vers_js(objMatSrc.__xva,idJs + 1,0,false);
+            debugger
+            retProgrammeSource=__m_rev_vers_sql1.c_tab_vers_js(objMatSrc.__xva,{indice_de_debut:idJs + 1});
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{

@@ -22,8 +22,13 @@ class c_astphpnikic_vers_rev1{
       =============================================================================================================
     */
     #astphp_logerreur(o){
-        if(o.hasOwnProperty('element') && o.element && o.element.hasOwnProperty('attributes') && o.element.attributes.hasOwnProperty('startFilePos') && o.element.attributes.hasOwnProperty('endFilePos')){
-            o.plage=[o.element.attributes.startFilePos,o.element.attributes.endFilePos];            
+        if(o.hasOwnProperty('element')
+               && o.element
+               && o.element.hasOwnProperty('attributes')
+               && o.element.attributes.hasOwnProperty('startFilePos')
+               && o.element.attributes.hasOwnProperty('endFilePos')
+        ){
+            o.plage=[o.element.attributes.startFilePos,o.element.attributes.endFilePos];
         }
         logerreur(o);
         return o;
@@ -380,7 +385,12 @@ class c_astphpnikic_vers_rev1{
             }
             var source=lesArgumentsCourts.substr(1,lesArgumentsCourts.length - 2);
             var source=source.replace(/\\\'/g,'\'').replace(/\\\\/g,'\\');
-            var obj=convertion_texte_sql_en_rev(source);
+            /* afr passe-t-on vraiement par là maintenant ? */
+            debugger;
+            /* var obj=convertion_texte_sql_en_rev(source); */
+            source=source.replace(/\/\*\*\//g,'');
+            var ast=window.sqliteParser(source,{});
+            var obj=__m_astsqliteparseur_vers_rev1.traite_ast_de_sqliteparseur(ast);
             if(obj.__xst === true){
                 t+='sql(' + obj.__xva + ')';
             }else{
@@ -3198,7 +3208,14 @@ class c_astphpnikic_vers_rev1{
                             /* recherche d'au moins un tag dans le texte */
                             var regex=/(<[a-zA-Z0-9\-_]+)/g;
                             var found=stmts[i].value.match(regex);
-                            if(obj.__xst === true && ((stmts[i].value.indexOf('<') >= 0 && found && found.length > 0 || nettoye === '') || ( contenu.indexOf('<')<0 && contenu.indexOf('>')<0 ) )){
+                            if(obj.__xst === true
+                                   && (stmts[i].value.indexOf('<') >= 0
+                                           && found
+                                           && found.length > 0
+                                       || nettoye === ''
+                                       || contenu.indexOf('<') < 0
+                                           && contenu.indexOf('>') < 0)
+                            ){
                                 var cle=this.#php_construit_cle(10);
                                 this.#tableau_de_html_dans_php_a_convertir.push({"cle" : cle ,"valeur" : stmts[i].value});
                                 t+='\n' + esp0 + 'html_dans_php(#(cle_html_dans_php_a_remplacer,' + cle + '))';
@@ -3213,11 +3230,15 @@ class c_astphpnikic_vers_rev1{
                             if(estTraiteSansErreur === false){
                                 if(options_traitement && options_traitement.hasOwnProperty('nettoyer_html') && options_traitement.nettoyer_html === true){
                                 }else{
-                                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1()+'ATTENTION, ce php contient du html en ligne qui n\'est pas strict',"element" : stmts[i]}));
+                                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'ATTENTION, ce php contient du html en ligne qui n\'est pas strict' ,"element" : stmts[i]}));
                                 }
                                 var cle=this.#php_construit_cle(10);
                                 t+='#( === transformation html incomplet en echo voir ci dessous pour la clé = "' + cle + '")';
-                                this.#astphp_logerreur({"__xst" : true ,"__xav" : nl1()+"ATTENTION, ce php contient du html incomplet qui est converti en echo (" + cle + ") !" ,"element" : stmts[i]});
+                                this.#astphp_logerreur({
+                                        "__xst" : true ,
+                                        "__xav" : nl1() + "ATTENTION, ce php contient du html incomplet qui est converti en echo (" + cle + ") !" ,
+                                        "element" : stmts[i]
+                                    });
                                 /*
                                   numeroLigneCourantStmtHtmlStartLine=stmts[i].attributes.startLine;
                                   numeroLigneCourantStmtHtmlEndLine=stmts[i].attributes.endLine;
@@ -3810,4 +3831,4 @@ class c_astphpnikic_vers_rev1{
         return({"__xst" : true});
     }
 }
-export{c_astphpnikic_vers_rev1};
+export{c_astphpnikic_vers_rev1 as c_astphpnikic_vers_rev1};

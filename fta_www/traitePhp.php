@@ -49,7 +49,8 @@ $js_a_executer_apres_chargement=array(/* fonctions js à éxécuter un fois que 
 $par=array(/* éléments à passer au pied de page : le php peut contenir du html et du js, donc on importe tout */
     'js_a_inclure' => array(/**/
             'js/jslib/acorn.js',
-            'js/jslib/php-parser.js'
+            'js/jslib/php-parser.js',
+            'js/jslib/sqlite-parser.js'
         ),
     'module_a_inclure' => array(
             /* */
@@ -58,7 +59,10 @@ $par=array(/* éléments à passer au pied de page : le php peut contenir du htm
             'js/mf_astjs_vers_rev1.js',
             'js/mf_rev_vers_js1.js',
             'js/mf_rev_vers_php1.js',
-            'js/mf_astphpnikic_vers_rev1.js'
+            'js/mf_astphpnikic_vers_rev1.js',
+            'js/mf_rev_vers_sql1.js',
+            'js/mf_astsqliteparseur_vers_rev1.js'
+            
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

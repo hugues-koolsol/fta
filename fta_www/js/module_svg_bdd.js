@@ -1581,9 +1581,24 @@ class module_svg_bdd{
         t+='<table>';
         t+='<tr>';
         t+='<td colspan="4">';
-        t+=differences_entre_les_tables ? ( '<div class="yydanger">Il y a une différence entre les tables</div>' ) : ( '<div class="yysucces">Pas de différence entre les tables</div>' );
-        t+=differences_entre_les_champs ? ( '<div class="yydanger">Il y a une différence entre les champs</div>' ) : ( '<div class="yysucces">Pas de différence entre les champs</div>' );
-        t+=differences_entre_les_indexe ? ( '<div class="yydanger">Il y a une différence entre les indexes</div>' ) : ( '<div class="yysucces">Pas de différence entre les indexes</div>' );
+        t+=differences_entre_les_tables ?
+          ( 
+            '<div class="yydanger">Il y a une différence entre les tables</div>' )
+        : ( 
+            '<div class="yysucces">Pas de différence entre les tables</div>' 
+        );
+        t+=differences_entre_les_champs ?
+          ( 
+            '<div class="yydanger">Il y a une différence entre les champs</div>' )
+        : ( 
+            '<div class="yysucces">Pas de différence entre les champs</div>' 
+        );
+        t+=differences_entre_les_indexe ?
+          ( 
+            '<div class="yydanger">Il y a une différence entre les indexes</div>' )
+        : ( 
+            '<div class="yysucces">Pas de différence entre les indexes</div>' 
+        );
         t+='</td>';
         t+='</tr>';
         t+='<tr>';
@@ -4383,4 +4398,4 @@ class module_svg_bdd{
         }
     }
 }
-export{module_svg_bdd};
+export{module_svg_bdd as module_svg_bdd};

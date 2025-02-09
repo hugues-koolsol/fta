@@ -1486,7 +1486,7 @@ class c_rev_vers_php1{
                 break;
                 
             case 'sql' :
-                obj=__m_rev_vers_sql1.c_tab_vers_js(this.#tb,ind,{});
+                obj=__m_rev_vers_sql1.c_tab_vers_js(this.#tb,{indice_de_debut:ind});
                 if(obj.__xst === true){
                     t='sql_dans_php(\'' + obj.__xva.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
                 }else{
@@ -3043,4 +3043,4 @@ class c_rev_vers_php1{
         }
     }
 }
-export{c_rev_vers_php1};
+export{c_rev_vers_php1 as c_rev_vers_php1};

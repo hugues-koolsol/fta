@@ -2246,7 +2246,6 @@ class requete_sql{
                 }
             }
             t+='    $sql0.=$where0;' + CRLF;
-
             if(this.#obj_webs.complements.length === 0){
             }else{
                 if(obj3.liste_des_tris !== ''){

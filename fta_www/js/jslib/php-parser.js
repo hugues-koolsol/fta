@@ -3496,7 +3496,8 @@
                                 function(o){
                                         return(o && "function" ==  typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? ( "symbol" ) : (  typeof o ));
                                     } 
-                            )),_typeof(o));
+                            ))
+                            ,_typeof(o));
                     }
                     var lexer=__webpack_require__(9108);
                     var parser=__webpack_require__(7259);
@@ -3748,7 +3749,8 @@
                                 function(o){
                                         return(o && "function" ==  typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? ( "symbol" ) : (  typeof o ));
                                     } 
-                            )),_typeof(o));
+                            ))
+                            ,_typeof(o));
                     }
                     var Lexer=function Lexer(engine){
                         this.engine=engine;
@@ -6625,7 +6627,10 @@
                                 return(_arrayLikeToArray(r,a));
                             }
                             var t={}.toString.call(r).slice(8,-1);
-                            return("Object" === t && r.constructor && (t=r.constructor.name),("Map" === t || "Set" === t ?
+                            return("Object" === t
+                                   && r.constructor
+                                   && (t=r.constructor.name)
+                                ,("Map" === t || "Set" === t ?
                                   ( 
                                     Array.from(r) )
                                 : ( 
@@ -6827,13 +6832,13 @@
                                     this.expect([",",";","="]);
                                     return(result(propName,null,nullable,type,attrs || []));
                                 }
-                            }, /*     
+                            }, /*       
      * Reads a variable declaration
      *
      * ```ebnf
      *  variable_declaration ::= T_VARIABLE '=' scalar
      * ```
-          */ ",");
+            */ ",");
                             return(result(null,properties,flags));
                         } ,
                          /*
@@ -6867,14 +6872,14 @@
                                     value=this.next().read_expr();
                                 }
                                 return(result(constName,value));
-                            }, /*     
+                            }, /*       
      * Reads a constant declaration
      *
      * ```ebnf
      *  constant_declaration ::= (T_STRING | IDENTIFIER) '=' expr
      * ```
      * @return {Constant} [:link:](AST.md#constant)
-          */ ",");
+            */ ",");
                             return(result(null,items,flags,nullable,type,attrs || []));
                         } ,
                          /*
@@ -10600,15 +10605,18 @@
                                 function(o){
                                         return(o && "function" ==  typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? ( "symbol" ) : (  typeof o ));
                                     } 
-                            )),_typeof(o));
+                            ))
+                            ,_typeof(o));
                     }
                     function ownKeys(e,r){
                         var t=Object.keys(e);
                         if(Object.getOwnPropertySymbols){
                             var o=Object.getOwnPropertySymbols(e);
-                            r && (o=o.filter(function(r){
+                            r
+                                       && (o=o.filter(function(r){
                                             return(Object.getOwnPropertyDescriptor(e,r).enumerable);
-                                        })),t.push.apply(t,o);
+                                        }))
+                                    ,t.push.apply(t,o);
                         }
                         return t;
                     }
@@ -10639,7 +10647,8 @@
                                 Object.defineProperty(e,r,{"value" : t ,"enumerable" : !0 ,"configurable" : !0 ,"writable" : !0}) )
                             : ( 
                                 e[r]=t 
-                            )),e);
+                            ))
+                            ,e);
                     }
                     function _toPropertyKey(t){
                         var i=_toPrimitive(t,"string");
@@ -10671,7 +10680,10 @@
                                 return(_arrayLikeToArray(r,a));
                             }
                             var t={}.toString.call(r).slice(8,-1);
-                            return("Object" === t && r.constructor && (t=r.constructor.name),("Map" === t || "Set" === t ?
+                            return("Object" === t
+                                   && r.constructor
+                                   && (t=r.constructor.name)
+                                ,("Map" === t || "Set" === t ?
                                   ( 
                                     Array.from(r) )
                                 : ( 

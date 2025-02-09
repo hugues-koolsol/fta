@@ -81,7 +81,8 @@ $a=array(/* */
     'js_a_inclure' => array(/**/
             'js/index_source_script-v0.js'
         ),
-    'module_a_inclure' => array(/**/
+    'module_a_inclure' => array(
+            /**/
             'js/module_html.js',
             'js/mf_rev_vers_js1.js',
             'js/mf_rev_vers_php1.js',
