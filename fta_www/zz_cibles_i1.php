@@ -96,6 +96,7 @@ $tab=array(
     'fta_www/js/mf_rev_vers_js1.js' => array(),
     'fta_www/js/mf_rev_vers_php1.js' => array(),
     'fta_www/js/mf_rev_vers_sql1.js' => array(),
+    'fta_www/js/mf_rev1.js' => array(),
     'fta_www/js/texte.js' => array(),
     'fta_www/js/module_interface1.js' => array(),
     'fta_www/js/module_html.js' => array(),

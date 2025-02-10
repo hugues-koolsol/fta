@@ -1112,10 +1112,10 @@ class c_astjs_vers_rev1{
                     t=objet + '[' + propriete + ']';
                     return({"__xst" : true ,"__xva" : t});
                 }else{
-                    if(objet.endsWith(']') && isNumeric(propriete)){
+                    if(objet.endsWith(']') && __m_rev1.est_num(propriete)){
                         t=objet + '[' + propriete + ']';
                     }else{
-                        if((type_objet === 'Identifier' || type_objet === null) && isNumeric(propriete)){
+                        if((type_objet === 'Identifier' || type_objet === null) && __m_rev1.est_num(propriete)){
                             t=objet + '[' + propriete + ']';
                         }else{
                             t='tableau(nomt(' + objet + '),p(' + propriete + '))';
@@ -1552,7 +1552,7 @@ let x16=a.b ?. c(a.b);
         let nomDuTestUnary=this.#recup_nom_operateur(element.operator);
         obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
         if(obj.__xst === true){
-            if((nomDuTestUnary === 'moins' || nomDuTestUnary === 'plus') && isNumeric(obj.__xva)){
+            if((nomDuTestUnary === 'moins' || nomDuTestUnary === 'plus') && __m_rev1.est_num(obj.__xva)){
                 if(nomDuTestUnary === 'moins'){
                     t+='-' + obj.__xva;
                 }else{

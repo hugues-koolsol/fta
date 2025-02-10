@@ -6,19 +6,14 @@ const CR='\r';
 const LF='\n';
 const NBESPACESREV=3;
 const NBESPACESSOURCEPRODUIT=4;
-var globale_LangueCourante='fr';
+
 var global_messages={
-    "errors" : [] ,
+    "erreurs" : [] ,
     "avertissements" : [] ,
     "infos" : [] ,
-    "masquees" : [] ,
-    "lines" : [] ,
     "lignes" : [] ,
-    "tabs" : [] ,
     "ids" : [] ,
-    "ranges" : [] ,
     "plages" : [] ,
-    "positions_caracteres" : [] ,
     "calls" : '' ,
     "data" : {"matrice" : [] ,"tableau" : [] ,"sourceGenere" : ''}
 };
@@ -28,67 +23,40 @@ var global_messages={
   =====================================================================================================================
 */
 function logerreur(o){
-    var masquee=o.hasOwnProperty('masquee') ? ( o.masquee ) : ( false );
-    if(o.hasOwnProperty(__xst)){
-        if(o.__xst === false){
-            if(o.hasOwnProperty('__xme')){
-                if(o.hasOwnProperty('__xav') && o.__xav === true){
-                    global_messages['avertissements'].push({"__xme" : o.__xme ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null )});
-                }else{
-                    global_messages['errors'].push({"__xme" : o.__xme ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null )});
-                }
-            }
-            if(o.hasOwnProperty('message')){
-                global_messages['errors'].push({"__xme" : o.message ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null )});
-            }
-            if(o.hasOwnProperty('id')){
-                global_messages['ids'].push(o.id);
-            }
-            if(o.hasOwnProperty('__xms')){
-                for(var i in o.__xms){
-                    global_messages['errors'].push({"__xme" : o.o.__xms[i] ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null )});
-                }
-            }
+    var retourner={
+        "__xst" : o.hasOwnProperty('__xst') ? ( o.__xst ) : ( false ),
+        "__xva" : o.hasOwnProperty('__xva') ? ( o.__xva ) : ( null ),
+        "masquee" : o.hasOwnProperty('masquee') ? ( o.masquee ) : ( false ),
+        "plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null ),
+        "ligne" : o.hasOwnProperty('ligne') ? ( o.ligne ) : ( null )
+    }
+    if(o.hasOwnProperty('__xme')){
+     retourner[__xme]=o.__xme;
+    }
+    if(o.hasOwnProperty('__xav')){
+     retourner['__xav']=o.__xav;
+    }
+    if(o.hasOwnProperty('__xms')){
+        for(var i in o.__xms){
+            retourner.__xme=o.__xms[i]
+            global_messages['erreurs'].push(retourner);
+        }
+    }else{
+        if(retourner.__xst === false){
+             if(retourner.hasOwnProperty('__xav')){
+                 global_messages['avertissements'].push(retourner);
+             }else{
+                 global_messages['erreurs'].push(retourner);
+             }
         }else{
-            if(o.hasOwnProperty(__xme)){
-                if(o.__xme !== ''){
-                    global_messages['infos'].push({"__xme" : o.__xme ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null )});
-                }
-            }else if(o.hasOwnProperty('__xav')){
-                if(o.__xav !== ''){
-                    global_messages['avertissements'].push({"__xav" : o.__xav ,"masquee" : masquee ,"plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null )});
-                }
-            }else{
-                /* on ne fait rien */
-            }
+             if(retourner.hasOwnProperty('__xav')){
+                 global_messages['avertissements'].push(retourner);
+             }else{
+                 global_messages['infos'].push(retourner);
+             }
         }
     }
-    if(o.hasOwnProperty('tabs')){
-        global_messages['tabs'].push(o.tabs);
-    }
-    if(o.hasOwnProperty('line') && o.line >= 0){
-        global_messages['lines'].push(o.line);
-    }
-    if(o.hasOwnProperty('ligne') && o.ligne >= 0){
-        global_messages['lignes'].push(o.ligne);
-    }
-    if(o.hasOwnProperty('position_caractere')){
-        global_messages['positions_caracteres'].push(o.tabs);
-    }
-    if(o.hasOwnProperty('range')){
-        global_messages['ranges'].push(o.range);
-    }
-    /*
-      if(o.hasOwnProperty('plage')){
-      global_messages['plages'].push(o.plage);
-      }
-    */
-    /*#
-      if(o.hasOwnProperty('tab') && o.hasOwnProperty('id')){
-           //* à faire ? , à voir 
-      }
-    */
-    return o;
+    return retourner;
 }
 /*
   =====================================================================================================================
@@ -126,31 +94,6 @@ function maConstante(eltTab){
 }
 /*
   =====================================================================================================================
-*/
-function espacesn(optionCRLF,i){
-    var t='';
-    if(optionCRLF){
-        t=CRLF;
-    }else{
-        t=LF;
-    }
-    if(i > 0){
-        t+=' '.repeat(NBESPACESSOURCEPRODUIT * i);
-    }
-    return t;
-}
-/*
-  =====================================================================================================================
-*/
-function isNumeric(str){
-    if( typeof str !== 'string'){
-        return false;
-    }
-    var leTest=!isNaN(str) && !isNaN(parseFloat(str));
-    return leTest;
-}
-/*
-  =====================================================================================================================
   construit des espaces pour l'indentation des sources
   =====================================================================================================================
 */
@@ -169,36 +112,6 @@ function espacesnrev(optionCRLF,i){
 /*
   =====================================================================================================================
   Des fonctions raccourcies
-  =====================================================================================================================
-*/
-function matrice_vers_texte(matrice,id){
-    var t='';
-    var obj=a2F1(matrice,id,true,id + 1);
-    return obj;
-}
-/*
-  =====================================================================================================================
-*/
-function arrayToFunct1(matrice,retourLigne){
-    var t='';
-    var obj=a2F1(matrice,0,retourLigne,1);
-    return obj;
-}
-/*
-  =====================================================================================================================
-*/
-function arrayToFunctNormalize(matrice,bAvecCommentaires){
-    var out=arrayToFunct1(matrice,bAvecCommentaires,false);
-    return out;
-}
-/*
-  =====================================================================================================================
-*/
-function arrayToFunctNoComment(matrice){
-    var out=arrayToFunct1(matrice,true,false);
-    return out;
-}
-/*
   =====================================================================================================================
 */
 function rev_texte_vers_matrice(texte_rev){
@@ -685,14 +598,6 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
     t=newTab.join(CRLF);
     return t;
 }
-/*
-  =====================================================================================================================
-  fonction transforme un texte pour qu'il  soit visible en html, par exemple &nbsp; ou bien <
-  =====================================================================================================================
-*/
-function strToHtml(s){
-    return(s.replace(/&/g,'&amp;').replace('<','&lt;').replace('>','&gt;'));
-}
 /*#
   =====================================================================================================================
   fonction qui reconstitue un texte source à partir du tableau représentant la matrice  du  programme
@@ -706,8 +611,8 @@ function strToHtml(s){
   )
   - quand un tableau contient un commentaire, chaque élément est sur un nouvelle ligne
   - quand un tableau contient plus de 5 éléments, chaque élément est sur une nouvelle ligne
-  - quand un tableau contient un commentaire tbel ( tableau en ligne ) les éléments   sont regroupés
-       en 10 + 10 sur chaque ligne. Ceci permet d'avoir les gros tableaux plus concentrés
+  - quand un tableau contient un commentaire tbel ( tableau en ligne ) les éléments sont regroupés
+       en 10 + 10 sur chaque ligne. Ceci permet de concentrer les gros tableaux de données
   =====================================================================================================================
 */
 function a2F1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_ligne=[],contient_un_defTab_tbel=null,ne_prendre_qu_un_element=false){
@@ -1127,7 +1032,7 @@ function formaterErreurRev(obj){
                     if(i === obj.ind - 5){
                         presDe+='<b>';
                     }
-                    presDe+=strToHtml(obj.tableauEntree[i][0]);
+                    presDe+=__m_rev1.entitees_html(obj.tableauEntree[i][0]);
                     if(i === obj.ind + 5){
                         presDe+='</b>';
                         finGrasFait=true;
@@ -1139,7 +1044,7 @@ function formaterErreurRev(obj){
             }else{
                 presDe='<b>';
                 for( i=0 ; i <= obj.ind + 50 && i < obj.tableauEntree.length ; i++ ){
-                    presDe+=strToHtml(obj.tableauEntree[i][0]);
+                    presDe+=__m_rev1.entitees_html(obj.tableauEntree[i][0]);
                     if(i === obj.ind + 5){
                         presDe+='</b>';
                         finGrasFait=true;

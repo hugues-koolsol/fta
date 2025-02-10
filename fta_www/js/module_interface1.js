@@ -105,6 +105,29 @@ class interface1{
     }
     /*
       =============================================================================================================
+      supprime les messages de la zone global_messages et masque la zone de texte qui contient les message
+      remplace clearMessages
+      =============================================================================================================
+    */
+    raz_des_messages(){
+        try{
+            document.getElementById(this.#nom_div_des_messages1).innerHTML='';
+            /* display a pu être mis à "none" ailleurs */
+            document.getElementById(this.#nom_div_des_messages1).style.visibility='hidden';
+        }catch(e){}
+        global_messages={
+            "erreurs" : [] ,
+            "avertissements" : [] ,
+            "infos" : [] ,
+            "lignes" : [] ,
+            "ids" : [] ,
+            "plages" : [] ,
+            "data" : {"matrice" : [] ,"tableau" : [] ,"sourceGenere" : ''}
+        };
+    }
+    
+    /*
+      =============================================================================================================
       on remplir_et_afficher_les_messages1
     */
     remplir_et_afficher_les_messages1(nomZone,nomDeLaTextAreaContenantLeTexteSource){
@@ -118,7 +141,7 @@ class interface1{
         var tt='';
         var tab_cas_erreur=[
             /*  */
-            {"type" : 'errors' ,"css_cls" : 'yyerreur' ,"nom_zone" : '__xme'},
+            {"type" : 'erreurs' ,"css_cls" : 'yyerreur' ,"nom_zone" : '__xme'},
             {"type" : 'avertissements' ,"css_cls" : 'yyavertissement' ,"nom_zone" : '__xav'},
             {"type" : 'infos' ,"css_cls" : 'yysucces' ,"nom_zone" : '__xme'}
         ];
@@ -126,42 +149,30 @@ class interface1{
             var le_cas=tab_cas_erreur[cas];
             while(global_messages[le_cas.type].length > 0){
                 tt='';
-                if(global_messages[le_cas.type][i].hasOwnProperty('masquee') && global_messages[le_cas.type][i].masquee === true){
-                    il_existe_des_messages_masques=true;
-                    tt+='<div class="' + le_cas.css_cls + '" style="display:none;" data-masquable="1">';
-                }else{
-                    tt+='<div class="' + le_cas.css_cls + '" >';
-                }
-                if(global_messages[le_cas.type][i].plage && nomDeLaTextAreaContenantLeTexteSource !== ''){
-                    tt+='<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages[le_cas.type][i].plage[0] + ',' + global_messages[le_cas.type][i].plage[1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
-                    tt+=' class="' + le_cas.css_cls + '" style="border:2px red outset;">plage ' + global_messages[le_cas.type][i].plage[0] + ',' + global_messages[le_cas.type][i].plage[1] + '</a>';
-                }
-                if(global_messages[le_cas.type][i].ligne && nomDeLaTextAreaContenantLeTexteSource !== ''){
-                    tt+='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages[le_cas.type][i].ligne + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
-                    tt+=' class="' + le_cas.css_cls + '" style="border:2px red outset;">ligne ' + global_messages[le_cas.type][i].ligne + '</a>';
-                }
                 if(global_messages[le_cas.type][i].hasOwnProperty(le_cas.nom_zone)){
+                    if(global_messages[le_cas.type][i].hasOwnProperty('masquee') && global_messages[le_cas.type][i].masquee === true){
+                        il_existe_des_messages_masques=true;
+                        tt+='<div class="' + le_cas.css_cls + '" style="display:none;" data-masquable="1">';
+                    }else{
+                        tt+='<div class="' + le_cas.css_cls + '" >';
+                    }
+                    if(global_messages[le_cas.type][i].plage && nomDeLaTextAreaContenantLeTexteSource !== ''){
+                        tt+='<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages[le_cas.type][i].plage[0] + ',' + global_messages[le_cas.type][i].plage[1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
+                        tt+=' class="' + le_cas.css_cls + '" style="border:2px red outset;">plage ' + global_messages[le_cas.type][i].plage[0] + ',' + global_messages[le_cas.type][i].plage[1] + '</a>';
+                    }
+                    if(global_messages[le_cas.type][i].ligne && nomDeLaTextAreaContenantLeTexteSource !== ''){
+                        tt+='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages[le_cas.type][i].ligne + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
+                        tt+=' class="' + le_cas.css_cls + '" style="border:2px red outset;">ligne ' + global_messages[le_cas.type][i].ligne + '</a>';
+                    }
                     tt+=global_messages[le_cas.type][i][le_cas.nom_zone] + '</div>';
-                }else{
-                    tt+=global_messages[le_cas.type][i] + '</div>';
+                    zon.innerHTML+=tt;
+                    affichagesPresents=true;
                 }
-                zon.innerHTML+=tt;
                 global_messages[le_cas.type].splice(0,1);
-                affichagesPresents=true;
             }
         }
         if(il_existe_des_messages_masques === true){
             zon.innerHTML+='<div class="yyavertissement">' + '<span id="message_masquer_les_details">le détail des erreurs n\'est pas visible</span> <a id="bouton_voir_les_messages_masques" data-masque="1" class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.afficher_les_erreurs_masquees()">voir</a>' + '</div>';
-        }
-        while(global_messages.lines.length > 0){
-            zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages.lines[i] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + global_messages.lines[i] + '</a>&nbsp;' + zon.innerHTML;
-            global_messages.lines.splice(0,1);
-            affichagesPresents=true;
-        }
-        while(global_messages.lignes.length > 0){
-            zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + global_messages.lignes[i] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + global_messages.lignes[i] + '</a>&nbsp;' + zon.innerHTML;
-            global_messages.lignes.splice(0,1);
-            affichagesPresents=true;
         }
         if(global_messages.data.matrice && global_messages.data.matrice.__xva){
             for( i=0 ; i < global_messages.ids.length && nombre_de_boutons_affiches <= 3 ; i++ ){
@@ -187,17 +198,6 @@ class interface1{
                 }
             }
             global_messages.ids=[];
-        }
-        while(global_messages.ranges.length > 0){
-            zon.innerHTML='&nbsp;<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.ranges[0][0] + ',' + global_messages.ranges[0][1] + '</a>' + zon.innerHTML;
-            global_messages.ranges.splice(0,1);
-            affichagesPresents=true;
-        }
-        while(global_messages.plages.length > 0){
-            var zone_source=global_messages.plages[0].hasOwnProperty('zone_source') ? ( global_messages.plages[0].zone_source ) : ( nomDeLaTextAreaContenantLeTexteSource );
-            zon.innerHTML='&nbsp;<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + ',\'' + zone_source + '\')" class="yyerreur" style="border:2px red outset;">plage ' + global_messages.plages[0][0] + ',' + global_messages.plages[0][1] + '</a>' + zon.innerHTML;
-            global_messages.plages.splice(0,1);
-            affichagesPresents=true;
         }
         if(zon.innerHTML !== ''){
             zon.style.visibility='visible';
@@ -459,7 +459,7 @@ class interface1{
     */
     aller_a_la_position(nom_textarea){
         var resultat=window.prompt('aller à la position',1);
-        if(resultat && isNumeric(resultat)){
+        if(resultat && __m_rev1.est_num(resultat)){
             var a=document.getElementById(nom_textarea);
             if(a.rows < 10 || a.getBoundingClientRect().height < 160){
                 a.rows="100";
@@ -478,7 +478,7 @@ class interface1{
         var position_fin=0;
         var position_debut=0;
         var numero_de_ligne=window.prompt('aller à la ligne n°?',1);
-        if(numero_de_ligne && isNumeric(numero_de_ligne)){
+        if(numero_de_ligne && __m_rev1.est_num(numero_de_ligne)){
             numero_de_ligne=parseInt(numero_de_ligne,10) + ajouter;
             var a=document.getElementById(nom_textarea);
             var lignes=a.value.split('\n');
@@ -915,7 +915,7 @@ class interface1{
                     /*
                       var startMicro = performance.now();
                     */
-                    var obj2=arrayToFunct1(matriceFonction.__xva,true);
+                    var obj2=a2F1(matriceFonction.__xva,0,true,1);
                     if(obj2.__xst === true){
                         document.getElementById(nom_de_la_text_area_rev).value=obj2.__xva;
                     }
@@ -1049,7 +1049,7 @@ class interface1{
                 }
                 var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                 if(matriceFonction.__xst === true){
-                    var obj2=arrayToFunct1(matriceFonction.__xva,true);
+                    var obj2=a2F1(matriceFonction.__xva,0,true,1);
                     if(obj2.__xst === true){
                         document.getElementById(nom_de_la_text_area_rev).value=obj2.__xva;
                     }else{
@@ -1067,8 +1067,9 @@ class interface1{
             */
         }catch(e){
             /* console.error(e); */
+            debugger
             if(e.lineNumber){
-                logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />' + e.message ,"line" : e.lineNumber});
+                logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />' + e.message ,"ligne" : e.lineNumber});
             }else{
                 logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />' + e.message});
             }
@@ -1128,7 +1129,7 @@ class interface1{
                 var tableau1=iterateCharacters2(obj.__xva);
                 var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                 if(matriceFonction.__xst === true){
-                    var obj2=arrayToFunct1(matriceFonction.__xva,true);
+                    var obj2=a2F1(matriceFonction.__xva,0,true,1);
                     if(obj2.__xst === true){
                         if(options_json.hasOwnProperty('zone_html_rev')){
                             document.getElementById(options_json.zone_html_rev).value=obj2.__xva;
@@ -1186,7 +1187,7 @@ class interface1{
                     }
                     var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                     if(matriceFonction.__xst === true){
-                        var obj2=arrayToFunct1(matriceFonction.__xva,true);
+                        var obj2=a2F1(matriceFonction.__xva,0,true,1);
                         if(obj2.__xst === true){
                             document.getElementById(options.nom_de_la_text_area_rev).value=obj2.__xva;
                         }else{
@@ -1398,19 +1399,18 @@ class interface1{
         if(matriceFonction1.__xst === true){
             var parent=document.getElementById('resultat1');
             var startMicro=performance.now();
-            var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction1.__xva,true);
+            var fonctionReecriteAvecRetour1=a2F1(matriceFonction1.__xva,0,true,1);
             var resultat_compacte_ok='';
             var diResultatsCompactes=document.createElement('div');
             if(fonctionReecriteAvecRetour1.__xst === true){
-                var compacteOriginal=arrayToFunct1(matriceFonction1.__xva,false);
+                var compacteOriginal=a2F1(matriceFonction1.__xva,0,false,1);
                 var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.__xva);
                 var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,autoriser_constante_dans_la_racine,'');
-                var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.__xva,false);
+                var compacteReecrit=a2F1(matriceDeLaFonctionReecrite.__xva,0,false,1);
                 if(compacteOriginal.__xst === true && compacteReecrit.__xst === true){
                     if(compacteOriginal.__xva == compacteReecrit.__xva){
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
-                        /* diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(compacteOriginal.__xva) + '</textarea>'; */
-                        resultat_compacte_ok=strToHtml(compacteOriginal.__xva);
+                        resultat_compacte_ok=__m_rev1.entitees_html(compacteOriginal.__xva);
                         logerreur({"__xst" : true ,"__xme" : '👍 sources compactés Egaux : ' + tempsTraitement});
                     }else{
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">💥sources compactés différents</b>';
@@ -1433,14 +1433,14 @@ class interface1{
                 document.getElementById('resultat1').appendChild(di_texte_compacte);
             }
             /*  */
-            var fonctionReecriteAvecEtColoration1=arrayToFunct1(matriceFonction1.__xva,true);
+            var fonctionReecriteAvecEtColoration1=a2F1(matriceFonction1.__xva,0,true,1);
             var difonctionReecriteAvecRetour1=document.createElement('div');
             difonctionReecriteAvecRetour1.className='yyconteneur_de_texte1';
             difonctionReecriteAvecRetour1.style.fontSize='0.9em';
             if(fonctionReecriteAvecEtColoration1.__xst === true){
-                difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(fonctionReecriteAvecEtColoration1.__xva) + '</textarea>';
+                difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + __m_rev1.entitees_html(fonctionReecriteAvecEtColoration1.__xva) + '</textarea>';
             }else{
-                difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(fonctionReecriteAvecRetour1.message) + '</textarea>';
+                difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + __m_rev1.entitees_html(fonctionReecriteAvecRetour1.message) + '</textarea>';
             }
             document.getElementById('resultat1').appendChild(difonctionReecriteAvecRetour1);
             /*  */
@@ -1525,8 +1525,8 @@ function traiteCommentaire2(texte, niveau, ind) {
 */
 
 function tagada() {
-  for (var i = 0; i < global_messages.errors.length; i++) {
-    document.getElementById("global_messages").innerHTML += '<div class="yyerreur">' + global_messages.errors[i] + "</div>";
+  for (var i = 0; i < global_messages.erreurs.length; i++) {
+    document.getElementById("global_messages").innerHTML += '<div class="yyerreur">' + global_messages.erreurs[i] + "</div>";
   }
   var numLignePrecedente = -1;
   for (var i = 0; i < global_messages.ids.length; i++) {
@@ -1550,22 +1550,7 @@ function tagada() {
   }
 }
 
-/*
-  =====================================================================================================================
-*/
-
-function espacesn(optionCRLF, i) {
-  var t = "";
-  if (optionCRLF) {
-    t = "\\r\\n";
-  } else {
-    t = "\\n";
-  }
-  if (i > 0) {
-    t += " ".repeat(NBESPACESSOURCEPRODUIT * i);
-  }
-  return t;
-}`;
+`;
         document.getElementById(nom_de_la_text_area_js).value=t;
     }
     /*
@@ -1796,7 +1781,7 @@ COMMIT;
             /*
               var startMicro = performance.now();
             */
-            var obj2=arrayToFunct1(matriceFonction.__xva,true);
+            var obj2=a2F1(matriceFonction.__xva,0,true,1);
             if(obj2.__xst === true){
                 a.value=obj2.__xva;
             }
@@ -2571,33 +2556,6 @@ COMMIT;
         if(this.#global_tableau_des_textareas.hasOwnProperty(nomDeZoneSource)){
             this.#global_tableau_des_textareas[nomDeZoneSource].mon_decallage_haut=nouveauScroll;
         }
-    }
-    /*
-      =============================================================================================================
-      supprime les messages de la zone global_messages et masque la zone de texte qui contient les message
-      remplace clearMessages
-      =============================================================================================================
-    */
-    raz_des_messages(){
-        try{
-            document.getElementById(this.#nom_div_des_messages1).innerHTML='';
-            /* display a pu être mis à "none" ailleurs */
-            document.getElementById(this.#nom_div_des_messages1).style.visibility='hidden';
-        }catch(e){}
-        global_messages={
-            "errors" : [] ,
-            "avertissements" : [] ,
-            "infos" : [] ,
-            "lines" : [] ,
-            "lignes" : [] ,
-            "tabs" : [] ,
-            "ids" : [] ,
-            "ranges" : [] ,
-            "plages" : [] ,
-            "positions_caracteres" : [] ,
-            "calls" : '' ,
-            "data" : {"matrice" : [] ,"tableau" : [] ,"sourceGenere" : ''}
-        };
     }
     /*
       =============================================================================================================

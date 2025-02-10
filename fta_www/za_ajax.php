@@ -41,7 +41,7 @@ function recupTypeErreur($ty){
   Fonction appelée quand il y a un problème de traitement, par exemple une division par zéro
   =====================================================================================================================
 */
-function errorHandler($error_level,$error_message,$error_file,$error_line,$error_context){
+function errorHandler($error_level,$error_message,$error_file,$error_line,$error_context=array()){
 
     $error='error : ' . recupTypeErreur($error_level) . " | problème de traitement :" . $error_message . " | line:" . $error_line . " | file:" . basename($error_file) . " (" . $error_file . ")";
     /* , error_context:".str_replace("\r",'',str_replace("\n",'',var_export($error_context,true))); */
@@ -105,7 +105,16 @@ initialiser_les_services(false,true);
 
 if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
 
-    $ret=array( __xst => false, __xms => array());
+    $ret=array(
+        /*statut*/
+        __xst => false,
+        /*erreurs*/
+        __xms => array(),
+        /*informations*/
+        __xif => array(),
+        /*avertissements*/
+        __xav => array()
+    );
     /* les messages sont mis en tableau */
     $ret[__entree]=json_decode($_POST['ajax_param'],true);
     $GLOBALS[__entree]=$ret[__entree];

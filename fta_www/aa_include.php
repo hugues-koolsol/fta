@@ -23,6 +23,10 @@ define('__xst','__xst');
 define('__xme','__xme');
 /*plusieurs messages dans un tableau */
 define('__xms','__xms');
+/*plusieurs informations dans un tableau */
+define('__xif','__xif');
+/*plusieurs avertissements dans un tableau */
+define('__xav','__xav');
 /*valeur*/
 define('__xva','__xva');
 define('__mode_traque','__mode_traque');
@@ -541,7 +545,6 @@ function signaler_erreur($tab){
 function ajouterMessage($type_de_message,$message,$page=''){
 
     $tableauTypeMessage=array(
-        'normal',
         'succes',
         'info',
         'erreur',
@@ -943,6 +946,7 @@ function html_header1($parametres){
         $o1 .= '  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />' . PHP_EOL;
     }
 
+    $o1 .= '<script type="module" src="js/mf_rev1.js" onload="initialiser_le_module_apres_chargement(this)"></script>' . PHP_EOL;
     $o1 .= '<script type="module" src="js/module_interface1.js" onload="demarre_l_interface()"></script>' . PHP_EOL;
     $o1 .= '<script type="text/javascript">' . PHP_EOL;
     $o1 .= '//<![CDATA[' . PHP_EOL;
@@ -970,6 +974,7 @@ var __gi1=null;
 /*
   =====================================================================================================================
 */
+let __m_rev1=null;
 let __module_html1=null;
 let __module_svg1=null;
 let __module_requete_sql1=null;
@@ -983,7 +988,11 @@ let __m_astsqliteparseur_vers_rev1=null; //
 /*       document.addEventListener("DOMContentLoaded",function(event){});     */
 
 function initialiser_le_module_apres_chargement(element){
-    if(element.src.indexOf("js/module_html.js") >= 0){
+    if(element.src.indexOf("js/mf_rev1.js") >= 0){
+        import(element.src).then(function(Module){
+                __m_rev1=new Module.c_rev1('__m_rev1');
+            });
+    }else if(element.src.indexOf("js/module_html.js") >= 0){
         import(element.src).then(function(Module){
                 __module_html1=new Module.traitements_sur_html('__module_html1');
             });

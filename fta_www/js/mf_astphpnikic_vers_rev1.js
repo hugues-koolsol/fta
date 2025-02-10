@@ -3213,8 +3213,8 @@ class c_astphpnikic_vers_rev1{
                                            && found
                                            && found.length > 0
                                        || nettoye === ''
-                                       || contenu.indexOf('<') < 0
-                                           && contenu.indexOf('>') < 0)
+                                       || stmts[i].value.indexOf('<') < 0
+                                           && stmts[i].value.indexOf('>') < 0)
                             ){
                                 var cle=this.#php_construit_cle(10);
                                 this.#tableau_de_html_dans_php_a_convertir.push({"cle" : cle ,"valeur" : stmts[i].value});
@@ -3810,11 +3810,26 @@ class c_astphpnikic_vers_rev1{
                 }
                 try{
                     var json_retour=JSON.parse(r.responseText);
+                    if(json_retour.__xms){
+                        for(var i in json_retour.__xms){
+                            logerreur({__xst:false,__xme:json_retour.__xms[i]});
+                        }
+                    }
+                    if(json_retour.__xif){
+                        for(var i in json_retour.__xms){
+                            logerreur({__xst:true,__xme:json_retour.__xif[i]});
+                        }
+                    }
+                    if(json_retour.__xav){
+                        for(var i in json_retour.__xms){
+                            logerreur({__xst:false,__xav:json_retour.__xav[i]});
+                        }
+                    }
                     if(json_retour.__xst === true){
                         if(fonction_traitement_apres_recuperation_ast_de_php2_ok !== undefined){
                             fonction_traitement_apres_recuperation_ast_de_php2_ok(json_retour);
                         }else{
-                            console.error('veuillez définit une fonction de traitement');
+                            console.error('veuillez définir une fonction de traitement');
                         }
                     }else{
                         fonction_traitement_apres_recuperation_ast_de_php2_ko(r.responseText,json_retour);

@@ -381,9 +381,13 @@ function sauvegarger_un_fichier_rev(&$data){
 function ecrire_fichier1(&$data){
 
     /* sleep(2);*/
-    /* if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}*/
+    /* if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);} */
     /* if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_SESSION[APP_KEY]='.var_export($_SESSION[APP_KEY],true)."\r\n"); fclose($fd);}*/
-
+ 
+    /*#
+      if( strpos($data[__entree]['test_pour_provoquer_une_erreur'],'..') !== false){
+      }
+    */    
     if((strpos($data[__entree]['file_path'],'..') !== false
            || strpos($data[__entree]['file_name'],'..')
            || strpos($data[__entree]['file_extension'],'..') !== false)

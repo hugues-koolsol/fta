@@ -100,13 +100,13 @@ class traitements_sur_html{
                         if(jsonDeHtml.attributes.type.toLowerCase() === 'application/ld+json'){
                             t+='\n' + esp0 + 'ldPlusJsonDansHtml(';
                             type='ldPlusJsonDansHtml';
-                        }else if(jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript' && jsonDeHtml.hasOwnProperty('content')){
+                        }else if((jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript' || jsonDeHtml.attributes.type.toLowerCase() === 'module' ) && jsonDeHtml.hasOwnProperty('content')){
                             /*
                               si il y a du contenu ( content existe ), 
                             */
                             t+='\n' + esp0 + 'javascriptDansHtml(';
                             type='javascriptDansHtml';
-                        }else if(jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript' && !jsonDeHtml.hasOwnProperty('content')){
+                        }else if((jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript' || jsonDeHtml.attributes.type.toLowerCase() === 'module' ) && !jsonDeHtml.hasOwnProperty('content')){
                             /*
                               c'est un tag script avec src=""
                             */
@@ -1367,7 +1367,7 @@ class traitements_sur_html{
             temp='';
             if(id === 0 || tab[id][1] === 'html' || tab[id][1] === 'html_dans_php'){
             }else{
-                t+=espacesn(true,niveau);
+                t+=__m_rev1.resps(niveau);
             }
             if(tab[id][1] === '#' && tab[id][2] === 'f'){
                 if(tab[id][13] === ''){
@@ -1547,7 +1547,7 @@ class traitements_sur_html{
                                     if(tab[tab[i][7]][2] === 'f' && (tab[tab[i][7]][1] === 'textarea' || tab[tab[i][7]][1] === 'pre')){
                                         t+='';
                                     }else{
-                                        t+=espacesn(true,niveau + 1);
+                                        t+=__m_rev1.resps(niveau + 1);
                                     }
                                 }
                                 /*
@@ -1595,7 +1595,7 @@ class traitements_sur_html{
                         }else{
                             if(id === 0 || tab[id][2] === 'f' && (tab[id][1] === 'textarea' || tab[id][1] === 'pre')){
                             }else{
-                                t+=espacesn(true,niveau);
+                                t+=__m_rev1.resps(niveau);
                             }
                         }
                         if(tab[id][1] === 'php'){

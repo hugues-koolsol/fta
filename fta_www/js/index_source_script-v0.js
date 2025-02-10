@@ -8,118 +8,77 @@ function convertSource(objMatSrc){
     var file_extension='';
     var file_path='';
     var type_source='';
-    var idJs=-1;
     var tabConcatFichier=[];
     var retProgrammeSource={};
     var obj={};
     var l01=objMatSrc.__xva.length;
     var position_de_la_balise_source=-1;
-    for( var i=1 ; i < l01 ; i++ ){
+    
+    
+    for( var i=1 ; i < l01 ; i=objMatSrc.__xva[i][12] ){
         if(objMatSrc.__xva[i][3] == 0){
             if(objMatSrc.__xva[i][1] == '#'){
-            }else if(objMatSrc.__xva[i][1] == 'src_javascript'){
+            }else if(objMatSrc.__xva[i][1] === 'src_javascript' || objMatSrc.__xva[i][1] == 'src_html' || objMatSrc.__xva[i][1] == 'src_php' || objMatSrc.__xva[i][1] == 'src_sql'){
                 type_source=objMatSrc.__xva[i][1];
-                break;
-            }else if(objMatSrc.__xva[i][1] == 'src_html'){
-                type_source=objMatSrc.__xva[i][1];
-                break;
-            }else if(objMatSrc.__xva[i][1] == 'src_php'){
-                type_source=objMatSrc.__xva[i][1];
-                break;
-            }else if(objMatSrc.__xva[i][1] == 'src_sql'){
-                type_source=objMatSrc.__xva[i][1];
-                break;
+                for( var j=i+1 ; j < l01 ; j=objMatSrc.__xva[j][12] ){
+                    if(objMatSrc.__xva[j][2] == 'f' ){
+                        if(objMatSrc.__xva[j][1] === ''){
+                            for( var k=j+1 ; k < objMatSrc.__xva.length ; k=objMatSrc.__xva[k][12] ){
+                                if(objMatSrc.__xva[k][7] == objMatSrc.__xva[j][0] && objMatSrc.__xva[j][8] >= 2){
+                                    if(objMatSrc.__xva[k][1] == 'file_name' && objMatSrc.__xva[k + 1][1] != ''){
+                                        file_name=objMatSrc.__xva[k + 1][1];
+                                    }
+                                    if(objMatSrc.__xva[k][1] == 'file_extension' && objMatSrc.__xva[k + 1][1] != ''){
+                                        file_extension=objMatSrc.__xva[k + 1][1];
+                                    }
+                                    if(objMatSrc.__xva[k][1] == 'file_path' && objMatSrc.__xva[k + 1][1] != ''){
+                                        file_path=objMatSrc.__xva[k + 1][1];
+                                    }
+                                }
+                            }
+                        }else if(objMatSrc.__xva[j][1] === '#'){
+                        }else if(objMatSrc.__xva[j][1] === 'source'){
+                            position_de_la_balise_source=j;
+                        }else if(objMatSrc.__xva[j][1] === 'concatFichier'){
+                            if( objMatSrc.__xva[j][8] === 1 && objMatSrc.__xva[j+1][2] === 'c' ){
+                                tabConcatFichier.push(objMatSrc.__xva[j + 1][1]);
+                            }else{
+                                return(logerreur({
+                                    "__xst" : false ,
+                                    "id" : j ,
+                                    "__xme" : nl1()+' concat fichjer ne doit avojr qu\'un seul argument '
+                                }));
+                           }
+                        
+                        }else{
+                            return(logerreur({
+                                "__xst" : false ,
+                                "id" : j ,
+                                "__xme" : nl1()+'l\'élément ne doit pas se trouver là ' + JSON.stringify(objMatSrc.__xva[j])
+                            }));
+                        }
+                    }
+                }
             }
         }
     }
+
     if(type_source == ''){
         return(logerreur({
             "__xst" : false ,
             "__xme" : 'file core , fonction convertSource la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '
         }));
     }
-    for( var i=0 ; i < l01 ; i++ ){
-        if(objMatSrc.__xva[i][2] == 'f' && objMatSrc.__xva[i][3] == 1){
-            if(objMatSrc.__xva[i][1] == ''){
-                for( var j=i ; j < objMatSrc.__xva.length ; j++ ){
-                    if(objMatSrc.__xva[j][7] == objMatSrc.__xva[i][0] && objMatSrc.__xva[i][8] >= 2){
-                        if(objMatSrc.__xva[j][1] == 'file_name' && objMatSrc.__xva[j + 1][1] != ''){
-                            file_name=objMatSrc.__xva[j + 1][1];
-                        }
-                        if(objMatSrc.__xva[j][1] == 'file_extension' && objMatSrc.__xva[j + 1][1] != ''){
-                            file_extension=objMatSrc.__xva[j + 1][1];
-                        }
-                        if(objMatSrc.__xva[j][1] == 'file_path' && objMatSrc.__xva[j + 1][1] != ''){
-                            file_path=objMatSrc.__xva[j + 1][1];
-                        }
-                    }
-                }
-            }else if(objMatSrc.__xva[i][1] != ''){
-                if(objMatSrc.__xva[i][1] == '#'){
-                }else if(objMatSrc.__xva[i][1] == 'source'){
-                    position_de_la_balise_source=i;
-                }else if(objMatSrc.__xva[i][1] == 'concatFichier'){
-                }else{
-                    return(logerreur({
-                        "__xst" : false ,
-                        "id" : i ,
-                        "__xme" : 'file core , fonction convertSource : l\'élément ne doit pas se trouver là ' + JSON.stringify(objMatSrc.__xva[i])
-                    }));
-                }
-            }
-        }
-        if(objMatSrc.__xva[i][2] == 'f' && objMatSrc.__xva[i][3] == 1 && objMatSrc.__xva[i][1] == 'source'){
-            if(idJs == -1){
-                idJs=i;
-            }else{
-                idJs=-2;
-            }
-        }
-        if(objMatSrc.__xva[i][2] == 'f'
-               && objMatSrc.__xva[i][3] == 1
-               && objMatSrc.__xva[i][1] == 'concatFichier'
-               && objMatSrc.__xva[i][8] == 1
-        ){
-            tabConcatFichier.push(objMatSrc.__xva[i + 1][1]);
-        }
-    }
     var t='';
-    if(file_name != '' && file_path != '' && idJs > 0){
+    if(file_name != '' && file_path != '' && position_de_la_balise_source > 0){
         if(type_source == 'src_php' && file_extension == 'php'){
-            var baliseHtmlOuPhpTrouvee=false;
-            for( var i=idJs + 1 ; i < objMatSrc.__xva.length ; i++ ){
-                if(objMatSrc.__xva[i][7] == idJs && objMatSrc.__xva[i][1] == 'php'){
-                    baliseHtmlOuPhpTrouvee=true;
-                    retProgrammeSource=__m_rev_vers_php1.c_tab_vers_php(objMatSrc.__xva,{"indice_de_debut" : i});
-                    if(retProgrammeSource.__xst === true){
-                        t+='<?php' + CRLF + retProgrammeSource.__xva + CRLF + '?>';
-                    }else{
-                        return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un php'}));
-                    }
-                }else if(objMatSrc.__xva[i][7] == idJs && objMatSrc.__xva[i][1] == 'html'){
-                    baliseHtmlOuPhpTrouvee=true;
-                    retProgrammeSource=__module_html1.tabToHtml1(objMatSrc.__xva,i,true,0);
-                    if(retProgrammeSource.__xst === true){
-                        t+='\n' + retProgrammeSource.__xva + '\n';
-                    }else{
-                        return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un php'}));
-                    }
-                }
+            retProgrammeSource=__m_rev_vers_php1.c_tab_vers_php(objMatSrc.__xva,{"indice_de_debut" : position_de_la_balise_source+1});
+            if(retProgrammeSource.__xst === true){
+                t+='<?php' + CRLF + retProgrammeSource.__xva + CRLF + '?>';
+            }else{
+                return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un php'}));
             }
-            if(baliseHtmlOuPhpTrouvee === false && position_de_la_balise_source > 0){
-                /*
-                  on a oubblié la balise php ou html, on suppose que c'est du php !
-                  
-                */
-                /* avrif */
-                debugger;
-                retProgrammeSource=__m_rev_vers_php1.c_tab_vers_php(objMatSrc.__xva,{"indice_de_debut" : position_de_la_balise_source});
-                if(retProgrammeSource.__xst === true){
-                    t+='<?php' + CRLF + retProgrammeSource.__xva + CRLF + '?>';
-                }else{
-                    return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un php'}));
-                }
-            }
+            
             t=t.replace(/\/\*\*\//g,'');
             t=t.replace(/\?><\?php/g,'');
             t=t.replace(/<\?php\?>/g,'');
@@ -129,64 +88,63 @@ function convertSource(objMatSrc){
             if(t.substr(0,2) === '\r\n'){
                 t=t.substr(2);
             }else{
-                if(t.substr(0,1) === '\r' || t.substr(0,1) === '\r'){
+                if(t.substr(0,1) === '\r' || t.substr(0,1) === '\n'){
                     t=t.substr(1);
                 }
             }
-            return(logerreur({
+            return({
                 "__xst" : true ,
                 "__xva" : t ,
                 "file_name" : file_name ,
                 "file_path" : file_path ,
                 "file_extension" : file_extension ,
                 "tabConcatFichier" : tabConcatFichier
-            }));
+            });
         }else if(type_source == 'src_javascript' && file_extension == 'js'){
-            retProgrammeSource=__m_rev_vers_js1.c_tab_vers_js(objMatSrc.__xva,{"indice_de_debut" : idJs + 1});
+            retProgrammeSource=__m_rev_vers_js1.c_tab_vers_js(objMatSrc.__xva,{"indice_de_debut" : position_de_la_balise_source + 1});
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{
                 return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un javascript'}));
             }
-            return(logerreur({
+            return({
                 "__xst" : true ,
                 "__xva" : t ,
                 "file_name" : file_name ,
                 "file_path" : file_path ,
                 "file_extension" : file_extension ,
                 "tabConcatFichier" : tabConcatFichier
-            }));
+            });
         }else if(type_source == 'src_html' && file_extension == 'html'){
-            retProgrammeSource=__module_html1.tabToHtml1(objMatSrc.__xva,idJs + 1,false,0);
+            retProgrammeSource=__module_html1.tabToHtml1(objMatSrc.__xva,position_de_la_balise_source + 1,false,0);
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{
                 return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un html'}));
             }
-            return(logerreur({
+            return({
                 "__xst" : true ,
                 "__xva" : t ,
                 "file_name" : file_name ,
                 "file_path" : file_path ,
                 "file_extension" : file_extension ,
                 "tabConcatFichier" : tabConcatFichier
-            }));
+            });
         }else if(type_source == 'src_sql' && file_extension == 'sql'){
-            debugger
-            retProgrammeSource=__m_rev_vers_sql1.c_tab_vers_js(objMatSrc.__xva,{indice_de_debut:idJs + 1});
+            retProgrammeSource=__m_rev_vers_sql1.c_tab_vers_js(objMatSrc.__xva,{indice_de_debut:position_de_la_balise_source + 1});
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{
                 return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un sql'}));
             }
-            return(logerreur({
+            return({
                 "__xst" : true ,
                 "__xva" : t ,
                 "file_name" : file_name ,
                 "file_path" : file_path ,
                 "file_extension" : file_extension ,
                 "tabConcatFichier" : tabConcatFichier
-            }));
+            });
         }
     }else{
         return(logerreur({"__xst" : false ,"id" : 0 ,"__xme" : 'file_name, file_path and source must be filled'}));
@@ -253,48 +211,6 @@ function reprendre(){
 function reprendreEtRecompiler(){
     document.getElementById('zonesource').value=document.getElementById('normalise').value;
     enregistrer2();
-}
-/*
-  =====================================================================================================================
-*/
-function compareNormalise(zoneSource,zoneNormalisee,comparaisonSourcesSansCommentairesOK){
-    var lienReprendre='<div class="yyinfo">les codes produits sont équivalent : <a href="javascript:reprendre()">reprendre</a> </div>';
-    var tab1=document.getElementById(zoneSource).value.split('\n');
-    var tab2=document.getElementById(zoneNormalisee).value.split('\n');
-    if(tab1.length == tab2.length){
-        var i=0;
-        for( i=0 ; i < tab1.length ; i=i + 1 ){
-            if(tab1[i] != tab2[i]){
-                global_messages.lines.push(i);
-                document.getElementById('global_messages').innerHTML+='<div class="yywarning">différence dans des sources en ligne ' + (i + 1) + '</div>';
-                document.getElementById('global_messages').innerHTML+='<div class="yywarning">' + tab1[i].replace(/ /g,'░') + '</div>';
-                document.getElementById('global_messages').innerHTML+='<div class="yywarning">' + tab2[i].replace(/ /g,'░') + '</div>';
-                if(comparaisonSourcesSansCommentairesOK === true){
-                    document.getElementById('global_messages').innerHTML+=lienReprendre;
-                }
-                return false;
-            }
-        }
-        document.getElementById('global_messages').innerHTML+='<div class="yyinfo">Le source et le normalisé sont les mêmes</div>';
-        document.getElementById('sauvegarderLeNormalise').disabled=false;
-        document.getElementById('nomDuSource').disabled=false;
-    }else{
-        var goOn=true;
-        var i=0;
-        for( i=0 ; goOn && i < tab1.length && i < tab2.length ; i=i + 1 ){
-            if(tab1[i] != tab2[i]){
-                global_messages.lines.push(i);
-                document.getElementById('global_messages').innerHTML+='<div class="yywarning">ligne : ' + (i + 1) + '<br />' + replaceAll(tab1[i],' ','░') + '<br />' + replaceAll(tab2[i],' ','░') + '</div>';
-                goOn=false;
-            }
-        }
-        document.getElementById('global_messages').innerHTML+='<div class="yywarning">différence dans des sources en ligne </div>';
-        if(comparaisonSourcesSansCommentairesOK === true){
-            document.getElementById('global_messages').innerHTML+=lienReprendre;
-        }
-        return false;
-    }
-    return true;
 }
 /*
   =====================================================================================================================
@@ -391,7 +307,7 @@ function enregistrer2(){
     console.log('matriceFonction=',matriceFonction);
     if(matriceFonction.__xst === true){
         var startMicro=performance.now();
-        var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction.__xva,true);
+        var fonctionReecriteAvecRetour1=a2F1(matriceFonction.__xva,0,true,1);
         var endMicro=performance.now();
         console.log('reconstitution du source endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
         var diResultatsCompactes=document.createElement('pre');
@@ -400,10 +316,10 @@ function enregistrer2(){
             ajusteTailleTextareaContenantSource('normalise');
             memeHauteur('normalise','zonesource');
             var startMicro=performance.now();
-            var compacteOriginal=arrayToFunct1(matriceFonction.__xva,false,false);
+            var compacteOriginal=a2F1(matriceFonction.__xva,0,false,1);
             var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.__xva);
             var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,false,'');
-            var compacteReecrit=arrayToFunct1(matriceDeLaFonctionReecrite.__xva,false,false);
+            var compacteReecrit=a2F1(matriceDeLaFonctionReecrite.__xva,0,false,1);
             var endMicro=performance.now();
             console.log('comparaison des compactés=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
             if(compacteOriginal.__xst == true && compacteReecrit.__xst === true){
@@ -421,7 +337,7 @@ function enregistrer2(){
                 diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">compacteOriginal=' + JSON.stringify(compacteOriginal) + '</b>';
                 diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br /><b style="color:red;">compacteReecrit=' + JSON.stringify(compacteReecrit) + '</b>';
             }
-            var fonctionReecriteAvecRetour1=arrayToFunct1(matriceFonction.__xva,true,false);
+            var fonctionReecriteAvecRetour1=a2F1(matriceFonction.__xva,0,true,1);
         }else{
             diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">Erreur de réécriture du source original</b>';
         }

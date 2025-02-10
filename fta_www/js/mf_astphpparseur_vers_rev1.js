@@ -22,8 +22,7 @@ class c_astphpparseur_vers_rev1{
         if(o.hasOwnProperty('element') && o.element && o.element.hasOwnProperty('loc') && o.element.loc.hasOwnProperty('start')){
             o.plage=[o.element.loc.start.offset,o.element.loc.end.offset];
         }
-        logerreur(o);
-        return o;
+        return(logerreur(o));
     }
     /*
       =============================================================================================================
@@ -292,7 +291,7 @@ class c_astphpparseur_vers_rev1{
             var cle=this.#php_construit_cle(10);
             this.#astphp_logerreur({
                     "__xst" : true ,
-                    "__xav" : nl1() + 'ATTENTION, ce php contient du html en ligne qui n\'est pas complet et qui est converti en echo "' + cle + '"' ,
+                    "__xav" : nl1() + '<br />ATTENTION, ce php contient du html en ligne qui n\'est pas complet et qui est converti en echo , chercher : "' + cle + '"' ,
                     "element" : element
                 });
             if(contenu.indexOf('<?') >= 0){
@@ -421,7 +420,7 @@ class c_astphpparseur_vers_rev1{
                 var tableau1=iterateCharacters2(globale_source_php2);
                 var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                 if(matriceFonction.__xst === true){
-                    var obj2=arrayToFunct1(matriceFonction.__xva,true);
+                    var obj2=a2F1(matriceFonction.__xva,0,true,1);
                     if(obj2.__xst === true){
                         document.getElementById(zone_rev).value=obj2.__xva;
                         globale_source_php2='';
@@ -2257,7 +2256,7 @@ class c_astphpparseur_vers_rev1{
             case '!' : t+='non(' + what + ')';
                 break;
             case '-' :
-                if(isNumeric(what)){
+                if(__m_rev1.est_num(what)){
                     t+='-' + what;
                 }else if(element.what.kind === 'variable'){
                     t+='-' + what;
@@ -2267,7 +2266,7 @@ class c_astphpparseur_vers_rev1{
                 break;
                 
             case '+' :
-                if(isNumeric(what)){
+                if(__m_rev1.est_num(what)){
                     t+='+' + what;
                 }else if(element.what.kind === 'variable'){
                     t+='+' + what;

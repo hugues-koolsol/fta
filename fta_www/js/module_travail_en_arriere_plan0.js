@@ -238,7 +238,7 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
                                 var objSource=__m_rev_vers_php1.c_tab_vers_php(tab,{});
                             }
                             if(objSource.__xst === true){
-                                var obj=arrayToFunct1(tab,true);
+                                var obj=a2F1(tab,0,true,1);
                                 if(obj.__xst === true){
                                     arg[id_source].tab=[];
                                     var params={"arg" : arg ,"id_tache" : j ,"id_source" : id_source ,"source_rev" : obj.__xva ,"source_genere" : objSource.__xva};
@@ -339,7 +339,7 @@ function traite_une_suppression(id_tache,arg){
                             console.log('%c on traite un php ','color:red;background:yellow;',objSource.__xst);
                         }
                         if(objSource.__xst === true){
-                            var obj=arrayToFunct1(tab1,true);
+                            var obj=a2F1(tab1,0,true,1);
                             if(obj.__xst === true){
                                 arg[id_source].tab1=[];
                                 var params={

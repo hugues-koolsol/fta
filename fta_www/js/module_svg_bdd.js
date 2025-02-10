@@ -429,7 +429,7 @@ class module_svg_bdd{
         var max_id=-1;
         var lst=this.#svg_dessin.getElementsByTagName('*');
         for( i=0 ; i < lst.length ; i++ ){
-            if(lst[i].id && isNumeric(lst[i].id)){
+            if(lst[i].id && __m_rev1.est_num(lst[i].id)){
                 j=parseInt(lst[i].id,10);
                 if(j > max_id){
                     max_id=j;
@@ -514,7 +514,7 @@ class module_svg_bdd{
             if(la_valeur_par_defaut_est_caractere === true){
                 rev+=',valeur_par_defaut(\'' + document.getElementById('valeur_par_defaut').value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
             }else{
-                if(isNumeric(document.getElementById('valeur_par_defaut').value)){
+                if(__m_rev1.est_num(document.getElementById('valeur_par_defaut').value)){
                     rev+=',valeur_par_defaut(' + document.getElementById('valeur_par_defaut').value + ')';
                 }else{
                     var la_valeur=document.getElementById('valeur_par_defaut').value;
@@ -892,7 +892,7 @@ class module_svg_bdd{
                 }else{
                     meta+=',(la_valeur_par_defaut_est_caractere,0)';
                     meta+=',(valeur_par_defaut,' + document.getElementById('valeur_par_defaut').value + ')';
-                    if(isNumeric(document.getElementById('valeur_par_defaut').value)){
+                    if(__m_rev1.est_num(document.getElementById('valeur_par_defaut').value)){
                         t+=',valeur_par_defaut(' + document.getElementById('valeur_par_defaut').value + ')';
                     }else{
                         var la_valeur=document.getElementById('valeur_par_defaut').value;
@@ -936,7 +936,7 @@ class module_svg_bdd{
                         var max_id_svg=-1;
                         var lst2=this.#svg_dessin.getElementsByTagName('*');
                         for( j=0 ; j < lst2.length ; j++ ){
-                            if(lst2[j].id && isNumeric(lst2[j].id)){
+                            if(lst2[j].id && __m_rev1.est_num(lst2[j].id)){
                                 var k=parseInt(lst2[j].id,10);
                                 if(k > max_id_svg){
                                     max_id_svg=k;
@@ -2178,7 +2178,7 @@ class module_svg_bdd{
         var max_id=-1;
         var lst=this.#svg_dessin.getElementsByTagName('*');
         for( i=0 ; i < lst.length ; i++ ){
-            if(lst[i].id && isNumeric(lst[i].id)){
+            if(lst[i].id && __m_rev1.est_num(lst[i].id)){
                 j=parseInt(lst[i].id,10);
                 if(j > max_id){
                     max_id=j;

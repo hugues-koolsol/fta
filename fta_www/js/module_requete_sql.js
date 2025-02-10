@@ -1030,7 +1030,7 @@ class requete_sql{
         }
         t+='<a href="javascript:__gi1.formatter_le_source_rev(&quot;zone_formule&quot;);" title="formatter le source rev">(😊)</a>';
         t+='<a href="javascript:__gi1.ajouter_un_commentaire_vide_et_reformater(&quot;zone_formule&quot;);" title="ajouter un commentaire et formatter">#()(😊)</a>';
-        t+='<div class="yyconteneur_de_texte1"><textarea id="zone_formule" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">' + strToHtml(contenu) + '</textarea></div>';
+        t+='<div class="yyconteneur_de_texte1"><textarea id="zone_formule" rows="20" autocorrect="off" autocapitalize="off" spellcheck="false">' + __m_rev1.entitees_html(contenu) + '</textarea></div>';
         t+='<br /><a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.ajouter_la_formule(&quot;' + destination + '&quot;)">ajouter la formule</a>';
         document.getElementById('__contenu_modale').innerHTML=t;
         __gi1.global_modale2.showModal();
@@ -1104,7 +1104,7 @@ class requete_sql{
                         contenu+='champ(`T' + this.#obj_webs.champs_sortie[i].indice_table + '` , `' + this.#obj_webs.champs_sortie[i].nom_du_champ + '`)';
                     }
                 }else if(this.#obj_webs.champs_sortie[i].type_d_element === 'constante'){
-                    contenu+=maConstante(this.#obj_webs.champs_sortie[i].constante);
+                    contenu+=__m_rev1.ma_constante(this.#obj_webs.champs_sortie[i].constante);
                 }else if(this.#obj_webs.champs_sortie[i].type_d_element === 'formule'){
                     contenu+=this.#obj_webs.champs_sortie[i].formule;
                 }
@@ -1318,7 +1318,7 @@ class requete_sql{
                 if(this.#obj_webs.champs_sortie[i].type_d_element === 'champ'){
                     contenu+='champ(`T' + this.#obj_webs.champs_sortie[i].indice_table + '` , `' + this.#obj_webs.champs_sortie[i].nom_du_champ + '`)';
                 }else if(this.#obj_webs.champs_sortie[i].type_d_element === 'constante'){
-                    contenu+=maConstante(this.#obj_webs.champs_sortie[i].constante);
+                    contenu+=__m_rev1.ma_constante(this.#obj_webs.champs_sortie[i].constante);
                 }else if(this.#obj_webs.champs_sortie[i].type_d_element === 'formule'){
                     contenu+=this.#obj_webs.champs_sortie[i].formule;
                 }
@@ -1415,7 +1415,7 @@ class requete_sql{
                         valeurs+=CRLF + '      ' + 'champ(`T' + elem.indice_table + '` , `' + elem.nom_du_champ + '` ' + (elem.alias_du_champ && elem.alias_du_champ !== '' ? ( ' , alias_champ(`' + elem.alias_du_champ + '`)' ) : ( '' )) + ' )';
                     }
                 }else if(elem.type_d_element === 'constante'){
-                    valeurs+=CRLF + '      ' + maConstante(elem.constante);
+                    valeurs+=CRLF + '      ' + __m_rev1.ma_constante(elem.constante);
                 }else if(elem.type_d_element === 'formule'){
                     valeurs+=CRLF + '      ' + elem.formule;
                 }
@@ -1538,7 +1538,7 @@ class requete_sql{
         var tableau1=iterateCharacters2(rev_texte);
         var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            var obj2=arrayToFunct1(matriceFonction.__xva,true);
+            var obj2=a2F1(matriceFonction.__xva,0,true,1);
             if(obj2.__xst === true){
                 rev_texte=obj2.__xva;
             }

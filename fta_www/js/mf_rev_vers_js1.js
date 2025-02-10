@@ -82,7 +82,7 @@ class c_rev_vers_js1{
       =============================================================================================================
     */
     #macst_pour_javascript(elt){
-        let r=maConstante(elt);
+        let r=__m_rev1.ma_constante(elt);
         if(elt[4] === 1 || elt[4] === 3){
             const cr1=new RegExp('¶' + 'CR' + '¶',"g");
             const lf1=new RegExp('¶' + 'LF' + '¶',"g");
@@ -118,12 +118,12 @@ class c_rev_vers_js1{
         if(opt.hasOwnProperty('separateur')){
             terminateur=opt.separateur;
         }
-        const espcLigne=espacesn(true,niveau);
-        const espcLignep1=espacesn(true,niveau + 1);
+        const un_espace_p0=__m_rev1.resps(niveau);
+        const un_espace_p1=__m_rev1.resps(niveau + 1);
         for( i=id + 1 ; i < this.#l02 ; i=this.#tb[i][12] ){
             ne_pas_mettre_de_terminateur=false;
             if(t !== '' && retour_ligne === true){
-                t+=espcLigne;
+                t+=un_espace_p0;
             }
             if(this.#tb[i][2] === 'c'){
                 t+=this.#macst_pour_javascript(this.#tb[i]);
@@ -272,9 +272,9 @@ class c_rev_vers_js1{
                         t+='for(';
                         t+=pourChaque;
                         t+='){';
-                        t+=espcLignep1;
+                        t+=un_espace_p1;
                         t+=faire;
-                        t+=espcLigne;
+                        t+=un_espace_p0;
                         t+='}';
                         ne_pas_mettre_de_terminateur=true;
                         break;
@@ -318,9 +318,9 @@ class c_rev_vers_js1{
                         t+='for(';
                         t+=pourChaque;
                         t+='){';
-                        t+=espcLignep1;
+                        t+=un_espace_p1;
                         t+=faire;
-                        t+=espcLigne;
+                        t+=un_espace_p0;
                         t+='}';
                         ne_pas_mettre_de_terminateur=true;
                         break;
@@ -365,7 +365,7 @@ class c_rev_vers_js1{
                                                 obj=this.#rev_js1(k,niveau,{});
                                                 niveau-=2;
                                                 if(obj.__xst === true){
-                                                    InstructionsCas=espacesn(true,niveau + 2) + obj.__xva;
+                                                    InstructionsCas=__m_rev1.resps(niveau + 2) + obj.__xva;
                                                 }else{
                                                     return(this.#rev_js_logerreur({"__xst" : false ,"id" : k ,"__xme" : 'javascript dans bascule 0287'}));
                                                 }
@@ -376,7 +376,7 @@ class c_rev_vers_js1{
                                             return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'javascript dans bascule 0293'}));
                                         }
                                     }
-                                    valeursCase+=espacesn(true,niveau + 1);
+                                    valeursCase+=__m_rev1.resps(niveau + 1);
                                     if(valeurCas === null){
                                         valeursCase+='default:';
                                     }else{
@@ -387,7 +387,7 @@ class c_rev_vers_js1{
                                         valeursCase+=' ' + InstructionsCas;
                                     }else{
                                         valeursCase+=InstructionsCas;
-                                        valeursCase+=espacesn(true,niveau + 2);
+                                        valeursCase+=__m_rev1.resps(niveau + 2);
                                     }
                                 }else{
                                     return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'javascript dans bascule 0307 '}));
@@ -396,7 +396,7 @@ class c_rev_vers_js1{
                         }
                         t+='switch (' + valeurQuand + '){';
                         t+=valeursCase;
-                        t+=espcLigne;
+                        t+=un_espace_p0;
                         t+='}';
                         ne_pas_mettre_de_terminateur=true;
                         break;
@@ -421,7 +421,7 @@ class c_rev_vers_js1{
                                 if(this.#tb[les_cas[j][0] + 1][8] >= 5){
                                     obj=this.#TraiteOperations2(les_cas[j][0],niveau + 1,0,true);
                                     if(obj.__xst === true){
-                                        condition+=obj.__xva + espcLigne;
+                                        condition+=obj.__xva + un_espace_p0;
                                     }else{
                                         return(this.#rev_js_logerreur({"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : nl1() + 'tantQue '}));
                                     }
@@ -430,7 +430,7 @@ class c_rev_vers_js1{
                                     if(obj.__xst === true){
                                         if(obj.__xva.length >= 120){
                                             obj=this.#TraiteOperations2(les_cas[j][0],niveau + 1,0,true);
-                                            condition+=obj.__xva + espcLigne;
+                                            condition+=obj.__xva + un_espace_p0;
                                         }else{
                                             condition+=obj.__xva;
                                         }
@@ -451,7 +451,7 @@ class c_rev_vers_js1{
                                 }
                             }
                         }
-                        t+='do{' + espcLignep1 + instructions + espcLigne + '}while(' + condition + ')';
+                        t+='do{' + un_espace_p1 + instructions + un_espace_p0 + '}while(' + condition + ')';
                         break;
                         
                     case 'tantQue' :
@@ -474,7 +474,7 @@ class c_rev_vers_js1{
                                 if(this.#tb[les_cas[j][0] + 1][8] >= 5){
                                     obj=this.#TraiteOperations2(les_cas[j][0],niveau + 1,0,true);
                                     if(obj.__xst === true){
-                                        condition+=obj.__xva + espcLigne;
+                                        condition+=obj.__xva + un_espace_p0;
                                     }else{
                                         return(this.#rev_js_logerreur({"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : nl1() + 'tantQue '}));
                                     }
@@ -483,7 +483,7 @@ class c_rev_vers_js1{
                                     if(obj.__xst === true){
                                         if(obj.__xva.length >= 120){
                                             obj=this.#TraiteOperations2(les_cas[j][0],niveau + 1,0,true);
-                                            condition+=obj.__xva + espcLigne;
+                                            condition+=obj.__xva + un_espace_p0;
                                         }else{
                                             condition+=obj.__xva;
                                         }
@@ -505,9 +505,9 @@ class c_rev_vers_js1{
                             }
                         }
                         t+='while(' + condition + '){';
-                        t+=espcLignep1;
+                        t+=un_espace_p1;
                         t+=faire;
-                        t+=espcLigne;
+                        t+=un_espace_p0;
                         t+='}';
                         ne_pas_mettre_de_terminateur=true;
                         break;
@@ -587,9 +587,9 @@ class c_rev_vers_js1{
                             condition='';
                         }
                         t+='for( ' + initialisation + ' ; ' + condition + ' ; ' + increment + ' ){';
-                        t+=espcLignep1;
+                        t+=un_espace_p1;
                         t+=faire;
-                        t+=espcLigne;
+                        t+=un_espace_p0;
                         t+='}';
                         ne_pas_mettre_de_terminateur=true;
                         break;
@@ -621,7 +621,7 @@ class c_rev_vers_js1{
                                             }else{
                                                 obj=this.#rev_js1(j + 2,niveau + 1,{});
                                                 if(obj.__xst === true){
-                                                    sierreur+='catch(' + nomErreur + '){' + espcLignep1 + obj.__xva + espcLigne + '}';
+                                                    sierreur+='catch(' + nomErreur + '){' + un_espace_p1 + obj.__xva + un_espace_p0 + '}';
                                                     contenu_catch_est_vide=false;
                                                 }else{
                                                     return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'problème sur le "sierreur" du "essayer" '}));
@@ -640,9 +640,9 @@ class c_rev_vers_js1{
                                 obj=this.#rev_js1(j,niveau + 1,{});
                                 if(obj.__xst === true){
                                     if(contenu_catch_est_vide === true){
-                                        finalement+=espcLigne;
+                                        finalement+=un_espace_p0;
                                     }
-                                    finalement+='finally{' + espcLignep1 + obj.__xva + espcLigne + '}';
+                                    finalement+='finally{' + un_espace_p1 + obj.__xva + un_espace_p0 + '}';
                                 }else{
                                     return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'problème sur le "sierreur" du "essayer" '}));
                                 }
@@ -651,9 +651,9 @@ class c_rev_vers_js1{
                             }
                         }
                         t+='try{';
-                        t+=espcLignep1;
+                        t+=un_espace_p1;
                         t+=contenu;
-                        t+=espcLigne;
+                        t+=un_espace_p0;
                         t+='}';
                         t+=sierreur;
                         t+=finalement;
@@ -711,12 +711,12 @@ class c_rev_vers_js1{
                                     }
                                 }
                                 if(this.#tb[les_cas[j][0]][13].indexOf('\n') >= 0){
-                                    t+=espacesn(true,niveauSi);
+                                    t+=__m_rev1.resps(niveauSi);
                                 }
                                 var commt=traiteCommentaire2(this.#tb[les_cas[j][0]][13],niveauSi,les_cas[j][0]);
                                 t+='/*' + commt + '*/';
                                 if(this.#tb[j][13].indexOf('\n') >= 0){
-                                    t+=espacesn(true,niveauSi);
+                                    t+=__m_rev1.resps(niveauSi);
                                 }
                             }else if(les_cas[j][1] === 'si'){
                                 var les_comts=[];
@@ -735,12 +735,12 @@ class c_rev_vers_js1{
                                 }
                                 for( k=0 ; k < les_comts.length ; k=k + 1 ){
                                     if(les_comts[k].indexOf('\n') >= 0){
-                                        t+=espacesn(true,niveau + 1);
+                                        t+=__m_rev1.resps(niveau + 1);
                                     }
                                     var commt=traiteCommentaire2(les_comts[k],niveau + 1,les_cas[j][0]);
                                     t+='/*' + commt + '*/';
                                     if(les_comts[k].indexOf('\n') >= 0){
-                                        t+=espacesn(true,niveau + 1);
+                                        t+=__m_rev1.resps(niveau + 1);
                                     }
                                 }
                                 t+='if(';
@@ -748,7 +748,7 @@ class c_rev_vers_js1{
                                     obj=this.#TraiteOperations2(debutCondition,niveau + 1,0,true);
                                     if(obj.__xst === true){
                                         t+=obj.__xva;
-                                        t+=espcLigne + '){';
+                                        t+=un_espace_p0 + '){';
                                     }else{
                                         return(this.#rev_js_logerreur({"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : nl1() + ' problème sur la condition du choix en indice ' + les_cas[j][0]}));
                                     }
@@ -758,7 +758,7 @@ class c_rev_vers_js1{
                                         if(obj.__xva.length > 120){
                                             obj=this.#TraiteOperations2(debutCondition,niveau + 1,0,true);
                                             t+=obj.__xva;
-                                            t+=espcLigne + '){';
+                                            t+=un_espace_p0 + '){';
                                         }else{
                                             t+=obj.__xva;
                                             t+='){';
@@ -770,7 +770,7 @@ class c_rev_vers_js1{
                                 if(les_cas[j][2] > 0 && les_cas[j][4] > 0){
                                     obj=this.#rev_js1(les_cas[j][2],niveau + 1,{});
                                     if(obj.__xst === true){
-                                        t+=espcLignep1;
+                                        t+=un_espace_p1;
                                         t+=obj.__xva;
                                     }else{
                                         return(this.#rev_js_logerreur({"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : 'problème sur le alors du choix en indice ' + les_cas[j][0]}));
@@ -780,7 +780,7 @@ class c_rev_vers_js1{
                                 }else{
                                     if(aUnSinon){
                                     }else{
-                                        t+=espcLigne;
+                                        t+=un_espace_p0;
                                         t+='}';
                                     }
                                 }
@@ -800,21 +800,21 @@ class c_rev_vers_js1{
                                 }
                                 for( k=0 ; k < les_comts.length ; k=k + 1 ){
                                     if(les_comts[k].indexOf('\n') >= 0){
-                                        t+=espacesn(true,niveau + 1);
+                                        t+=__m_rev1.resps(niveau + 1);
                                     }
                                     var commt=traiteCommentaire2(les_comts[k],niveau + 1,les_cas[j][0]);
                                     t+='/*' + commt + '*/';
                                     if(les_comts[k].indexOf('\n') >= 0){
-                                        t+=espacesn(true,niveau + 1);
+                                        t+=__m_rev1.resps(niveau + 1);
                                     }
                                 }
-                                t+=espcLigne;
+                                t+=un_espace_p0;
                                 t+='}else if(';
                                 if(this.#tb[debutCondition + 1][8] >= 5){
                                     obj=this.#TraiteOperations2(debutCondition,niveau + 1,0,true);
                                     if(obj.__xst === true){
                                         t+=obj.__xva;
-                                        t+=espcLigne + '){';
+                                        t+=un_espace_p0 + '){';
                                     }else{
                                         return(this.#rev_js_logerreur({"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : nl1() + 'sinonsi '}));
                                     }
@@ -824,7 +824,7 @@ class c_rev_vers_js1{
                                         if(obj.__xva.length > 120){
                                             obj=this.#TraiteOperations2(debutCondition,niveau + 1,0,true);
                                             t+=obj.__xva;
-                                            t+=espcLigne + '){';
+                                            t+=un_espace_p0 + '){';
                                         }else{
                                             t+=obj.__xva + '){';
                                         }
@@ -836,7 +836,7 @@ class c_rev_vers_js1{
                                 if(les_cas[j][2] > 0 && les_cas[j][4] > 0){
                                     obj=this.#rev_js1(les_cas[j][2],niveau + 1,{});
                                     if(obj.__xst === true){
-                                        t+=espcLignep1;
+                                        t+=un_espace_p1;
                                         t+=obj.__xva;
                                     }else{
                                         return(this.#rev_js_logerreur({"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : 'problème sur le alors du choix en indice ' + les_cas[j][0]}));
@@ -845,23 +845,23 @@ class c_rev_vers_js1{
                                 if(aUnSinon){
                                 }else{
                                     if(j === les_cas.length - 1){
-                                        t+=espcLigne;
+                                        t+=un_espace_p0;
                                         t+='}';
                                     }
                                 }
                             }else{
-                                t+=espcLigne;
+                                t+=un_espace_p0;
                                 t+='}else{';
                                 if(les_cas[j][2] > 0 && les_cas[j][4] > 0){
                                     obj=this.#rev_js1(les_cas[j][2],niveau + 1,{});
                                     if(obj.__xst === true){
-                                        t+=espcLignep1;
+                                        t+=un_espace_p1;
                                         t+=obj.__xva;
                                     }else{
                                         return(this.#rev_js_logerreur({"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : 'problème sur le alors du choix en indice ' + les_cas[j][0]}));
                                     }
                                 }
-                                t+=espcLigne;
+                                t+=un_espace_p0;
                                 t+='}';
                             }
                         }
@@ -1176,7 +1176,7 @@ class c_rev_vers_js1{
                             }
                         }
                         if(nom_etiquette !== ''){
-                            t+=nom_etiquette + ':' + espcLignep1 + contenu_etiquette;
+                            t+=nom_etiquette + ':' + un_espace_p1 + contenu_etiquette;
                         }else{
                             return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : ' traitement etiquette contenu mauvais ' + JSON.stringify(this.#tb[i])}));
                         }
@@ -1196,7 +1196,7 @@ class c_rev_vers_js1{
                         /* un bloc, ça arrive de temps en temps */
                         obj=this.#rev_js1(i,niveau + 1,{});
                         if(obj.__xst === true){
-                            t+='{' + espcLignep1 + obj.__xva + espcLigne + '}';
+                            t+='{' + un_espace_p1 + obj.__xva + un_espace_p0 + '}';
                             ne_pas_mettre_de_terminateur=true;
                         }else{
                             return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : '1210  traitement bloc ' + JSON.stringify(this.#tb[i])}));
@@ -1310,7 +1310,7 @@ class c_rev_vers_js1{
                         }
                     }
                     if(un_trop_long === true){
-                        t=testlignecondition + ' ?' + espacesn(true,niveau) + '  ( ' + espacesn(true,niveau + 1) + si_vrai + ' )' + espacesn(true,niveau) + ': ( ' + espacesn(true,niveau + 1) + si_faux + ' ' + espacesn(true,niveau) + ')';
+                        t=testlignecondition + ' ?' + __m_rev1.resps(niveau) + '  ( ' + __m_rev1.resps(niveau + 1) + si_vrai + ' )' + __m_rev1.resps(niveau) + ': ( ' + __m_rev1.resps(niveau + 1) + si_faux + ' ' + __m_rev1.resps(niveau) + ')';
                     }else{
                         t=testlignecondition + ' ? ( ' + si_vrai + ' ) : ( ' + si_faux + ' )';
                     }
@@ -1680,7 +1680,7 @@ class c_rev_vers_js1{
                                 /*
                                   j'impose l'écriture d'un commentaire minimal devant une méthode
                                 */
-                                t+=espacesn(true,niveau) + '/* function ' + nomFonction + ' */' + espacesn(true,niveau);
+                                t+=__m_rev1.resps(niveau) + '/* function ' + nomFonction + ' */' + __m_rev1.resps(niveau);
                             }
                             if('méthode' === this.#tb[id][1]){
                                 if(format_tableau === true){
@@ -1700,16 +1700,16 @@ class c_rev_vers_js1{
                                 t+=asynchrone + 'function ' + nomFonction + '(' + (argumentsFonction === '' ? ( '' ) : ( argumentsFonction.substr(1) )) + '){';
                             }
                             if(this.#tb[positionContenu][8] === 0){
-                                t+=espacesn(true,niveau + 1);
+                                t+=__m_rev1.resps(niveau + 1);
                                 t+='/* rien ici */';
-                                t+=espacesn(true,niveau);
+                                t+=__m_rev1.resps(niveau);
                                 t+='}';
                             }else{
                                 obj=this.#rev_js1(positionContenu,niveau + 1,{});
                                 if(obj.__xst === true){
-                                    t+=espacesn(true,niveau + 1);
+                                    t+=__m_rev1.resps(niveau + 1);
                                     t+=obj.__xva;
-                                    t+=espacesn(true,niveau);
+                                    t+=__m_rev1.resps(niveau);
                                     t+='}';
                                 }else{
                                     return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'problème sur le contenu de la fonction "' + nomFonction + '"'}));
@@ -1923,7 +1923,7 @@ class c_rev_vers_js1{
                         textObj+=',';
                     }
                     if(mettre_des_sauts){
-                        textObj+=espacesn(true,niveau + 1);
+                        textObj+=__m_rev1.resps(niveau + 1);
                     }
                     textObj+='';
                     this.#rev_js_logerreur({"__xst" : false ,"id" : j ,"__xme" : nl1() + 'attention CE N\'EST PAS UNE ERREUR MAIS..., paramètre vide dans un tableau '});
@@ -1935,8 +1935,8 @@ class c_rev_vers_js1{
                                 textObj+=',';
                             }
                             mettre_des_sauts=true;
-                            textObj+=espacesn(true,niveau + 1);
-                            valeur=espacesn(true,niveau + 1);
+                            textObj+=__m_rev1.resps(niveau + 1);
+                            valeur=__m_rev1.resps(niveau + 1);
                             var commt=traiteCommentaire2(this.#tb[k][13],niveau,j);
                             textObj+='/*' + commt + '*/';
                             valeur+='/*' + commt + '*/';
@@ -1951,7 +1951,7 @@ class c_rev_vers_js1{
                                     textObj+=',';
                                 }
                                 if(mettre_des_sauts){
-                                    textObj+=espacesn(true,niveau + 1);
+                                    textObj+=__m_rev1.resps(niveau + 1);
                                 }
                                 textObj+=obje.__xva;
                                 /* textObj+=','; */
@@ -1988,7 +1988,7 @@ class c_rev_vers_js1{
                 }else{
                     textObj+=',';
                 }
-                textObj+=espacesn(true,niveau + 1);
+                textObj+=__m_rev1.resps(niveau + 1);
                 var commt=traiteCommentaire2(this.#tb[j][13],niveau,j);
                 textObj+='/*' + commt + '*/';
                 precedent_est_commentaire=true;
@@ -1996,13 +1996,13 @@ class c_rev_vers_js1{
             comptage++;
             if(contient_un_tbel){
                 if(comptage% 20 === 0){
-                    textObj+=espacesn(true,niveau + 1);
+                    textObj+=__m_rev1.resps(niveau + 1);
                 }else if(comptage% 10 === 0){
                     textObj+='                ';
                 }
             }
         }
-        if(nombre_de_parametres === 1 && nombre_de_proprietes === 0 && seul_element !== '' && isNumeric(seul_element)){
+        if(nombre_de_parametres === 1 && nombre_de_proprietes === 0 && seul_element !== '' && __m_rev1.est_num(seul_element)){
             if(this.#tb[this.#tb[id][7]][1] === 'new' && this.#tb[this.#tb[id][7]][2] === 'f'){
                 t='Array(' + seul_element + ')';
             }else{
@@ -2014,7 +2014,7 @@ class c_rev_vers_js1{
                 t+=textObj.substr(1);
             }
             if(mettre_des_sauts){
-                t+=espacesn(true,niveau);
+                t+=__m_rev1.resps(niveau);
             }
             t+=']' + proprietes;
         }
@@ -2246,9 +2246,9 @@ class c_rev_vers_js1{
             }
         }
         t+='class ' + nom_classe + etend + '{';
-        t+=espacesn(true,niveau + 1);
+        t+=__m_rev1.resps(niveau + 1);
         t+=contenu_classe;
-        t+=espacesn(true,niveau);
+        t+=__m_rev1.resps(niveau);
         t+='}';
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2365,11 +2365,11 @@ class c_rev_vers_js1{
         }
         for( var i=0 ; i < tableau_prop_objet.length ; i++ ){
             if(i === 0 && a_des_commentaires){
-                tt+=espacesn(true,niveau + 1);
+                tt+=__m_rev1.resps(niveau + 1);
             }
             if(tableau_prop_objet[i].type === 'comm'){
                 tt+=tableau_prop_objet[i].valeur;
-                tt+=espacesn(true,niveau + 1);
+                tt+=__m_rev1.resps(niveau + 1);
             }else{
                 if(tableau_prop_objet[i].cle.substr(0,3) === '...' && tableau_prop_objet[i].valeur === ''){
                     /* car t={...z} */
@@ -2389,9 +2389,9 @@ class c_rev_vers_js1{
                 }
                 if(a_des_commentaires){
                     if(i === tableau_prop_objet.length - 1){
-                        tt+=espacesn(true,niveau);
+                        tt+=__m_rev1.resps(niveau);
                     }else{
-                        tt+=espacesn(true,niveau + 1);
+                        tt+=__m_rev1.resps(niveau + 1);
                     }
                 }
             }
@@ -2616,7 +2616,7 @@ class c_rev_vers_js1{
                         argumentsFonction+=',';
                         if(nomFonction === 'Array' && nbEnfants >= 4){
                             forcerNvelleLigneEnfant=true;
-                            argumentsFonction+=espacesn(true,niveau + 1);
+                            argumentsFonction+=__m_rev1.resps(niveau + 1);
                         }
                         argumentsFonction+=obj.__xva;
                     }else{
@@ -2630,7 +2630,7 @@ class c_rev_vers_js1{
                         /* obj=js_this.#tbTojavascript1(this.#tb,j + 1,false,false,niveau + 1); */
                         obj=this.#rev_js1(j,niveau + 1,{});
                         if(obj.__xst === true){
-                            contenu+=espacesn(true,niveau + 1);
+                            contenu+=__m_rev1.resps(niveau + 1);
                             contenu+=obj.__xva;
                         }else{
                             return(this.#rev_js_logerreur({"__xst" : false ,"id" : j ,"__xme" : 'erreur dans un appelf sur  le contenu d\'une fonction "function" '}));
@@ -2754,11 +2754,11 @@ class c_rev_vers_js1{
         }
         var transformer_point_en_tableau=false;
         if(!dansConditionOuDansFonction){
-            t+=espacesn(true,niveau);
+            t+=__m_rev1.resps(niveau);
         }
         t+=nomRetour !== '' ? ( nomRetour + '=' ) : ( '' );
         if(recursif === true && nomRetour === '' && !dansConditionOuDansFonction){
-            t+=espacesn(true,niveau + 1) + (nomElement === '' ? ( '' ) : ( nomElement + '.' ));
+            t+=__m_rev1.resps(niveau + 1) + (nomElement === '' ? ( '' ) : ( nomElement + '.' ));
         }else{
             if(nomElement !== ''){
                 if(nomElement.substr(nomElement.length - 1,1) === ']'){
@@ -2902,7 +2902,7 @@ class c_rev_vers_js1{
                    && enfantTermineParUnePropriete === false
                || forcerNvelleLigneEnfant
         ){
-            t+=espacesn(true,niveau);
+            t+=__m_rev1.resps(niveau);
         }
         if(!enfantTermineParUnePropriete){
             if(nomFonction === 'Array' && nbEnfants <= 1){
@@ -2926,7 +2926,7 @@ class c_rev_vers_js1{
             }
         }
         if(nomFonction === 'function' || nomFonction === '' && flechee === true){
-            var espaces_avant_contenu=espacesn(true,niveau);
+            var espaces_avant_contenu=__m_rev1.resps(niveau);
             if(contenu.substr(0,2) === CRLF){
                 espaces_avant_contenu='';
             }
@@ -2937,14 +2937,14 @@ class c_rev_vers_js1{
                       par exemple 
                       this.#tb.sort(function(a,b){return(b - a);});
                     */
-                    t+='{' + espaces_avant_contenu + contenu + espacesn(true,niveau) + '}';
+                    t+='{' + espaces_avant_contenu + contenu + __m_rev1.resps(niveau) + '}';
                 }else{
                     if(this.#tb[this.#tb[id][7]][1] === 'affecte' && this.#tb[this.#tb[id][7]][2] === 'f'){
-                        t+='{' + espaces_avant_contenu + contenu + espacesn(true,niveau) + '}';
+                        t+='{' + espaces_avant_contenu + contenu + __m_rev1.resps(niveau) + '}';
                     }else if(this.#tb[this.#tb[id][7]][1] === 'nomf' && this.#tb[this.#tb[id][7]][2] === 'f'){
-                        t+='{' + espaces_avant_contenu + contenu + espacesn(true,niveau - 1) + '}';
+                        t+='{' + espaces_avant_contenu + contenu + __m_rev1.resps(niveau - 1) + '}';
                     }else{
-                        t+='{' + espaces_avant_contenu + contenu + espacesn(true,niveau) + '}';
+                        t+='{' + espaces_avant_contenu + contenu + __m_rev1.resps(niveau) + '}';
                     }
                 }
             }else{
@@ -2964,15 +2964,15 @@ class c_rev_vers_js1{
                        || nom_de_la_fonction_parente === 'catch'
                        || nom_de_la_fonction_parente === 'finally'
                 ){
-                    t+='{' + espaces_avant_contenu + contenu + espacesn(true,niveau) + '}';
+                    t+='{' + espaces_avant_contenu + contenu + __m_rev1.resps(niveau) + '}';
                 }else if(nom_de_la_fonction_parente === 'filter' || nom_de_la_fonction_parente === 'map'){
                     t+=contenu;
                 }else if(nom_de_la_fonction_parente === ''){
-                    t+='{' + espaces_avant_contenu + contenu + espacesn(true,niveau) + '}';
+                    t+='{' + espaces_avant_contenu + contenu + __m_rev1.resps(niveau) + '}';
                 }else{
                     var temp=nom_de_la_fonction_parente.trim();
                     if(temp.substr(0,8) === 'function'){
-                        t+='{' + contenu + espacesn(true,niveau) + '}';
+                        t+='{' + contenu + __m_rev1.resps(niveau) + '}';
                     }else{
                         if(nom_de_la_fonction_parente === 'filter' || nom_de_la_fonction_parente === 'map'){
                             console.log('flechée nom_de_la_fonction_parente="' + nom_de_la_fonction_parente + '"' + ' donc sans accolades ');
@@ -2987,7 +2987,7 @@ class c_rev_vers_js1{
         t+=proprietesFonction;
         /*
           if(!dansConditionOuDansFonction || auto_appelee === true){
-          t+=espacesn(true,niveau);
+          t+=__m_rev1.resps(niveau);
           }
         */
         if(transformer_point_en_tableau === true){
@@ -3137,9 +3137,9 @@ class c_rev_vers_js1{
         }else{
             if(ajouter_des_sauts_de_lignes !== undefined && ajouter_des_sauts_de_lignes === true){
                 sauts=true;
-                un_espace=espacesn(true,niveau);
-                un_espacem1=espacesn(true,niveau - 1);
-                un_espacem2=espacesn(true,niveau - 2);
+                un_espace=__m_rev1.resps(niveau);
+                un_espacem1=__m_rev1.resps(niveau - 1);
+                un_espacem2=__m_rev1.resps(niveau - 2);
             }
             for( var i=0 ; i < operandes.length ; i++ ){
                 if(i > 0){
