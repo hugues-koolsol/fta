@@ -915,7 +915,7 @@ class interface1{
                     /*
                       var startMicro = performance.now();
                     */
-                    var obj2=a2F1(matriceFonction.__xva,0,true,1);
+                    var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                     if(obj2.__xst === true){
                         document.getElementById(nom_de_la_text_area_rev).value=obj2.__xva;
                     }
@@ -1049,7 +1049,7 @@ class interface1{
                 }
                 var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                 if(matriceFonction.__xst === true){
-                    var obj2=a2F1(matriceFonction.__xva,0,true,1);
+                    var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                     if(obj2.__xst === true){
                         document.getElementById(nom_de_la_text_area_rev).value=obj2.__xva;
                     }else{
@@ -1129,7 +1129,7 @@ class interface1{
                 var tableau1=iterateCharacters2(obj.__xva);
                 var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                 if(matriceFonction.__xst === true){
-                    var obj2=a2F1(matriceFonction.__xva,0,true,1);
+                    var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                     if(obj2.__xst === true){
                         if(options_json.hasOwnProperty('zone_html_rev')){
                             document.getElementById(options_json.zone_html_rev).value=obj2.__xva;
@@ -1187,7 +1187,7 @@ class interface1{
                     }
                     var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                     if(matriceFonction.__xst === true){
-                        var obj2=a2F1(matriceFonction.__xva,0,true,1);
+                        var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                         if(obj2.__xst === true){
                             document.getElementById(options.nom_de_la_text_area_rev).value=obj2.__xva;
                         }else{
@@ -1399,14 +1399,14 @@ class interface1{
         if(matriceFonction1.__xst === true){
             var parent=document.getElementById('resultat1');
             var startMicro=performance.now();
-            var fonctionReecriteAvecRetour1=a2F1(matriceFonction1.__xva,0,true,1);
+            var fonctionReecriteAvecRetour1=__m_rev1.matrice_vers_source_rev1(matriceFonction1.__xva,0,true,1);
             var resultat_compacte_ok='';
             var diResultatsCompactes=document.createElement('div');
             if(fonctionReecriteAvecRetour1.__xst === true){
-                var compacteOriginal=a2F1(matriceFonction1.__xva,0,false,1);
+                var compacteOriginal=__m_rev1.matrice_vers_source_rev1(matriceFonction1.__xva,0,false,1);
                 var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.__xva);
                 var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,autoriser_constante_dans_la_racine,'');
-                var compacteReecrit=a2F1(matriceDeLaFonctionReecrite.__xva,0,false,1);
+                var compacteReecrit=__m_rev1.matrice_vers_source_rev1(matriceDeLaFonctionReecrite.__xva,0,false,1);
                 if(compacteOriginal.__xst === true && compacteReecrit.__xst === true){
                     if(compacteOriginal.__xva == compacteReecrit.__xva){
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
@@ -1433,7 +1433,7 @@ class interface1{
                 document.getElementById('resultat1').appendChild(di_texte_compacte);
             }
             /*  */
-            var fonctionReecriteAvecEtColoration1=a2F1(matriceFonction1.__xva,0,true,1);
+            var fonctionReecriteAvecEtColoration1=__m_rev1.matrice_vers_source_rev1(matriceFonction1.__xva,0,true,1);
             var difonctionReecriteAvecRetour1=document.createElement('div');
             difonctionReecriteAvecRetour1.className='yyconteneur_de_texte1';
             difonctionReecriteAvecRetour1.style.fontSize='0.9em';
@@ -1781,7 +1781,7 @@ COMMIT;
             /*
               var startMicro = performance.now();
             */
-            var obj2=a2F1(matriceFonction.__xva,0,true,1);
+            var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
             if(obj2.__xst === true){
                 a.value=obj2.__xva;
             }

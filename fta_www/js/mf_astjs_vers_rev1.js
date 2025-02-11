@@ -319,7 +319,7 @@ class c_astjs_vers_rev1{
             obj=functionToArray(t,true,false,'');
             if(obj.__xst === true){
                 nouveauTableau=baisserNiveauEtSupprimer(obj.__xva,2,0);
-                obj=a2F1(nouveauTableau,0,false,1);
+                obj=__m_rev1.matrice_vers_source_rev1(nouveauTableau,0,false,1);
                 if(obj.__xst === true){
                     t=obj.__xva;
                 }else{
@@ -341,7 +341,7 @@ class c_astjs_vers_rev1{
             obj=functionToArray(t,true,false,'');
             if(obj.__xst === true){
                 nouveauTableau=baisserNiveauEtSupprimer(obj.__xva,2,0);
-                obj=a2F1(nouveauTableau,0,false,1);
+                obj=__m_rev1.matrice_vers_source_rev1(nouveauTableau,0,false,1);
                 if(obj.__xst === true){
                     t=obj.__xva;
                 }
@@ -586,7 +586,7 @@ class c_astjs_vers_rev1{
                                 }else{
                                     obj.__xva[position_element][1]='...' + obj.__xva[position_element][1];
                                 }
-                                var nouvelle_fonction=a2F1(obj.__xva,0,false,1);
+                                var nouvelle_fonction=__m_rev1.matrice_vers_source_rev1(obj.__xva,0,false,1);
                                 if(nouvelle_fonction.__xst === true){
                                     t+=nouvelle_fonction.__xva;
                                 }else{
@@ -1039,7 +1039,7 @@ class c_astjs_vers_rev1{
                                 }
                             }
                             if(nouveauTableau.length > 0 && nouveauTableau[1][1] === 'appelf' && nouveauTableau[1][2] === 'f'){
-                                var nouvelle_fonction=a2F1(nouveauTableau,0,false,1);
+                                var nouvelle_fonction=__m_rev1.matrice_vers_source_rev1(nouveauTableau,0,false,1);
                                 if(nouvelle_fonction.__xst === true){
                                     if(commentaire !== ''){
                                         t='#(' + commentaire + ')' + nouvelle_fonction.__xva.substr(0,nouvelle_fonction.__xva.length - 1) + 'prop(' + propriete + '))';
@@ -1064,6 +1064,9 @@ class c_astjs_vers_rev1{
                     }else if(objet.substr(0,7) === 'appelf('){
                         /* on retire la dernière parenthèse et on ajoute la propriété */
                         t=objet.substr(0,objet.length - 1) + 'prop(' + propriete + '))';
+                    }else if(objet.substr(0,7) === 'valeur('){
+                        /* on retire la dernière parenthèse et on ajoute la propriété */
+                        t=objet.substr(0,objet.length - 1) + 'prop(' + propriete + '))';
                     }else{
                         t=objet + '.' + propriete;
                         element.type='Identifier';
@@ -1077,11 +1080,14 @@ class c_astjs_vers_rev1{
                         t=objet + '.' + propriete;
                         element.type='Identifier';
                     }
-                }else if(type_objet === 'LogicalExpression' || type_objet === 'AssignmentExpression' || type_objet === 'NewExpression'){
+                }else if(type_objet === 'LogicalExpression' || type_objet === 'AssignmentExpression' || type_objet === 'NewExpression' ){
                     t=objet.substr(0,objet.length - 1) + ',prop(' + propriete + '))';
-                }else if(type_objet === 'Literal'){
+                }else if(type_objet === 'Literal' ){
                     /* cas (rare) a=' '.length  trouvé dans htmx => affecte(a , valeur_constante(' ',prop(length) ) ) */
                     t='valeur_constante(' + objet + ',prop(' + propriete + '))';
+                }else if(type_objet === 'ConditionalExpression'){
+                    /* x = (a ? b : c).d; */
+                    t='valeur(' + objet + ',prop(' + propriete + '))';
                 }else if(type_objet === null){
                     /* cas let x10 = a.b ?. c; */
                     t=propriete;
@@ -1214,7 +1220,7 @@ class c_astjs_vers_rev1{
                       il faut supprimer l'id 2 et baisser de 1 tous les niveaux supérieurs à 1 de l'id 2
                     */
                     nouveau_tableau=baisserNiveauEtSupprimer(o.__xva,2,0);
-                    obj=a2F1(nouveau_tableau,0,false,1);
+                    obj=__m_rev1.matrice_vers_source_rev1(nouveau_tableau,0,false,1);
                     if(obj.__xst === true){
                         t=obj.__xva;
                     }
@@ -1259,7 +1265,7 @@ class c_astjs_vers_rev1{
             obj=functionToArray(t,true,false,'');
             if(obj.__xst === true){
                 nouveau_tableau=baisserNiveauEtSupprimer(obj.__xva,2,0);
-                obj=a2F1(nouveau_tableau,0,false,1);
+                obj=__m_rev1.matrice_vers_source_rev1(nouveau_tableau,0,false,1);
                 if(obj.__xst === true){
                     t=obj.__xva;
                 }else{
@@ -1493,13 +1499,13 @@ let x16=a.b ?. c(a.b);
                     if(obj.__xst === true){
                         var nouveauTableau=obj.__xva;
                         /* le nom de l'élément */
-                        var t1=a2F1(nouveauTableau,1,true,2,0,[],null,true);
+                        var t1=__m_rev1.matrice_vers_source_rev1(nouveauTableau,1,true,2,0,[],null,true);
                         if(t1.__xst === true){
                         }else{
                             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1747 #traite_BinaryExpression ' ,"element" : element}));
                         }
                         /* le reste */
-                        var t2=a2F1(nouveauTableau,1,true,nouveauTableau[2][12],0,[],null,false);
+                        var t2=__m_rev1.matrice_vers_source_rev1(nouveauTableau,1,true,nouveauTableau[2][12],0,[],null,false);
                         if(t2.__xst === true){
                         }else{
                             return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1747 #traite_BinaryExpression ' ,"element" : element}));
@@ -2270,6 +2276,14 @@ let x16=a.b ?. c(a.b);
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1820 #traite_NewExpression' ,"element" : element}));
             }
+        }else if(element.callee && element.callee.type === 'Identifier' && element.arguments.length >0
+         || element.callee && element.callee.type === 'FunctionExpression' && element.arguments.length === 0){
+            var obj1=this.#traite_CallExpression(element,niveau + 1,element,{});
+            if(obj1.__xst === true){
+                t+='new(' + obj1.__xva + ')';
+            }else{
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_NewExpression' ,"element" : element}));
+            }
         }else if(element.callee
                    && element.callee.type === 'MemberExpression'
                    && element.arguments.length > 0
@@ -2282,10 +2296,10 @@ let x16=a.b ?. c(a.b);
             if(obj1.__xst === true){
                 t+='new(' + obj1.__xva + ')';
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1831 #traite_NewExpression' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_NewExpression' ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1834 #traite_NewExpression' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+'#traite_NewExpression' ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -3053,9 +3067,7 @@ let x16=a.b ?. c(a.b);
             if(tab_comm[i].type === 'Line'){
                 txtComment=txtComment.replace(/\/\*/,'/_*').replace(/\*\//,'*_/');
             }
-            var c1=nbre_caracteres2('(',txtComment);
-            var c2=nbre_caracteres2(')',txtComment);
-            if(c1 === c2){
+            if(((txtComment.match(/\(/g) || []).length) === ((txtComment.match(/\)/g) || []).length)){
                 if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
                     t+='#(#' + txtComment.substr(1) + ')';
                 }else{
@@ -3111,9 +3123,8 @@ let x16=a.b ?. c(a.b);
             if(tab_comm[i].type === 'Line'){
                 txtComment=txtComment.replace(/\/\*/,'/_*').replace(/\*\//,'*_/');
             }
-            c1=nbre_caracteres2('(',txtComment);
-            c2=nbre_caracteres2(')',txtComment);
-            if(c1 === c2){
+            if(((txtComment.match(/\(/g) || []).length) === ((txtComment.match(/\)/g) || []).length)){
+             
                 if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
                     t+='#(#' + txtComment.substr(1) + ')';
                 }else{

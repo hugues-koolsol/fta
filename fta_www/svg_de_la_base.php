@@ -82,13 +82,13 @@ $js_a_executer_apres_chargement=array(/* */
 $par=array(/* */
     'module_a_inclure' => array(/**/
             'js/module_svg_bdd.js',
-            'js/mf_rev_vers_sql1.js'
+            'js/mf_rev_vers_sql1.js',
+            'js/mf_astsqliteparseur_vers_rev1.js'
         ),
     'js_a_inclure' => array(
             /* 'js/convertion_sql_en_rev.js', */
-            'js/mf_astsqliteparseur_vers_rev1.js',
             /* 'js/jslib/sqlite_parser_from_demo.js', */
-            'js/pour_svg.js',
+            /* 'js/pour_svg.js', */
             'js/jslib/Sortable.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement

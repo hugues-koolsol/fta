@@ -475,7 +475,7 @@ class traitements_sur_html{
                                     t='';
                                     for( var j=0 ; j < nouveauTableau1.length ; j++ ){
                                         if(nouveauTableau1[j][7] === 1){
-                                            var obj=a2F1(nouveauTableau1,1,true,j);
+                                            var obj=__m_rev1.matrice_vers_source_rev1(nouveauTableau1,1,true,j);
                                             if(obj.__xst === true){
                                                 t+=',' + obj.__xva + '\n';
                                             }else{
@@ -1089,8 +1089,9 @@ class traitements_sur_html{
                             for( var indjs=0 ; indjs < tableau_de_javascripts_a_convertir.length ; indjs++ ){
                                 try{
                                     tableau_des_commentaires_js=[];
-                                    var obj0=parseur_javascript.parse(tableau_de_javascripts_a_convertir[indjs].__xva,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tableau_des_commentaires_js});
+                                    var obj0=parseur_javascript.parse(tableau_de_javascripts_a_convertir[indjs].__xva.replace(/&amp;/g,'&'),{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tableau_des_commentaires_js});
                                 }catch(e){
+                                    console.log(tableau_de_javascripts_a_convertir[indjs].__xva.replace(/&amp;/g,'&'));
                                     if(e.pos){
                                         return(logerreur({"__xst" : false ,"__xme" : nl1() + '<br />erreur dans un source javascript contenu dans un html<br />' + e.message ,"plage" : [e.pos,e.pos]}));
                                     }else{
@@ -1163,7 +1164,7 @@ class traitements_sur_html{
                                             logerreur({"__xst" : false ,"__xme" : '1344 erreur module_html conversion en matrice'});
                                             return({"__xst" : false ,"__xme" : '1345 erreur module_html conversion en matrice'});
                                         }
-                                        var obj1=a2F1(matriceFonction.__xva,0,true,1);
+                                        var obj1=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                                         if(obj1.__xst === true){
                                             document.getElementById(options.zone_html_rev).value=obj1.__xva;
                                         }else{
@@ -1194,7 +1195,7 @@ class traitements_sur_html{
                                         logerreur({"__xst" : false ,"__xme" : '1412 erreur module_html conversion en matrice'});
                                         return({"__xst" : false ,"__xme" : '1413 erreur module_html conversion en matrice'});
                                     }
-                                    var obj1=a2F1(matriceFonction.__xva,0,true,1);
+                                    var obj1=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                                     if(obj1.__xst === true){
                                         document.getElementById(options.zone_html_rev).value=obj1.__xva;
                                     }else{

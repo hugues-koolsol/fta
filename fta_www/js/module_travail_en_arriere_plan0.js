@@ -20,7 +20,11 @@ var __module_html1=null;
 var __module_requete_sql1=null;
 var __m_rev_vers_php1=null;
 var __m_rev_vers_js1=null;
+var __m_rev1=null;
 var __aa_js_sql={};
+import('./mf_rev1.js').then(function(Module){
+        __m_rev1=new Module.c_rev1('__m_rev1');
+    });
 import('./module_html.js').then(function(Module){
         __module_html1=new Module.traitements_sur_html('__module_html1');
     });
@@ -190,7 +194,7 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
                         if(provenance === 'sql'){
                             var objSource=__m_rev_vers_sql1.c_tab_vers_js(tab,{});
                             if(objSource.__xst === true){
-                                var obj1=a2F1(tab,0,true,1);
+                                var obj1=__m_rev1.matrice_vers_source_rev1(tab,0,true,1);
                                 if(obj1.__xst === true){
                                     var obj2=__module_requete_sql1.transform_source_rev_vers_sql(obj1.__xva,id_source);
                                     if(obj2.__xst === true){
@@ -238,7 +242,7 @@ function apres_traite_un_remplacement(id_tache,arg,provenance){
                                 var objSource=__m_rev_vers_php1.c_tab_vers_php(tab,{});
                             }
                             if(objSource.__xst === true){
-                                var obj=a2F1(tab,0,true,1);
+                                var obj=__m_rev1.matrice_vers_source_rev1(tab,0,true,1);
                                 if(obj.__xst === true){
                                     arg[id_source].tab=[];
                                     var params={"arg" : arg ,"id_tache" : j ,"id_source" : id_source ,"source_rev" : obj.__xva ,"source_genere" : objSource.__xva};
@@ -339,7 +343,7 @@ function traite_une_suppression(id_tache,arg){
                             console.log('%c on traite un php ','color:red;background:yellow;',objSource.__xst);
                         }
                         if(objSource.__xst === true){
-                            var obj=a2F1(tab1,0,true,1);
+                            var obj=__m_rev1.matrice_vers_source_rev1(tab1,0,true,1);
                             if(obj.__xst === true){
                                 arg[id_source].tab1=[];
                                 var params={

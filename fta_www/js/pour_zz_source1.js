@@ -110,7 +110,7 @@ function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_sou
             var tableau1=iterateCharacters2(obj.__xva);
             var matriceFonction=functionToArray2(tableau1.out,true,false,'');
             if(matriceFonction.__xst === true){
-                var obj2=a2F1(matriceFonction.__xva,0,true,1);
+                var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                 if(obj2.__xst === true){
                     document.getElementById(chp_rev_source).value=obj2.__xva;
                 }
@@ -352,7 +352,7 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
             var tableau1=iterateCharacters2('php(' + obj.__xva + ')');
             var matriceFonction=functionToArray2(tableau1.out,true,false,'');
             if(matriceFonction.__xst === true){
-                var obj2=a2F1(matriceFonction.__xva,0,true,1);
+                var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                 if(obj2.__xst === true){
                     document.getElementById(ret.__entree.opt.nom_zone_rev).value=obj2.__xva;
                 }else{
@@ -384,7 +384,7 @@ function convertir_html_en_rev(nom_zone_genere,nom_zone_source){
         var tableau1=iterateCharacters2(objRev.__xva);
         var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            var obj2=a2F1(matriceFonction.__xva,0,true,1);
+            var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
             if(obj2.__xst === true){
                 document.getElementById(nom_zone_source).value=obj2.__xva;
             }else{

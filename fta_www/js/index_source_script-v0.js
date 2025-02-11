@@ -307,7 +307,7 @@ function enregistrer2(){
     console.log('matriceFonction=',matriceFonction);
     if(matriceFonction.__xst === true){
         var startMicro=performance.now();
-        var fonctionReecriteAvecRetour1=a2F1(matriceFonction.__xva,0,true,1);
+        var fonctionReecriteAvecRetour1=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
         var endMicro=performance.now();
         console.log('reconstitution du source endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
         var diResultatsCompactes=document.createElement('pre');
@@ -316,10 +316,10 @@ function enregistrer2(){
             ajusteTailleTextareaContenantSource('normalise');
             memeHauteur('normalise','zonesource');
             var startMicro=performance.now();
-            var compacteOriginal=a2F1(matriceFonction.__xva,0,false,1);
+            var compacteOriginal=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,false,1);
             var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.__xva);
             var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,false,'');
-            var compacteReecrit=a2F1(matriceDeLaFonctionReecrite.__xva,0,false,1);
+            var compacteReecrit=__m_rev1.matrice_vers_source_rev1(matriceDeLaFonctionReecrite.__xva,0,false,1);
             var endMicro=performance.now();
             console.log('comparaison des compactés=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
             if(compacteOriginal.__xst == true && compacteReecrit.__xst === true){
@@ -337,7 +337,7 @@ function enregistrer2(){
                 diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">compacteOriginal=' + JSON.stringify(compacteOriginal) + '</b>';
                 diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br /><b style="color:red;">compacteReecrit=' + JSON.stringify(compacteReecrit) + '</b>';
             }
-            var fonctionReecriteAvecRetour1=a2F1(matriceFonction.__xva,0,true,1);
+            var fonctionReecriteAvecRetour1=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
         }else{
             diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">Erreur de réécriture du source original</b>';
         }

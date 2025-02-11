@@ -1577,6 +1577,32 @@ class c_rev_vers_js1{
                         return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1() + 'exporter_declaration'}));
                     }
                     break;
+
+                case 'valeur' :
+                
+                    var propriété='';
+                    var valeur='';
+                    for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
+                        if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
+                        }else if(this.#tb[j][1] === 'prop' && this.#tb[j][2] === 'f'){
+                            obj=this.#js_traiteInstruction1(niveau,j + 1,{});
+                            if(obj.__xst === true){
+                                propriété+='.'+obj.__xva;
+                            }else{
+                                return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1() + 'valeur'}));
+                            }
+                        }else{
+                            obj=this.#js_traiteInstruction1(niveau,j,{});
+                            if(obj.__xst === true){
+                                valeur+=obj.__xva;
+                            }else{
+                                return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1() + 'valeur'}));
+                            }
+                        }
+                    }
+                    t+='('+valeur+')'+propriété;
+                    break;
+
                     
                 case 'fonction' : 
                 case 'méthode' :
@@ -1712,7 +1738,7 @@ class c_rev_vers_js1{
                                     t+=__m_rev1.resps(niveau);
                                     t+='}';
                                 }else{
-                                    return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : 'problème sur le contenu de la fonction "' + nomFonction + '"'}));
+                                    return(this.#rev_js_logerreur({"__xst" : false ,"id" : positionContenu ,"__xme" : 'problème sur le contenu de la fonction "' + nomFonction + '"'}));
                                 }
                             }
                         }
@@ -2777,6 +2803,7 @@ class c_rev_vers_js1{
                         'concat',
                         'delete',
                         'endsWith',
+                        'execute',
                         'focus',
                         'forEach',
                         'fromCharCode',
@@ -2785,11 +2812,13 @@ class c_rev_vers_js1{
                         'getAttribute',
                         'getBBox',
                         'getBoundingClientRect',
+                        'getTime',
                         'has',
                         'hasOwnProperty',
                         'includes',
                         'indexOf',
                         'isWellFormed',
+                        'join',
                         'lastIndexOf',
                         'localeCompare',
                         'map',
@@ -2798,6 +2827,7 @@ class c_rev_vers_js1{
                         'normalize',
                         'padEnd',
                         'padStart',
+                        'pop',
                         'push',
                         'raw',
                         'repeat',
@@ -2826,9 +2856,21 @@ class c_rev_vers_js1{
                     if(tab_mots_cles_a_ne_pas_transformer.includes(nomFonction)){
                         t=nomElement + '.';
                     }else{
-                        console.log('%c => on garde la forme "." pour ' + nomElement + ' car ce n\'est pas une fonction connue','background:yellow;color:red;');
-                        transformer_point_en_tableau=true;
-                        t=nomElement;
+                        /*a-t-on défini une fonction "prototype" plus haut ?*/
+                        var trouvé=false;
+                        for(var h=0;h<this.#tb.length;h++){ 
+                           if( this.#tb[h][1].indexOf(nomFonction)>=0 &&  this.#tb[h][1].indexOf('prototype')>=0 ){
+                             trouvé=true;
+                             break;
+                           }
+                        }
+                        if(trouvé===true){
+                            t=nomElement + '.';
+                        }else{
+                            console.log('%c => on garde la forme "." pour ' + nomElement + '"' + nomFonction + '"' + ' car ce n\'est pas une fonction connue','background:yellow;color:red;');
+                            transformer_point_en_tableau=true;
+                            t=nomElement;
+                        }
                     }
                 }else{
                     t=nomElement + '.';
@@ -2866,9 +2908,16 @@ class c_rev_vers_js1{
             t='(' + t + ')';
         }
         var arguments_a_ajouter_au_retour='';
+        
+        argumentsFonction=argumentsFonction !== '' ? ( argumentsFonction.substr(1) ) : ( '' );
+        
         if(!enfantTermineParUnePropriete){
             if(nomFonction === 'Array' && nbEnfants <= 1){
-                t+='[';
+                 if( argumentsFonction==='' ||  __m_rev1.est_num(argumentsFonction) ){
+                     t+='[';
+                 }else{
+                     t+='Array(';
+                 }
             }else if(nomFonction === 'Array' && nbEnfants > 1){
                 t+='Array(';
             }else{
@@ -2882,7 +2931,7 @@ class c_rev_vers_js1{
                             t+=(asynchrone === true ? ( 'async ' ) : ( '' )) + '(';
                         }else{
                             /* on le mettra plus tard au retour */
-                            arguments_a_ajouter_au_retour='(' + (argumentsFonction !== '' ? ( argumentsFonction.substr(1) ) : ( '' )) + ')';
+                            arguments_a_ajouter_au_retour='(' + argumentsFonction + ')';
                         }
                     }else{
                         t+=(asynchrone === true ? ( 'async ' ) : ( '' )) + '(';
@@ -2893,7 +2942,7 @@ class c_rev_vers_js1{
         if(arguments_a_ajouter_au_retour !== ''){
             /* on le mettra plus tard au retour */
         }else{
-            t+=argumentsFonction !== '' ? ( argumentsFonction.substr(1) ) : ( '' );
+            t+=argumentsFonction;
         }
         if(aDesAppelsRecursifs
                    && !dansConditionOuDansFonction
@@ -2906,7 +2955,11 @@ class c_rev_vers_js1{
         }
         if(!enfantTermineParUnePropriete){
             if(nomFonction === 'Array' && nbEnfants <= 1){
-                t+=']';
+                 if( argumentsFonction==='' ||  __m_rev1.est_num(argumentsFonction) ){
+                     t+=']';
+                 }else{
+                     t+=')';
+                 }
             }else if(nomFonction === 'Array' && nbEnfants > 1){
                 t+=')';
             }else{

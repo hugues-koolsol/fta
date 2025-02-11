@@ -973,7 +973,7 @@ class c_rev_vers_sql1{
                                 }
                             }
                             if(this.#tb[j][1] === 'meta' && this.#tb[j][2] === 'f' && this.#tb[j][8] > 0){
-                                obj=a2F1(this.#tb,j,false,j + 1);
+                                obj=__m_rev1.matrice_vers_source_rev1(this.#tb,j,false,j + 1);
                                 if(obj.__xst === true){
                                     meta=__m_rev1.resps(niveau + 2);
                                     meta+='/* meta(' + obj.__xva + ') */';
@@ -1182,7 +1182,7 @@ class c_rev_vers_sql1{
                                     return(this.#rev_sql_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'field type'}));
                                 }
                             }else if(this.#tb[j][1] === 'meta' && this.#tb[j][8] > 0){
-                                obj=a2F1(this.#tb,j,false,j + 1);
+                                obj=__m_rev1.matrice_vers_source_rev1(this.#tb,j,false,j + 1);
                                 if(obj.__xst === true){
                                     meta_du_champ+=__m_rev1.resps(niveau + 2);
                                     meta_du_champ+='/* meta(' + obj.__xva + ') */';
@@ -1282,7 +1282,7 @@ class c_rev_vers_sql1{
                                 }
                                 options.dans_definition_de_table=false;
                             }else if(this.#tb[j][1] === 'meta' && this.#tb[j][8] > 0){
-                                obj=a2F1(this.#tb,j,false,j + 1);
+                                obj=__m_rev1.matrice_vers_source_rev1(this.#tb,j,false,j + 1);
                                 if(obj.__xst === true){
                                     chaine_meta_table='/* meta(' + obj.__xva + ') */';
                                     for( k=j + 1 ; k < this.#l02 ; k=this.#tb[k][12] ){
@@ -1383,7 +1383,7 @@ class c_rev_vers_sql1{
                         break;
                         
                     case 'meta' :
-                        obj=a2F1(this.#tb,i,false,i + 1);
+                        obj=__m_rev1.matrice_vers_source_rev1(this.#tb,i,false,i + 1);
                         if(obj.__xst === true){
                             t+=__m_rev1.resps(niveau);
                             t+='/* meta(' + obj.__xva + ') */';
@@ -1585,7 +1585,7 @@ class c_rev_vers_sql1{
                         if(elt_meta === 'transform_table_sur_svg'){
                             for( j=1 ; j < tab.length ; j++ ){
                                 if(tab[j][1] === 'transform_table_sur_svg'){
-                                    var obj=a2F1(tab,j + 1,false,j + 2);
+                                    var obj=__m_rev1.matrice_vers_source_rev1(tab,j + 1,false,j + 2);
                                     if(obj.__xst === true){
                                         liste_meta_table[elt_meta]='transform(' + obj.__xva + ')';
                                         break;

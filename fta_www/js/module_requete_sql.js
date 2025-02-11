@@ -471,7 +471,7 @@ class requete_sql{
                                         */
                                         if(that.#obj_webs.type_de_requete === 'update'){
                                             if(tab[j][1] === 'affecte' && tab[j][2] === 'f'){
-                                                var obj=a2F1(tab,j,false,j + 1);
+                                                var obj=__m_rev1.matrice_vers_source_rev1(tab,j,false,j + 1);
                                                 if(obj.__xst === true){
                                                     if(formule_update !== ''){
                                                         formule_update+=',';
@@ -497,7 +497,7 @@ class requete_sql{
                                         /*
                                           c'est une formule
                                         */
-                                        var obj=a2F1(tab,tab[j][7],true,j);
+                                        var obj=__m_rev1.matrice_vers_source_rev1(tab,tab[j][7],true,j);
                                         if(obj.__xst === true){
                                             this.#obj_webs['champs_sortie'].push({"type_d_element" : 'formule' ,"formule" : obj.__xva});
                                         }
@@ -506,7 +506,7 @@ class requete_sql{
                                     /*
                                       c'est une formule
                                     */
-                                    var obj=a2F1(tab,tab[j][7],true,j);
+                                    var obj=__m_rev1.matrice_vers_source_rev1(tab,tab[j][7],true,j);
                                     if(obj.__xst === true){
                                         this.#obj_webs['champs_sortie'].push({"type_d_element" : 'formule' ,"formule" : obj.__xva});
                                     }
@@ -514,7 +514,7 @@ class requete_sql{
                             }else{
                                 if(tab[j][1] === 'alias_champ'){
                                 }else{
-                                    var obj=a2F1(tab,j,true,j + 1);
+                                    var obj=__m_rev1.matrice_vers_source_rev1(tab,j,true,j + 1);
                                     if(obj.__xst === true){
                                         this.#obj_webs['champs_sortie'].push({"type_d_element" : 'formule' ,"formule" : tab[j][1] + '(' + obj.__xva + ')'});
                                     }
@@ -526,12 +526,12 @@ class requete_sql{
                     }
                 }
             }else if(tab[i][2] === 'f' && 'conditions' === tab[i][1]){
-                var obj=a2F1(tab,tab[i + 1][7],true,i + 1);
+                var obj=__m_rev1.matrice_vers_source_rev1(tab,tab[i + 1][7],true,i + 1);
                 if(obj.__xst === true){
                     this.#obj_webs['conditions'].push({"type_d_element" : 'formule' ,"formule" : obj.__xva});
                 }
             }else if(tab[i][2] === 'f' && 'complements' === tab[i][1]){
-                var obj=a2F1(tab,tab[i + 1][7],true,i + 1);
+                var obj=__m_rev1.matrice_vers_source_rev1(tab,tab[i + 1][7],true,i + 1);
                 if(obj.__xst === true){
                     this.#obj_webs['complements'].push({"type_d_element" : 'formule' ,"formule" : obj.__xva});
                 }
@@ -1538,7 +1538,7 @@ class requete_sql{
         var tableau1=iterateCharacters2(rev_texte);
         var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
-            var obj2=a2F1(matriceFonction.__xva,0,true,1);
+            var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
             if(obj2.__xst === true){
                 rev_texte=obj2.__xva;
             }
