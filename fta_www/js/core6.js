@@ -81,7 +81,7 @@ function espacesnrev(optionCRLF,i){
   =====================================================================================================================
 */
 function rev_texte_vers_matrice(texte_rev){
-    var tableau1=iterateCharacters2(texte_rev);
+    var tableau1=__m_rev1.txt_en_tableau(texte_rev);
     var matriceFonction=functionToArray2(tableau1.out,true,false,'');
     global_messages.data.matrice=matriceFonction;
     global_messages.data.tableau=tableau1;
@@ -91,7 +91,7 @@ function rev_texte_vers_matrice(texte_rev){
   =====================================================================================================================
 */
 function functionToArray(src,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante){
-    var tableau1=iterateCharacters2(src);
+    var tableau1=__m_rev1.txt_en_tableau(src);
     var matriceFonction=functionToArray2(tableau1.out,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante);
     global_messages.data.matrice=matriceFonction;
     global_messages.data.tableau=tableau1;
@@ -553,73 +553,6 @@ function traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichier
         }
     }
     t=newTab.join(CRLF);
-    return t;
-}
-
-/*
-  =====================================================================================================================
-  =====================================================================================================================
-  =====================================================================================================================
-  fonction qui transforme un texte en tableau
-  =====================================================================================================================
-  =====================================================================================================================
-  =====================================================================================================================
-*/
-function iterateCharacters2(str){
-    const l01=str.length;
-    var out=[];
-    var i=0;
-    var exceptions=0;
-    var numLigne=0;
-    var codeCaractere='';
-    var temp=0;
-    var indiceTab=0;
-    for( i=0 ; i < l01 ; i++ ){
-        codeCaractere=str.charCodeAt(i);
-        /*
-          on ne traite pas les zero width space , vertical tab
-          8203 = 0x200B
-          11   = 0x0B
-        */
-        if(!(codeCaractere === 8203 || codeCaractere === 11)){
-            /*
-              0xD800 = 55296 = 1101 1000 0000 0000  , 0xF800 = 63488 = 1111 1000 0000 0000
-            */
-            temp=codeCaractere & 0xF800;
-            if(temp === 55296){
-                out[indiceTab]=[str.substr(i,2),2,i,numLigne];
-                indiceTab++;
-                i++;
-            }else{
-                out[indiceTab]=[str.substr(i,1),1,i,numLigne];
-                indiceTab++;
-                if(codeCaractere === 10){
-                    numLigne++;
-                }
-            }
-        }else{
-            exceptions=exceptions + 1;
-        }
-    }
-    return({"out" : out ,"numLigne" : numLigne ,"exceptions" : exceptions});
-}
-/*
-  =====================================================================================================================
-  =====================================================================================================================
-  =====================================================================================================================
-  reconstruit une chaine à partir du tableau
-  c'est utile seulement en cas d'erreur !
-  =====================================================================================================================
-  =====================================================================================================================
-  =====================================================================================================================
-*/
-function reconstruitChaine(tab,debut,fin){
-    const l01=tab.length;
-    var t='';
-    var i=0;
-    for( i=debut ; i <= fin && i < l01 ; i++ ){
-        t+=tab[i][0];
-    }
     return t;
 }
 /*

@@ -295,7 +295,7 @@ function enregistrer2(){
     zonedonneesComplementaires.innerHTML='';
     var a=document.getElementById('zonesource');
     var startMicro=performance.now();
-    var tableau1=iterateCharacters2(a.value);
+    var tableau1=__m_rev1.txt_en_tableau(a.value);
     global_messages.data.tableau=tableau1;
     var endMicro=performance.now();
     console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
@@ -317,7 +317,7 @@ function enregistrer2(){
             memeHauteur('normalise','zonesource');
             var startMicro=performance.now();
             var compacteOriginal=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,false,1);
-            var tableau2=iterateCharacters2(fonctionReecriteAvecRetour1.__xva);
+            var tableau2=__m_rev1.txt_en_tableau(fonctionReecriteAvecRetour1.__xva);
             var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,false,'');
             var compacteReecrit=__m_rev1.matrice_vers_source_rev1(matriceDeLaFonctionReecrite.__xva,0,false,1);
             var endMicro=performance.now();

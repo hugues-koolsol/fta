@@ -3014,7 +3014,7 @@ class c_rev_vers_php1{
     c_rev_vers_php(source_rev,les_options){
         let t='';
         let obj=null;
-        obj=iterateCharacters2(source_rev);
+        obj=__m_rev1.txt_en_tableau(source_rev);
         obj=functionToArray2(obj.out,true,false,'');
         if(obj.__xst === true){
             this.#tb=obj.__xva;

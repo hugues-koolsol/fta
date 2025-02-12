@@ -2663,7 +2663,7 @@ class c_astphpnikic_vers_rev1{
                || t.substr(0,12) === 'moins(moins('
                || t.substr(0,22) === 'ou_binaire(ou_binaire('
         ){
-            var tableau1=iterateCharacters2(t);
+            var tableau1=__m_rev1.txt_en_tableau(t);
             var o=functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
                 var nouveauTableau=baisserNiveauEtSupprimer(o.__xva,2,0);

@@ -22,7 +22,7 @@ class c_rev1{
     }
     /*
       =============================================================================================================
-      fonction respr PRIVÉE : retour chariot + nouvelle ligne + n espaces dans les rev produits
+      fonction respr (__m_rev1.#respr) PRIVÉE : retour chariot + nouvelle ligne + n espaces dans les rev produits
       =============================================================================================================
     */
     #respr(n){
@@ -68,7 +68,7 @@ class c_rev1{
     }
     /*
       =============================================================================================================
-      fonction resps : retour chariot + nouvelle ligne + n espaces dans les sources produits
+      fonction resps (__m_rev1.resps) : retour chariot + nouvelle ligne + n espaces dans les sources produits
       =============================================================================================================
     */
     resps(n){
@@ -80,7 +80,7 @@ class c_rev1{
     }
     /*
       =============================================================================================================
-      fonction est_num : est numérique ?
+      fonction est_num (__m_rev1.est_num) : est numérique ?
       =============================================================================================================
     */
     est_num(mot){
@@ -92,7 +92,7 @@ class c_rev1{
     }
     /*
       =============================================================================================================
-      fonction transforme un texte pour qu'il  soit visible en html, par exemple &nbsp; ou bien <
+      fonction entitees_html (__m_rev1.entitees_html)  transforme un texte pour qu'il  soit visible en html, par exemple &nbsp; ou bien <
       =============================================================================================================
     */
     entitees_html(s){
@@ -100,7 +100,8 @@ class c_rev1{
     }
     /*#
       =====================================================================================================================
-      fonction qui reconstitue un texte source à partir du tableau représentant la matrice  du  programme
+      fonction matrice_vers_source_rev1 (__m_rev1.matrice_vers_source_rev1)
+      Reconstitue un texte source à partir du tableau représentant la matrice  du  programme
       fu(
          a,
          f0(
@@ -279,7 +280,11 @@ class c_rev1{
                 }else if(tab[i][2] === 'f' && tab[i][1] === DEBUTBLOC){
                     /*
                       =============================================================================
-                      on est dans un bloc en dur
+                      on est dans un bloc en dur, par exemple si on a :
+                      <script type="xxxx">a=1;</script>
+                      le type xxxx n'est pas connu et on ne peut pas être certain que le contenu
+                      sera en javascript donc on met le code "en dur" comme ceci :
+                      script( ( 'type' , "xxxx" ) , @(a=1;))
                       =============================================================================
                     */
                     commentaire=tab[i][13];
@@ -374,5 +379,49 @@ class c_rev1{
         }
         return({"__xst" : true ,"__xva" : t ,"retour_ligne_parent" : retourLigne});
     }
+    /*
+      =============================================================================================================
+      fonction txt_en_tableau (__m_rev1.txt_en_tableau) : transforme un texte en tableau, 
+      =============================================================================================================
+    */
+    txt_en_tableau(str){
+        const l01=str.length;
+        var out=[];
+        var i=0;
+        var exceptions=0;
+        var numLigne=0;
+        var codeCaractere='';
+        var temp=0;
+        var indiceTab=0;
+        for( i=0 ; i < l01 ; i++ ){
+            codeCaractere=str.charCodeAt(i);
+            /*
+              on ne traite pas les zero width space , vertical tab
+              8203 = 0x200B
+              11   = 0x0B
+            */
+            if(!(codeCaractere === 8203 || codeCaractere === 11)){
+                /*
+                  0xD800 = 55296 = 1101 1000 0000 0000  , 0xF800 = 63488 = 1111 1000 0000 0000
+                */
+                temp=codeCaractere & 0xF800;
+                if(temp === 55296){
+                    out[indiceTab]=[str.substr(i,2),2,i,numLigne];
+                    indiceTab++;
+                    i++;
+                }else{
+                    out[indiceTab]=[str.substr(i,1),1,i,numLigne];
+                    indiceTab++;
+                    if(codeCaractere === 10){
+                        numLigne++;
+                    }
+                }
+            }else{
+                exceptions=exceptions + 1;
+            }
+        }
+        return({"out" : out ,"numLigne" : numLigne ,"exceptions" : exceptions});
+    }
+    
 }
 export{c_rev1 as c_rev1};

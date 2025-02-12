@@ -71,7 +71,17 @@ class module_svg_bdd{
           si on utilise ce module en dehors d'un dessin svg par exemple pour comparer des tableaux des tables/champs
           la div svg est nulle
         */
+        var le_test=null;
         if(nom_de_la_div_contenant_le_svg !== null){
+            try{
+                var le_test=document.getElementById(nom_de_la_div_contenant_le_svg);
+            }catch(e){
+            }
+        }
+        if(le_test===null){
+            nom_de_la_div_contenant_le_svg=null;
+        }
+        if(nom_de_la_div_contenant_le_svg !== null && le_test!== null ){
             this.#div_svg=document.getElementById(nom_de_la_div_contenant_le_svg);
             this.#taille_bordure=taille_bordure;
             this.#id_text_area_contenant_les_id_des_bases=id_text_area_contenant_les_id_des_bases;

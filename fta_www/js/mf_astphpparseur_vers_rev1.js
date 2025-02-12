@@ -82,7 +82,7 @@ class c_astphpparseur_vers_rev1{
     */
     #remplace_nom_fonction2(nomFonction,les_parametres){
         let t='';
-        var tableau1=iterateCharacters2(nomFonction);
+        var tableau1=__m_rev1.txt_en_tableau(nomFonction);
         var o=functionToArray2(tableau1.out,false,true,'');
         if(o.__xst === true){
             if(o.__xva[0][8] === 1 && o.__xva[1][1] === 'propriete' && o.__xva[1][2] === 'f' && o.__xva[1][8] === 2){
@@ -128,7 +128,7 @@ class c_astphpparseur_vers_rev1{
               getAttributes)"
               
             */
-            var tableau1=iterateCharacters2(nomFonction);
+            var tableau1=__m_rev1.txt_en_tableau(nomFonction);
             var o=functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
                 if(o.__xva[0][8] === 1 && o.__xva[1][1] === 'propriete' && o.__xva[1][2] === 'f' && o.__xva[1][8] === 2){
@@ -417,7 +417,7 @@ class c_astphpparseur_vers_rev1{
         function fin_traitement_php(zone_rev,globale_source_php2,globale_tableau_des_js2){
             globale_tableau_des_js2=[];
             if(zone_rev){
-                var tableau1=iterateCharacters2(globale_source_php2);
+                var tableau1=__m_rev1.txt_en_tableau(globale_source_php2);
                 var matriceFonction=functionToArray2(tableau1.out,true,false,'');
                 if(matriceFonction.__xst === true){
                     var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
@@ -2375,7 +2375,7 @@ class c_astphpparseur_vers_rev1{
                       il y a un bug dans ce parseur car instance a une priorité supérieure à !
                     */
                     var valeur_non='';
-                    var tableau1=iterateCharacters2(gauche);
+                    var tableau1=__m_rev1.txt_en_tableau(gauche);
                     var o=functionToArray2(tableau1.out,false,true,'');
                     if(o.__xst === true){
                         var obj1=__m_rev1.matrice_vers_source_rev1(o.__xva,1,false,2);
@@ -2407,7 +2407,7 @@ class c_astphpparseur_vers_rev1{
               $b.($c+$d)
               et dans ce dernier cas, ce parseur fonctionne
             */
-            var tableau1=iterateCharacters2(t);
+            var tableau1=__m_rev1.txt_en_tableau(t);
             var o=functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
                 debugger;
@@ -2422,7 +2422,7 @@ class c_astphpparseur_vers_rev1{
                || t.substr(0,12) === 'moins(moins('
                || t.substr(0,22) === 'ou_binaire(ou_binaire('
         ){
-            var tableau1=iterateCharacters2(t);
+            var tableau1=__m_rev1.txt_en_tableau(t);
             var o=functionToArray2(tableau1.out,false,true,'');
             if(o.__xst === true){
                 var nouveauTableau=baisserNiveauEtSupprimer(o.__xva,2,0);
@@ -2432,30 +2432,6 @@ class c_astphpparseur_vers_rev1{
                 }
             }
         }
-        /*
-          if(){
-          var tableau1=iterateCharacters2(t);
-          var o=functionToArray2(tableau1.out,false,true,'');
-          if(o.__xst === true){
-          var nouveauTableau=baisserNiveauEtSupprimer(o.__xva,2,0);
-          var obj1=__m_rev1.matrice_vers_source_rev1(nouveauTableau,0,true,1);
-          if(obj1.__xst === true){
-          t=obj1.__xva;
-          }
-          }
-          }
-          if(){
-          var tableau1=iterateCharacters2(t);
-          var o=functionToArray2(tableau1.out,false,true,'');
-          if(o.__xst === true){
-          var nouveauTableau=baisserNiveauEtSupprimer(o.__xva,2,0);
-          var obj1=__m_rev1.matrice_vers_source_rev1(nouveauTableau,0,true,1);
-          if(obj1.__xst === true){
-          t=obj1.__xva;
-          }
-          }
-          }
-        */
         return({"__xst" : true ,"__xva" : t});
     }
     /*
@@ -2469,59 +2445,6 @@ class c_astphpparseur_vers_rev1{
           \\x     => ""   , ""    => '\\'   .'x'
           aa\\x   => "aa" , ""    => 'aa'.'\\' .'x'
           aa\\xaa => "aa" , "aa"  => 'aa\\' .'x' . 'aa'
-        */
-        /*
-          var tabcarspec=['x','f','o']
-          for( var z in tabcarspec){
-          var car_a_trouver=tabcarspec[z];
-          var chaine_a_trouver='\\\\'+car_a_trouver;
-          if(contenu.indexOf(chaine_a_trouver)>=0 ){
-          //        return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 #traite_chaine_raw TO DO ' ,"element" : element}));
-          
-          var caractere='';
-          if(rv.substr(0,1)==='\''){
-          var tableau=contenu.split(chaine_a_trouver);
-          var tableau_a_concatener=[];
-          for(var i=0;i<tableau.length;i++){
-          if(i===tableau.length-1){
-          if(tableau[i]===''){
-          }else{
-          var tt=this.#traite_chaine_raw("'"+tableau[i]+"'",element);
-          if(tt.__xst===true){
-          tableau_a_concatener.push(tt.__xva);
-          }else{
-          return(astphp_logerreur({"__xst" : false ,"__xme" : '1433 #traite_chaine_raw TO DO ' ,"element" : element}));
-          }
-          }
-          }else{
-          if(tableau[i]===''){
-          tableau_a_concatener.push("'\\\\'");
-          tableau_a_concatener.push("'"+car_a_trouver+"'");
-          }else{
-          var tt=this.#traite_chaine_raw("'"+tableau[i]+"'",element);
-          if(tt.__xst===true){
-          tableau_a_concatener.push(tt.__xva);
-          tableau_a_concatener.push("'\\\\'");
-          tableau_a_concatener.push("'"+car_a_trouver+"'");
-          }else{
-          return(astphp_logerreur({"__xst" : false ,"__xme" : '1447 #traite_chaine_raw' ,"element" : element}));
-          }
-          }
-          }
-          }
-          t='concat('+tableau_a_concatener.join(',')+')';
-          return({__xst:true , __xva : t});
-          }else{
-          return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 #traite_chaine_raw TO DO ' ,"element" : element}));
-          }
-          }
-          }
-          if(contenu.indexOf('\\\\o')>=0 ){
-          return(astphp_logerreur({"__xst" : false ,"__xme" : '1308 #traite_chaine_raw TO DO ' ,"element" : element}));
-          }
-          if(contenu.indexOf('\\\\f')>=0 ){
-          return(astphp_logerreur({"__xst" : false ,"__xme" : '1311 #traite_chaine_raw TO DO ' ,"element" : element}));
-          }
         */
         var probablement_dans_une_regex=contenu.substr(0,1) === '/' && contenu.substr(contenu.length - 1,1) === '/' ? ( true ) : ( false );
         if(rv.substr(0,1) === '\''

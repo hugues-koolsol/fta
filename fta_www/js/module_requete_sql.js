@@ -139,7 +139,7 @@ class requete_sql{
         that.#obj_webs.type_de_requete=that.#globale_type_requete;
         that.#obj_webs.bases=init.bases;
         console.log('that.#obj_webs.tableau_des_bases_tables_champs=',that.#obj_webs.tableau_des_bases_tables_champs);
-        var tableau1=iterateCharacters2(that.#globale_rev_requete);
+        var tableau1=__m_rev1.txt_en_tableau(that.#globale_rev_requete);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst !== true){
             return;
@@ -1535,7 +1535,7 @@ class requete_sql{
             }
         }
         rev_texte+=CRLF + ')';
-        var tableau1=iterateCharacters2(rev_texte);
+        var tableau1=__m_rev1.txt_en_tableau(rev_texte);
         var matriceFonction=functionToArray2(tableau1.out,true,false,'');
         if(matriceFonction.__xst === true){
             var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
@@ -1708,7 +1708,7 @@ class requete_sql{
         async function modifier_la_requete_en_base(url="",ajax_param,that){
             return(that.#recupérer_un_fetch(url,ajax_param));
         }
-        var tableau1=iterateCharacters2(document.getElementById('txtar1').value);
+        var tableau1=__m_rev1.txt_en_tableau(document.getElementById('txtar1').value);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
@@ -1749,7 +1749,7 @@ class requete_sql{
         async function enregistrer_la_requete_en_base(url="",ajax_param,that){
             return(that.#recupérer_un_fetch(url,ajax_param,that));
         }
-        var tableau1=iterateCharacters2(document.getElementById('txtar1').value);
+        var tableau1=__m_rev1.txt_en_tableau(document.getElementById('txtar1').value);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
@@ -1818,7 +1818,7 @@ class requete_sql{
     */
     #obtenir_le_tableau_des_conditions(formule,obj3){
         var tableau_des_conditions=[];
-        var tableau1=iterateCharacters2(formule);
+        var tableau1=__m_rev1.txt_en_tableau(formule);
         var matriceFonction=functionToArray2(tableau1.out,true,true,'');
         var tab=matriceFonction.__xva;
         var l01=tab.length;
@@ -2059,7 +2059,7 @@ class requete_sql{
             for( champ_sortie=0 ; champ_sortie < this.#obj_webs['champs_sortie'].length ; champ_sortie++ ){
                 if(this.#obj_webs['champs_sortie'][champ_sortie].type_d_element === 'formule'){
                     var formule=this.#obj_webs['champs_sortie'][champ_sortie].formule;
-                    var tableau1=iterateCharacters2(formule);
+                    var tableau1=__m_rev1.txt_en_tableau(formule);
                     var matriceFonction=functionToArray2(tableau1.out,true,true,'');
                     var tab=matriceFonction.__xva;
                     var l01=tab.length;
@@ -2338,7 +2338,7 @@ class requete_sql{
                 */
                 t+='    $where0=\' WHERE 1=1 \'.PHP_EOL;' + CRLF;
                 var formule=this.#obj_webs.conditions[0].formule;
-                var tableau1=iterateCharacters2(formule);
+                var tableau1=__m_rev1.txt_en_tableau(formule);
                 var matriceFonction=functionToArray2(tableau1.out,true,true,'');
                 var tab=matriceFonction.__xva;
                 var l01=tab.length;
@@ -2517,7 +2517,7 @@ class requete_sql{
       function transform_source_rev_vers_sql
     */
     transform_source_rev_vers_sql(source_rev,id_requete){
-        var tableau1=iterateCharacters2(source_rev);
+        var tableau1=__m_rev1.txt_en_tableau(source_rev);
         var obj1=functionToArray2(tableau1.out,false,true,'');
         if(obj1.__xst === true){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});

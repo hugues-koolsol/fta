@@ -16,7 +16,7 @@ function bdd_convertir_rev_en_sql(nom_zone_source,nom_zone_genere,id_bdd,id_cibl
     __gi1.raz_des_messages();
     var a=document.getElementById(nom_zone_source);
     var startMicro=performance.now();
-    var tableau1=iterateCharacters2(a.value);
+    var tableau1=__m_rev1.txt_en_tableau(a.value);
     global_messages.data.tableau=tableau1;
     var endMicro=performance.now();
     console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
