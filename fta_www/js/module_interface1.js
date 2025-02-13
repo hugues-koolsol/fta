@@ -75,7 +75,6 @@ class interface1{
     }
     /*
       =============================================================================================================
-      on remplir_et_afficher_les_messages1
     */
     afficher_les_erreurs_masquees(){
         var est_masque=parseInt(document.getElementById('bouton_voir_les_messages_masques').getAttribute('data-masque'),10);

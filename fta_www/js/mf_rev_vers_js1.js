@@ -56,7 +56,7 @@ class c_rev_vers_js1{
         "ou" : {"priorite" : 140 ,"operateur" : ' || ' ,"operandes" : '2n' ,"commentaire" : ''} ,
         "??" : {"priorite" : 150 ,"operateur" : '??' ,"operandes" : '3' ,"commentaire" : ''} ,
         "condition" : {"priorite" : 160 ,"operateur" : '' ,"operandes" : '1' ,"commentaire" : ''} ,
-        "virgule" : {"priorite" : 170 ,"operateur" : ',' ,"operandes" : '2n' ,"commentaire" : ''}
+//        "virgule" : {"priorite" : 170 ,"operateur" : ',' ,"operandes" : '2n' ,"commentaire" : ''}
     };
     /*
       =============================================================================================================
@@ -184,7 +184,7 @@ class c_rev_vers_js1{
                                 if(this.#tb[j][2] === 'c'){
                                     contenu_retour+=this.#macst_pour_javascript(this.#tb[j]);
                                 }else{
-                                    obj=this.#js_traiteInstruction1(niveau,j,{});
+                                    obj=this.#js_traiteInstruction1(niveau+1,j,{});
                                     if(obj.__xst === true){
                                         contenu_retour+=obj.__xva;
                                     }else{
@@ -1023,7 +1023,8 @@ class c_rev_vers_js1{
                                 return(this.#rev_js_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'throw'}));
                             }
                         }else if(this.#tb[i + 1][1] === 'virgule' && this.#tb[i + 1][2] === 'f'){
-                            objOperation=this.#TraiteOperations2(i + 1,niveau,0,false);
+                            /*huguesobjOperation=this.#TraiteOperations2(i + 1,niveau,0,false);*/
+                            objOperation=this.#js_traiteInstruction1(niveau,i + 1,{});
                             if(objOperation.__xst === true){
                                 t+='throw ' + objOperation.__xva;
                             }else{
@@ -1282,8 +1283,10 @@ class c_rev_vers_js1{
                         }else if(this.#tb[j][1] === 'siVrai'){
                             var obj_si=this.#rev_js1(j,niveau + 1,{"retour_ligne" : false ,"term_final" : false});
                             if(obj_si.__xst === true){
-                                if(obj_si.__xva.length > 50){
-                                    var obj_si=this.#rev_js1(j,niveau + 1,{"retour_ligne" : true ,"term_final" : false});
+                                if(obj_si.__xva.length > 50 ){
+                                    if( obj_si.__xva.indexOf('\n')<0){
+                                        var obj_si=this.#rev_js1(j,niveau + 1,{"retour_ligne" : true ,"term_final" : false});
+                                    }
                                     un_trop_long=true;
                                 }
                                 if(si_vrai !== ''){
@@ -1296,8 +1299,10 @@ class c_rev_vers_js1{
                         }else if(this.#tb[j][1] === 'siFaux'){
                             var obj_si=this.#rev_js1(j,niveau + 1,{"retour_ligne" : true ,"term_final" : false});
                             if(obj_si.__xst === true){
-                                if(obj_si.__xva.length > 50){
-                                    var obj_si=this.#rev_js1(j,niveau + 1,{"retour_ligne" : true ,"term_final" : false});
+                                if(obj_si.__xva.length > 50 ){
+                                    if( obj_si.__xva.indexOf('\n')<0){
+                                        var obj_si=this.#rev_js1(j,niveau + 1,{"retour_ligne" : true ,"term_final" : false});
+                                    }
                                     un_trop_long=true;
                                 }
                                 if(si_faux !== ''){
@@ -1312,7 +1317,7 @@ class c_rev_vers_js1{
                         }
                     }
                     if(un_trop_long === true){
-                        t=testlignecondition + ' ?' + __m_rev1.resps(niveau) + '  ( ' + __m_rev1.resps(niveau + 1) + si_vrai + ' )' + __m_rev1.resps(niveau) + ': ( ' + __m_rev1.resps(niveau + 1) + si_faux + ' ' + __m_rev1.resps(niveau) + ')';
+                        t=testlignecondition + ' ?' + __m_rev1.resps(niveau) + '  ( ' + __m_rev1.resps(niveau + 1) + si_vrai + __m_rev1.resps(niveau) + '  ) : ( ' + __m_rev1.resps(niveau + 1) + si_faux + __m_rev1.resps(niveau) + '  )';
                     }else{
                         t=testlignecondition + ' ? ( ' + si_vrai + ' ) : ( ' + si_faux + ' )';
                     }
@@ -1606,12 +1611,80 @@ class c_rev_vers_js1{
                     break;
 
                     
+                case 'céder' : 
+                
+                    var valeur='';
+                    
+                    for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
+                        if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
+                        }else{
+                            obj=this.#js_traiteInstruction1(niveau,j,{});
+                            if(obj.__xst === true){
+                                valeur+=obj.__xva;
+                            }else{
+                                return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1() + 'valeur'}));
+                            }
+                        }
+                    }
+                    t+='yield '+valeur;
+                    break;
+
+                    
+                case 'virgule' : 
+                    var virgule='';
+                    var precedent_est_commentaire=false;
+                    for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
+                        if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
+                            virgule+='/*'+traiteCommentaire2(this.#tb[j][13],niveau,j)+'*/';
+                            precedent_est_commentaire=true;
+
+                        }else{
+                            obj=this.#js_traiteInstruction1(niveau,j,{});
+                            if(obj.__xst === true){
+                                if(virgule!=='' && precedent_est_commentaire===false){
+                                    virgule+=',';
+                                }
+                                
+                                virgule+=obj.__xva;
+                                precedent_est_commentaire=false;
+
+                            }else{
+                                return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1() + 'virgule'}));
+                            }
+                        }
+                    }
+                    if(virgule.length>120){
+                        virgule='';
+                        precedent_est_commentaire=false;
+                        for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
+                            if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
+                                virgule+='/*'+traiteCommentaire2(this.#tb[j][13],niveau,j)+'*/';
+                                precedent_est_commentaire=true;
+                            }else{
+                                obj=this.#js_traiteInstruction1(niveau,j,{});
+                                if(obj.__xst === true){
+                                    if(virgule!=='' && precedent_est_commentaire===false){
+                                        virgule+=','+__m_rev1.resps(niveau-1);
+                                    }
+                                    virgule+=obj.__xva;
+                                    precedent_est_commentaire=false;
+                                }else{
+                                    return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1() + 'virgule'}));
+                                }
+                            }
+                        }
+                    }
+                    t+=virgule;
+//                    debugger;
+                    break;
+                    
                 case 'fonction' : 
                 case 'méthode' :
                     var nomFonction='';
                     var typeFonction='';
                     var modeFonction='';
                     var asynchrone='';
+                    var generateur='';
                     var statique='';
                     var positionDeclarationFonction=-1;
                     var positionContenu=-1;
@@ -1634,20 +1707,26 @@ class c_rev_vers_js1{
                                     if(obj.__xst === true){
                                         nomFonction=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_logerreur({"__xst" : false ,"id" : j ,"__xme" : '0138 retourner '}));
+                                        return(this.#rev_js_logerreur({"__xst" : false ,"id" : j ,"__xme" : nl1()+' retourner '}));
                                     }
                                 }
                             }else if(this.#tb[j][1] === 'asynchrone' && this.#tb[j][2] === 'f'){
                                 if(this.#tb[j][8] === 0){
                                     asynchrone='async ';
                                 }else{
-                                    return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : '0223 asynchrone doit être une fonction sans paramètres   '}));
+                                    return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1()+'asynchrone doit être une fonction sans paramètres   '}));
+                                }
+                            }else if(this.#tb[j][1] === 'générateur' && this.#tb[j][2] === 'f'){
+                                if(this.#tb[j][8] === 0){
+                                    generateur='*';
+                                }else{
+                                    return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1()+'générateur doit être une fonction sans paramètres   '}));
                                 }
                             }else if(this.#tb[j][1] === 'mode'){
                                 if(this.#tb[j][8] === 1 && this.#tb[j + 1][1] === 'privée'){
                                     modeFonction='#';
                                 }else{
-                                    return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : '0212  mode de la classe '}));
+                                    return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : nl1()+'mode de la classe '}));
                                 }
                             }else if(this.#tb[j][1] === 'statique'){
                                 statique='static ';
@@ -1708,7 +1787,7 @@ class c_rev_vers_js1{
                                 /*
                                   j'impose l'écriture d'un commentaire minimal devant une méthode
                                 */
-                                t+=__m_rev1.resps(niveau) + '/* function ' + nomFonction + ' */' + __m_rev1.resps(niveau);
+                                t+=__m_rev1.resps(niveau) + '/* function'+generateur+' ' + nomFonction + ' */' + __m_rev1.resps(niveau);
                             }
                             if('méthode' === this.#tb[id][1]){
                                 if(format_tableau === true){
@@ -1725,7 +1804,7 @@ class c_rev_vers_js1{
                                     t+=(statique + typeFonction + asynchrone + modeFonction + nomFonction) + '(' + (argumentsFonction === '' ? ( '' ) : ( argumentsFonction.substr(1) )) + '){';
                                 }
                             }else{
-                                t+=asynchrone + 'function ' + nomFonction + '(' + (argumentsFonction === '' ? ( '' ) : ( argumentsFonction.substr(1) )) + '){';
+                                t+=asynchrone + 'function'+generateur+' ' + nomFonction + '(' + (argumentsFonction === '' ? ( '' ) : ( argumentsFonction.substr(1) )) + '){';
                             }
                             if(this.#tb[positionContenu][8] === 0){
                                 t+=__m_rev1.resps(niveau + 1);
@@ -1743,6 +1822,8 @@ class c_rev_vers_js1{
                                     return(this.#rev_js_logerreur({"__xst" : false ,"id" : positionContenu ,"__xme" : 'problème sur le contenu de la fonction "' + nomFonction + '"'}));
                                 }
                             }
+                        }else{
+                            return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : 'fonction ou méthode'}));
                         }
                     }else{
                         return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : 'il faut une declaration d(n(),a()...) et un contenu c(...) pour définir une fonction f()'}));
@@ -2507,7 +2588,8 @@ class c_rev_vers_js1{
                         logerreur({"__xst" : false ,"id" : id ,"__xme" : '2401 erreur sur test en ligne "' + this.#tb[j][1] + '"'});
                     }
                 }else if(this.#tb[j + 1][1] === 'virgule' && this.#tb[j + 1][2] === 'f'){
-                    var objOperation=this.#TraiteOperations2(j + 1,niveau,0,false);
+                    /*hugues var objOperation=this.#TraiteOperations2(j + 1,niveau,0,false);*/
+                    var objOperation=this.#js_traiteInstruction1(niveau,j + 1,{});
                     if(objOperation.__xst === true){
                         nomFonction='(' + objOperation.__xva + ')';
                     }else{
@@ -2729,7 +2811,7 @@ class c_rev_vers_js1{
                             var precedent_est_un_commentaire=false;
                             for( k=j + 1 ; k < this.#l02 ; k=this.#tb[k][12] ){
                                 if(precedent_est_un_commentaire === true){
-                                    /* on ne met pas de virgule */
+                                    /* on ne met pas de séparateur */
                                     precedent_est_un_commentaire=false;
                                 }else{
                                     argumentsFonction+=',';
@@ -3218,12 +3300,14 @@ class c_rev_vers_js1{
         if(propriete !== ''){
             t='(' + t + ').' + propriete;
         }
+        /* hugues
         if('virgule' === this.#tb[id][1] && ajouter_des_sauts_de_lignes !== true){
             if(t.length > 120){
                 obj=this.#TraiteOperations2(id,niveau,niveauOp,true);
                 t=obj.__xva;
             }
         }
+        */
         /* console.log('operandes=' , operandes ); */
         /* debugger */
         return({"__xst" : true ,"__xva" : t});
