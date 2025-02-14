@@ -40,17 +40,17 @@ class c_astjs_vers_rev1{
             asynchrone='asynchrone(),';
         }
         if(element.expression !== false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         if(element.generator !== false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         if(element.id){
             obj=this.#traite_element(element.id,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 id+=obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         if(element.params && Array.isArray(element.params)){
@@ -63,7 +63,7 @@ class c_astjs_vers_rev1{
                     if(obj.__xst === true){
                         les_arguments+=',p(' + le_commentaire + obj.__xva + ')';
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                     }
                 }
             }
@@ -73,7 +73,7 @@ class c_astjs_vers_rev1{
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         if(id !== ''){
@@ -114,7 +114,7 @@ class c_astjs_vers_rev1{
                     if(obj.__xst === true){
                         les_arguments+='p(' + le_commentaire + obj.__xva + ')';
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                     }
                 }
             }else{
@@ -127,10 +127,10 @@ class c_astjs_vers_rev1{
             if(obj.__xst === true){
                 nom_de_la_fonction+=obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         if(element.body){
             obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
@@ -139,7 +139,7 @@ class c_astjs_vers_rev1{
                     le_contenu=',contenu(' + contenu + ')';
                 }
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + 'body' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'body' ,"element" : element}));
             }
         }
         if(element.optional === true){
@@ -176,14 +176,14 @@ class c_astjs_vers_rev1{
         }
         est_expression=element.expression;
         if(element.generator !== false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' generator' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' generator' ,"element" : element}));
         }
         if(element.id){
             obj=this.#traite_element(element.id,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 id+=obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         if(element.body){
@@ -192,14 +192,14 @@ class c_astjs_vers_rev1{
                 if(obj.__xst === true){
                     contenu+='retourner(' + obj.__xva + ')';
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
             }else{
                 obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
             }
         }
@@ -213,7 +213,7 @@ class c_astjs_vers_rev1{
                     if(obj.__xst === true){
                         les_arguments+=',p(' + le_commentaire + obj.__xva + ')';
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                     }
                 }
             }
@@ -323,10 +323,10 @@ class c_astjs_vers_rev1{
                 if(obj.__xst === true){
                     t=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_BinaryExpression ' ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_BinaryExpression ' ,"element" : element}));
                 }
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_BinaryExpression ' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_BinaryExpression ' ,"element" : element}));
             }
         }
         if(t.substr(0,10) === 'plus(plus('
@@ -524,10 +524,10 @@ class c_astjs_vers_rev1{
             if(obj.__xst === true){
                 source+=obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         if(element.specifiers){
             for( let i=0 ; i < element.specifiers.length ; i++ ){
@@ -535,11 +535,11 @@ class c_astjs_vers_rev1{
                 if(obj.__xst === true){
                     specifiers+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         t='importer(' + specifiers + (specifiers === '' ? ( '' ) : ( ',' )) + 'provenance(' + source + ')' + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -569,13 +569,13 @@ class c_astjs_vers_rev1{
                                         if(obj.__xva[i + 1][2] === 'c' && obj.__xva[i][8] === 1){
                                             position_nomf=i + 1;
                                         }else{
-                                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                                         }
                                     }else if(obj.__xva[i][1] === 'element' && obj.__xva[i][2] === 'f'){
                                         if(obj.__xva[i + 1][2] === 'c' && obj.__xva[i][8] === 1){
                                             position_element=i + 1;
                                         }else{
-                                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                                         }
                                     }
                                 }
@@ -590,25 +590,25 @@ class c_astjs_vers_rev1{
                                 if(nouvelle_fonction.__xst === true){
                                     t+=nouvelle_fonction.__xva;
                                 }else{
-                                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                                 }
                             }else{
-                                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                             }
                         }else{
-                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                         }
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                     }
                 }else{
                     t+='...' + obj.__xva;
                 }
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -623,10 +623,10 @@ class c_astjs_vers_rev1{
             if(obj.__xst === true){
                 t+='...' + obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -638,7 +638,7 @@ class c_astjs_vers_rev1{
         let obj=null;
         for(let i in element.properties){
             if(element.properties[i].method !== false){
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
             if(element.properties[i].shorthand !== false){
                 /* const {a, b} = c; =>  const {a:a, b:b} = c; */
@@ -693,7 +693,7 @@ class c_astjs_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva + ')';
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
             }else{
                 if(val.key.type === 'Identifier'){
@@ -705,14 +705,14 @@ class c_astjs_vers_rev1{
                     if(obj.__xst === true){
                         t+='(' + obj.__xva + ',';
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                     }
                 }
                 obj=this.#traite_element(val.value,niveau + 1,element,tab_comm,false);
                 if(obj.__xst === true){
                     t+=obj.__xva + ')';
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
             }
         }
@@ -720,8 +720,6 @@ class c_astjs_vers_rev1{
         t='obj(' + t + ')';
         return({"__xst" : true ,"__xva" : t});
     }
-    
-    
     /*
       =============================================================================================================
       let k = class extends _ {}
@@ -729,20 +727,18 @@ class c_astjs_vers_rev1{
     #traite_YieldExpression(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
-        
-        if(element.delegate!==false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+'delegate' ,"element" : element}));
+        if(element.delegate !== false){
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'delegate' ,"element" : element}));
         }
-
         if(element.hasOwnProperty('argument')){
             obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 t+='céder(' + obj.__xva + ')';
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -760,10 +756,10 @@ class c_astjs_vers_rev1{
             if(obj.__xst === true){
                 etend='etend(' + obj.__xva + ')';
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         if(element.body){
             obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
@@ -775,7 +771,7 @@ class c_astjs_vers_rev1{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '0466 #traite_FunctionDeclaration' ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         t='classe(' + etend + contenu + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -794,10 +790,10 @@ class c_astjs_vers_rev1{
             if(obj.__xst === true){
                 le_tag=obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         if(element.quasi){
             obj=this.#traite_element(element.quasi,niveau,element,tab_comm,false);
@@ -807,7 +803,7 @@ class c_astjs_vers_rev1{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1746 #traite_TemplateLiteral' ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         t='modèle_annoté(' + le_tag + ',' + le_quasi + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -823,7 +819,7 @@ class c_astjs_vers_rev1{
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -845,7 +841,7 @@ class c_astjs_vers_rev1{
                 lesPar+=',' + commentaire;
             }
             if(element.elements[i] === null){
-                this.#astjs_logerreur({"__xst" : true ,"__xav" : nl1() + ' ATTENTION, CE N\'EST PAS UNE ERREUR MAIS... élément vide dans un tableau' ,"element" : element});
+                this.#astjs_logerreur({"__xst" : true ,"__xav" : __m_rev1.nl2() + ' ATTENTION, CE N\'EST PAS UNE ERREUR MAIS... élément vide dans un tableau' ,"element" : element});
                 lesPar+=',p()';
             }else if(element.elements[i].type === 'Literal'){
                 lesPar+=',p(' + element.elements[i].raw + ')';
@@ -900,20 +896,20 @@ class c_astjs_vers_rev1{
             asynchrone='asynchrone(),';
         }
         if(element.expression !== false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+'expression' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'expression' ,"element" : element}));
         }
         if(element.generator !== false){
-            generateur='générateur(),'
+            generateur='générateur(),';
         }
         if(element.id){
             obj=this.#traite_element(element.id,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
                 nom_fonction+=obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+'id' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'id' ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+'id' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'id' ,"element" : element}));
         }
         if(element.params && Array.isArray(element.params)){
             for( let i=0 ; i < element.params.length ; i++ ){
@@ -921,21 +917,21 @@ class c_astjs_vers_rev1{
                 if(obj.__xst === true){
                     les_arguments+=',argument(' + obj.__xva + ')';
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
             }
             if(les_arguments !== ''){
                 les_arguments=les_arguments.substr(1);
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         if(element.body){
             obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         t+='fonction( definition(' + generateur + asynchrone + 'nom(' + nom_fonction + ') ' + les_arguments + ' )  ,  contenu( ' + contenu + ' ) )';
@@ -984,7 +980,7 @@ class c_astjs_vers_rev1{
                 objet=obj.__xva;
                 type_objet=element.object.type;
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
             }
         }else{
             /* cas let  x7 = a ?. [42]; */
@@ -996,7 +992,7 @@ class c_astjs_vers_rev1{
             propriete=obj.__xva;
             type_propriete=element.property.type;
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
         }
         if(element.computed === false){
             if(type_parent === 'CallExpression'){
@@ -1004,7 +1000,7 @@ class c_astjs_vers_rev1{
                     if(element.property.type === 'Identifier' && element.object.type === 'Identifier'){
                         t=objet + '.' + propriete;
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
                     }
                 }else{
                     t='element(' + objet + '),nomf(' + propriete + ')';
@@ -1022,7 +1018,7 @@ class c_astjs_vers_rev1{
                         t=objet.substr(0,objet.length - 1) + '.' + propriete + ')';
                         return({"__xst" : true ,"__xva" : t});
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
                     }
                 }else{
                     if(type_objet === null){
@@ -1074,13 +1070,13 @@ class c_astjs_vers_rev1{
                                         t=nouvelle_fonction.__xva.substr(0,nouvelle_fonction.__xva.length - 1) + 'prop(' + propriete + '))';
                                     }
                                 }else{
-                                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
                                 }
                             }else{
-                                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
                             }
                         }else{
-                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
                         }
                     }
                 }else if(type_objet === 'MemberExpression'){
@@ -1107,9 +1103,9 @@ class c_astjs_vers_rev1{
                         t=objet + '.' + propriete;
                         element.type='Identifier';
                     }
-                }else if(type_objet === 'LogicalExpression' || type_objet === 'AssignmentExpression' || type_objet === 'NewExpression' ){
+                }else if(type_objet === 'LogicalExpression' || type_objet === 'AssignmentExpression' || type_objet === 'NewExpression'){
                     t=objet.substr(0,objet.length - 1) + ',prop(' + propriete + '))';
-                }else if(type_objet === 'Literal' ){
+                }else if(type_objet === 'Literal'){
                     /* cas (rare) a=' '.length  trouvé dans htmx => affecte(a , valeur_constante(' ',prop(length) ) ) */
                     t='valeur_constante(' + objet + ',prop(' + propriete + '))';
                 }else if(type_objet === 'ConditionalExpression'){
@@ -1158,7 +1154,7 @@ class c_astjs_vers_rev1{
                 }
             }
         }
-        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' #traite_MemberExpression' ,"element" : element}));
+        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
     }
     /*
       =============================================================================================================
@@ -1880,7 +1876,7 @@ let x16=a.b ?. c(a.b);
         let t='';
         let obj=null;
         let elem='';
-        if(element.argument.type === 'Identifier' && parent.type === "ForStatement" && parent.update.type === "UpdateExpression"){
+        if(element.argument.type === 'Identifier' && parent.type === "ForStatement" && parent.update && parent.update.type === "UpdateExpression"){
             /* cas simples de for(i=0;i<j;i++){} */
             if('++' === element.operator && element.prefix === false){
                 t+=element.argument.name + '++';
@@ -2042,8 +2038,6 @@ let x16=a.b ?. c(a.b);
     */
     #traiteAssignmentPattern(element,niveau,parent,tab_comm){
         var t='';
-        var esp0=' '.repeat(NBESPACESREV * niveau);
-        var esp1=' '.repeat(NBESPACESREV);
         if(element.left && element.right){
             var objgauche=this.#traite_element(element.left,niveau + 1,element,tab_comm,false);
             var objdroite=this.#traite_element(element.right,niveau + 1,element,tab_comm,false);
@@ -2087,7 +2081,7 @@ let x16=a.b ?. c(a.b);
             if(element.key.name === undefined){
                 obj=this.#traite_element(element.key,niveau,element,tab_comm,false);
                 if(obj.__xst === false){
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
                 t+=statique + 'nom(' + obj.__xva + '),';
             }else{
@@ -2109,7 +2103,7 @@ let x16=a.b ?. c(a.b);
                         if(obj.__xst === true){
                             t+='argument(' + obj.__xva + ')';
                         }else{
-                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                         }
                     }else if(element.value.params[j].type === "RestElement"
                            && element.value.params[j].argument
@@ -2119,11 +2113,11 @@ let x16=a.b ?. c(a.b);
                     }else if(element.value.params[j].type === "ObjectPattern"){
                         obj=this.#traite_element(element.value.params[j],niveau,element,tab_comm,false);
                         if(obj.__xst === false){
-                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                         }
                         t+='argument(' + obj.__xva + ')';
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + '"' + element.value.params[j].type + '"' ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + '"' + element.value.params[j].type + '"' ,"element" : element}));
                     }
                     if(j < element.value.params.length - 1){
                         t+=',';
@@ -2193,10 +2187,10 @@ let x16=a.b ?. c(a.b);
             if(obj.__xst === true){
                 t+='exporter_par_defaut(valeur(' + obj.__xva + '))';
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2215,7 +2209,7 @@ let x16=a.b ?. c(a.b);
                     if(specifier.local.type === 'Identifier'){
                         locale='locale(' + specifier.local.name + '),';
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                     }
                 }
                 if(specifier.exported){
@@ -2303,13 +2297,18 @@ let x16=a.b ?. c(a.b);
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1820 #traite_NewExpression' ,"element" : element}));
             }
-        }else if(element.callee && element.callee.type === 'Identifier' && element.arguments.length >0
-         || element.callee && element.callee.type === 'FunctionExpression' && element.arguments.length === 0){
+        }else if(element.callee
+                   && element.callee.type === 'Identifier'
+                   && element.arguments.length > 0
+               || element.callee
+                   && element.callee.type === 'FunctionExpression'
+                   && element.arguments.length === 0
+        ){
             var obj1=this.#traite_CallExpression(element,niveau + 1,element,{});
             if(obj1.__xst === true){
                 t+='new(' + obj1.__xva + ')';
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_NewExpression' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_NewExpression' ,"element" : element}));
             }
         }else if(element.callee
                    && element.callee.type === 'MemberExpression'
@@ -2323,10 +2322,10 @@ let x16=a.b ?. c(a.b);
             if(obj1.__xst === true){
                 t+='new(' + obj1.__xva + ')';
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+' #traite_NewExpression' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_NewExpression' ,"element" : element}));
             }
         }else{
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1()+'#traite_NewExpression' ,"element" : element}));
+            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + '#traite_NewExpression' ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2362,7 +2361,7 @@ let x16=a.b ?. c(a.b);
                     }
                 }
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         t+=')';
@@ -2375,7 +2374,7 @@ let x16=a.b ?. c(a.b);
                     return(this.#astjs_logerreur({"__xst" : false ,"__xme" : '1854 #traite_TryStatement' ,"element" : element}));
                 }
             }else{
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         t+=')';
@@ -2538,7 +2537,7 @@ let x16=a.b ?. c(a.b);
                     }else{
                         /* il faut traiter les valeurs entre quotes qui terminent par un \ */
                         if(element.raw.indexOf('\\\n') >= 0){
-                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + 'veuillez réécrire ces lignes JS qui terminent par un \\' ,"element" : element}));
+                            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'veuillez réécrire ces lignes JS qui terminent par un \\' ,"element" : element}));
                         }else{
                             valeur=element.raw;
                         }
@@ -2556,7 +2555,7 @@ let x16=a.b ?. c(a.b);
                     if(element.label.type === 'Identifier'){
                         t+='break(' + element.label.name + ')';
                     }else{
-                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                        return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                     }
                 }else{
                     t+='break()';
@@ -2576,7 +2575,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2585,7 +2584,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2594,7 +2593,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2603,7 +2602,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2612,7 +2611,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2621,7 +2620,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2630,7 +2629,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2639,7 +2638,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2648,7 +2647,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2657,7 +2656,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2666,7 +2665,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2675,7 +2674,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2684,7 +2683,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2693,7 +2692,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2702,7 +2701,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2711,7 +2710,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2720,7 +2719,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2729,7 +2728,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2738,7 +2737,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2747,7 +2746,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2756,7 +2755,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2765,7 +2764,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2774,7 +2773,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2783,7 +2782,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2792,7 +2791,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2801,7 +2800,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2810,7 +2809,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2819,7 +2818,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2828,7 +2827,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2837,7 +2836,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2846,7 +2845,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2855,7 +2854,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2864,7 +2863,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2873,7 +2872,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2882,7 +2881,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2891,7 +2890,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2900,7 +2899,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2909,7 +2908,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2918,7 +2917,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2927,7 +2926,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2936,7 +2935,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2945,7 +2944,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2954,7 +2953,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2963,7 +2962,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2972,7 +2971,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2981,7 +2980,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2990,7 +2989,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -2999,7 +2998,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -3008,7 +3007,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -3017,7 +3016,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -3026,7 +3025,7 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
@@ -3045,13 +3044,13 @@ let x16=a.b ?. c(a.b);
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + element.type ,"element" : element}));
+                    return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
                 }
                 break;
                 
             default:
                 debugger;
-                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : nl1() + ' non prévu "' + element.type + '" ' ,"element" : element}));
+                return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' non prévu "' + element.type + '" ' ,"element" : element}));
                 break;
                 
         }
@@ -3160,7 +3159,6 @@ let x16=a.b ?. c(a.b);
                 txtComment=txtComment.replace(/\/\*/,'/_*').replace(/\*\//,'*_/');
             }
             if(((txtComment.match(/\(/g) || []).length) === ((txtComment.match(/\)/g) || []).length)){
-             
                 if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
                     t+='#(#' + txtComment.substr(1) + ')';
                 }else{

@@ -100,13 +100,19 @@ class traitements_sur_html{
                         if(jsonDeHtml.attributes.type.toLowerCase() === 'application/ld+json'){
                             t+='\n' + esp0 + 'ldPlusJsonDansHtml(';
                             type='ldPlusJsonDansHtml';
-                        }else if((jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript' || jsonDeHtml.attributes.type.toLowerCase() === 'module' ) && jsonDeHtml.hasOwnProperty('content')){
+                        }else if((jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript'
+                                   || jsonDeHtml.attributes.type.toLowerCase() === 'module')
+                               && jsonDeHtml.hasOwnProperty('content')
+                        ){
                             /*
                               si il y a du contenu ( content existe ), 
                             */
                             t+='\n' + esp0 + 'javascriptDansHtml(';
                             type='javascriptDansHtml';
-                        }else if((jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript' || jsonDeHtml.attributes.type.toLowerCase() === 'module' ) && !jsonDeHtml.hasOwnProperty('content')){
+                        }else if((jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript'
+                                   || jsonDeHtml.attributes.type.toLowerCase() === 'module')
+                               && !jsonDeHtml.hasOwnProperty('content')
+                        ){
                             /*
                               c'est un tag script avec src=""
                             */
@@ -119,7 +125,7 @@ class traitements_sur_html{
                             t+='\n' + esp0 + 'script(';
                             logerreur({
                                     "__xst" : false ,
-                                    "__xme" : 'module_html.js traiteJsonDeHtml 0073 attention, seuls "text/javascript" et "application/ld+json" sont traités et il existe un type de script non traité  "' + jsonDeHtml.attributes.type + '"'
+                                    "__xme" : __m_rev1.nl2()+'attention, seuls "text/javascript" et "application/ld+json" sont traités et il existe un type de script non traité  "' + jsonDeHtml.attributes.type + '"'
                                 });
                         }
                     }else{
@@ -1020,10 +1026,10 @@ class traitements_sur_html{
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree) ,"masquee" : masquer_les_messages_du_serveur});
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(donnees) ,"masquee" : masquer_les_messages_du_serveur});
                 return({
-                    "__xst" : false ,
-                    "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t ,
-                    "masquee" : masquer_les_messages_du_serveur
-                });
+                        "__xst" : false ,
+                        "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t ,
+                        "masquee" : masquer_les_messages_du_serveur
+                    });
             }
         }catch(e){
             console.log(e);
@@ -1093,9 +1099,9 @@ class traitements_sur_html{
                                 }catch(e){
                                     console.log(tableau_de_javascripts_a_convertir[indjs].__xva.replace(/&amp;/g,'&'));
                                     if(e.pos){
-                                        return(logerreur({"__xst" : false ,"__xme" : nl1() + '<br />erreur dans un source javascript contenu dans un html<br />' + e.message ,"plage" : [e.pos,e.pos]}));
+                                        return(logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + '<br />erreur dans un source javascript contenu dans un html<br />' + e.message ,"plage" : [e.pos,e.pos]}));
                                     }else{
-                                        return(logerreur({"__xst" : false ,"__xme" : nl1() + '<br />erreur dans un source javascript contenu dans un html<br />' + e.message}));
+                                        return(logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + '<br />erreur dans un source javascript contenu dans un html<br />' + e.message}));
                                     }
                                 }
                                 if(tableau_des_commentaires_js.length > 0){
@@ -1331,14 +1337,14 @@ class traitements_sur_html{
             }
             t+=' ?>';
             return({
-                "__xst" : true ,
-                "__xva" : t ,
-                "dansHead" : dansHead ,
-                "dansBody" : dansBody ,
-                "dansJs" : dansJs ,
-                "dansPhp" : dansPhp ,
-                "dansCss" : dansCss
-            });
+                    "__xst" : true ,
+                    "__xva" : t ,
+                    "dansHead" : dansHead ,
+                    "dansBody" : dansBody ,
+                    "dansJs" : dansJs ,
+                    "dansPhp" : dansPhp ,
+                    "dansCss" : dansCss
+                });
         }else if(dansJs && tab[id][1] === 'source'){
             ob=__m_rev_vers_js1.c_tab_vers_js(tab,{"indice_de_debut" : id + 1});
             if(ob.__xst === true){
@@ -1356,14 +1362,14 @@ class traitements_sur_html{
                 return(logerreur({"__xst" : false ,"__xva" : t ,"__xme" : 'erreur de script dans un html'}));
             }
             return({
-                "__xst" : true ,
-                "__xva" : t ,
-                "dansHead" : dansHead ,
-                "dansBody" : dansBody ,
-                "dansJs" : dansJs ,
-                "dansPhp" : dansPhp ,
-                "dansCss" : dansCss
-            });
+                    "__xst" : true ,
+                    "__xva" : t ,
+                    "dansHead" : dansHead ,
+                    "dansBody" : dansBody ,
+                    "dansJs" : dansJs ,
+                    "dansPhp" : dansPhp ,
+                    "dansCss" : dansCss
+                });
         }else{
             temp='';
             if(id === 0 || tab[id][1] === 'html' || tab[id][1] === 'html_dans_php'){
@@ -1374,7 +1380,7 @@ class traitements_sur_html{
                 if(tab[id][13] === ''){
                     temp+='<!-- -->';
                 }else{
-                    var commentaire=traiteCommentaire2(tab[id][13],niveau,id);
+                    var commentaire=__m_rev1.tr_co_src(tab[id][13],niveau,id);
                     if(commentaire !== ''){
                         /* si le commentaire html n'est pas vide, on lui ajoute au besoin un espace avant et après */
                         if(commentaire.substr(0,1) !== ' '){

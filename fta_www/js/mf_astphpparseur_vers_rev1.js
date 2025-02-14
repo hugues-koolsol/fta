@@ -37,13 +37,13 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         obj=this.#traite_element(element.what,niveau,element,tab_comm);
         if(obj.__xst === true){
             nomFonction+=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element.what}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element.what}));
         }
         if(element.arguments && element.arguments.length > 0){
             obj=this.#traite_parametres(element,niveau,element,tab_comm);
@@ -51,7 +51,7 @@ class c_astphpparseur_vers_rev1{
                 les_parametres+=obj.__xva;
                 les_arguments_courts=obj.les_arguments_courts;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element.what}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element.what}));
             }
         }
         if(element.what.kind === 'propertylookup'){
@@ -174,20 +174,20 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     what+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
             if(element.offset){
                 obj=this.#traite_element(element.offset,niveau,element,tab_comm);
                 if(obj.__xst === true){
                     offset+=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
             t+='propriete(' + what + ',' + offset + ')';
         }
@@ -204,7 +204,7 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             cible=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         if(element.once === true && element.require === true){
             t+='appelf(nomf(require_once),p(' + cible + '))';
@@ -215,7 +215,7 @@ class c_astphpparseur_vers_rev1{
         }else if(element.once === true && element.require === false){
             t+='appelf(nomf(include_once),p(' + cible + '))';
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -286,12 +286,12 @@ class c_astphpparseur_vers_rev1{
                    && this.#options_traitement.nettoyer_html === true
             ){
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'ATTENTION, ce php contient du html en ligne qui n\'est pas complet' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'ATTENTION, ce php contient du html en ligne qui n\'est pas complet' ,"element" : element}));
             }
             var cle=this.#php_construit_cle(10);
             this.#astphp_logerreur({
                     "__xst" : true ,
-                    "__xav" : nl1() + '<br />ATTENTION, ce php contient du html en ligne qui n\'est pas complet et qui est converti en echo , chercher : "' + cle + '"' ,
+                    "__xav" : __m_rev1.nl2() + '<br />ATTENTION, ce php contient du html en ligne qui n\'est pas complet et qui est converti en echo , chercher : "' + cle + '"' ,
                     "element" : element
                 });
             if(contenu.indexOf('<?') >= 0){
@@ -301,7 +301,7 @@ class c_astphpparseur_vers_rev1{
                   est prise dans le inline or le "short open tag" est un probléme
                   
                 */
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'les "tags php courts ne sont pas admis' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'les "tags php courts ne sont pas admis' ,"element" : element}));
             }
             if(contenu.toLowerCase().indexOf('<script') < 0){
                 t+='#( === transformation html incomplet en echo voir ci dessous pour la clé = "' + cle + '")';
@@ -359,14 +359,14 @@ class c_astphpparseur_vers_rev1{
                                                 if(obj.__xst === true){
                                                     t+='\n' + esp0 + 'html_dans_php(' + obj.__xva + ')';
                                                 }else{
-                                                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                                                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                                                 }
                                             }
                                         }
                                     }
                                 }
                             }else{
-                                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                             }
                         }
                     }
@@ -384,7 +384,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 t=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         return({"__xst" : true ,"__xva" : t ,"tableau_de_html_dans_php_a_convertir" : tableau_de_html_dans_php_a_convertir});
@@ -456,7 +456,7 @@ class c_astphpparseur_vers_rev1{
                 }catch(e){
                     console.log(globale_tableau_des_js2[i].__xva.replace(/&amp;/g,'&'));
                     globale_tableau_des_js2=[];
-                    return(logerreur({"__xst" : false ,"__xme" : nl1()+'<br />il y a un problème dans un source javascript dans le php'}));
+                    return(logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + '<br />il y a un problème dans un source javascript dans le php'}));
                 }
                 var phrase_a_remplacer='#(cle_javascript_a_remplacer,' + globale_tableau_des_js2[i].cle + ')';
                 if(obj === '' || obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0){
@@ -574,7 +574,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 les_variables+='p(' + obj.__xva + ')';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         t+='appelf(nomf(isset)' + les_variables + ')';
@@ -593,7 +593,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 les_variables+='p(' + obj.__xva + ')';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         t+='appelf(nomf(unset)' + les_variables + ')';
@@ -613,11 +613,11 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     les_variables+='p(' + obj.__xva + ')';
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         t+='appelf(nomf(echo)' + les_variables + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -633,7 +633,7 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             les_variables+='p(' + obj.__xva + ')';
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         t+='appelf(nomf(print)' + les_variables + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -651,7 +651,7 @@ class c_astphpparseur_vers_rev1{
                 }
                 t+='appelf( nomf(use) , p( \'' + element.items[i].name.replace(/\\/g,'\\\\') + '\' ))';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         return({"__xst" : true ,"__xva" : t});
@@ -666,7 +666,7 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             t='supprimeErreur(' + obj.__xva + ')';
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -691,7 +691,7 @@ class c_astphpparseur_vers_rev1{
                     t='sortir(' + obj.__xva + ')';
                 }
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         return({"__xst" : true ,"__xva" : t});
@@ -709,7 +709,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 t='retourner(' + obj.__xva + ')';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         return({"__xst" : true ,"__xva" : t});
@@ -729,7 +729,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     variable+=obj.__xva + ',';
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' what' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' what' ,"element" : element}));
                 }
             }
         }
@@ -738,7 +738,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 variable+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'variable' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'variable' ,"element" : element}));
             }
         }
         if(element.body){
@@ -746,7 +746,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 contenu=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' body' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' body' ,"element" : element}));
             }
         }
         t+='err(' + variable + '),faire(' + contenu + ')';
@@ -765,17 +765,17 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' body' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' body' ,"element" : element}));
             }
         }else if(element.kind === 'block'){
             obj=this.#traite_ast0(element,niveau + 1,element,tab_comm);
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' body' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' body' ,"element" : element}));
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' ni body ni block' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' ni body ni block' ,"element" : element}));
         }
         if(element.catches && element.catches.length && element.catches.length > 0){
             for( let i=0 ; i < element.catches.length ; i++ ){
@@ -783,7 +783,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     catches.push(obj.__xva);
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'catches' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'catches' ,"element" : element}));
                 }
             }
         }
@@ -808,7 +808,7 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             les_parametres+=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         /*#
           la doc dit :        
@@ -829,7 +829,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 what+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         if(element.parenthesizedExpression === true){
@@ -853,20 +853,20 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 offset+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'offset' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'offset' ,"element" : element}));
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'pas de offset' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'pas de offset' ,"element" : element}));
         }
         if(element.what){
             obj=this.#traite_element(element.what,niveau,element,tab_comm);
             if(obj.__xst === true){
                 what+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'what' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'what' ,"element" : element}));
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'pas de what' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'pas de what' ,"element" : element}));
         }
         if(what.substr(0,1) === '\''){
             t='valeur_constante(' + what.substr(0,what.length - 1) + '::' + offset + '\')';
@@ -890,14 +890,14 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             condition+=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'test' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'test' ,"element" : element}));
         }
         if(element.trueExpr){
             obj=this.#traite_element(element.trueExpr,niveau,element,tab_comm);
             if(obj.__xst === true){
                 si_vrai+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'true' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'true' ,"element" : element}));
             }
         }else{
             si_vrai='';
@@ -906,7 +906,7 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             si_faux+=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'false' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'false' ,"element" : element}));
         }
         t='testEnLigne( condition( ' + condition + ' ) , siVrai(' + si_vrai + ') , siFaux(' + si_faux + '))';
         return({"__xst" : true ,"__xva" : t});
@@ -923,7 +923,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 items+=',' + obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         if(items !== ''){
@@ -960,19 +960,19 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             lesArguments=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         if(element.byref !== false){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' byref' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' byref' ,"element" : element}));
         }
         if(element.isStatic !== false){
             statique='statique()';
         }
         if(element.nullable !== false){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'nullable' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'nullable' ,"element" : element}));
         }
         if(element.attrGroups.length !== 0){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'attrGroups' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'attrGroups' ,"element" : element}));
         }
         if(element.uses.length !== 0){
             for( let i=0 ; i < element.uses.length ; i++ ){
@@ -980,25 +980,25 @@ class c_astphpparseur_vers_rev1{
                 obj=this.#traite_element(element.uses[i],niveau,element,tab_comm);
                 if(obj.__xst === true){
                     if(element.uses[i].hasOwnProperty('curly') && element.uses[i].curly !== false){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'curly' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'curly' ,"element" : element}));
                     }
                     if(element.uses[i].hasOwnProperty('variadic') && element.uses[i].variadic !== false){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'variadic' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'variadic' ,"element" : element}));
                     }
                     if(element.uses[i].hasOwnProperty('flags') && element.uses[i].flags !== false){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'flags' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'flags' ,"element" : element}));
                     }
                     if(element.uses[i].hasOwnProperty('nullable') && element.uses[i].nullable !== false){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'nullable' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'nullable' ,"element" : element}));
                     }
                     if(element.uses[i].hasOwnProperty('readonly') && element.uses[i].readonly !== false){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'readonly' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'readonly' ,"element" : element}));
                     }
                     if(element.uses[i].hasOwnProperty('type') && element.uses[i].type !== false){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'type' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'type' ,"element" : element}));
                     }
                     if(element.uses[i].hasOwnProperty('value')){
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'value' ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'value' ,"element" : element}));
                     }
                     if(element.uses[i].byref && element.uses[i].byref === true){
                         les_utilisations+='utilise_par_adresse(' + obj.__xva + ')';
@@ -1006,7 +1006,7 @@ class c_astphpparseur_vers_rev1{
                         les_utilisations+='utilise(' + obj.__xva + ')';
                     }
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'uses' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'uses' ,"element" : element}));
                 }
             }
         }
@@ -1014,7 +1014,7 @@ class c_astphpparseur_vers_rev1{
             if(element.type.kind === 'typereference'){
                 type_retour='type_retour(\'' + element.type.name.replace(/\\/g,'\\\\') + '\')';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'type' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'type' ,"element" : element}));
             }
         }
         if(element.body){
@@ -1030,7 +1030,7 @@ class c_astphpparseur_vers_rev1{
                     contenu=',contenu(' + obj.__xva + ')';
                 }
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'body' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'body' ,"element" : element}));
             }
         }
         t='cloturée(';
@@ -1053,10 +1053,10 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 t+='appelf(nomf(clone),p(' + obj.__xva + '))';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'what' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'what' ,"element" : element}));
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -1073,17 +1073,17 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 nom+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
             obj=this.#traite_element(element.value,niveau,element,tab_comm);
             if(obj.__xst === true){
                 valeur+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
             t+='nomc(' + nom + '),valeur(' + valeur + ')';
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -1096,16 +1096,16 @@ class c_astphpparseur_vers_rev1{
         let obj=null;
         let visibility='';
         if(element.attrGroups && element.attrGroups.length > 0){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'attrGroups' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'attrGroups' ,"element" : element}));
         }
         if(element.final){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'final' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'final' ,"element" : element}));
         }
         if(element.nullable){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'nullable' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'nullable' ,"element" : element}));
         }
         if(element.type){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'type' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'type' ,"element" : element}));
         }
         if(element.visibility){
             if(element.visibility === 'private'){
@@ -1115,17 +1115,17 @@ class c_astphpparseur_vers_rev1{
             }else if(element.visibility === 'protected'){
                 visibility='constante(protégée(),';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'visibilitée non traité "' + element.visibility + '"' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'visibilitée non traité "' + element.visibility + '"' ,"element" : element}));
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'visibilitée' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'visibilitée' ,"element" : element}));
         }
         for( let i=0 ; i < element.constants.length ; i++ ){
             obj=this.#traite_element(element.constants[i],niveau,element,tab_comm);
             if(obj.__xst === true){
                 t+=(visibility + obj.__xva) + ')';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'constants' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'constants' ,"element" : element}));
             }
         }
         return({"__xst" : true ,"__xva" : t});
@@ -1143,14 +1143,14 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 valeur=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'defaultValue' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'defaultValue' ,"element" : element}));
             }
         }
         obj=this.#traite_element(element.variable,niveau,element,tab_comm);
         if(obj.__xst === true){
             variable=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'variable' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'variable' ,"element" : element}));
         }
         t='static(' + variable + ',' + valeur + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -1167,7 +1167,7 @@ class c_astphpparseur_vers_rev1{
                 t+=',' + obj.__xva;
                 /* obj.__xva; */
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         if(t !== ''){
@@ -1185,7 +1185,7 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             t+='throw(' + obj.__xva + ')';
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -1202,7 +1202,7 @@ class c_astphpparseur_vers_rev1{
                 t=element.name;
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -1218,13 +1218,13 @@ class c_astphpparseur_vers_rev1{
         if(element.name && element.name !== '' && element.name.kind == 'identifier'){
             nom_de_l_interface=element.name.name;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'name' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'name' ,"element" : element}));
         }
         if(element.extends && element.extends !== null){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'extends' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'extends' ,"element" : element}));
         }
         if(element.attrGroups && element.attrGroups.length > 0){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'attrGroups' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'attrGroups' ,"element" : element}));
         }
         if(element.body && element.body.length > 0){
             for( i=0 ; i < element.body.length ; i++ ){
@@ -1232,7 +1232,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     faire+=',' + obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'body' ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'body' ,"element" : element}));
                 }
             }
         }
@@ -1258,7 +1258,7 @@ class c_astphpparseur_vers_rev1{
                 nom_de_l_espace=element.name;
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         if(element.children && element.children.length > 0){
             for( i=0 ; i < element.children.length ; i++ ){
@@ -1267,14 +1267,14 @@ class c_astphpparseur_vers_rev1{
                     if(obj.__xst === true){
                         faire+=',' + obj.__xva;
                     }else{
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                     }
                 }else{
                     obj=this.#traite_element(element.children[i],niveau,element,tab_comm);
                     if(obj.__xst === true){
                         faire+=',' + obj.__xva;
                     }else{
-                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                        return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                     }
                 }
             }
@@ -1301,7 +1301,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 cle+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'cle' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'cle' ,"element" : element}));
             }
             obj=this.#traite_element(element.directives[i].value,niveau,element,tab_comm);
             if(obj.__xst === true){
@@ -1311,7 +1311,7 @@ class c_astphpparseur_vers_rev1{
                     texte_des_directives+=',' + cle + '=' + obj.__xva + '';
                 }
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'valeur' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'valeur' ,"element" : element}));
             }
         }
         if(element.children && element.children.length > 0){
@@ -1320,12 +1320,12 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     instructions+=',' + obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
             }
         }
         if(texte_des_directives === ''){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'texte directive non trouvé' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'texte directive non trouvé' ,"element" : element}));
         }
         texte_des_directives=texte_des_directives.substr(1);
         if(instructions !== ''){
@@ -1353,10 +1353,10 @@ class c_astphpparseur_vers_rev1{
             }else if(element.raw === '(array)'){
                 t='casttableau(' + obj.__xva + ')';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' "' + element.raw + '"' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' "' + element.raw + '"' ,"element" : element}));
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -1372,7 +1372,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 t+=obj.__xva;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + ' type non prévu "' + JSON.stringify(element) + '"' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' type non prévu "' + JSON.stringify(element) + '"' ,"element" : element}));
             }
         }else{
             let contenu=element.raw.replace('<<<\'' + element.label + '\'','').replace(/`/g,'\\`');
@@ -1394,7 +1394,7 @@ class c_astphpparseur_vers_rev1{
         let t='';
         let obj=null;
         if(element.curly && element.curly === true){
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'curly non traité "' + JSON.stringify(element) + '"' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'curly non traité "' + JSON.stringify(element) + '"' ,"element" : element}));
         }
         if(element.expression){
             if(element.expression.kind === 'string' && element.expression.isDoubleQuote === false){
@@ -1404,7 +1404,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t=obj.__xva;
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
             }
         }
@@ -1421,7 +1421,7 @@ class c_astphpparseur_vers_rev1{
             if(element.value && Array.isArray(element.value)){
                 t='encapsulé(' + element.raw + ')';
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'type non prévu "' + JSON.stringify(element) + '"' ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'type non prévu "' + JSON.stringify(element) + '"' ,"element" : element}));
             }
         }else{
             let contenu=element.raw.replace('<<<' + element.label,'');
@@ -1448,7 +1448,7 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             quoi+=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'what' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'what' ,"element" : element}));
         }
         if(element.type === '+'){
             if(element.what.kind === 'variable'){
@@ -1463,7 +1463,7 @@ class c_astphpparseur_vers_rev1{
                 t+='predec(' + quoi + ')';
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -1479,7 +1479,7 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             quoi+=obj.__xva;
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() + 'what' ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'what' ,"element" : element}));
         }
         if(element.type === '+'){
             if(element.what.kind === 'variable'){
@@ -1494,7 +1494,7 @@ class c_astphpparseur_vers_rev1{
                 t+='postdec(' + quoi + ')';
             }
         }else{
-            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2382,7 +2382,7 @@ class c_astphpparseur_vers_rev1{
                         if(obj1.__xst === true){
                             valeur_non=obj1.__xva;
                         }else{
-                            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                            return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                         }
                     }
                     t+='non(instance_de(' + valeur_non + ',' + droite + '))';
@@ -2412,7 +2412,7 @@ class c_astphpparseur_vers_rev1{
             if(o.__xst === true){
                 debugger;
             }else{
-                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }
         }
         if(t.substr(0,14) === 'concat(concat('
@@ -2533,10 +2533,10 @@ class c_astphpparseur_vers_rev1{
                                             nouvelle_chaine='\\\\' + nouvelle_chaine;
                                         }else{
                                             return(this.#astphp_logerreur({
-                                                "__xst" : false ,
-                                                "__xme" : '1283 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr(i + 1,1) + '" ' ,
-                                                "element" : element
-                                            }));
+                                                    "__xst" : false ,
+                                                    "__xme" : '1283 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr(i + 1,1) + '" ' ,
+                                                    "element" : element
+                                                }));
                                         }
                                     }else{
                                         /*
@@ -2547,10 +2547,10 @@ class c_astphpparseur_vers_rev1{
                                             nouvelle_chaine='\\\\' + nouvelle_chaine;
                                         }else{
                                             return(this.#astphp_logerreur({
-                                                "__xst" : false ,
-                                                "__xme" : '1283 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr(i + 1,1) + '" ' ,
-                                                "element" : element
-                                            }));
+                                                    "__xst" : false ,
+                                                    "__xme" : '1283 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr(i + 1,1) + '" ' ,
+                                                    "element" : element
+                                                }));
                                         }
                                     }
                                 }
@@ -2593,10 +2593,10 @@ class c_astphpparseur_vers_rev1{
                                     nouvelle_chaine='\\' + nouvelle_chaine;
                                 }else{
                                     return(this.#astphp_logerreur({
-                                        "__xst" : false ,
-                                        "__xme" : '1315 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' ,
-                                        "element" : element
-                                    }));
+                                            "__xst" : false ,
+                                            "__xme" : '1315 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' ,
+                                            "element" : element
+                                        }));
                                 }
                             }else{
                                 nouvelle_chaine=rv.substr(i,1) + nouvelle_chaine;
@@ -3041,7 +3041,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     type_retour='type_retour(' + obj.__xva + ')';
                 }else{
-                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : nl1() ,"element" : element}));
+                    return(this.#astphp_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                 }
             }
         }
@@ -3129,10 +3129,10 @@ class c_astphpparseur_vers_rev1{
         }catch(e){
             if(parent){
                 return({
-                    "__xst" : false ,
-                    "__xme" : '2770 #traite_commentaires_debut cas non prévu pour enfant de "' + JSON.stringify(parent) + '"' ,
-                    "element" : parent
-                });
+                        "__xst" : false ,
+                        "__xme" : '2770 #traite_commentaires_debut cas non prévu pour enfant de "' + JSON.stringify(parent) + '"' ,
+                        "element" : parent
+                    });
             }
             return({"__xst" : false ,"__xme" : '2776 #traite_commentaires_debut cas non prévu'});
         }

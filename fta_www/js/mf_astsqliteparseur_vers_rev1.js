@@ -66,7 +66,7 @@ class c_astsqliteparseur_vers_rev1{
                     t+='\n' + esp0 + esp1 + esp1 + esp1 + 'source(' + obj1.__xva;
                     t+='\n' + esp0 + esp1 + esp1 + esp1 + ')';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1()}));
+                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
                 }
             }else{
                 return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0030 recupere_element_de_ast_sql variant non traite : "'}));
@@ -524,9 +524,9 @@ class c_astsqliteparseur_vers_rev1{
                 }
             }else{
                 return(this.#astsql_logerreur({
-                    "__xst" : false ,
-                    "__xme" : '0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.result[0].type different de expression : "' + '"'
-                }));
+                        "__xst" : false ,
+                        "__xme" : '0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.result[0].type different de expression : "' + '"'
+                    }));
             }
             t+='\n' + esp0 + esp1 + esp1 + ')';
         }else if(element.result && element.result.type === 'statement'){
@@ -766,7 +766,7 @@ class c_astsqliteparseur_vers_rev1{
         if(element.on && element.on.name){
             t+='sur_table(`' + element.on.name + '`)';
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1() + 'nom de la table de l\'index nn trouvé : '}));
+            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'nom de la table de l\'index nn trouvé : '}));
         }
         if(element.unique && element.unique === true){
             t+=',unique()';
@@ -774,7 +774,7 @@ class c_astsqliteparseur_vers_rev1{
         if(element.target && element.target.name){
             t+=',index_name(`' + element.target.name + '`)';
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1() + 'nom de l\'index nn trouvé : '}));
+            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'nom de l\'index nn trouvé : '}));
         }
         if(element.on && element.on.columns && element.on.columns.length > 0){
             t+=',champs(';
@@ -786,7 +786,7 @@ class c_astsqliteparseur_vers_rev1{
             }
             t+=')';
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1() + ' champs de l\'index nn trouvé : '}));
+            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' champs de l\'index nn trouvé : '}));
         }
         t+=')';
         return({"__xst" : true ,"__xva" : t});
@@ -834,7 +834,7 @@ class c_astsqliteparseur_vers_rev1{
         var esp0=' '.repeat(NBESPACESREV * niveau);
         var esp1=' '.repeat(NBESPACESREV);
         if(element === null){
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1() + 'null'}));
+            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'null'}));
         }
         element.en_cours_de_traitement=true;
         if(element.traite && element.traite === true){
@@ -849,7 +849,7 @@ class c_astsqliteparseur_vers_rev1{
                         if(obj1.__xst === true){
                             t+=obj1.__xva;
                         }else{
-                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1() + 'list'}));
+                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'list'}));
                         }
                     }
                     element.traite=true;
@@ -910,7 +910,7 @@ class c_astsqliteparseur_vers_rev1{
                             if(obj.__xst === true){
                                 t+=obj.__xva;
                             }else{
-                                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1()}));
+                                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
                             }
                             break;
                             
@@ -924,12 +924,12 @@ class c_astsqliteparseur_vers_rev1{
                             if(obj.__xst === true){
                                 t+=obj.__xva;
                             }else{
-                                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1()}));
+                                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
                             }
                             break;
                             
                         default:
-                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1() + 'create = "' + element.format + '" non traité '}));
+                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'create = "' + element.format + '" non traité '}));
                             
                     }
                     break;
@@ -944,7 +944,7 @@ class c_astsqliteparseur_vers_rev1{
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
-                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1() + 'select  : '}));
+                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'select  : '}));
                     }
                     break;
                     
@@ -993,7 +993,7 @@ class c_astsqliteparseur_vers_rev1{
                                         if(obj1.__xst === true){
                                             t+=obj1.__xva;
                                         }else{
-                                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1()}));
+                                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
                                         }
                                     }
                                 }
@@ -1006,17 +1006,17 @@ class c_astsqliteparseur_vers_rev1{
                         case 'rollback' : t+='\nrollback()';
                             break;
                         default:
-                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1() + 'transaction action inconnue = "' + element.action + '" '}));
+                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'transaction action inconnue = "' + element.action + '" '}));
                             
                     }
                     break;
                     
                 default:
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1() + 'variant = "' + element.variant + '" non traité ' ,"element" : element}));
+                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'variant = "' + element.variant + '" non traité ' ,"element" : element}));
                     
             }
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : nl1() + 'element.type = "' + element.type + '" non traité '}));
+            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'element.type = "' + element.type + '" non traité '}));
         }
         element.en_cours_de_traitement=false;
         element.traite=true;
@@ -1032,7 +1032,7 @@ class c_astsqliteparseur_vers_rev1{
             t=obj.__xva;
             return({"__xst" : true ,"__xva" : t});
         }else{
-            return(this.#astsql_logerreur({"__xst" : true ,"__me" : nl1() + 'erreur de convertion'}));
+            return(this.#astsql_logerreur({"__xst" : true ,"__me" : __m_rev1.nl2() + 'erreur de convertion'}));
         }
     }
     /*

@@ -124,7 +124,6 @@ class interface1{
             "data" : {"matrice" : [] ,"tableau" : [] ,"sourceGenere" : ''}
         };
     }
-    
     /*
       =============================================================================================================
       on remplir_et_afficher_les_messages1
@@ -224,7 +223,7 @@ class interface1{
         try{
             var response=await fetch(url,en_entree).catch((err) => {
                 /* console.error('err interface recupérer_un_fetch ',err); */
-                logerreur({"__xst" : false ,"__xme" : nl1() + ' recupérer_un_fetch <br/>' + err});
+                logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' recupérer_un_fetch <br/>' + err});
             }).finally(() => {
                 /* vide */
             });
@@ -249,10 +248,10 @@ class interface1{
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree) ,"masquee" : masquer_les_messages_du_serveur});
                 logerreur({"__xst" : false ,"__xme" : JSON.stringify(donnees) ,"masquee" : masquer_les_messages_du_serveur});
                 return({
-                    "__xst" : false ,
-                    "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t ,
-                    "masquee" : masquer_les_messages_du_serveur
-                });
+                        "__xst" : false ,
+                        "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t ,
+                        "masquee" : masquer_les_messages_du_serveur
+                    });
             }
         }catch(e){
             console.log(e);
@@ -880,9 +879,9 @@ class interface1{
         }catch(e){
             console.error('e=',e);
             if(e.pos){
-                logerreur({"__xst" : false ,"__xme" : nl1() ,"plage" : [e.pos,e.pos]});
+                logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"plage" : [e.pos,e.pos]});
             }else{
-                logerreur({"__xst" : false ,"__xme" : nl1()});
+                logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()});
             }
         }
         return({"__xst" : true ,"__xva" : obj1.__xva});
@@ -928,9 +927,9 @@ class interface1{
             /* console.error('e=',e); */
             debugger;
             if(e.pos){
-                logerreur({"__xst" : false ,"__xme" : nl1(e) + '"' + e.message + '"' ,"plage" : [e.pos,e.pos]});
+                logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2(e) + '"' + e.message + '"' ,"plage" : [e.pos,e.pos]});
             }else{
-                logerreur({"__xst" : false ,"__xme" : nl1(e) + '"' + e.message + '"'});
+                logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2(e) + '"' + e.message + '"'});
             }
         }
         this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_js);
@@ -1066,7 +1065,7 @@ class interface1{
             */
         }catch(e){
             /* console.error(e); */
-            debugger
+            debugger;
             if(e.lineNumber){
                 logerreur({"__xst" : false ,"__xme" : 'erreur dans le source php : <br />' + e.message ,"ligne" : e.lineNumber});
             }else{
@@ -1201,7 +1200,7 @@ class interface1{
                 console.log(obj);
             }
         }catch(e){
-            logerreur({"__xst" : false ,"__xme" : nl1(e) + '<br />' + e.message});
+            logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2(e) + '<br />' + e.message});
         }
         this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_text_area_php);
     }
@@ -1287,21 +1286,21 @@ class interface1{
                         obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
                         document.getElementById('txtar3').value=obj2.__xva;
                     }else{
-                        logerreur({"__xst" : false ,"__xme" : nl1()});
+                        logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()});
                         this.remplir_et_afficher_les_messages1('zone_global_messages');
                         return;
                     }
                 }else{
-                    logerreur({"__xst" : false ,"__xme" : nl1()});
+                    logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()});
                     this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_rev);
                     return;
                 }
             }else{
-                logerreur({"__xst" : false ,"__xme" : nl1()});
+                logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()});
                 this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
             }
         }catch(e){
-            logerreur({"__xst" : false ,"__xme" : nl1(e) + 'erreur de reconstruction du sql<br />' + e.message});
+            logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2(e) + 'erreur de reconstruction du sql<br />' + e.message});
             this.remplir_et_afficher_les_messages1('zone_global_messages',nom_de_la_textarea_sql);
         }
     }
@@ -1499,8 +1498,9 @@ monAlerte(0);
     */
     remplir_une_textarea_avex_un_source_de_test_js(nom_de_la_text_area_js){
         var t=`var test=a===2;
-var test=a==2;
-test=a===2;test=a==2;
+(function toto(){
+})();
+var test0=a===2,test1=a==2;
 
 a.b("c").d += '<e f="g">' + h.i[i] + "</e>";
 
@@ -1513,15 +1513,6 @@ t += " ".repeat(NBESPACESSOURCEPRODUIT * i);
   =====================================================================================================================
 */
 
-function traiteCommentaire2(texte, niveau, ind) {
-  var s = "";
-  s = traiteCommentaireSourceEtGenere1(texte, niveau, ind, NBESPACESSOURCEPRODUIT, false);
-  return s;
-}
-
-/*
-  =====================================================================================================================
-*/
 
 function tagada() {
   for (var i = 0; i < global_messages.erreurs.length; i++) {

@@ -98,6 +98,304 @@ class c_rev1{
     entitees_html(s){
         return(s.replace(/&/g,'&amp;').replace('<','&lt;').replace('>','&gt;'));
     }
+    /*
+      =====================================================================================================================
+      numéro de ligne courant du js (__m_rev1.nl2)( n l 1 )
+      =====================================================================================================================
+    */
+    nl2(e_originale){
+        var e=null;
+        if(e_originale !== undefined){
+            e=e_originale;
+        }else{
+            e=new Error();
+        }
+        if(!e.stack){
+            try{
+                /* IE ?? */
+                throw e;
+            }catch(e){
+                if(!e.stack){
+                    /* IE < 10 ? */
+                    return 0;
+                }
+            }
+        }
+        var nom_fonction='';
+        if(e_originale !== undefined){
+            var stack=e.stack.toString().split(/\r\n|\n/);
+            /* We want our caller's frame. It's index into |stack| depends on the */
+            /* browser and browser version, so we need to search for the second frame: */
+            var modele_champ_erreur=/:(\d+):(?:\d+)[^\d]*$/;
+            var modele_champ_erreur2=/:(\d+):(\d+).*$/;
+            var continuer=50;
+            do{
+                var ligne_erreur=stack.shift();
+                if(ligne_erreur.indexOf(' at ')){
+                    if(modele_champ_erreur2.exec(ligne_erreur) !== null){
+                        continuer=-1;
+                    }
+                }
+                continuer--;
+            }while(continuer > 0);
+            if(continuer === -2){
+                /* at nom_fonction (http://localhost/a/b/c/js/fichier.js:25:15) */
+                /* var texte_erreur=stack.shift(); */
+                var texte_erreur=ligne_erreur;
+                var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
+                nom_fonction='';
+                if(texte_erreur.match(/ at ([^\.]+) \(/) === null){
+                    if(texte_erreur.match(/ at ([^]+) \(/) === null){
+                        if(texte_erreur.match(/([^]+)\/([^]+)/)[2] !== null){
+                            nom_fonction='erreur javascript ' + texte_erreur.match(/([^]+)\/([^]+)/)[2];
+                        }
+                    }else{
+                        nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
+                    }
+                }else{
+                    nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
+                }
+                var numero_de_ligne=modele_champ_erreur.exec(texte_erreur)[1];
+                return('^G ' + numero_de_ligne + ' ' + nom_fichier + ' ' + nom_fonction + ' ' + ' ');
+            }else{
+                console.error(e_originale);
+                return 'Erreur non traçable';
+            }
+        }else{
+            var stack=e.stack.toString().split(/\r\n|\n/);
+            /* We want our caller's frame. It's index into |stack| depends on the */
+            /* browser and browser version, so we need to search for the second frame: */
+            var modele_champ_erreur=/:(\d+):(?:\d+)[^\d]*$/;
+            do{
+                var ligne_erreur=stack.shift();
+            }while(!modele_champ_erreur.exec(ligne_erreur) && stack.length);
+            /* at nom_fonction (http://localhost/a/b/c/js/fichier.js:25:15) */
+            var texte_erreur=stack.shift();
+            var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
+            if(texte_erreur.match(/ at ([^\.]+) \(/) === null){
+                if(texte_erreur.match(/ at ([^]+) \(/) === null){
+                    /*
+                      dans firefox, il n'y a pas de " at ":
+                      #traite_inline@http://www.exemple.fr/toto.js:290:31
+                    */
+                    if(texte_erreur.match(/([^]+)@/)){
+                        nom_fonction=texte_erreur.match(/([^]+)@/)[1];
+                    }
+                }else{
+                    nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
+                }
+            }else{
+                nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
+            }
+            var numero_de_ligne=modele_champ_erreur.exec(texte_erreur)[1];
+            return('^G ' + nom_fichier + ' ' + nom_fonction + ' ' + numero_de_ligne + ' ');
+        }
+    }
+    
+    /*
+      =====================================================================================================================
+      fonction transforme un commentaire pour un fichier rev
+      =====================================================================================================================
+    */
+    tr_commentaire_rev1(texte,niveau,ind){
+        var s='';
+        s=this.#traiteCommentaireSourceEtGenere1(texte,niveau,ind,this.#NBESPACESREV,true);
+        return s;
+    }
+    /*
+      =====================================================================================================================
+      fonction tr_co_src : (__m_rev1.tr_co_src) transforme un commentaire pour un fichier js/php/sql ... traiteCommentaire2
+    */
+    tr_co_src(texte,niveau,ind){
+        var s='';
+        s=this.#traiteCommentaireSourceEtGenere1(texte,niveau,ind,this.#NBESPACESSOURCEPRODUIT,false);
+        return s;
+    }
+    /*
+      =====================================================================================================================
+      fonction transforme un commentaire 
+      =====================================================================================================================
+    */
+    #traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichierRev0){
+        /* Si c'est un commentaire monoligne, on le retourne sans aucune transformation */
+        i=texte.indexOf('\n');
+        if(i < 0){
+            return texte;
+        }
+        /*  */
+        var i=0;
+        var j=0;
+        let l01=0;
+        var min=0;
+        var t='';
+        var ligne='';
+        var temps='';
+        var unBloc='';
+        var unBlocPlus1='';
+        var newTab=[];
+        var tab=[];
+        var ne_contient_que_des_egals=false;
+        var double_commentaire=false;
+        /*  */
+        unBloc=' '.repeat(nbEspacesSrc1 * niveau);
+        tab=texte.replace(/\r/g,'').split('\n');
+        l01=tab.length;
+        /*  */
+        if(texte.length > 1 && (texte.substr(0,1) === '#' || texte.substr(0,1) === '*')){
+            if(texte.length > 2 && texte.substr(1,1) === '#'){
+                /*
+                  un commentaire qui commence par ## sera décalé à gauche
+                */
+                double_commentaire=true;
+            }
+            /*
+              on a un commentaire de type bloc non formaté 
+              car le premier caractère = #.
+              On supprime les espaces inutiles en début de ligne.
+            */
+            t='';
+            /* minimim d'espaces au début de chaque ligne */
+            min=120;
+            for( i=1 ; i < l01 ; i++ ){
+                ligne=tab[i];
+                for( j=0 ; j < ligne.length ; j++ ){
+                    /*
+                      on balaye toutes les lignes pour détecter 
+                      le nombre d'espaces minimal à gauche
+                    */
+                    temps=ligne.substr(j,1);
+                    if(temps !== ' '){
+                        if(j < min){
+                            /* on réajuste le minimum d'espaces au début de chaque ligne */
+                            min=j;
+                        }
+                        /* et on passe à la ligne suivante */
+                        break;
+                    }
+                }
+            }
+            if(min > 2){
+                /* tout décaler à gauche */
+                for( i=1 ; i < l01 ; i++ ){
+                    tab[i]=tab[i].substr(min - 2);
+                }
+            }
+            /* si c'est un fichierRev0, on doit avoir la dernière ligne vide */
+            if(fichierRev0){
+                /*
+                  on retire les lignes vierges de la fin 
+                */
+                for( i=tab.length - 1 ; i >= 1 ; i-- ){
+                    if(tab[i].trim() === ''){
+                        tab.splice(i,1);
+                    }else{
+                        break;
+                    }
+                }
+                l01=tab.length;
+                if(double_commentaire === false){
+                    t=' '.repeat(nbEspacesSrc1 * niveau);
+                    for( i=1 ; i < l01 ; i++ ){
+                        tab[i]=t + tab[i];
+                    }
+                }
+                texte=tab.join(CRLF) + CRLF + ' '.repeat(niveau * nbEspacesSrc1);
+            }else{
+                /* on retire les lignes vierges de la fin */
+                for( i=tab.length - 1 ; i >= 1 ; i-- ){
+                    if(tab[i].trim() === ''){
+                        tab.splice(i,1);
+                    }else{
+                        break;
+                    }
+                }
+                l01=tab.length;
+                if(double_commentaire === false){
+                    t=' '.repeat(nbEspacesSrc1 * niveau);
+                    for( i=1 ; i < l01 ; i++ ){
+                        tab[i]=t + tab[i];
+                    }
+                }
+                texte=tab.join(CRLF) + CRLF + ' '.repeat(niveau * nbEspacesSrc1);
+            }
+            return texte;
+        }
+        /*
+          si on est ici, c'est qu'on a un commentaire multiligne
+          qu'il faut formatter en alignant à gauche les textes 
+          d'un nombre d'espaces correspondant au niveau
+        */
+        unBlocPlus1=' '.repeat(nbEspacesSrc1 * niveau + 2);
+        var s1='';
+        var s2='';
+        for( i=0 ; i < l01 ; i++ ){
+            t='';
+            /* les CR (les zimac) ne sont pas faits pour écrire des vrais programmes ! */
+            tab[i]=tab[i].replace(/\r/g,'');
+            /* on enlève les espaces au début */
+            for( j=0 ; j < tab[i].length ; j++ ){
+                temps=tab[i].substr(j,1);
+                if(temps !== ' '){
+                    t+=tab[i].substr(j);
+                    break;
+                }
+            }
+            s1=unBloc + t;
+            s2=unBlocPlus1 + t;
+            if(i === l01 - 1){
+                /* la dernière ligne du commentaire de bloc doit être vide */
+                if(t === ''){
+                    newTab.push(unBloc);
+                }else{
+                    /* on met la ligne et on ajoute une ligne vide */
+                    newTab.push(s2);
+                    newTab.push(unBloc);
+                }
+            }else if(i === 0){
+                /* la première ligne du commentaire de bloc doit être vide */
+                if(t === ''){
+                    newTab.push(t);
+                }else{
+                    /*
+                      on ajoute une ligne vide en début de tableau
+                      on fait un unshift ici mais on aurait pu faire
+                      un push car on est à i=0
+                    */
+                    newTab.unshift('');
+                    newTab.push(s2);
+                }
+            }else{
+                newTab.push(s2);
+            }
+        }
+        l01=newTab.length;
+        var l02=0;
+        var calcul=0;
+        for( i=0 ; i < l01 ; i++ ){
+            ligne=newTab[i];
+            if(ligne.indexOf('====') >= 0){
+                ne_contient_que_des_egals=true;
+                l02=ligne.length;
+                for( j=0 ; j < l02 ; j++ ){
+                    if(!(ligne.substr(j,1) === '=' || ligne.substr(j,1) === ' ')){
+                        ne_contient_que_des_egals=false;
+                        break;
+                    }
+                }
+                if(ne_contient_que_des_egals === true){
+                    calcul=117 - 2 * niveau * nbEspacesSrc1;
+                    if(calcul > 0){
+                        newTab[i]='  ' + ' '.repeat(niveau * nbEspacesSrc1) + '='.repeat(calcul);
+                    }
+                }
+            }
+        }
+        t=newTab.join(CRLF);
+        return t;
+    }
+    
+    
+    
     /*#
       =====================================================================================================================
       fonction matrice_vers_source_rev1 (__m_rev1.matrice_vers_source_rev1)
@@ -271,7 +569,7 @@ class c_rev1{
                       on est dans un commentaire
                       =============================================================================
                     */
-                    commentaire=ttcomm1(tab[i][13],tab[i][3],i);
+                    commentaire=this.tr_commentaire_rev1(tab[i][13],tab[i][3],i);
                     t+=tab[i][1] + '(' + commentaire + ')';
                     count++;
                     if(contient_un_defTab_tbel === true && count% 10 === 0){
@@ -422,6 +720,101 @@ class c_rev1{
         }
         return({"out" : out ,"numLigne" : numLigne ,"exceptions" : exceptions});
     }
+    /*
+      =====================================================================================================================
+      function formatter_une_erreur_rev __m_rev1 formatter uns erreur dans le rev pour la rendre plus facilement détectable
+      =====================================================================================================================
+    */
+    formatter_une_erreur_rev(obj){
+        /*# 
+          exemple de donnée en entrée
+          {
+            type          : 'rev',
+            __xst         : false,
+            ind           : i,
+            __xme         : '1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
+            texte         : texte,
+            chaineTableau : chaineTableau,
+            chaine_tableau_commentaires:chaine_tableau_commentaires
+            tableauEntree : tableauEntree,
+            quitterSiErreurNiveau:quitterSiErreurNiveau,
+            autoriserCstDansRacine:autoriserCstDansRacine
+          }
+        */
+        var t='';
+        var i=0;
+        var j=0;
+        var finGrasFait=false;
+        var presDe='';
+        var line=0;
+        var message_ajoute='';
+        var position=0;
+        if(obj.hasOwnProperty('erreur_conversion_chaineTableau_en_json') && obj.erreur_conversion_chaineTableau_en_json === true){
+            /*
+              si il y a un problème avec le JSON.parse:
+            */
+            if(obj.ejson.message.indexOf('at position ') >= 0){
+                position=obj.ejson.message.substr(obj.ejson.message.indexOf('at position ') + 12);
+                if(obj.ejson.message.indexOf(' ') >= 0){
+                    position=parseInt(position.substr(0,obj.ejson.message.indexOf(' ')),10);
+                    for( i=position ; i >= 0 && message_ajoute === '' ; i-- ){
+                        if(obj.chaineTableau.substr(i,1) === '['){
+                            for( j=i ; j < obj.chaineTableau.length && message_ajoute === '' ; j++ ){
+                                if(obj.chaineTableau.substr(j,1) === ']'){
+                                    message_ajoute='près de `' + obj.chaineTableau.substr(i,(j - i) + 1) + '`';
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return({"__xst" : obj.__xst ,"__xva" : '' ,"id" : obj.ind ,"__xme" : obj.__xme + ' ' + message_ajoute});
+        }
+        var chaineTableau='[' + obj.chaineTableau + ']';
+        if(obj.hasOwnProperty('tableauEntree')){
+            if(obj.hasOwnProperty('ind')){
+                if(obj.ind > 50){
+                    for( i=obj.ind - 50 ; i <= obj.ind + 50 && i < obj.tableauEntree.length ; i++ ){
+                        if(i === obj.ind - 5){
+                            presDe+='<b>';
+                        }
+                        presDe+=__m_rev1.entitees_html(obj.tableauEntree[i][0]);
+                        if(i === obj.ind + 5){
+                            presDe+='</b>';
+                            finGrasFait=true;
+                        }
+                    }
+                    if(!finGrasFait){
+                        presDe+='</b>';
+                    }
+                }else{
+                    presDe='<b>';
+                    for( i=0 ; i <= obj.ind + 50 && i < obj.tableauEntree.length ; i++ ){
+                        presDe+=__m_rev1.entitees_html(obj.tableauEntree[i][0]);
+                        if(i === obj.ind + 5){
+                            presDe+='</b>';
+                            finGrasFait=true;
+                        }
+                    }
+                    if(!finGrasFait){
+                        presDe+='</b>';
+                    }
+                }
+                message_ajoute+=' position caractère=' + obj.ind + '';
+                message_ajoute+='<br />près de ----' + presDe + '----<br />';
+                line=0;
+                for( i=obj.ind ; i >= 0 ; i-- ){
+                    if(obj.tableauEntree[i][0] === '\n'){
+                        line++;
+                    }
+                }
+            }
+        }
+        var T=JSON.parse(chaineTableau);
+        return({"__xst" : obj.__xst ,"__xva" : T ,"id" : obj.ind ,"__xme" : obj.__xme + message_ajoute ,"line" : line});
+    }    
+    
     
 }
 export{c_rev1 as c_rev1};

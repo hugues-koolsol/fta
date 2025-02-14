@@ -75,13 +75,12 @@ class module_svg_bdd{
         if(nom_de_la_div_contenant_le_svg !== null){
             try{
                 var le_test=document.getElementById(nom_de_la_div_contenant_le_svg);
-            }catch(e){
-            }
+            }catch(e){}
         }
-        if(le_test===null){
+        if(le_test === null){
             nom_de_la_div_contenant_le_svg=null;
         }
-        if(nom_de_la_div_contenant_le_svg !== null && le_test!== null ){
+        if(nom_de_la_div_contenant_le_svg !== null && le_test !== null){
             this.#div_svg=document.getElementById(nom_de_la_div_contenant_le_svg);
             this.#taille_bordure=taille_bordure;
             this.#id_text_area_contenant_les_id_des_bases=id_text_area_contenant_les_id_des_bases;
@@ -1593,22 +1592,22 @@ class module_svg_bdd{
         t+='<td colspan="4">';
         t+=differences_entre_les_tables ?
           ( 
-            '<div class="yydanger">Il y a une différence entre les tables</div>' )
-        : ( 
-            '<div class="yysucces">Pas de différence entre les tables</div>' 
-        );
+            '<div class="yydanger">Il y a une différence entre les tables</div>'
+          ) : ( 
+            '<div class="yysucces">Pas de différence entre les tables</div>'
+          );
         t+=differences_entre_les_champs ?
           ( 
-            '<div class="yydanger">Il y a une différence entre les champs</div>' )
-        : ( 
-            '<div class="yysucces">Pas de différence entre les champs</div>' 
-        );
+            '<div class="yydanger">Il y a une différence entre les champs</div>'
+          ) : ( 
+            '<div class="yysucces">Pas de différence entre les champs</div>'
+          );
         t+=differences_entre_les_indexe ?
           ( 
-            '<div class="yydanger">Il y a une différence entre les indexes</div>' )
-        : ( 
-            '<div class="yysucces">Pas de différence entre les indexes</div>' 
-        );
+            '<div class="yydanger">Il y a une différence entre les indexes</div>'
+          ) : ( 
+            '<div class="yysucces">Pas de différence entre les indexes</div>'
+          );
         t+='</td>';
         t+='</tr>';
         t+='<tr>';

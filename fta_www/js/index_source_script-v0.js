@@ -13,17 +13,19 @@ function convertSource(objMatSrc){
     var obj={};
     var l01=objMatSrc.__xva.length;
     var position_de_la_balise_source=-1;
-    
-    
     for( var i=1 ; i < l01 ; i=objMatSrc.__xva[i][12] ){
         if(objMatSrc.__xva[i][3] == 0){
             if(objMatSrc.__xva[i][1] == '#'){
-            }else if(objMatSrc.__xva[i][1] === 'src_javascript' || objMatSrc.__xva[i][1] == 'src_html' || objMatSrc.__xva[i][1] == 'src_php' || objMatSrc.__xva[i][1] == 'src_sql'){
+            }else if(objMatSrc.__xva[i][1] === 'src_javascript'
+                   || objMatSrc.__xva[i][1] == 'src_html'
+                   || objMatSrc.__xva[i][1] == 'src_php'
+                   || objMatSrc.__xva[i][1] == 'src_sql'
+            ){
                 type_source=objMatSrc.__xva[i][1];
-                for( var j=i+1 ; j < l01 ; j=objMatSrc.__xva[j][12] ){
-                    if(objMatSrc.__xva[j][2] == 'f' ){
+                for( var j=i + 1 ; j < l01 ; j=objMatSrc.__xva[j][12] ){
+                    if(objMatSrc.__xva[j][2] == 'f'){
                         if(objMatSrc.__xva[j][1] === ''){
-                            for( var k=j+1 ; k < objMatSrc.__xva.length ; k=objMatSrc.__xva[k][12] ){
+                            for( var k=j + 1 ; k < objMatSrc.__xva.length ; k=objMatSrc.__xva[k][12] ){
                                 if(objMatSrc.__xva[k][7] == objMatSrc.__xva[j][0] && objMatSrc.__xva[j][8] >= 2){
                                     if(objMatSrc.__xva[k][1] == 'file_name' && objMatSrc.__xva[k + 1][1] != ''){
                                         file_name=objMatSrc.__xva[k + 1][1];
@@ -40,45 +42,34 @@ function convertSource(objMatSrc){
                         }else if(objMatSrc.__xva[j][1] === 'source'){
                             position_de_la_balise_source=j;
                         }else if(objMatSrc.__xva[j][1] === 'concatFichier'){
-                            if( objMatSrc.__xva[j][8] === 1 && objMatSrc.__xva[j+1][2] === 'c' ){
+                            if(objMatSrc.__xva[j][8] === 1 && objMatSrc.__xva[j + 1][2] === 'c'){
                                 tabConcatFichier.push(objMatSrc.__xva[j + 1][1]);
                             }else{
-                                return(logerreur({
-                                    "__xst" : false ,
-                                    "id" : j ,
-                                    "__xme" : nl1()+' concat fichjer ne doit avojr qu\'un seul argument '
-                                }));
-                           }
-                        
+                                return(logerreur({"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + ' concat fichjer ne doit avojr qu\'un seul argument '}));
+                            }
                         }else{
-                            return(logerreur({
-                                "__xst" : false ,
-                                "id" : j ,
-                                "__xme" : nl1()+'l\'élément ne doit pas se trouver là ' + JSON.stringify(objMatSrc.__xva[j])
-                            }));
+                            return(logerreur({"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + 'l\'élément ne doit pas se trouver là ' + JSON.stringify(objMatSrc.__xva[j])}));
                         }
                     }
                 }
             }
         }
     }
-
     if(type_source == ''){
         return(logerreur({
-            "__xst" : false ,
-            "__xme" : 'file core , fonction convertSource la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '
-        }));
+                "__xst" : false ,
+                "__xme" : 'file core , fonction convertSource la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '
+            }));
     }
     var t='';
     if(file_name != '' && file_path != '' && position_de_la_balise_source > 0){
         if(type_source == 'src_php' && file_extension == 'php'){
-            retProgrammeSource=__m_rev_vers_php1.c_tab_vers_php(objMatSrc.__xva,{"indice_de_debut" : position_de_la_balise_source+1});
+            retProgrammeSource=__m_rev_vers_php1.c_tab_vers_php(objMatSrc.__xva,{"indice_de_debut" : position_de_la_balise_source + 1});
             if(retProgrammeSource.__xst === true){
                 t+='<?php' + CRLF + retProgrammeSource.__xva + CRLF + '?>';
             }else{
                 return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un php'}));
             }
-            
             t=t.replace(/\/\*\*\//g,'');
             t=t.replace(/\?><\?php/g,'');
             t=t.replace(/<\?php\?>/g,'');
@@ -93,13 +84,13 @@ function convertSource(objMatSrc){
                 }
             }
             return({
-                "__xst" : true ,
-                "__xva" : t ,
-                "file_name" : file_name ,
-                "file_path" : file_path ,
-                "file_extension" : file_extension ,
-                "tabConcatFichier" : tabConcatFichier
-            });
+                    "__xst" : true ,
+                    "__xva" : t ,
+                    "file_name" : file_name ,
+                    "file_path" : file_path ,
+                    "file_extension" : file_extension ,
+                    "tabConcatFichier" : tabConcatFichier
+                });
         }else if(type_source == 'src_javascript' && file_extension == 'js'){
             retProgrammeSource=__m_rev_vers_js1.c_tab_vers_js(objMatSrc.__xva,{"indice_de_debut" : position_de_la_balise_source + 1});
             if(retProgrammeSource.__xst === true){
@@ -108,13 +99,13 @@ function convertSource(objMatSrc){
                 return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un javascript'}));
             }
             return({
-                "__xst" : true ,
-                "__xva" : t ,
-                "file_name" : file_name ,
-                "file_path" : file_path ,
-                "file_extension" : file_extension ,
-                "tabConcatFichier" : tabConcatFichier
-            });
+                    "__xst" : true ,
+                    "__xva" : t ,
+                    "file_name" : file_name ,
+                    "file_path" : file_path ,
+                    "file_extension" : file_extension ,
+                    "tabConcatFichier" : tabConcatFichier
+                });
         }else if(type_source == 'src_html' && file_extension == 'html'){
             retProgrammeSource=__module_html1.tabToHtml1(objMatSrc.__xva,position_de_la_balise_source + 1,false,0);
             if(retProgrammeSource.__xst === true){
@@ -123,28 +114,28 @@ function convertSource(objMatSrc){
                 return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un html'}));
             }
             return({
-                "__xst" : true ,
-                "__xva" : t ,
-                "file_name" : file_name ,
-                "file_path" : file_path ,
-                "file_extension" : file_extension ,
-                "tabConcatFichier" : tabConcatFichier
-            });
+                    "__xst" : true ,
+                    "__xva" : t ,
+                    "file_name" : file_name ,
+                    "file_path" : file_path ,
+                    "file_extension" : file_extension ,
+                    "tabConcatFichier" : tabConcatFichier
+                });
         }else if(type_source == 'src_sql' && file_extension == 'sql'){
-            retProgrammeSource=__m_rev_vers_sql1.c_tab_vers_js(objMatSrc.__xva,{indice_de_debut:position_de_la_balise_source + 1});
+            retProgrammeSource=__m_rev_vers_sql1.c_tab_vers_js(objMatSrc.__xva,{"indice_de_debut" : position_de_la_balise_source + 1});
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{
                 return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un sql'}));
             }
             return({
-                "__xst" : true ,
-                "__xva" : t ,
-                "file_name" : file_name ,
-                "file_path" : file_path ,
-                "file_extension" : file_extension ,
-                "tabConcatFichier" : tabConcatFichier
-            });
+                    "__xst" : true ,
+                    "__xva" : t ,
+                    "file_name" : file_name ,
+                    "file_path" : file_path ,
+                    "file_extension" : file_extension ,
+                    "tabConcatFichier" : tabConcatFichier
+                });
         }
     }else{
         return(logerreur({"__xst" : false ,"id" : 0 ,"__xme" : 'file_name, file_path and source must be filled'}));

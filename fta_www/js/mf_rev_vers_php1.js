@@ -121,7 +121,7 @@ class c_rev_vers_php1{
                                 }
                             }
                         }else{
-                            return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1()}));
+                            return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()}));
                         }
                         ne_pas_mettre_de_terminateur=true;
                         break;
@@ -281,7 +281,7 @@ class c_rev_vers_php1{
                                             }else if(this.#tb[k][1] === 'type_argument' && this.#tb[k][8] === 1 && this.#tb[k + 1][2] === 'c'){
                                                 type_argument=this.#tb[k + 1][1].replace(/\\\\/g,'\\') + ' ';
                                             }else if(this.#tb[k][1] === '#'){
-                                                comm='/*' + traiteCommentaire2(this.#tb[k][13],niveau,k) + '*/';
+                                                comm='/*' + __m_rev1.tr_co_src(this.#tb[k][13],niveau,k) + '*/';
                                             }else{
                                                 return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : '0330 les arguments passés à la fonction '}));
                                             }
@@ -540,10 +540,10 @@ class c_rev_vers_php1{
                                     }
                                 }else{
                                     return(this.#rev_php_logerreur({
-                                        "__xst" : false ,
-                                        "id" : i ,
-                                        "__xme" : 'problème  0495 sur le "sierreur" du "essayer" il doit contenir 2 arguments sierreur(err(Error $e),faire())'
-                                    }));
+                                            "__xst" : false ,
+                                            "id" : i ,
+                                            "__xme" : 'problème  0495 sur le "sierreur" du "essayer" il doit contenir 2 arguments sierreur(err(Error $e),faire())'
+                                        }));
                                 }
                             }
                         }
@@ -594,7 +594,7 @@ class c_rev_vers_php1{
                                 }
                             }else if(this.#tb[j][1] === '#'){
                                 t+=un_espace_p0;
-                                t+='/*' + traiteCommentaire2(this.#tb[j][13],niveau,j) + '*/';
+                                t+='/*' + __m_rev1.tr_co_src(this.#tb[j][13],niveau,j) + '*/';
                             }
                         }
                         ne_pas_mettre_de_terminateur=true;
@@ -665,17 +665,17 @@ class c_rev_vers_php1{
                                 tabTemp.push(this.#tb[j]);
                             }else{
                                 return(this.#rev_php_logerreur({
-                                    "__xst" : false ,
-                                    "id" : i ,
-                                    "__xme" : 'dans un choix, les niveaux doivent etre "si" "sinonsi" "sinon" et les sous niveaux "alors" et "condition" et non pas "' + this.#tb[j][1] + '" '
-                                }));
+                                        "__xst" : false ,
+                                        "id" : i ,
+                                        "__xme" : 'dans un choix, les niveaux doivent etre "si" "sinonsi" "sinon" et les sous niveaux "alors" et "condition" et non pas "' + this.#tb[j][1] + '" '
+                                    }));
                             }
                         }
                         /* ✍   console.log('tabTemp='+JSON.stringify(tabTemp)); */
                         for( j=0 ; j < tabchoix.length ; j++ ){
                             if(tabchoix[j][1] === '#'){
                                 t+=un_espace_p0;
-                                t+='/*' + traiteCommentaire2(this.#tb[tabchoix[j][0]][13],niveau,tabchoix[j][0]) + '*/';
+                                t+='/*' + __m_rev1.tr_co_src(this.#tb[tabchoix[j][0]][13],niveau,tabchoix[j][0]) + '*/';
                             }else if(tabchoix[j][1] === 'si'){
                                 t+=un_espace_p0;
                                 t+='if(';
@@ -819,10 +819,10 @@ class c_rev_vers_php1{
                                         argumentsFonction+=',' + this.#tb[j + 1][1];
                                     }else{
                                         return(this.#rev_php_logerreur({
-                                            "__xst" : false ,
-                                            "id" : i ,
-                                            "__xme" : 'dans affecteFonction, les parametres doivent être des variables affecteFonction(xxx,[p(yyy),]contenu()) '
-                                        }));
+                                                "__xst" : false ,
+                                                "id" : i ,
+                                                "__xme" : 'dans affecteFonction, les parametres doivent être des variables affecteFonction(xxx,[p(yyy),]contenu()) '
+                                            }));
                                     }
                                 }
                             }
@@ -932,7 +932,7 @@ class c_rev_vers_php1{
                                 }
                                 t+='?>' + CRLF + obj.__xva + tag_de_fin;
                             }else{
-                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'erreur dans un html en 643'}));
+                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'erreur dans un html en 643'}));
                             }
                         }
                         ne_pas_mettre_de_terminateur=true;
@@ -984,13 +984,13 @@ class c_rev_vers_php1{
                                                 InstructionsCas+=un_espace_p1;
                                                 InstructionsCas+=obj.__xva;
                                             }else{
-                                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : j ,"__xme" : nl1() + 'erreur dans faire  '}));
+                                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + 'erreur dans faire  '}));
                                             }
                                         }else{
                                             InstructionsCas='';
                                         }
                                     }else{
-                                        return(this.#rev_php_logerreur({"__xst" : false ,"id" : j ,"__xme" : nl1() + 'erreur dans bascule/est  il ne doit y avoir que "valeur" et "faire" '}));
+                                        return(this.#rev_php_logerreur({"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + 'erreur dans bascule/est  il ne doit y avoir que "valeur" et "faire" '}));
                                     }
                                 }
                                 valeursCase+=__m_rev1.resps(niveau + 1);
@@ -1015,14 +1015,14 @@ class c_rev_vers_php1{
                             }else if(this.#tb[j][1] === '#'){
                                 les_commentaires_avant.push(this.#tb[j]);
                             }else{
-                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'erreur  dans bascule il ne doit y avoir que "quand" et "est" '}));
+                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'erreur  dans bascule il ne doit y avoir que "quand" et "est" '}));
                             }
                         }
                         t+='switch (' + valeurQuand + '){';
                         for( j=0 ; j < tableau_des_cas.length ; j++ ){
                             if(tableau_des_cas[j].le_cas !== ''){
                                 for( var k=0 ; k < tableau_des_cas[j].les_commentaires.length ; k++ ){
-                                    t+=__m_rev1.resps(niveau + 2) + '/*' + traiteCommentaire2(tableau_des_cas[j].les_commentaires[k][13],niveau + 2,i) + '*/';
+                                    t+=__m_rev1.resps(niveau + 2) + '/*' + __m_rev1.tr_co_src(tableau_des_cas[j].les_commentaires[k][13],niveau + 2,i) + '*/';
                                 }
                                 t+=tableau_des_cas[j].le_cas;
                             }
@@ -1059,10 +1059,10 @@ class c_rev_vers_php1{
                                                         cleEtOuValeur=obj1.__xva + ' as ' + cleEtOuValeur;
                                                     }
                                                 }else{
-                                                    return(this.#rev_php_logerreur({"__xst" : false ,"id" : k ,"__xme" : nl1() + ' dans boucleSurTableau 1024 '}));
+                                                    return(this.#rev_php_logerreur({"__xst" : false ,"id" : k ,"__xme" : __m_rev1.nl2() + ' dans boucleSurTableau 1024 '}));
                                                 }
                                             }else{
-                                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : k ,"__xme" : nl1() + ' dans boucleSurTableau 1014 '}));
+                                                return(this.#rev_php_logerreur({"__xst" : false ,"id" : k ,"__xme" : __m_rev1.nl2() + ' dans boucleSurTableau 1014 '}));
                                             }
                                         }
                                     }
@@ -1075,7 +1075,7 @@ class c_rev_vers_php1{
                                         Instructions+=un_espace_p1;
                                         Instructions+=obj.__xva;
                                     }else{
-                                        return(this.#rev_php_logerreur({"__xst" : false ,"id" : j ,"__xme" : nl1() + ' dans boucleSurTableau  '}));
+                                        return(this.#rev_php_logerreur({"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + ' dans boucleSurTableau  '}));
                                     }
                                 }else{
                                     Instructions='';
@@ -1132,7 +1132,7 @@ class c_rev_vers_php1{
                         break;
                         
                     case '#' :
-                        t+='/*' + traiteCommentaire2(this.#tb[i][13],niveau,i) + '*/';
+                        t+='/*' + __m_rev1.tr_co_src(this.#tb[i][13],niveau,i) + '*/';
                         ne_pas_mettre_de_terminateur=true;
                         break;
                         
@@ -1181,7 +1181,7 @@ class c_rev_vers_php1{
                         if(obj.__xst === true){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1()}));
+                            return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()}));
                         }
                         
                 }
@@ -1422,7 +1422,7 @@ class c_rev_vers_php1{
                         }
                     }else if(this.#tb[i][1] === '#' && this.#tb[i][2] === 'f'){
                         les_commentaires_methode+=__m_rev1.resps(niveau);
-                        les_commentaires_methode+='/*' + traiteCommentaire2(this.#tb[i][13],niveau,i) + '*/';
+                        les_commentaires_methode+='/*' + __m_rev1.tr_co_src(this.#tb[i][13],niveau,i) + '*/';
                     }else{
                         return(this.#rev_php_logerreur({"__xst" : false ,"id" : ind ,"__xme" : '1344 dans php_traiteElement "' + this.#tb[i][1] + '"'}));
                     }
@@ -1486,7 +1486,7 @@ class c_rev_vers_php1{
                 break;
                 
             case 'sql' :
-                obj=__m_rev_vers_sql1.c_tab_vers_js(this.#tb,{indice_de_debut:ind});
+                obj=__m_rev_vers_sql1.c_tab_vers_js(this.#tb,{"indice_de_debut" : ind});
                 if(obj.__xst === true){
                     t='sql_dans_php(\'' + obj.__xva.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
                 }else{
@@ -1629,7 +1629,7 @@ class c_rev_vers_php1{
                     }else if(this.#tb[j][1] === 'siFaux'){
                         testEnLigne.push([j,this.#tb[j][1],ind]);
                     }else{
-                        return(this.#rev_php_logerreur({"__xst" : false ,"ind" : ind ,"__xme" : nl1() + '1639 testEnLigne'}));
+                        return(this.#rev_php_logerreur({"__xst" : false ,"ind" : ind ,"__xme" : __m_rev1.nl2() + '1639 testEnLigne'}));
                     }
                 }
                 if(testEnLigne.length !== 3){
@@ -2403,10 +2403,10 @@ class c_rev_vers_php1{
                             elementFonction=obje.__xva + '->';
                         }else{
                             return(this.#rev_php_logerreur({
-                                "__xst" : false ,
-                                "id" : indice ,
-                                "__xme" : '1614 erreur dans un appel de fonction imbriqué 2 pour la fonction inconnue ' + this.#tb[indice + 1][1]
-                            }));
+                                    "__xst" : false ,
+                                    "id" : indice ,
+                                    "__xme" : '1614 erreur dans un appel de fonction imbriqué 2 pour la fonction inconnue ' + this.#tb[indice + 1][1]
+                                }));
                         }
                     }
                 }else{
@@ -2568,7 +2568,7 @@ class c_rev_vers_php1{
                 if(!dansConditionOuDansFonction){
                     commentaire+=__m_rev1.resps(niveau);
                 }
-                commentaire+='/' + '*' + traiteCommentaire2(this.#tb[j][13],niveau,j) + '*' + '/';
+                commentaire+='/' + '*' + __m_rev1.tr_co_src(this.#tb[j][13],niveau,j) + '*' + '/';
                 continue;
             }else if(this.#tb[j][2] === 'c'){
                 if(operation === ''){
@@ -2588,7 +2588,7 @@ class c_rev_vers_php1{
                 avantEgal=elt;
             }else{
                 if(apresEgal !== ''){
-                    return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + ' vérifiez les paramètres de affecteop   '}));
+                    return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + ' vérifiez les paramètres de affecteop   '}));
                 }else{
                     apresEgal=elt;
                 }
@@ -2599,7 +2599,7 @@ class c_rev_vers_php1{
         }
         t+=avantEgal + ' ' + operation + ' ' + apresEgal;
         if(this.#tb[i][8] === 4 && commentaire === ''){
-            return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + ' affecte ne doit contenir que 2 ou 3 arguments et le 3ème doit être un commentaire non vide '}));
+            return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + ' affecte ne doit contenir que 2 ou 3 arguments et le 3ème doit être un commentaire non vide '}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2614,7 +2614,7 @@ class c_rev_vers_php1{
         for( var j=i + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
             var elt='';
             if(this.#tb[j][2] === 'f' && this.#tb[j][1] === '#'){
-                commentaire+='/*' + traiteCommentaire2(this.#tb[j][13],niveau,j) + '*/';
+                commentaire+='/*' + __m_rev1.tr_co_src(this.#tb[j][13],niveau,j) + '*/';
                 continue;
             }else if(this.#tb[j][2] === 'c'){
                 elt=this.#macst_pour_php(this.#tb[j]).replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
@@ -2631,7 +2631,7 @@ class c_rev_vers_php1{
                 avantEgal=elt;
             }else{
                 if(apresEgal !== ''){
-                    return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + ' 2492 vérifiez les paramètres de affecte ( 2 + commentaires uniquement )  '}));
+                    return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + ' 2492 vérifiez les paramètres de affecte ( 2 + commentaires uniquement )  '}));
                 }else{
                     apresEgal=elt;
                 }
@@ -2654,7 +2654,7 @@ class c_rev_vers_php1{
             t=commentaire + t;
         }
         if(this.#tb[i][8] === 3 && commentaire === ''){
-            return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + ' affecte ne doit contenir que 2 ou 3 arguments et le 3ème doit être un commentaire non vide '}));
+            return(this.#rev_php_logerreur({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + ' affecte ne doit contenir que 2 ou 3 arguments et le 3ème doit être un commentaire non vide '}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2867,7 +2867,7 @@ class c_rev_vers_php1{
                         sortie+=__m_rev1.resps(niveau + 1);
                     }
                 }
-                sortie+='/*' + traiteCommentaire2(this.#tb[j][13],niveau + 1,j) + '*/';
+                sortie+='/*' + __m_rev1.tr_co_src(this.#tb[j][13],niveau + 1,j) + '*/';
                 tableauSortie.push(["commentaire",sortie]);
                 /* commentaire+=this.#tb[j][13]; */
             }else if(this.#tb[j][1] === 'format_court' && this.#tb[j][2] === 'f'){
@@ -3003,7 +3003,7 @@ class c_rev_vers_php1{
             obj.matriceFonction=this.#tb;
             return obj;
         }else{
-            return(this.#rev_php_logerreur({"__xst" : false ,"__xme" : nl1() + 'erreur de conversion en php'}));
+            return(this.#rev_php_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'erreur de conversion en php'}));
         }
     }
     /*
@@ -3036,10 +3036,10 @@ class c_rev_vers_php1{
                 obj.matriceFonction=this.#tb;
                 return obj;
             }else{
-                return(this.#rev_php_logerreur({"__xst" : false ,"__xme" : nl1() + 'erreur de conversion en php'}));
+                return(this.#rev_php_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'erreur de conversion en php'}));
             }
         }else{
-            return(this.#rev_php_logerreur({"__xst" : false ,"__xme" : nl1() + 'erreur dans un rev'}));
+            return(this.#rev_php_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'erreur dans un rev'}));
         }
     }
 }

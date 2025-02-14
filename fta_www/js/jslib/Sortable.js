@@ -7,15 +7,10 @@
 (function(global,factory){
          typeof exports === 'object' &&  typeof module !== 'undefined' ?
           ( 
-            module.exports=factory() )
-        : ( 
-             typeof define === 'function' && define.amd ?
-              ( 
-                define(factory) )
-            : ( 
-                (global=global || self),(global.Sortable=factory()) 
-            ) 
-        );
+            module.exports=factory()
+          ) : ( 
+             typeof define === 'function' && define.amd ? ( define(factory) ) : ( global=global || self,global.Sortable=factory() )
+          );
 })(this,function(){
         "use strict";
         function ownKeys(object,enumerableOnly){
@@ -372,13 +367,13 @@
                 }
             }
             return({
-                "top" : top ,
-                "left" : left ,
-                "bottom" : bottom ,
-                "right" : right ,
-                "width" : width ,
-                "height" : height
-            });
+                    "top" : top ,
+                    "left" : left ,
+                    "bottom" : bottom ,
+                    "right" : right ,
+                    "width" : width ,
+                    "height" : height
+                });
         }
         /*#
           * Checks if a side of an element is scrolled past a side of its parents
@@ -555,19 +550,19 @@
         var _throttleTimeout;
         function throttle(callback,ms){
             return(function(){
-                if(!_throttleTimeout){
-                    var args=arguments;
-                    var _this=this;
-                    if(args.length === 1){
-                        callback.call(_this,args[0]);
-                    }else{
-                        callback.apply(_this,args);
+                    if(!_throttleTimeout){
+                        var args=arguments;
+                        var _this=this;
+                        if(args.length === 1){
+                            callback.call(_this,args[0]);
+                        }else{
+                            callback.apply(_this,args);
+                        }
+                        _throttleTimeout=setTimeout(function(){
+                            _throttleTimeout=void(0);
+                        },ms);
                     }
-                    _throttleTimeout=setTimeout(function(){
-                        _throttleTimeout=void(0);
-                    },ms);
-                }
-            });
+                });
         }
         function cancelThrottle(){
             clearTimeout(_throttleTimeout);
@@ -629,129 +624,129 @@
             var animationStates=[];
             var animationCallbackId;
             return({
-                "captureAnimationState" : function captureAnimationState(){
-                    animationStates=[];
-                    if(!this.options.animation){
-                        return;
-                    }
-                    var children=[].slice.call(this.el.children);
-                    children.forEach(function(child){
-                            if(css(child,'display') === 'none' || child === Sortable.ghost){
-                                return;
-                            }
-                            animationStates.push({"target" : child ,"rect" : getRect(child)});
-                            var fromRect=_objectSpread2({},animationStates[animationStates.length - 1].rect);
-                            if(child.thisAnimationDuration){
-                                var childMatrix=matrix(child,true);
-                                if(childMatrix){
-                                    fromRect.top-=childMatrix.f;
-                                    fromRect.left-=childMatrix.e;
-                                }
-                            }
-                            child.fromRect=fromRect;
-                        });
-                } ,
-                "addAnimationState" : function addAnimationState(state){
-                    animationStates.push(state);
-                } ,
-                "removeAnimationState" : function removeAnimationState(target){
-                    animationStates.splice(indexOfObject(animationStates,{"target" : target}),1);
-                } ,
-                "animateAll" : function animateAll(callback){
-                    var _this=this;
-                    if(!this.options.animation){
-                        clearTimeout(animationCallbackId);
-                        if( typeof callback === 'function'){
-                            callback();
+                    "captureAnimationState" : function captureAnimationState(){
+                        animationStates=[];
+                        if(!this.options.animation){
+                            return;
                         }
-                        return;
-                    }
-                    var animating=false;
-                    var animationTime=0;
-                    animationStates.forEach(function(state){
-                            var time=0;
-                            var target=state.target;
-                            var fromRect=target.fromRect;
-                            var toRect=getRect(target);
-                            var prevFromRect=target.prevFromRect;
-                            var prevToRect=target.prevToRect;
-                            var animatingRect=state.rect;
-                            var targetMatrix=matrix(target,true);
-                            if(targetMatrix){
-                                toRect.top-=targetMatrix.f;
-                                toRect.left-=targetMatrix.e;
-                            }
-                            target.toRect=toRect;
-                            if(target.thisAnimationDuration){
-                                if(isRectEqual(prevFromRect,toRect)
-                                       && !isRectEqual(fromRect,toRect)
-                                       && (animatingRect.top - toRect.top) / (animatingRect.left - toRect.left) === (fromRect.top - toRect.top) / (fromRect.left - toRect.left)
-                                ){
-                                    time=calculateRealTime(animatingRect,prevFromRect,prevToRect,_this.options);
+                        var children=[].slice.call(this.el.children);
+                        children.forEach(function(child){
+                                if(css(child,'display') === 'none' || child === Sortable.ghost){
+                                    return;
                                 }
-                            }
-                            if(!isRectEqual(toRect,fromRect)){
-                                target.prevFromRect=fromRect;
-                                target.prevToRect=toRect;
-                                if(!time){
-                                    time=_this.options.animation;
+                                animationStates.push({"target" : child ,"rect" : getRect(child)});
+                                var fromRect=_objectSpread2({},animationStates[animationStates.length - 1].rect);
+                                if(child.thisAnimationDuration){
+                                    var childMatrix=matrix(child,true);
+                                    if(childMatrix){
+                                        fromRect.top-=childMatrix.f;
+                                        fromRect.left-=childMatrix.e;
+                                    }
                                 }
-                                _this.animate(target,animatingRect,toRect,time);
-                            }
-                            if(time){
-                                animating=true;
-                                animationTime=Math.max(animationTime,time);
-                                clearTimeout(target.animationResetTimer);
-                                target.animationResetTimer=setTimeout(function(){
-                                    target.animationTime=0;
-                                    target.prevFromRect=null;
-                                    target.fromRect=null;
-                                    target.prevToRect=null;
-                                    target.thisAnimationDuration=null;
-                                },time);
-                                target.thisAnimationDuration=time;
-                            }
-                        });
-                    clearTimeout(animationCallbackId);
-                    if(!animating){
-                        if( typeof callback === 'function'){
-                            callback();
-                        }
-                    }else{
-                        animationCallbackId=setTimeout(function(){
+                                child.fromRect=fromRect;
+                            });
+                    } ,
+                    "addAnimationState" : function addAnimationState(state){
+                        animationStates.push(state);
+                    } ,
+                    "removeAnimationState" : function removeAnimationState(target){
+                        animationStates.splice(indexOfObject(animationStates,{"target" : target}),1);
+                    } ,
+                    "animateAll" : function animateAll(callback){
+                        var _this=this;
+                        if(!this.options.animation){
+                            clearTimeout(animationCallbackId);
                             if( typeof callback === 'function'){
                                 callback();
                             }
-                        },animationTime);
-                    }
-                    animationStates=[];
-                } ,
-                "animate" : function animate(target,currentRect,toRect,duration){
-                    if(duration){
-                        css(target,'transition','');
-                        css(target,'transform','');
-                        var elMatrix=matrix(this.el);
-                        var scaleX=elMatrix && elMatrix.a;
-                        var scaleY=elMatrix && elMatrix.d;
-                        var translateX=(currentRect.left - toRect.left) / (scaleX || 1);
-                        var translateY=(currentRect.top - toRect.top) / (scaleY || 1);
-                        target.animatingX=!!translateX;
-                        target.animatingY=!!translateY;
-                        css(target,'transform','translate3d(' + translateX + 'px,' + translateY + 'px,0)');
-                        this.forRepaintDummy=repaint(target);
-                        css(target,'transition','transform ' + duration + 'ms' + (this.options.easing ? ( ' ' + this.options.easing ) : ( '' )));
-                        css(target,'transform','translate3d(0,0,0)');
-                         typeof target.animated === 'number' && clearTimeout(target.animated);
-                        target.animated=setTimeout(function(){
+                            return;
+                        }
+                        var animating=false;
+                        var animationTime=0;
+                        animationStates.forEach(function(state){
+                                var time=0;
+                                var target=state.target;
+                                var fromRect=target.fromRect;
+                                var toRect=getRect(target);
+                                var prevFromRect=target.prevFromRect;
+                                var prevToRect=target.prevToRect;
+                                var animatingRect=state.rect;
+                                var targetMatrix=matrix(target,true);
+                                if(targetMatrix){
+                                    toRect.top-=targetMatrix.f;
+                                    toRect.left-=targetMatrix.e;
+                                }
+                                target.toRect=toRect;
+                                if(target.thisAnimationDuration){
+                                    if(isRectEqual(prevFromRect,toRect)
+                                           && !isRectEqual(fromRect,toRect)
+                                           && (animatingRect.top - toRect.top) / (animatingRect.left - toRect.left) === (fromRect.top - toRect.top) / (fromRect.left - toRect.left)
+                                    ){
+                                        time=calculateRealTime(animatingRect,prevFromRect,prevToRect,_this.options);
+                                    }
+                                }
+                                if(!isRectEqual(toRect,fromRect)){
+                                    target.prevFromRect=fromRect;
+                                    target.prevToRect=toRect;
+                                    if(!time){
+                                        time=_this.options.animation;
+                                    }
+                                    _this.animate(target,animatingRect,toRect,time);
+                                }
+                                if(time){
+                                    animating=true;
+                                    animationTime=Math.max(animationTime,time);
+                                    clearTimeout(target.animationResetTimer);
+                                    target.animationResetTimer=setTimeout(function(){
+                                        target.animationTime=0;
+                                        target.prevFromRect=null;
+                                        target.fromRect=null;
+                                        target.prevToRect=null;
+                                        target.thisAnimationDuration=null;
+                                    },time);
+                                    target.thisAnimationDuration=time;
+                                }
+                            });
+                        clearTimeout(animationCallbackId);
+                        if(!animating){
+                            if( typeof callback === 'function'){
+                                callback();
+                            }
+                        }else{
+                            animationCallbackId=setTimeout(function(){
+                                if( typeof callback === 'function'){
+                                    callback();
+                                }
+                            },animationTime);
+                        }
+                        animationStates=[];
+                    } ,
+                    "animate" : function animate(target,currentRect,toRect,duration){
+                        if(duration){
                             css(target,'transition','');
                             css(target,'transform','');
-                            target.animated=false;
-                            target.animatingX=false;
-                            target.animatingY=false;
-                        },duration);
+                            var elMatrix=matrix(this.el);
+                            var scaleX=elMatrix && elMatrix.a;
+                            var scaleY=elMatrix && elMatrix.d;
+                            var translateX=(currentRect.left - toRect.left) / (scaleX || 1);
+                            var translateY=(currentRect.top - toRect.top) / (scaleY || 1);
+                            target.animatingX=!!translateX;
+                            target.animatingY=!!translateY;
+                            css(target,'transform','translate3d(' + translateX + 'px,' + translateY + 'px,0)');
+                            this.forRepaintDummy=repaint(target);
+                            css(target,'transition','transform ' + duration + 'ms' + (this.options.easing ? ( ' ' + this.options.easing ) : ( '' )));
+                            css(target,'transform','translate3d(0,0,0)');
+                             typeof target.animated === 'number' && clearTimeout(target.animated);
+                            target.animated=setTimeout(function(){
+                                css(target,'transition','');
+                                css(target,'transform','');
+                                target.animated=false;
+                                target.animatingX=false;
+                                target.animatingY=false;
+                            },duration);
+                        }
                     }
-                }
-            });
+                });
         }
         function repaint(target){
             return target.offsetWidth;
@@ -1040,20 +1035,20 @@
         var _prepareGroup=function _prepareGroup(options){
             function toFn(value,pull){
                 return(function(to,from,dragEl,evt){
-                    var sameGroup=to.options.group.name && from.options.group.name && to.options.group.name === from.options.group.name;
-                    if(value == null && (pull || sameGroup)){
-                        return true;
-                    }else if(value == null || value === false){
-                        return false;
-                    }else if(pull && value === 'clone'){
-                        return value;
-                    }else if( typeof value === 'function'){
-                        return(toFn(value(to,from,dragEl,evt),pull)(to,from,dragEl,evt));
-                    }else{
-                        var otherGroup=pull ? ( to.options.group.name ) : ( from.options.group.name );
-                        return(value === true ||  typeof value === 'string' && value === otherGroup || value.join && value.indexOf(otherGroup) > -1);
-                    }
-                });
+                        var sameGroup=to.options.group.name && from.options.group.name && to.options.group.name === from.options.group.name;
+                        if(value == null && (pull || sameGroup)){
+                            return true;
+                        }else if(value == null || value === false){
+                            return false;
+                        }else if(pull && value === 'clone'){
+                            return value;
+                        }else if( typeof value === 'function'){
+                            return(toFn(value(to,from,dragEl,evt),pull)(to,from,dragEl,evt));
+                        }else{
+                            var otherGroup=pull ? ( to.options.group.name ) : ( from.options.group.name );
+                            return(value === true ||  typeof value === 'string' && value === otherGroup || value.join && value.indexOf(otherGroup) > -1);
+                        }
+                    });
             }
             var group={};
             var originalGroup=options.group;
@@ -1202,11 +1197,11 @@
             } ,
             "_getDirection" : function _getDirection(evt,target){
                 return( typeof this.options.direction === 'function' ?
-                  ( 
-                    this.options.direction.call(this,evt,target,dragEl) )
-                : ( 
-                    this.options.direction 
-                ));
+                      ( 
+                        this.options.direction.call(this,evt,target,dragEl)
+                      ) : ( 
+                        this.options.direction
+                      ));
             } ,
             "_onTapStart" : function _onTapStart( /*  Event|TouchEvent  */ evt){
                 if(!evt.cancelable){
@@ -1456,16 +1451,16 @@
                     var relativeScrollOffset=PositionGhostAbsolutely && ghostRelativeParent && getRelativeScrollOffset(ghostRelativeParent);
                     var dx=((touch.clientX - tapEvt.clientX) + fallbackOffset.x) / (scaleX || 1) + (relativeScrollOffset ?
                               ( 
-                                relativeScrollOffset[0] - ghostRelativeParentInitialScroll[0] )
-                            : ( 
-                                0 
-                            )) / (scaleX || 1);
+                                relativeScrollOffset[0] - ghostRelativeParentInitialScroll[0]
+                              ) : ( 
+                                0
+                              )) / (scaleX || 1);
                     var dy=((touch.clientY - tapEvt.clientY) + fallbackOffset.y) / (scaleY || 1) + (relativeScrollOffset ?
                               ( 
-                                relativeScrollOffset[1] - ghostRelativeParentInitialScroll[1] )
-                            : ( 
-                                0 
-                            )) / (scaleY || 1);
+                                relativeScrollOffset[1] - ghostRelativeParentInitialScroll[1]
+                              ) : ( 
+                                0
+                              )) / (scaleY || 1);
                     if(!Sortable.active && !awaitingDragStarted){
                         if(fallbackTolerance
                                && Math.max(Math.abs(touch.clientX - this._lastX),Math.abs(touch.clientY - this._lastY)) < fallbackTolerance
@@ -1717,10 +1712,10 @@
                        && !options.disabled
                        && (isOwner ?
                           ( 
-                            canSort || (revert=parentEl !== rootEl) )
-                        : ( 
-                            putSortable === this || (this.lastPutMode=activeGroup.checkPull(this,activeSortable,dragEl,evt)) && group.checkPut(this,activeSortable,dragEl,evt) 
-                        ))
+                            canSort || (revert=parentEl !== rootEl)
+                          ) : ( 
+                            putSortable === this || (this.lastPutMode=activeGroup.checkPull(this,activeSortable,dragEl,evt)) && group.checkPut(this,activeSortable,dragEl,evt)
+                          ))
                 ){
                     vertical=this._getDirection(evt,target) === 'vertical';
                     dragRect=getRect(dragEl);
@@ -2150,22 +2145,22 @@
             var childContainingRect=getChildContainingRectFromElement(sortable.el,sortable.options,ghostEl);
             var spacer=10;
             return(vertical ?
-              ( 
-                evt.clientX < childContainingRect.left - spacer || evt.clientY < firstElRect.top && evt.clientX < firstElRect.right )
-            : ( 
-                evt.clientY < childContainingRect.top - spacer || evt.clientY < firstElRect.bottom && evt.clientX < firstElRect.left 
-            ));
+                  ( 
+                    evt.clientX < childContainingRect.left - spacer || evt.clientY < firstElRect.top && evt.clientX < firstElRect.right
+                  ) : ( 
+                    evt.clientY < childContainingRect.top - spacer || evt.clientY < firstElRect.bottom && evt.clientX < firstElRect.left
+                  ));
         }
         function _ghostIsLast(evt,vertical,sortable){
             var lastElRect=getRect(lastChild(sortable.el,sortable.options.draggable));
             var childContainingRect=getChildContainingRectFromElement(sortable.el,sortable.options,ghostEl);
             var spacer=10;
             return(vertical ?
-              ( 
-                evt.clientX > childContainingRect.right + spacer || evt.clientY > lastElRect.bottom && evt.clientX > lastElRect.left )
-            : ( 
-                evt.clientY > childContainingRect.bottom + spacer || evt.clientX > lastElRect.right && evt.clientY > lastElRect.top 
-            ));
+                  ( 
+                    evt.clientX > childContainingRect.right + spacer || evt.clientY > lastElRect.bottom && evt.clientX > lastElRect.left
+                  ) : ( 
+                    evt.clientY > childContainingRect.bottom + spacer || evt.clientX > lastElRect.right && evt.clientY > lastElRect.top
+                  ));
         }
         function _getSwapDirection(evt,target,targetRect,vertical,swapThreshold,invertedSwapThreshold,invertSwap,isLastTarget){
             var mouseOnAxis=vertical ? ( evt.clientY ) : ( evt.clientX );
@@ -2178,10 +2173,10 @@
                     if(!pastFirstInvertThresh
                            && (lastDirection === 1 ?
                               ( 
-                                mouseOnAxis > targetS1 + (targetLength * invertedSwapThreshold) / 2 )
-                            : ( 
-                                mouseOnAxis < targetS2 - (targetLength * invertedSwapThreshold) / 2 
-                            ))
+                                mouseOnAxis > targetS1 + (targetLength * invertedSwapThreshold) / 2
+                              ) : ( 
+                                mouseOnAxis < targetS2 - (targetLength * invertedSwapThreshold) / 2
+                              ))
                     ){
                         pastFirstInvertThresh=true;
                     }
@@ -2637,11 +2632,11 @@
                 }
             };
             return(_extends(Swap,{
-                "pluginName" : 'swap' ,
-                "eventProperties" : function eventProperties(){
-                    return({"swapItem" : lastSwapEl});
-                }
-            }));
+                    "pluginName" : 'swap' ,
+                    "eventProperties" : function eventProperties(){
+                        return({"swapItem" : lastSwapEl});
+                    }
+                }));
         }
         function swapNodes(n1,n2){
             var p1=n1.parentNode;
@@ -3081,68 +3076,68 @@
                 }
             };
             return(_extends(MultiDrag,{
-                "pluginName" : 'multiDrag' ,
-                "utils" : {
-                     /*#
-                      * Selects the provided multi-drag item
-                      * @param  {HTMLElement} el    The element to be selected
-                     */
-                    "select" : function select(el){
-                        var sortable=el.parentNode[expando];
-                        if(!sortable || !sortable.options.multiDrag ||  ~multiDragElements.indexOf(el)){
-                            return;
-                        }
-                        if(multiDragSortable && multiDragSortable !== sortable){
-                            multiDragSortable.multiDrag._deselectMultiDrag();
-                            multiDragSortable=sortable;
-                        }
-                        toggleClass(el,sortable.options.selectedClass,true);
-                        multiDragElements.push(el);
-                    } ,
-                     /*#
-                      * Deselects the provided multi-drag item
-                      * @param  {HTMLElement} el    The element to be deselected
-                     */
-                    "deselect" : function deselect(el){
-                        var sortable=el.parentNode[expando];
-                        var index=multiDragElements.indexOf(el);
-                        if(!sortable || !sortable.options.multiDrag || !( ~index)){
-                            return;
-                        }
-                        toggleClass(el,sortable.options.selectedClass,false);
-                        multiDragElements.splice(index,1);
-                    }
-                } ,
-                "eventProperties" : function eventProperties(){
-                    var _this3=this;
-                    var oldIndicies=[];
-                    var newIndicies=[];
-                    multiDragElements.forEach(function(multiDragElement){
-                            oldIndicies.push({"multiDragElement" : multiDragElement ,"index" : multiDragElement.sortableIndex});
-                            var newIndex;
-                            if(folding && multiDragElement !== dragEl$1){
-                                newIndex=-1;
-                            }else if(folding){
-                                newIndex=index(multiDragElement,':not(.' + _this3.options.selectedClass + ')');
-                            }else{
-                                newIndex=index(multiDragElement);
+                    "pluginName" : 'multiDrag' ,
+                    "utils" : {
+                         /*#
+                          * Selects the provided multi-drag item
+                          * @param  {HTMLElement} el    The element to be selected
+                         */
+                        "select" : function select(el){
+                            var sortable=el.parentNode[expando];
+                            if(!sortable || !sortable.options.multiDrag ||  ~multiDragElements.indexOf(el)){
+                                return;
                             }
-                            newIndicies.push({"multiDragElement" : multiDragElement ,"index" : newIndex});
-                        });
-                    return({"items" : _toConsumableArray(multiDragElements) ,"clones" : [].concat(multiDragClones) ,"oldIndicies" : oldIndicies ,"newIndicies" : newIndicies});
-                } ,
-                "optionListeners" : {
-                    "multiDragKey" : function multiDragKey(key){
-                        key=key.toLowerCase();
-                        if(key === 'ctrl'){
-                            key='Control';
-                        }else if(key.length > 1){
-                            key=key.charAt(0).toUpperCase() + key.substr(1);
+                            if(multiDragSortable && multiDragSortable !== sortable){
+                                multiDragSortable.multiDrag._deselectMultiDrag();
+                                multiDragSortable=sortable;
+                            }
+                            toggleClass(el,sortable.options.selectedClass,true);
+                            multiDragElements.push(el);
+                        } ,
+                         /*#
+                          * Deselects the provided multi-drag item
+                          * @param  {HTMLElement} el    The element to be deselected
+                         */
+                        "deselect" : function deselect(el){
+                            var sortable=el.parentNode[expando];
+                            var index=multiDragElements.indexOf(el);
+                            if(!sortable || !sortable.options.multiDrag || !( ~index)){
+                                return;
+                            }
+                            toggleClass(el,sortable.options.selectedClass,false);
+                            multiDragElements.splice(index,1);
                         }
-                        return key;
+                    } ,
+                    "eventProperties" : function eventProperties(){
+                        var _this3=this;
+                        var oldIndicies=[];
+                        var newIndicies=[];
+                        multiDragElements.forEach(function(multiDragElement){
+                                oldIndicies.push({"multiDragElement" : multiDragElement ,"index" : multiDragElement.sortableIndex});
+                                var newIndex;
+                                if(folding && multiDragElement !== dragEl$1){
+                                    newIndex=-1;
+                                }else if(folding){
+                                    newIndex=index(multiDragElement,':not(.' + _this3.options.selectedClass + ')');
+                                }else{
+                                    newIndex=index(multiDragElement);
+                                }
+                                newIndicies.push({"multiDragElement" : multiDragElement ,"index" : newIndex});
+                            });
+                        return({"items" : _toConsumableArray(multiDragElements) ,"clones" : [].concat(multiDragClones) ,"oldIndicies" : oldIndicies ,"newIndicies" : newIndicies});
+                    } ,
+                    "optionListeners" : {
+                        "multiDragKey" : function multiDragKey(key){
+                            key=key.toLowerCase();
+                            if(key === 'ctrl'){
+                                key='Control';
+                            }else if(key.length > 1){
+                                key=key.charAt(0).toUpperCase() + key.substr(1);
+                            }
+                            return key;
+                        }
                     }
-                }
-            }));
+                }));
         }
         function insertMultiDragElements(clonesInserted,rootEl){
             multiDragElements.forEach(function(multiDragElement,i){

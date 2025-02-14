@@ -1,10 +1,15 @@
 (function(global,factory){
-         typeof exports === 'object' &&  typeof module !== 'undefined' ? ( factory(exports) ) : (  typeof define === 'function' && define.amd ?
+         typeof exports === 'object' &&  typeof module !== 'undefined' ?
+          ( 
+            factory(exports)
+          ) : ( 
+             typeof define === 'function' && define.amd ?
               ( 
                 define(['exports'],factory)
               ) : ( 
                 global= typeof globalThis !== 'undefined' ? ( globalThis ) : ( global || self ),factory(global.acorn={})
-              ) );
+              )
+          );
 })(this,function(exports){
         "use strict";
         /* This file was generated. Do not modify manually! */
@@ -502,15 +507,15 @@
         }
         function pushComment(options,array){
             return(function(block,text,start,end,startLoc,endLoc){
-                var comment={"type" : block ? ( "Block" ) : ( "Line" ) ,"value" : text ,"start" : start ,"end" : end};
-                if(options.locations){
-                    comment.loc=new SourceLocation(this,startLoc,endLoc);
-                }
-                if(options.ranges){
-                    comment.range=[start,end];
-                }
-                array.push(comment);
-            });
+                    var comment={"type" : block ? ( "Block" ) : ( "Line" ) ,"value" : text ,"start" : start ,"end" : end};
+                    if(options.locations){
+                        comment.loc=new SourceLocation(this,startLoc,endLoc);
+                    }
+                    if(options.ranges){
+                        comment.range=[start,end];
+                    }
+                    array.push(comment);
+                });
         }
         /* Each scope gets a bitset that may contain these flags */
         var SCOPE_TOP=1;
@@ -542,7 +547,12 @@
         var Parser=function Parser(options,input,startPos){
             this.options=options=getOptions(options);
             this.sourceFile=options.sourceFile;
-            this.keywords=wordsRegexp(keywords$1[options.ecmaVersion >= 6 ? ( 6 ) : ( options.sourceType === "module" ? ( "5module" ) : ( 5 ) )]);
+            this.keywords=wordsRegexp(keywords$1[options.ecmaVersion >= 6 ?
+              ( 
+                6
+              ) : ( 
+                options.sourceType === "module" ? ( "5module" ) : ( 5 )
+              )]);
             var reserved="";
             if(options.allowReserved !== true){
                 reserved=reservedWords[options.ecmaVersion >= 6 ? ( 6 ) : ( options.ecmaVersion === 5 ? ( 5 ) : ( 3 ) )];
@@ -1295,7 +1305,12 @@
                     this.raise(expr.start,"Label '" + maybeName + "' is already declared");
                 }
             }
-            var kind=this.type.isLoop ? ( "loop" ) : ( this.type === types$1._switch ? ( "switch" ) : ( null ) );
+            var kind=this.type.isLoop ?
+              ( 
+                "loop"
+              ) : ( 
+                this.type === types$1._switch ? ( "switch" ) : ( null )
+              );
             for( var i=this.labels.length - 1 ; i >= 0 ; i-- ){
                 var label$1=this.labels[i];
                 if(label$1.statementStart === node.start){
@@ -1307,7 +1322,12 @@
                 }
             }
             this.labels.push({"name" : maybeName ,"kind" : kind ,"statementStart" : this.start});
-            node.body=this.parseStatement(context ? ( context.indexOf("label") === -1 ? ( context + "label" ) : ( context ) ) : ( "label" ));
+            node.body=this.parseStatement(context ?
+              ( 
+                context.indexOf("label") === -1 ? ( context + "label" ) : ( context )
+              ) : ( 
+                "label"
+              ));
             this.labels.pop();
             node.label=expr;
             return(this.finishNode(node,"LabeledStatement"));
@@ -1440,7 +1460,12 @@
             if(statement & FUNC_STATEMENT){
                 node.id=statement & FUNC_NULLABLE_ID && this.type !== types$1.name ? ( null ) : ( this.parseIdent() );
                 if(node.id && !(statement & FUNC_HANGING_STATEMENT)){
-                    this.checkLValSimple(node.id,this.strict || node.generator || node.async ? ( this.treatFunctionsAsVar ? ( BIND_VAR ) : ( BIND_LEXICAL ) ) : ( BIND_FUNCTION ));
+                    this.checkLValSimple(node.id,this.strict || node.generator || node.async ?
+                          ( 
+                            this.treatFunctionsAsVar ? ( BIND_VAR ) : ( BIND_LEXICAL )
+                          ) : ( 
+                            BIND_FUNCTION
+                          ));
                 }
                 /* If it is a regular function declaration in sloppy mode, then it is */
                 /* subject to Annex B semantics (BIND_FUNCTION). Otherwise, the binding */
@@ -2674,7 +2699,12 @@
             if(this.checkExpressionErrors(refDestructuringErrors)){
                 return expr;
             }
-            return(expr.start === startPos && expr.type === "ArrowFunctionExpression" ? ( expr ) : ( this.parseExprOp(expr,startPos,startLoc,-1,forInit) ));
+            return(expr.start === startPos && expr.type === "ArrowFunctionExpression" ?
+                  ( 
+                    expr
+                  ) : ( 
+                    this.parseExprOp(expr,startPos,startLoc,-1,forInit)
+                  ));
         };
         /* Parse binary operators with the operator precedence parsing */
         /* algorithm. `left` is the left-hand side of the operator. */
@@ -3360,7 +3390,12 @@
                 this.unexpected();
             }
             if(this.eat(types$1.colon)){
-                prop.value=isPattern ? ( this.parseMaybeDefault(this.start,this.startLoc) ) : ( this.parseMaybeAssign(false,refDestructuringErrors) );
+                prop.value=isPattern ?
+                  ( 
+                    this.parseMaybeDefault(this.start,this.startLoc)
+                  ) : ( 
+                    this.parseMaybeAssign(false,refDestructuringErrors)
+                  );
                 prop.kind="init";
             }else if(this.options.ecmaVersion >= 6 && this.type === types$1.parenL){
                 if(isPattern){
@@ -3419,7 +3454,12 @@
                     prop.computed=false;
                 }
             }
-            return(prop.key=this.type === types$1.num || this.type === types$1.string ? ( this.parseExprAtom() ) : ( this.parseIdent(this.options.allowReserved !== "never") ));
+            return(prop.key=this.type === types$1.num || this.type === types$1.string ?
+                  ( 
+                    this.parseExprAtom()
+                  ) : ( 
+                    this.parseIdent(this.options.allowReserved !== "never")
+                  ));
         };
         /* Initialize empty function node. */
         pp$5.initFunction=function(node){
@@ -5313,11 +5353,11 @@
             pp[Symbol.iterator]=function(){
                 var this$1$1=this;
                 return({
-                    "next" : function(){
-                        var token=this$1$1.getToken();
-                        return({"done" : token.type === types$1.eof ,"value" : token});
-                    }
-                });
+                        "next" : function(){
+                            var token=this$1$1.getToken();
+                            return({"done" : token.type === types$1.eof ,"value" : token});
+                        }
+                    });
             };
         }
         /* Toggle strict mode. Re-reads the next number or string to please */

@@ -91,7 +91,7 @@ class c_rev_vers_sql1{
         }else if(op === 'min'){
             t='min';
         }else{
-            return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1() + ' inconnu opérateur "' + op + '"'}));
+            return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' inconnu opérateur "' + op + '"'}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -136,7 +136,7 @@ class c_rev_vers_sql1{
               afr, il faut instancier un nouvel objet
             */
             debugger;
-            return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1() + 'problème sur sql dans sql '}));
+            return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'problème sur sql dans sql '}));
             /*#            
               var obj=this.#rev_sql1(id,niveau,options);
               if(obj.__xst === true){
@@ -145,7 +145,7 @@ class c_rev_vers_sql1{
                   }
                   t+=obj.__xva;
               }else{
-                  return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1()}));
+                  return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
               }
               return({"__xst" : true ,"__xva" : t ,"operateur" : operateur_rev});
             */
@@ -155,7 +155,7 @@ class c_rev_vers_sql1{
         if(obj_op.__xst === true){
             operateur=obj_op.__xva;
         }else{
-            return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1() + 'problème sur l\'opérateur'}));
+            return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'problème sur l\'opérateur'}));
         }
         var premierChamp=true;
         var l01=tab.length;
@@ -309,7 +309,7 @@ class c_rev_vers_sql1{
                 t+=un_espace;
             }
             if(this.#tb[i][2] === 'c'){
-                return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1() + 'constante non traitée'}));
+                return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'constante non traitée'}));
             }else{
                 switch (this.#tb[i][1]){
                     case 'sql' : 
@@ -318,7 +318,7 @@ class c_rev_vers_sql1{
                         if(obj.__xst === true){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1()}));
+                            return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
                         }
                         break;
                         
@@ -745,7 +745,7 @@ class c_rev_vers_sql1{
                                     }
                                     la_valeur+=obj.__xva;
                                 }else{
-                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1() + 'insert update delete'}));
+                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'insert update delete'}));
                                 }
                                 if(this.#tb[i][1] === 'insérer'){
                                     /* insert into a(x0,x1) select * from d; */
@@ -855,10 +855,10 @@ class c_rev_vers_sql1{
                                 if(options.au_format_php === true){
                                     t+='DELETE ' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + 'FROM ' + (nom_de_la_base !== '' ?
                                           ( 
-                                            '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.' )
-                                        : ( 
-                                            '' 
-                                        )) + nom_de_la_table + '';
+                                            '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.'
+                                          ) : ( 
+                                            ''
+                                          )) + nom_de_la_table + '';
                                 }else{
                                     t+='DELETE ' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + 'FROM ' + (nom_de_la_base !== '' ? ( nom_de_la_base + '.' ) : ( '' )) + nom_de_la_table + '';
                                 }
@@ -874,10 +874,10 @@ class c_rev_vers_sql1{
                                     if(options.au_format_php === true){
                                         t+='INSERT ' + ignorer + '' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + 'INTO ' + (nom_de_la_base !== '' ?
                                               ( 
-                                                '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.' )
-                                            : ( 
-                                                '' 
-                                            )) + '`' + nom_de_la_table + '`';
+                                                '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.'
+                                              ) : ( 
+                                                ''
+                                              )) + '`' + nom_de_la_table + '`';
                                         if(liste_des_champs_pour_insert !== ''){
                                             t+='(' + liste_des_champs_pour_insert + CRLF + ') ';
                                         }else{
@@ -886,10 +886,10 @@ class c_rev_vers_sql1{
                                         t+=la_valeur.replace(/\n/g,' ').replace(/\r/g,' ') + ';';
                                         options.debut_sql_pour_insert='INSERT ' + ignorer + ' INTO ' + (nom_de_la_base !== '' ?
                                               ( 
-                                                '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.' )
-                                            : ( 
-                                                '' 
-                                            )) + '`' + nom_de_la_table + '`';
+                                                '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.'
+                                              ) : ( 
+                                                ''
+                                              )) + '`' + nom_de_la_table + '`';
                                         if(liste_des_champs_pour_insert !== ''){
                                             options.debut_sql_pour_insert+='(' + liste_des_champs_pour_insert + CRLF + ')  ';
                                         }else{
@@ -908,17 +908,17 @@ class c_rev_vers_sql1{
                                     if(options.au_format_php === true){
                                         t+='INSERT ' + ignorer + '' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + 'INTO ' + (nom_de_la_base !== '' ?
                                               ( 
-                                                '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.' )
-                                            : ( 
-                                                '' 
-                                            )) + '`' + nom_de_la_table + '`(';
+                                                '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.'
+                                              ) : ( 
+                                                ''
+                                              )) + '`' + nom_de_la_table + '`(';
                                         t+='' + liste_des_champs_pour_insert + CRLF + ') VALUES (' + liste_des_valeurs_pour_insert + CRLF + ');';
                                         options.debut_sql_pour_insert='INSERT ' + ignorer + ' INTO ' + (nom_de_la_base !== '' ?
                                               ( 
-                                                '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.' )
-                                            : ( 
-                                                '' 
-                                            )) + '`' + nom_de_la_table + '`(' + liste_des_champs_pour_insert + CRLF + ') VALUES ';
+                                                '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.'
+                                              ) : ( 
+                                                ''
+                                              )) + '`' + nom_de_la_table + '`(' + liste_des_champs_pour_insert + CRLF + ') VALUES ';
                                     }else{
                                         t+='INSERT ' + ignorer + '' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + 'INTO ' + (nom_de_la_base !== '' ? ( nom_de_la_base + '.' ) : ( '' )) + '`' + nom_de_la_table + '`(';
                                         t+=(liste_des_champs_pour_insert + CRLF) + ') VALUES (' + liste_des_valeurs_pour_insert + CRLF + ');';
@@ -928,10 +928,10 @@ class c_rev_vers_sql1{
                                 if(options.au_format_php === true){
                                     t+='UPDATE ' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + '' + (nom_de_la_base !== '' ?
                                           ( 
-                                            '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.' )
-                                        : ( 
-                                            '' 
-                                        )) + nom_de_la_table + ' SET ' + la_valeur + '';
+                                            '`\'.$GLOBALS[BDD][BDD_' + nom_de_la_base + '][\'nom_bdd\'].\'`.'
+                                          ) : ( 
+                                            ''
+                                          )) + nom_de_la_table + ' SET ' + la_valeur + '';
                                 }else{
                                     t+='UPDATE ' + (commentaire_general !== '' ? ( '/* ' + commentaire_general + ' */ ' ) : ( '' )) + '' + (nom_de_la_base !== '' ? ( nom_de_la_base + '.' ) : ( '' )) + nom_de_la_table + ' SET ' + la_valeur + '';
                                 }
@@ -979,7 +979,7 @@ class c_rev_vers_sql1{
                                     meta+='/* meta(' + obj.__xva + ') */';
                                     meta+=__m_rev1.resps(niveau + 2);
                                 }else{
-                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'index meta'}));
+                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'index meta'}));
                                 }
                             }
                         }
@@ -1015,7 +1015,7 @@ class c_rev_vers_sql1{
                                         }
                                     }
                                 }else{
-                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'change_field'}));
+                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'change_field'}));
                                 }
                             }
                         }
@@ -1051,7 +1051,7 @@ class c_rev_vers_sql1{
                             t+='use ' + this.#tb[i + 1][1] + ';';
                             j++;
                         }else{
-                            return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'use'}));
+                            return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'use'}));
                         }
                         break;
                         
@@ -1070,7 +1070,7 @@ class c_rev_vers_sql1{
                             }
                             t+=';';
                         }else{
-                            return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'set'}));
+                            return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'set'}));
                         }
                         break;
                         
@@ -1151,7 +1151,7 @@ class c_rev_vers_sql1{
                                         variables_pour_tableau_tables.defaut.est_defini=true;
                                         variables_pour_tableau_tables.defaut.valeur=__m_rev1.ma_constante(this.#tb[j + 1]);
                                     }else{
-                                        return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'field'}));
+                                        return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'field'}));
                                     }
                                 }
                             }else if(this.#tb[j][1] === 'primary_key' && this.#tb[j][8] === 0){
@@ -1171,7 +1171,7 @@ class c_rev_vers_sql1{
                                         if(this.#tb[j + 2][2] === 'c'){
                                             definition_sql_du_champ+=' ' + this.#tb[j + 1][1] + '(' + this.#tb[j + 2][1] + ')';
                                         }else{
-                                            return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'field type'}));
+                                            return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'field type'}));
                                         }
                                     }
                                 }else if(this.#tb[j][8] === 2){
@@ -1179,7 +1179,7 @@ class c_rev_vers_sql1{
                                     variables_pour_tableau_tables.type.nom=this.#tb[j + 1][1];
                                     variables_pour_tableau_tables.type.longueur=this.#tb[j + 2][1];
                                 }else{
-                                    return(this.#rev_sql_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'field type'}));
+                                    return(this.#rev_sql_logerreur({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'field type'}));
                                 }
                             }else if(this.#tb[j][1] === 'meta' && this.#tb[j][8] > 0){
                                 obj=__m_rev1.matrice_vers_source_rev1(this.#tb,j,false,j + 1);
@@ -1194,10 +1194,10 @@ class c_rev_vers_sql1{
                                         }
                                     }
                                 }else{
-                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'field meta'}));
+                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'field meta'}));
                                 }
                             }else{
-                                return(this.#rev_sql_logerreur({"__xst" : false ,"id" : i ,"__xme" : nl1() + 'field ' + this.#tb[j][1]}));
+                                return(this.#rev_sql_logerreur({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'field ' + this.#tb[j][1]}));
                             }
                         }
                         if(options.dans_definition_de_table === true){
@@ -1278,7 +1278,7 @@ class c_rev_vers_sql1{
                                     */
                                     definitions_des_champs=obj.__xva.substr(1);
                                 }else{
-                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'create table field'}));
+                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'create table field'}));
                                 }
                                 options.dans_definition_de_table=false;
                             }else if(this.#tb[j][1] === 'meta' && this.#tb[j][8] > 0){
@@ -1291,10 +1291,10 @@ class c_rev_vers_sql1{
                                         }
                                     }
                                 }else{
-                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'create_table meta'}));
+                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'create_table meta'}));
                                 }
                             }else{
-                                return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'create table ' + this.#tb[j][1]}));
+                                return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'create table ' + this.#tb[j][1]}));
                             }
                         }
                         t+='CREATE TABLE ' + if_exists + ' ' + nom_table_en_cours + '(';
@@ -1318,7 +1318,7 @@ class c_rev_vers_sql1{
                                 t+=' ' + this.#tb[j + 1][1] + '';
                                 j++;
                             }else{
-                                return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'drop table ' + this.#tb[j][1]}));
+                                return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'drop table ' + this.#tb[j][1]}));
                             }
                         }
                         t+=';';
@@ -1343,7 +1343,7 @@ class c_rev_vers_sql1{
                                     t+=' COLLATE ' + this.#tb[j + 1][1] + '';
                                     j++;
                                 }else{
-                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'create_database ' + this.#tb[j][1]}));
+                                    return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'create_database ' + this.#tb[j][1]}));
                                 }
                             }
                         }
@@ -1368,7 +1368,7 @@ class c_rev_vers_sql1{
                             t+=obj.__xva;
                             t+=__m_rev1.resps(niveau);
                         }else{
-                            return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'transaction'}));
+                            return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'transaction'}));
                         }
                         break;
                         
@@ -1377,7 +1377,7 @@ class c_rev_vers_sql1{
                         }else{
                             t+=__m_rev1.resps(niveau);
                             t+='/*';
-                            t+=traiteCommentaire2(this.#tb[i][13],niveau,i);
+                            t+=__m_rev1.tr_co_src(this.#tb[i][13],niveau,i);
                             t+='*/';
                         }
                         break;
@@ -1389,7 +1389,7 @@ class c_rev_vers_sql1{
                             t+='/* meta(' + obj.__xva + ') */';
                             t+=__m_rev1.resps(niveau);
                         }else{
-                            return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'meta'}));
+                            return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'meta'}));
                         }
                         break;
                         
@@ -1402,13 +1402,13 @@ class c_rev_vers_sql1{
                                 t+='BEGIN TRANSACTION;';
                                 t+=obj.__xva;
                             }else{
-                                return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : nl1() + 'transaction'}));
+                                return(this.#rev_sql_logerreur({"__xst" : false ,"__xva" : t ,"id" : i ,"__xme" : __m_rev1.nl2() + 'transaction'}));
                             }
                         }
                         break;
                         
                     default:
-                        return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1() + 'fonction non traitée "' + this.#tb[i][1] + '"'}));
+                        return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'fonction non traitée "' + this.#tb[i][1] + '"'}));
                         
                 }
             }
@@ -1930,7 +1930,7 @@ class c_rev_vers_sql1{
             obj.liste_des_limites=options.liste_des_limites;
             return obj;
         }else{
-            return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : nl1() + 'erreur de conversion en sql'}));
+            return(this.#rev_sql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'erreur de conversion en sql'}));
         }
     }
 }

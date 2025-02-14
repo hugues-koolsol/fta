@@ -478,10 +478,10 @@ class requete_sql{
                                                     }
                                                     formule_update+='affecte(' + obj.__xva + ')';
                                                 }else{
-                                                    logerreur({"__xst" : false ,"__xme" : nl1() + ' il faut un affecte pour une requete update '});
+                                                    logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' il faut un affecte pour une requete update '});
                                                 }
                                             }else{
-                                                logerreur({"__xst" : false ,"__xme" : nl1() + ' il faut un affecte pour une requete update '});
+                                                logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' il faut un affecte pour une requete update '});
                                             }
                                         }else{
                                             this.#obj_webs['champs_sortie'].push({
@@ -559,10 +559,10 @@ class requete_sql{
                 that.#globale_type_requete=globale_requete_en_cours['T0.chp_type_requete'];
                 that.#globale_commentaire_requete=globale_requete_en_cours['T0.cht_commentaire_requete'] === null ?
                   ( 
-                    '' )
-                : ( 
-                    globale_requete_en_cours['T0.cht_commentaire_requete'] 
-                );
+                    ''
+                  ) : ( 
+                    globale_requete_en_cours['T0.cht_commentaire_requete']
+                  );
                 that.#enrichir_tableau_des_bases_tables_champs(that,init);
                 that.convertir_rev_pour_construction(that,init);
                 that.#mettre_en_stokage_local_et_afficher();
