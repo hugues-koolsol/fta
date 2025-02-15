@@ -259,7 +259,6 @@ function concateneFichiers(tabConcatFichier,file_name,file_extension,file_path){
             return(__gi1.recupérer_un_fetch(url,ajax_param));
         }
         concatener_des_fichiers1('za_ajax.php?concatener_des_fichiers1',ajax_param).then((donnees) => {
-                console.log(donnees);
                 if(donnees.__xst === true){
                     logerreur({"__xst" : true ,"__xme" : 'le fichier ' + fichierAConcatener + ' a été concaténé'});
                     if(donnees.__entree.tabConcatFichier){
@@ -268,8 +267,27 @@ function concateneFichiers(tabConcatFichier,file_name,file_extension,file_path){
                 }
             });
     }else{
-        __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
+        /* on a fini de concaténer , on peut aller chercher le source */
+        var ajax_param={
+            "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'recuperer_un_genere'} ,
+            "file_name" : file_name ,
+            "file_extension" : file_extension ,
+            "file_path" : file_path
+        };
+        console.log('ajax_param=',ajax_param);
+        async function recuperer_un_genere(url="",ajax_param){
+            return(__gi1.recupérer_un_fetch(url,ajax_param));
+        }
+        recuperer_un_genere('za_ajax.php?recuperer_un_genere',ajax_param).then((donnees) => {
+                console.log(donnees);
+                if(donnees.__xst === true){
+                    document.getElementById('zoneContenantLeSourceGenere2').value=donnees.__xva;
+                }else{
+                    debugger;
+                }
+            });
     }
+    __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
 }
 /*
   =====================================================================================================================
@@ -278,30 +296,36 @@ function enregistrer2(){
     var sourcesCompactesIdentiques=false;
     var sourcesIdentiques=false;
     var conversion={"__xst" : false};
+    document.getElementById('bouton_voir_source').style.display='none';
+    document.getElementById('bouton_voir_matrice').style.display='none';
+    document.getElementById('bouton_voir_tableau').style.display='none';
+    document.getElementById('zoneContenantLaMatrice').value='';
+    document.getElementById('zoneContenantLaMatrice').style.display='none';
+    document.getElementById('zoneContenantLeTableauCaracteres').value='';
+    document.getElementById('zoneContenantLeTableauCaracteres').style.display='none';
+    document.getElementById('zoneContenantLeSourceGenere2').value='';
+    document.getElementById('zoneContenantLeSourceGenere2').style.display='none';
     document.getElementById('sauvegarderLeNormalise').disabled=true;
     document.getElementById('nomDuSource').disabled=true;
     __gi1.raz_des_messages();
     document.getElementById('arrayed').innerHTML='';
     var zonedonneesComplementaires=document.getElementById('donneesComplementaires');
-    zonedonneesComplementaires.innerHTML='';
+    /* zonedonneesComplementaires.innerHTML=''; */
     var a=document.getElementById('zonesource');
     var startMicro=performance.now();
     var tableau1=__m_rev1.txt_en_tableau(a.value);
-    global_messages.data.tableau=tableau1;
     var endMicro=performance.now();
     console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
     var startMicro=performance.now();
     var matriceFonction=functionToArray2(tableau1.out,true,false,'');
     var endMicro=performance.now();
     console.log('analyse syntaxique et mise en matrice endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
-    global_messages.data.matrice=matriceFonction;
     console.log('matriceFonction=',matriceFonction);
     if(matriceFonction.__xst === true){
         var startMicro=performance.now();
         var fonctionReecriteAvecRetour1=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
         var endMicro=performance.now();
         console.log('reconstitution du source endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
-        var diResultatsCompactes=document.createElement('pre');
         if(fonctionReecriteAvecRetour1.__xst === true){
             document.getElementById('normalise').value=fonctionReecriteAvecRetour1.__xva;
             ajusteTailleTextareaContenantSource('normalise');
@@ -320,158 +344,112 @@ function enregistrer2(){
                     var conversion=convertSource(matriceFonction);
                 }else{
                     logerreur({"__xst" : false ,"__xme" : 'sources compactés différents'});
-                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">💥sources compactés différents</b>';
-                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />o=' + compacteOriginal.__xva;
-                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />r=' + compacteReecrit.__xva;
                 }
             }else{
-                diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">compacteOriginal=' + JSON.stringify(compacteOriginal) + '</b>';
-                diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br /><b style="color:red;">compacteReecrit=' + JSON.stringify(compacteReecrit) + '</b>';
             }
             var fonctionReecriteAvecRetour1=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
         }else{
-            diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">Erreur de réécriture du source original</b>';
-        }
-        zonedonneesComplementaires.appendChild(diResultatsCompactes);
-        if(sourcesCompactesIdentiques){
-            if(a.value == fonctionReecriteAvecRetour1.__xva.replace(/\r\n/g,'\n')){
-                logerreur({"__xst" : true ,"__xme" : '<b>👍👍 sources Egaux</b>'});
-                document.getElementById('sauvegarderLeNormalise').disabled=false;
-                document.getElementById('nomDuSource').disabled=false;
-                if(conversion.__xst == true){
-                    global_messages.data.sourceGenere=conversion.__xva;
-                    var ajax_param={
-                        "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'ecrire_fichier1'} ,
-                        "contenu_du_fichier" : conversion.__xva ,
-                        "file_name" : conversion.file_name ,
-                        "file_extension" : conversion.file_extension ,
-                        "file_path" : conversion.file_path
-                    };
-                    async function ecrire_fichier1(url="",ajax_param){
-                        return(__gi1.recupérer_un_fetch(url,ajax_param));
-                    }
-                    ecrire_fichier1('za_ajax.php?ecrire_fichier1',ajax_param).then((donnees) => {
-                            if(donnees.__xst === true){
-                                logerreur({"__xst" : true ,"__xme" : '<b>👍👍👍 le programme résultant a été écrit sur le disque</b>'});
-                                if(conversion.tabConcatFichier.length > 0){
-                                    concateneFichiers(conversion.tabConcatFichier,conversion.file_name,conversion.file_extension,conversion.file_path);
-                                }
-                                document.getElementById('sauvegarderLeNormalise').disabled=false;
-                                document.getElementById('nomDuSource').disabled=false;
-                            }else{
-                                logerreur({"__xst" : false ,"__xme" : 'il y a eu un problème d\'écriture sur disque'});
-                            }
-                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
-                        });
-                }
-            }else{
-                logerreur({
-                        "__xst" : false ,
-                        "__xme" : 'les sources sont différents mais les compactés sont égaux : <a href="javascript:reprendre()" style="border:2px lawngreen outset;background:lawngreen;">reprendre</a>&nbsp;<a style="border:2px lawngreen outset;background:lawngreen;" href="javascript:reprendreEtRecompiler()">reprendre et recompiler</a>  '
-                    });
-            }
         }
     }
-    var lienVoitTableau=document.createElement('a');
-    lienVoitTableau.innerHTML='Voir tableau';
-    lienVoitTableau.href='javascript:voirTableau1(0)';
-    lienVoitTableau.style.cssText='display:inline-block;padding:2px;border:2px red solid;margin:2px;';
-    zonedonneesComplementaires.appendChild(lienVoitTableau);
-    var lienVoitMatrice=document.createElement('a');
-    lienVoitMatrice.innerHTML='Voir matrice';
-    lienVoitMatrice.href='javascript:voirMatrice1(0)';
-    lienVoitMatrice.style.cssText='display:inline-block;padding:2px;border:2px red solid;margin:2px;';
-    zonedonneesComplementaires.appendChild(lienVoitMatrice);
-    if(conversion.__xst == true){
-        var lienVoitSourceGenere=document.createElement('a');
-        lienVoitSourceGenere.innerHTML='Voir source généré';
-        lienVoitSourceGenere.href='javascript:voirSourceGenere(0)';
-        lienVoitSourceGenere.style.cssText='display:inline-block;padding:2px;border:2px red solid;margin:2px;';
-        zonedonneesComplementaires.appendChild(lienVoitSourceGenere);
-    }
-    var zoneContenantLeTableauCaracteres=document.createElement('div');
-    zoneContenantLeTableauCaracteres.style.display='none';
-    zoneContenantLeTableauCaracteres.id='zoneContenantLeTableauCaracteres';
-    zonedonneesComplementaires.appendChild(zoneContenantLeTableauCaracteres);
-    var zoneContenantLaMatrice=document.createElement('div');
-    zoneContenantLaMatrice.style.display='none';
-    zoneContenantLaMatrice.id='zoneContenantLaMatrice';
-    zoneContenantLaMatrice.className='tableau1';
-    zonedonneesComplementaires.appendChild(zoneContenantLaMatrice);
-    if(conversion.__xst == true){
-        var zoneContenantLeSourceGenere=document.createElement('div');
-        zoneContenantLeSourceGenere.style.display='none';
-        zoneContenantLeSourceGenere.id='zoneContenantLeSourceGenere';
-        zonedonneesComplementaires.appendChild(zoneContenantLeSourceGenere);
-        var cont01=document.createElement('div');
-        cont01.className='yyconteneur_de_texte1';
-        var zoneContenantLeSourceGenere2=document.createElement('textarea');
-        zoneContenantLeSourceGenere2.rows=30;
-        zoneContenantLeSourceGenere2.cols=120;
-        zoneContenantLeSourceGenere2.style.background='lightcyan';
-        zoneContenantLeSourceGenere2.style.display='none';
-        zoneContenantLeSourceGenere2.id='zoneContenantLeSourceGenere2';
-        cont01.appendChild(zoneContenantLeSourceGenere2);
-        zonedonneesComplementaires.appendChild(cont01);
-        voirSourceGenere();
+    if(conversion.__xst === true){
+        document.getElementById('bouton_voir_source').style.display='inline-block';
+        document.getElementById('bouton_voir_matrice').style.display='inline-block';
+        document.getElementById('bouton_voir_tableau').style.display='inline-block';
+        document.getElementById('zoneContenantLeSourceGenere2').value=conversion.__xva;
     }
     __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
+    if(matriceFonction.__xst === true && sourcesCompactesIdentiques){
+        if(a.value == fonctionReecriteAvecRetour1.__xva.replace(/\r\n/g,'\n')){
+            logerreur({"__xst" : true ,"__xme" : '<b>👍👍 sources Egaux</b>'});
+            document.getElementById('sauvegarderLeNormalise').disabled=false;
+            document.getElementById('nomDuSource').disabled=false;
+            if(conversion.__xst == true){
+                var ajax_param={
+                    "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'ecrire_fichier1'} ,
+                    "contenu_du_fichier" : conversion.__xva ,
+                    "file_name" : conversion.file_name ,
+                    "file_extension" : conversion.file_extension ,
+                    "file_path" : conversion.file_path
+                };
+                async function ecrire_fichier1(url="",ajax_param){
+                    return(__gi1.recupérer_un_fetch(url,ajax_param));
+                }
+                ecrire_fichier1('za_ajax.php?ecrire_fichier1',ajax_param).then((donnees) => {
+                        if(donnees.__xst === true){
+                            logerreur({"__xst" : true ,"__xme" : '<b>👍👍👍 le programme résultant a été écrit sur le disque</b>'});
+                            if(conversion.tabConcatFichier.length > 0){
+                                concateneFichiers(conversion.tabConcatFichier,conversion.file_name,conversion.file_extension,conversion.file_path);
+                            }
+                            document.getElementById('sauvegarderLeNormalise').disabled=false;
+                            document.getElementById('nomDuSource').disabled=false;
+                        }else{
+                            logerreur({"__xst" : false ,"__xme" : 'il y a eu un problème d\'écriture sur disque'});
+                        }
+                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
+                    });
+            }
+        }else{
+            logerreur({
+                    "__xst" : false ,
+                    "__xme" : 'les sources sont différents mais les compactés sont égaux : <a href="javascript:reprendre()" style="border:2px lawngreen outset;background:lawngreen;">reprendre</a>&nbsp;<a style="border:2px lawngreen outset;background:lawngreen;" href="javascript:reprendreEtRecompiler()">reprendre et recompiler</a>  '
+                });
+        }
+    }
 }
 /*
   =====================================================================================================================
 */
 function voirSourceGenere(){
-    var zoneContenantLeSourceGenere=document.getElementById('zoneContenantLeSourceGenere');
-    if(zoneContenantLeSourceGenere && zoneContenantLeSourceGenere.innerHTML == ''){
-        var zoneSourceGenere=document.createElement('pre');
-        zoneSourceGenere.style.fontSize='0.8em';
-        zoneSourceGenere.innerHTML=global_messages.data.sourceGenere.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('<','&gt;').replaceAll('"','&quot;');
-        zoneContenantLeSourceGenere.appendChild(zoneSourceGenere);
-        zoneContenantLeSourceGenere.style.display='';
-        zoneContenantLeSourceGenere2.value=global_messages.data.sourceGenere;
-        zoneContenantLeSourceGenere2.style.display='';
+    document.getElementById('zoneContenantLaMatrice').style.display='none';
+    document.getElementById('zoneContenantLeTableauCaracteres').style.display='none';
+    if(document.getElementById('zoneContenantLeSourceGenere2').style.display === 'none'){
+        document.getElementById('zoneContenantLeSourceGenere2').style.display='';
     }else{
-        if(zoneContenantLeSourceGenere.style.display == 'none'){
-            zoneContenantLeSourceGenere.style.display='';
-        }else{
-            zoneContenantLeSourceGenere.style.display='none';
-        }
+        document.getElementById('zoneContenantLeSourceGenere2').style.display='none';
     }
 }
 /*
   =====================================================================================================================
 */
-function voirMatrice1(){
+function voirMatrice1(div_de_la_zone_source){
+    document.getElementById('zoneContenantLeSourceGenere2').style.display='none';
+    document.getElementById('zoneContenantLeTableauCaracteres').style.display='none';
     var zoneContenantLaMatrice=document.getElementById('zoneContenantLaMatrice');
-    if(zoneContenantLaMatrice && document.getElementById('zoneContenantLaMatrice').innerHTML == ''){
-        var zoneMatrice=document.createElement('table');
-        __gi1.construit_tableau_html_de_le_matrice_rev(zoneMatrice,global_messages.data.matrice);
-        zoneContenantLaMatrice.appendChild(zoneMatrice);
+    if(zoneContenantLaMatrice && document.getElementById('zoneContenantLaMatrice').innerHTML === ''){
+        var contenu=document.getElementById(div_de_la_zone_source).value;
+        var matrice=rev_texte_vers_matrice(contenu);
+        if(matrice.__xst === true){
+            var zoneMatrice=document.createElement('table');
+            __gi1.construit_tableau_html_de_le_matrice_rev(zoneMatrice,matrice);
+            zoneContenantLaMatrice.appendChild(zoneMatrice);
+        }else{
+            debugger;
+        }
+    }
+    if(zoneContenantLaMatrice.style.display == 'none'){
         zoneContenantLaMatrice.style.display='';
     }else{
-        if(zoneContenantLaMatrice.style.display == 'none'){
-            zoneContenantLaMatrice.style.display='';
-        }else{
-            zoneContenantLaMatrice.style.display='none';
-        }
+        zoneContenantLaMatrice.style.display='none';
     }
 }
 /*
   =====================================================================================================================
 */
-function voirTableau1(){
+function voirTableau1(div_de_la_zone_source){
+    document.getElementById('zoneContenantLaMatrice').style.display='none';
+    document.getElementById('zoneContenantLeSourceGenere2').style.display='none';
     var zoneContenantLeTableauCaracteres=document.getElementById('zoneContenantLeTableauCaracteres');
-    if(zoneContenantLeTableauCaracteres && document.getElementById('zoneContenantLeTableauCaracteres').innerHTML == ''){
+    if(zoneContenantLeTableauCaracteres && document.getElementById('zoneContenantLeTableauCaracteres').innerHTML === ''){
         var zoneTableauCaracteres=document.createElement('table');
-        __gi1.construit_un_html_du_tableau_des_caracteres(zoneTableauCaracteres,'',global_messages.data.tableau);
+        var contenu=document.getElementById(div_de_la_zone_source).value;
+        var obj=__m_rev1.txt_en_tableau(contenu);
+        __gi1.construit_un_html_du_tableau_des_caracteres(zoneTableauCaracteres,'',obj);
         zoneContenantLeTableauCaracteres.appendChild(zoneTableauCaracteres);
+    }
+    if(zoneContenantLeTableauCaracteres.style.display == 'none'){
         zoneContenantLeTableauCaracteres.style.display='';
     }else{
-        if(zoneContenantLeTableauCaracteres.style.display == 'none'){
-            zoneContenantLeTableauCaracteres.style.display='';
-        }else{
-            zoneContenantLeTableauCaracteres.style.display='none';
-        }
+        zoneContenantLeTableauCaracteres.style.display='none';
     }
 }
 /*
@@ -510,33 +488,35 @@ function chargerFichierRev(nomFichierSource){
   =====================================================================================================================
 */
 function initialisation_page_rev(par){
-    /*
-      chargement de la liste des sources
-    */
-    async function charger_la_liste_des_sources1(url="",ajax_param){
-        return(__gi1.recupérer_un_fetch(url,ajax_param));
-    }
-    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'getRevFiles'}};
-    charger_la_liste_des_sources1('za_ajax.php?getRevFiles',ajax_param).then((donnees) => {
-            if(donnees.__xst == true){
-                var fta_dernier_fichier_charge=localStorage.getItem('fta_dernier_fichier_charge');
-                var trouve='';
-                var t='';
-                var idFile={};
-                for(idFile in donnees.files){
-                    t+='<button onclick="chargerFichierRev(\'' + donnees.files[idFile] + '\')" title="' + donnees.files[idFile] + '">' + donnees.files[idFile] + '</button>';
-                    if(fta_dernier_fichier_charge && donnees.files[idFile] === fta_dernier_fichier_charge){
-                        trouve=fta_dernier_fichier_charge;
-                    }
-                }
-                document.getElementById('zoneRevFiles').innerHTML=t;
-                if(trouve !== ''){
-                    chargerFichierRev(fta_dernier_fichier_charge);
-                }
-            }else{
-                console.log(r);
-                alert('BAD job !');
-                return;
+    setTimeout(function(){
+            /*
+              chargement de la liste des sources
+            */
+            async function charger_la_liste_des_sources1(url="",ajax_param){
+                return(__gi1.recupérer_un_fetch(url,ajax_param));
             }
-        });
+            var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'getRevFiles'}};
+            charger_la_liste_des_sources1('za_ajax.php?getRevFiles',ajax_param).then((donnees) => {
+                    if(donnees.__xst == true){
+                        var fta_dernier_fichier_charge=localStorage.getItem('fta_dernier_fichier_charge');
+                        var trouve='';
+                        var t='';
+                        var idFile={};
+                        for(idFile in donnees.files){
+                            t+='<button onclick="chargerFichierRev(\'' + donnees.files[idFile] + '\')" title="' + donnees.files[idFile] + '">' + donnees.files[idFile] + '</button>';
+                            if(fta_dernier_fichier_charge && donnees.files[idFile] === fta_dernier_fichier_charge){
+                                trouve=fta_dernier_fichier_charge;
+                            }
+                        }
+                        document.getElementById('zoneRevFiles').innerHTML=t;
+                        if(trouve !== ''){
+                            chargerFichierRev(fta_dernier_fichier_charge);
+                        }
+                    }else{
+                        console.log(r);
+                        alert('BAD job !');
+                        return;
+                    }
+                });
+        },100);
 }

@@ -14,7 +14,7 @@ class c_rev1{
         "lignes" : [] ,
         "ids" : [] ,
         "plages" : [] ,
-        "data" : {"matrice" : [] ,"tableau" : [] ,"sourceGenere" : ''}
+        "data" : {"matrice" : [] ,"tableau" : []}
     };
     /* function constructor */
     constructor(nom_de_la_variable){
@@ -734,7 +734,7 @@ class c_rev1{
             ind           : i,
             __xme         : '1839 il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ',
             texte         : texte,
-            chaineTableau : chaineTableau,
+            chaine_tableau : chaine_tableau,
             chaine_tableau_commentaires:chaine_tableau_commentaires
             tableauEntree : tableauEntree,
             quitterSiErreurNiveau:quitterSiErreurNiveau,
@@ -746,7 +746,7 @@ class c_rev1{
         var j=0;
         var finGrasFait=false;
         var presDe='';
-        var line=0;
+        var ligne=0;
         var message_ajoute='';
         var position=0;
         if(obj.hasOwnProperty('erreur_conversion_chaineTableau_en_json') && obj.erreur_conversion_chaineTableau_en_json === true){
@@ -758,10 +758,10 @@ class c_rev1{
                 if(obj.ejson.message.indexOf(' ') >= 0){
                     position=parseInt(position.substr(0,obj.ejson.message.indexOf(' ')),10);
                     for( i=position ; i >= 0 && message_ajoute === '' ; i-- ){
-                        if(obj.chaineTableau.substr(i,1) === '['){
-                            for( j=i ; j < obj.chaineTableau.length && message_ajoute === '' ; j++ ){
-                                if(obj.chaineTableau.substr(j,1) === ']'){
-                                    message_ajoute='près de `' + obj.chaineTableau.substr(i,(j - i) + 1) + '`';
+                        if(obj.chaine_tableau.substr(i,1) === '['){
+                            for( j=i ; j < obj.chaine_tableau.length && message_ajoute === '' ; j++ ){
+                                if(obj.chaine_tableau.substr(j,1) === ']'){
+                                    message_ajoute='près de `' + obj.chaine_tableau.substr(i,(j - i) + 1) + '`';
                                     break;
                                 }
                             }
@@ -771,7 +771,7 @@ class c_rev1{
             }
             return({"__xst" : obj.__xst ,"__xva" : '' ,"id" : obj.ind ,"__xme" : obj.__xme + ' ' + message_ajoute});
         }
-        var chaineTableau='[' + obj.chaineTableau + ']';
+        var chaine_tableau='[' + obj.chaine_tableau + ']';
         if(obj.hasOwnProperty('tableauEntree')){
             if(obj.hasOwnProperty('ind')){
                 if(obj.ind > 50){
@@ -803,16 +803,16 @@ class c_rev1{
                 }
                 message_ajoute+=' position caractère=' + obj.ind + '';
                 message_ajoute+='<br />près de ----' + presDe + '----<br />';
-                line=0;
+                ligne=0;
                 for( i=obj.ind ; i >= 0 ; i-- ){
                     if(obj.tableauEntree[i][0] === '\n'){
-                        line++;
+                        ligne++;
                     }
                 }
             }
         }
-        var T=JSON.parse(chaineTableau);
-        return({"__xst" : obj.__xst ,"__xva" : T ,"id" : obj.ind ,"__xme" : obj.__xme + message_ajoute ,"line" : line});
+        var T=JSON.parse(chaine_tableau);
+        return({"__xst" : obj.__xst ,"__xva" : T ,"id" : obj.ind ,"__xme" : obj.__xme + message_ajoute ,"ligne" : ligne+1});
     }    
     
     

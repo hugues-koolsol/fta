@@ -727,13 +727,18 @@ class c_astjs_vers_rev1{
     #traite_YieldExpression(element,niveau,parent,tab_comm){
         let t='';
         let obj=null;
+        let delegué=false;
         if(element.delegate !== false){
-            return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'delegate' ,"element" : element}));
+            delegué=true;
         }
         if(element.hasOwnProperty('argument')){
             obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
             if(obj.__xst === true){
-                t+='céder(' + obj.__xva + ')';
+                if(delegué===true){    
+                    t+='céder(délégué(' +  obj.__xva + '))';
+                }else{
+                    t+='céder(' +  obj.__xva + ')';
+                }
             }else{
                 return(this.#astjs_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
             }

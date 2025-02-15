@@ -1611,18 +1611,30 @@ class c_rev_vers_js1{
                     
                 case 'céder' :
                     var valeur='';
+                    var fnt='';
                     for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                         if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                         }else{
-                            obj=this.#js_traiteInstruction1(niveau,j,{});
-                            if(obj.__xst === true){
-                                valeur+=obj.__xva;
+                            if(this.#tb[j][1] === 'délégué' && this.#tb[j][2] === 'f'){
+                                fnt = 'yield* ';
+                                obj=this.#js_traiteInstruction1(niveau,j+1,{});
+                                if(obj.__xst === true){
+                                    valeur+=obj.__xva;
+                                }else{
+                                    return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2() + 'valeur'}));
+                                }
                             }else{
-                                return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2() + 'valeur'}));
+                                fnt = 'yield ';
+                                obj=this.#js_traiteInstruction1(niveau,j,{});
+                                if(obj.__xst === true){
+                                    valeur+=obj.__xva;
+                                }else{
+                                    return(this.#rev_js_logerreur({"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2() + 'valeur'}));
+                                }
                             }
                         }
                     }
-                    t+='yield ' + valeur;
+                    t+=fnt + valeur;
                     break;
                     
                 case 'virgule' :

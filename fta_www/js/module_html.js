@@ -1275,23 +1275,35 @@ class traitements_sur_html{
             /*
               c'est un script dans un html
             */
-            var ob=__m_rev_vers_js1.c_tab_vers_js(tab,{"indice_de_debut" : indiceDebutJs});
-            if(ob.__xst === true){
-                /*
-                  =====================================================================================
-                  ecriture de la valeur dans le cas d'un tag javascriptdanshtml
-                  =====================================================================================
-                */
-                t+=CRLF;
-                t+='<script' + lesProprietes + '>' + CRLF;
-                t+='//<![CDATA[' + CRLF;
-                t+='//<source_javascript_rev>' + CRLF;
-                t+=ob.__xva + CRLF;
-                t+='//</source_javascript_rev>' + CRLF;
-                t+='//]]>' + CRLF;
-                t+='</script>' + CRLF;
+            if(tab[indiceDebutJs][8]===0){
+                    /* js vide !*/
+                    t+=CRLF;
+                    t+='<script' + lesProprietes + '>' + CRLF;
+                    t+='//<![CDATA[' + CRLF;
+                    t+='//<source_javascript_rev>' + CRLF;
+                    t+='//</source_javascript_rev>' + CRLF;
+                    t+='//]]>' + CRLF;
+                    t+='</script>' + CRLF;
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : 'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0700'}));
+                var ob=__m_rev_vers_js1.c_tab_vers_js(tab,{"indice_de_debut" : indiceDebutJs});
+                if(ob.__xst === true){
+                    /*
+                      =====================================================================================
+                      ecriture de la valeur dans le cas d'un tag javascriptdanshtml
+                      =====================================================================================
+                    */
+                    t+=CRLF;
+                    t+='<script' + lesProprietes + '>' + CRLF;
+                    t+='//<![CDATA[' + CRLF;
+                    t+='//<source_javascript_rev>' + CRLF;
+                    t+=ob.__xva + CRLF;
+                    t+='//</source_javascript_rev>' + CRLF;
+                    t+='//]]>' + CRLF;
+                    t+='</script>' + CRLF;
+                }else{
+                    debugger
+                    return(logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()+'javascriptdanshtml'}));
+                }
             }
         }
         return({"__xst" : true ,"__xva" : t});
@@ -1411,7 +1423,7 @@ class traitements_sur_html{
                                   Ecriture de la propriété
                                   =====================================================
                                 */
-                                temp+=' ' + tab[i + 1][1] + '="' + tab[i + 2][1].replace(/\"/g,'&quot;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\') + '"';
+                                temp+=' ' + tab[i + 1][1] + '="' + tab[i + 2][1].replace(/\"/g,'&quot;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r') + '"';
                             }else if(tab[i][8] == 1 && tab[i + 1][2] == 'c'){
                                 if(tab[i + 1][1] == 'doctype'){
                                     doctype='<!DOCTYPE html>';
@@ -1490,9 +1502,7 @@ class traitements_sur_html{
                                     /*
                                       c'est un script dans un html
                                     */
-                                    ob=__m_rev_vers_js1.c_tab_vers_js(tab,{"indice_de_debut" : indiceDebutJs});
-                                    /* avrif */
-                                    debugger;
+                                    ob=__m_rev_vers_js1.c_tab_vers_js(tab,{"indice_de_debut" : indiceDebutJs-1});
                                     if(ob.__xst === true){
                                         /*
                                           =====================================
@@ -1564,13 +1574,21 @@ class traitements_sur_html{
                                 */
                                 var indcss=0;
                                 if(dansCss === true){
-                                    for( indcss=t.length - 1 ; indcss >= 0 ; indcss-- ){
-                                        if(t.substr(indcss,1) !== ' '){
-                                            t=t.substr(0,indcss);
-                                            break;
+                                    if(t.substr(t.length-1,1)==='>'){
+                                    }else{
+                                        for( indcss=t.length - 1 ; indcss >= 0 ; indcss-- ){
+                                            if(t.substr(indcss,1) !== ' '){
+                                                t=t.substr(0,indcss);
+                                                break;
+                                            }
                                         }
                                     }
-                                    var contenuCss=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                                    /*#
+                                      if(i===62){
+                                          debugger;
+                                      }
+                                    */
+                                    var contenuCss=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r').replace(/&quot;/g,'"');
                                     /* on supprime les espaces de fin */
                                     if(contenuCss !== ''){
                                         for( var indcss=contenuCss.length - 1 ; indcss >= 0 ; indcss-- ){
@@ -1630,17 +1648,17 @@ class traitements_sur_html{
                         }
                     }
                 }
-                if('style' == tab[id][1]){
+                if('style' === tab[id][1]){
                     dansCss=false;
                 }
-                if('script' == tab[id][1]){
+                if('script' === tab[id][1]){
                     dansJs=false;
                 }
-                if('php' == tab[id][1]){
+                if('php' === tab[id][1]){
                     dansPhp=false;
                 }
             }else{
-                if(tab[id][1] == 'script'){
+                if(tab[id][1] === 'script'){
                     t+='>' + '<' + '/script>';
                     dansJs=false;
                 }else if(tab[id][1] == 'php'){

@@ -1,6 +1,8 @@
 <?php
 /* if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);}*/
-
+/*
+  =====================================================================================================================
+*/
 function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
 
 
@@ -114,7 +116,9 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
 
 
 }
-
+/*
+  =====================================================================================================================
+*/
 function charger_un_fichier_source_par_son_identifiant(&$data){
 
 
@@ -181,8 +185,9 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
 
 
 }
-/* ==========================================================================================================*/
-
+/*
+  =====================================================================================================================
+*/
 function supprimer_un_fichier_avec_un_nom_encrypte(&$data){
 
 
@@ -207,8 +212,9 @@ function supprimer_un_fichier_avec_un_nom_encrypte(&$data){
 
 
 }
-/* ==========================================================================================================*/
-
+/*
+  =====================================================================================================================
+*/
 function charger_un_fichier_avec_un_nom_encrypte(&$data){
 
 
@@ -245,8 +251,9 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
 
 
 }
-/* ==========================================================================================================*/
-
+/*
+  =====================================================================================================================
+*/
 function charger_un_ficher_rev(&$data){
 
     /* if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$_FILES='.var_export($_FILES,true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n".'$data='.var_export($data,true)."\r\n"); fclose($fd);}*/
@@ -282,8 +289,9 @@ function charger_un_ficher_rev(&$data){
 
 
 }
-/* ==========================================================================================================*/
-
+/*
+  =====================================================================================================================
+*/
 function getRevFiles(&$data){
 
     $data['files']=array();
@@ -294,8 +302,9 @@ function getRevFiles(&$data){
     $data[__xst]=true;
 
 }
-/* ==========================================================================================================*/
-
+/*
+  =====================================================================================================================
+*/
 function sauvegarger_un_fichier_rev(&$data){
 
     /* sleep(2);*/
@@ -376,8 +385,9 @@ function sauvegarger_un_fichier_rev(&$data){
 
 
 }
-/* ==========================================================================================================*/
-
+/*
+  =====================================================================================================================
+*/
 function ecrire_fichier1(&$data){
 
     /* sleep(2);*/
@@ -439,8 +449,33 @@ function ecrire_fichier1(&$data){
 
 
 }
-/* ==========================================================================================================*/
+/*
+  =====================================================================================================================
+*/
+function recuperer_un_genere(&$data){
+    if(strpos($data[__entree]['file_path'],'..') !== false
+       || strpos($data[__entree]['file_name'],'..')
+       || strpos($data[__entree]['file_extension'],'..') !== false
+    ){
 
+        $data[__xms][]='cannot open the file';
+
+    }else{
+        $filefullpath=$data[__entree]['file_path'] . DIRECTORY_SEPARATOR . $data[__entree]['file_name'] . '.' . $data[__entree]['file_extension'];
+        $contenu=@file_get_contents($filefullpath);
+        if($contenu===false){
+            $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'erreur lecture fichier';
+        }else{
+            $data[__xst]=true;
+            $data[__xva]=$contenu;
+            
+        }
+    }
+
+}
+/*
+  =====================================================================================================================
+*/
 function concatener_des_fichiers1(&$data){
 
     /* ancien concatFile */

@@ -7,11 +7,9 @@ function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cibl
     var a=document.getElementById(chp_rev_source);
     var startMicro=performance.now();
     var tableau1=__m_rev1.txt_en_tableau(a.value);
-    global_messages.data.tableau=tableau1;
     var endMicro=performance.now();
     var startMicro=performance.now();
     var matriceFonction=functionToArray2(tableau1.out,true,false,'');
-    global_messages.data.matrice=matriceFonction;
     if(matriceFonction.__xst === true){
         var objSql=__m_rev_vers_sql1.c_tab_vers_js(matriceFonction.__xva,{});
         if(objSql.__xst === true){
@@ -322,7 +320,6 @@ function convertir_rev_en_texte(nom_zone_source,nom_zone_genere,id_source,id_cib
     var a=document.getElementById(nom_zone_source);
     var startMicro=performance.now();
     var tableau1=__m_rev1.txt_en_tableau(a.value);
-    global_messages.data.tableau=tableau1;
     var endMicro=performance.now();
     var startMicro=performance.now();
     var matriceFonction=functionToArray2(tableau1.out,true,false,'');
@@ -404,7 +401,6 @@ function convertir_rev_en_html(nom_zone_source,nom_zone_genere,id_source,id_cibl
     var a=document.getElementById(nom_zone_source);
     var startMicro=performance.now();
     var tableau1=__m_rev1.txt_en_tableau(a.value);
-    global_messages.data.tableau=tableau1;
     var endMicro=performance.now();
     console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
     var startMicro=performance.now();

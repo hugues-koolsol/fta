@@ -60,15 +60,22 @@ $o1='';
                 <textarea id="normalise" class="yytextSmall" style="display:none" cols="100" rows="10" spellcheck="false"></textarea>
             </td>
         </tr>
-        <tr>
-            <td colspan="3">
-                <div id="message_erreur"></div>
-            </td>
-        </tr>
     </tbody>
 </table>
 <table id="arrayed"></table>
-<div id="donneesComplementaires"></div>
+
+
+<div id="donneesComplementaires">
+    <a id="bouton_voir_tableau" href="javascript:voirTableau1('zonesource')" style="display: none; padding: 2px; border: 2px solid red; margin: 2px;">Voir tableau</a>
+    <a id="bouton_voir_matrice" href="javascript:voirMatrice1('zonesource')" style="display: none; padding: 2px; border: 2px solid red; margin: 2px;">Voir matrice</a>
+    <a id="bouton_voir_source" href="javascript:voirSourceGenere(0)" style="display: none; padding: 2px; border: 2px solid red; margin: 2px;">Voir source généré</a>
+    <div id="zoneContenantLeTableauCaracteres" style="display: none;"></div>
+    <div id="zoneContenantLaMatrice" class="tableau1" style="display: none;"></div>
+    <textarea rows="30" cols="120" id="zoneContenantLeSourceGenere2" style="display:none;background: lightcyan;"></textarea>
+</div>
+
+
+
 <?php
 /*
   ici finit le php spécifique de la page

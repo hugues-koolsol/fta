@@ -121,7 +121,6 @@ class interface1{
             "lignes" : [] ,
             "ids" : [] ,
             "plages" : [] ,
-            "data" : {"matrice" : [] ,"tableau" : [] ,"sourceGenere" : ''}
         };
     }
     /*
@@ -171,31 +170,6 @@ class interface1{
         }
         if(il_existe_des_messages_masques === true){
             zon.innerHTML+='<div class="yyavertissement">' + '<span id="message_masquer_les_details">le détail des erreurs n\'est pas visible</span> <a id="bouton_voir_les_messages_masques" data-masque="1" class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.afficher_les_erreurs_masquees()">voir</a>' + '</div>';
-        }
-        if(global_messages.data.matrice && global_messages.data.matrice.__xva){
-            for( i=0 ; i < global_messages.ids.length && nombre_de_boutons_affiches <= 3 ; i++ ){
-                var id=global_messages.ids[i];
-                if(global_messages.data.matrice && id < global_messages.data.matrice.__xva.length){
-                    var ligneMatrice=global_messages.data.matrice.__xva[id];
-                    var caractereDebut=ligneMatrice[5];
-                    var numeroDeLigne=0;
-                    var j=caractereDebut;
-                    for( j=caractereDebut ; j >= 0 ; j-- ){
-                        if(global_messages.data.tableau.out[j][0] == '\n'){
-                            numeroDeLigne=numeroDeLigne + 1;
-                        }
-                    }
-                }
-                if(numeroDeLigne >= 0){
-                    if(numeroDeLigne != numLignePrecedente){
-                        zon.innerHTML='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + (numeroDeLigne + 1) + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" class="yyerreur" style="border:2px red outset;">ligne ' + (numeroDeLigne + 1) + '</a>&nbsp;' + zon.innerHTML;
-                        affichagesPresents=true;
-                        numLignePrecedente=numeroDeLigne;
-                        nombre_de_boutons_affiches++;
-                    }
-                }
-            }
-            global_messages.ids=[];
         }
         if(zon.innerHTML !== ''){
             zon.style.visibility='visible';
@@ -990,7 +964,6 @@ class interface1{
         var a=document.getElementById(nom_zone_source_rev);
         var startMicro=performance.now();
         var tableau1=__m_rev1.txt_en_tableau(a.value);
-        global_messages.data.tableau=tableau1;
         var endMicro=performance.now();
         /* console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms'); */
         var matriceFonction=functionToArray2(tableau1.out,true,false,'');
@@ -1521,22 +1494,6 @@ function tagada() {
   var numLignePrecedente = -1;
   for (var i = 0; i < global_messages.ids.length; i++) {
     var id = global_messages.ids[i];
-    if (id < global_messages.data.matrice.__xva.length) {
-      var ligneMatrice = global_messages.data.matrice.__xva[id];
-      var caractereDebut = ligneMatrice[5];
-      var numeroDeLigne = 0;
-      for (var j = caractereDebut; j >= 0; j--) {
-        if (global_messages.data.tableau.out[j][0] === "\\n") {
-          numeroDeLigne++;
-        }
-      }
-    }
-    if (numeroDeLigne > 0) {
-      if (numeroDeLigne !== numLignePrecedente) {
-        document.getElementById("global_messages").innerHTML += '<a href="javascript:jumpToError(' + (numeroDeLigne + 1) + ')" class="yyerreur" style="border:2px red outset;">go to line ' + numeroDeLigne + "</a>&nbsp;";
-        numLignePrecedente = numeroDeLigne;
-      }
-    }
   }
 }
 
@@ -1822,6 +1779,7 @@ COMMIT;
         tr1.appendChild(td1);
         /* boucle principale */
         l01=out.length;
+        
         for( i=0 ; i < l01 ; i++ ){
             var td1={};
             td1=document.createElement('td');

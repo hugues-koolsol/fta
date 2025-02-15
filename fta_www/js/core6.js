@@ -13,8 +13,6 @@ var global_messages={
     "lignes" : [] ,
     "ids" : [] ,
     "plages" : [] ,
-    "calls" : '' ,
-    "data" : {"matrice" : [] ,"tableau" : [] ,"sourceGenere" : ''}
 };
 /*
   =====================================================================================================================
@@ -82,8 +80,6 @@ function espacesnrev(optionCRLF,i){
 function rev_texte_vers_matrice(texte_rev){
     var tableau1=__m_rev1.txt_en_tableau(texte_rev);
     var matriceFonction=functionToArray2(tableau1.out,true,false,'');
-    global_messages.data.matrice=matriceFonction;
-    global_messages.data.tableau=tableau1;
     return matriceFonction;
 }
 /*
@@ -92,8 +88,6 @@ function rev_texte_vers_matrice(texte_rev){
 function functionToArray(src,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante){
     var tableau1=__m_rev1.txt_en_tableau(src);
     var matriceFonction=functionToArray2(tableau1.out,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante);
-    global_messages.data.matrice=matriceFonction;
-    global_messages.data.tableau=tableau1;
     return matriceFonction;
 }
 /*
