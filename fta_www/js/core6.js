@@ -6,254 +6,6 @@ const CR='\r';
 const LF='\n';
 const NBESPACESREV=3;
 const NBESPACESSOURCEPRODUIT=4;
-var global_messages={
-    "erreurs" : [] ,
-    "avertissements" : [] ,
-    "infos" : [] ,
-    "lignes" : [] ,
-    "ids" : [] ,
-    "plages" : [] ,
-};
-/*
-  =====================================================================================================================
-  met les valeurs dans la variable global_messages
-  =====================================================================================================================
-*/
-function logerreur(o){
-    var retourner={
-        "__xst" : o.hasOwnProperty('__xst') ? ( o.__xst ) : ( false ) ,
-        "__xva" : o.hasOwnProperty('__xva') ? ( o.__xva ) : ( null ) ,
-        "masquee" : o.hasOwnProperty('masquee') ? ( o.masquee ) : ( false ) ,
-        "plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null ) ,
-        "ligne" : o.hasOwnProperty('ligne') ? ( o.ligne ) : ( null )
-    };
-    if(o.hasOwnProperty('__xme')){
-        retourner[__xme]=o.__xme;
-    }
-    if(o.hasOwnProperty('__xav')){
-        retourner['__xav']=o.__xav;
-    }
-    if(o.hasOwnProperty('__xms')){
-        for(var i in o.__xms){
-            retourner.__xme=o.__xms[i];
-            global_messages['erreurs'].push(retourner);
-        }
-    }else{
-        if(retourner.__xst === false){
-            if(retourner.hasOwnProperty('__xav')){
-                global_messages['avertissements'].push(retourner);
-            }else{
-                global_messages['erreurs'].push(retourner);
-            }
-        }else{
-            if(retourner.hasOwnProperty('__xav')){
-                global_messages['avertissements'].push(retourner);
-            }else{
-                global_messages['infos'].push(retourner);
-            }
-        }
-    }
-    return retourner;
-}
-/*
-  =====================================================================================================================
-  construit des espaces pour l'indentation des sources
-  =====================================================================================================================
-*/
-function espacesnrev(optionCRLF,i){
-    var t='';
-    if(optionCRLF){
-        t='\r\n';
-    }else{
-        t='\n';
-    }
-    if(i > 0){
-        t+=' '.repeat(NBESPACESREV * i);
-    }
-    return t;
-}
-/*
-  =====================================================================================================================
-  Des fonctions raccourcies
-  =====================================================================================================================
-*/
-function rev_texte_vers_matrice(texte_rev){
-    var tableau1=__m_rev1.txt_en_tableau(texte_rev);
-    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
-    return matriceFonction;
-}
-/*
-  =====================================================================================================================
-*/
-function functionToArray(src,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante){
-    var tableau1=__m_rev1.txt_en_tableau(src);
-    var matriceFonction=functionToArray2(tableau1.out,quitterSiErreurNiveau,autoriserConstanteDansLaRacine,rechercheParentheseCorrespondante);
-    return matriceFonction;
-}
-/*
-  =====================================================================================================================
-  fonction qui se base sur la colonne 3[niveau] d'une matrice pour recalculer 
-  - le parent[7], 
-  - le nombre d'enfants[8], 
-  - le numéro d'enfant[9]
-  - la profondeur[10]
-  =====================================================================================================================
-*/
-function reIndicerLeTableau(tab){
-    const l01=tab.length;
-    var i=0;
-    var j=0;
-    var k=0;
-    var l=0;
-    var niveau=0;
-    /*
-      =============================================================================================================
-      indice et nombre d'enfants mis à zéro
-      =============================================================================================================
-    */
-    for( i=1 ; i < l01 ; i++ ){
-        tab[i][0]=i;
-        tab[i][8]=0;
-    }
-    /*
-      =============================================================================================================
-      parent et nombre d'enfants
-      =============================================================================================================
-    */
-    for( i=l01 - 1 ; i > 0 ; i-- ){
-        niveau=tab[i][3];
-        for( j=i ; j >= 0 ; j-- ){
-            if(tab[j][3] === niveau - 1){
-                tab[i][7]=j;
-                tab[j][8]=tab[j][8] + 1;
-                break;
-            }
-        }
-    }
-    /*
-      =============================================================================================================
-      numéro d'enfant + bidouille performances car on boucle souvent sur les enfants
-      =============================================================================================================
-    */
-    var indice_enfant_precedent=0;
-    for( i=0 ; i < l01 ; i++ ){
-        k=0;
-        for( j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
-            if(tab[j][7] === tab[i][0]){
-                k++;
-                tab[j][9]=k;
-                /*
-                  pour le dernier, on met l01
-                */
-                tab[j][12]=l01;
-                if(k > 1){
-                    tab[indice_enfant_precedent][12]=j;
-                }
-                indice_enfant_precedent=j;
-            }
-        }
-    }
-    /*
-      =============================================================================================================
-      profondeur
-      =============================================================================================================
-    */
-    var niveau=0;
-    var id_parent=0;
-    for( i=l01 - 1 ; i > 0 ; i-- ){
-        /* si c'est une constante */
-        if(tab[i][2] === 'c'){
-            tab[i][10]=0;
-        }
-        if(tab[i][7] > 0){
-            /* si l'élément a un parent */
-            niveau=tab[i][3];
-            id_parent=tab[i][7];
-            /* pour chacun des niveaux enfants */
-            for( j=1 ; j <= niveau ; j++ ){
-                if(tab[id_parent][10] < j){
-                    /* on change la profondeur */
-                    tab[id_parent][10]=j;
-                }
-                id_parent=tab[id_parent][7];
-            }
-        }
-    }
-    return tab;
-}
-/*
-  =====================================================================================================================
-  fonction qui supprime un élément et ses enfants dans la matrice
-  =====================================================================================================================
-*/
-function supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
-    var i=0;
-    if(niveau === 0){
-        var a_supprimer=[];
-    }
-    if(tab[id][2] === 'c' || tab[id][2] === 'f' && tab[id][8] === 0){
-        /*
-          si c'est une constante ou une fonction vide  on l'efface directement
-          son parent à un élément en moins
-        */
-        a_supprimer.push(id);
-    }else{
-        /*#
-          sinon, on efface recursivement tous ses enfants avant de l'effacer 
-          bien garder  tab.length  çi dessous
-                       VVVVVVVVVV
-        */
-        for( i=1 ; i < tab.length ; i++ ){
-            if(tab[i][7] === id){
-                supprimer_un_element_de_la_matrice(tab,tab[i][0],niveau + 1,a_supprimer);
-            }
-        }
-        a_supprimer.push(id);
-    }
-    if(niveau === 0){
-        /*
-          à la fin on efface effectivement les lignes en partant du bas 
-          et on recalcul les indices
-        */
-        a_supprimer.sort(function(a,b){
-                return(b - a);
-            });
-        for( i=0 ; i < a_supprimer.length ; i++ ){
-            tab.splice(a_supprimer[i],1);
-        }
-        tab=reIndicerLeTableau(tab);
-        return tab;
-    }
-}
-/*
-  =====================================================================================================================
-  fonction qui supprime un élément dans la matrice et descend les enfants de cet élément d'un niveau
-  =====================================================================================================================
-*/
-function baisserNiveauEtSupprimer(tab,id,niveau){
-    var i=0;
-    for( i=id + 1 ; i < tab.length ; i++ ){
-        if(tab[i][7] === id){
-            tab[i][3]=tab[i][3] - 1;
-            if(tab[i][2] === 'f'){
-                niveau++;
-                /*
-                  appel récursif pour baisser le niveau des enfants des enfants des enfants ....
-                */
-                baisserNiveauEtSupprimer(tab,i,niveau);
-                niveau--;
-            }
-        }
-    }
-    if(niveau === 0){
-        /*
-          à la fin, on supprime l'élément et on recalcul les indices
-        */
-        tab.splice(id,1);
-        tab=reIndicerLeTableau(tab);
-        return tab;
-    }
-}
 
 /*#
   =====================================================================================================================
@@ -468,7 +220,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                           cas : directive["use strict"
                         */
                         if(niveau > 0){
-                            return(logerreur(__m_rev1.formatter_une_erreur_rev({ 
+                            return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({ 
                                     "__xst" : false ,
                                     "ind" : i ,
                                     "__xme" : __m_rev1.nl2()+'les parenthèses ne se finissent pas à la fin du rev' ,
@@ -482,7 +234,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                                 })));
                         }else{
                             console.error('%ccore functionToArray2 1164 noter ce cas d\'erreur','background:gold;color:red;');
-                            return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                            return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                     "__xst" : false ,
                                     "ind" : i ,
                                     "__xme" : __m_rev1.nl2()+'le niveau ' ,
@@ -510,7 +262,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         dernier=i - 1;
                     }else{
                         /* cas d'erreur = f(""") */
-                        return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                        return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                 "__xst" : false ,
                                 "ind" : i ,
                                 "__xme" : __m_rev1.nl2()+'une constante encadrée par des guillemets est incorrecte ' ,
@@ -525,7 +277,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }else{
                     if(autoriserCstDansRacine === false){
-                        return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                        return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                 "__xst" : false ,
                                 "ind" : i ,
                                 "__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantess ' ,
@@ -542,7 +294,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 dansCstDouble=false;
                 if(autoriserCstDansRacine === false && niveau === 0){
                     /* cas d'erreur = "" */
-                    return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                    return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                             "__xst" : false ,
                             "ind" : i ,
                             "__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes ' ,
@@ -573,7 +325,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=0;
             }else if(c === '\\'){
                 if(i === l01 - 1){
-                    return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash ne doit pas terminer une constante en i=' + i}));
+                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash ne doit pas terminer une constante en i=' + i}));
                 }
                 /*  */
                 c1=tableauEntree[i + 1][0];
@@ -603,7 +355,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     texte+=texte + '"';
                     i++;
                 }else{
-                    return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                    return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                             "__xst" : false ,
                             "ind" : i ,
                             "__xme" : __m_rev1.nl2()+'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ' ,
@@ -636,7 +388,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             if(c === '/'){
                 if(autoriserCstDansRacine !== true){
                     if(i === l01 - 1){
-                        return(logerreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
+                        return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
                     }
                 }
                 if(i + 1 < l01){
@@ -684,7 +436,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }else{
                     if(!(autoriserCstDansRacine === true)){
-                        return(logerreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
+                        return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
                     }
                 }
                 dansCstRegex=false;
@@ -692,13 +444,13 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuoteePrecedente=4;
                 if(autoriserCstDansRacine !== true){
                     if(niveau === 0){
-                        return(logerreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
+                        return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
                     }
                 }
                 /* methode3regex */
                 texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
                 if(texte.indexOf('\n') > 0 || texte.indexOf('\r') >= 0 || texte.indexOf('\t') > 0){
-                    return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                    return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                             "__xst" : false ,
                             "ind" : premier ,
                             "__xme" : __m_rev1.nl2()+'il ne peut pas y avoir des retours à la ligne ou des tabulations dans une chaine de type regex ' ,
@@ -729,7 +481,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=0;
             }else if(c === '\\'){
                 if(i === l01 - 1){
-                    return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash ne doit pas terminer une fonction'}));
+                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash ne doit pas terminer une fonction'}));
                 }
                 /*  */
                 c1=tableauEntree[i + 1][0];
@@ -739,7 +491,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 texte+='\\' + c1;
                 i++;
             }else if(c === '\n' || c === '\r'){
-                return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                         "__xst" : false ,
                         "ind" : premier ,
                         "__xme" : __m_rev1.nl2()+'il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ' ,
@@ -778,7 +530,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             if(c === '`'){
                 if(autoriserCstDansRacine !== true){
                     if(i === l01 - 1){
-                        return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                        return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                 "__xst" : false ,
                                 "ind" : i ,
                                 "__xme" : __m_rev1.nl2() + 'la racine ne peut pas contenir des constantes' ,
@@ -804,7 +556,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     ){
                         dernier=i - 1;
                     }else{
-                        return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                        return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                 "__xst" : false ,
                                 "ind" : i ,
                                 "__xme" : __m_rev1.nl2() + 'apres une constante, il doit y avoir un caractère d\'echappement' ,
@@ -819,7 +571,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }else{
                     if(!(autoriserCstDansRacine === true)){
-                        return(logerreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
+                        return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
                     }
                 }
                 dansCstModele=false;
@@ -827,7 +579,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuoteePrecedente=2;
                 if(autoriserCstDansRacine !== true){
                     if(niveau === 0){
-                        return(logerreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
+                        return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
                     }
                 }
                 /* methode3m */
@@ -845,7 +597,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=0;
             }else if(c === '\\'){
                 if(i === l01 - 1){
-                    return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash ne doit pas terminer une fonction'}));
+                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash ne doit pas terminer une fonction'}));
                 }
                 /*  */
                 c1=tableauEntree[i + 1][0];
@@ -880,7 +632,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
             if(c === '\''){
                 if(autoriserCstDansRacine !== true){
                     if(i === l01 - 1){
-                        return(logerreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
+                        return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
                     }
                 }
                 if(i + 1 < l01){
@@ -895,7 +647,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     ){
                         dernier=i - 1;
                     }else{
-                        return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                        return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                 "__xst" : false ,
                                 "ind" : i ,
                                 "__xme" : __m_rev1.nl2() + 'il doit y avoir un caractère d\'echappement apres une constante encadrée par des apostrophes' ,
@@ -910,7 +662,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     }
                 }else{
                     if(!(autoriserCstDansRacine === true)){
-                        return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                        return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                 "__xst" : false ,
                                 "ind" : i ,
                                 "__xme" : __m_rev1.nl2() + 'la racine ne peut pas contenir des constantes' ,
@@ -926,7 +678,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 }
                 if(autoriserCstDansRacine !== true){
                     if(niveau === 0){
-                        return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                        return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                 "__xst" : false ,
                                 "ind" : i ,
                                 "__xme" : __m_rev1.nl2() + 'la racine ne peut pas contenir des constantes' ,
@@ -958,7 +710,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 constanteQuotee=0;
             }else if(c === '\\'){
                 if(i === l01 - 1){
-                    return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash ne doit pas terminer une fonction'}));
+                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash ne doit pas terminer une fonction'}));
                 }
                 /*  */
                 c1=tableauEntree[i + 1][0];
@@ -989,7 +741,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                     texte+='\\' + c1;
                     i++;
                 }else{
-                    return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                    return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                             "__xst" : false ,
                             "ind" : i ,
                             "__xme" : __m_rev1.nl2()+'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u' ,
@@ -1081,7 +833,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 pos_fer_par=i;
                 if(texte !== ''){
                     if(niveau === 0){
-                        return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                        return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                 "__xst" : false ,
                                 "ind" : i ,
                                 "__xme" : __m_rev1.nl2()+'une fermeture de parenthése ne doit pas être au niveau 0' ,
@@ -1121,7 +873,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             T=JSON.parse(chaine_tableau);
                         }catch(ejson){
                             console.log('ejson=',ejson);
-                            return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                            return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                     "erreur_conversion_chaine_tableau_en_json" : true ,
                                     "__xst" : false ,
                                     "ind" : i ,
@@ -1175,16 +927,16 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                   =====================================================================================
                 */
                 if(!dansCstSimple){
-                    return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash doit être dans une constante en i=' + i}));
+                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash doit être dans une constante en i=' + i}));
                 }
                 if(!dansCstDouble){
-                    return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash doit être dans une constante en i=' + i}));
+                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash doit être dans une constante en i=' + i}));
                 }
                 if(!dansCstModele){
-                    return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash doit être dans une constante en i=' + i}));
+                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash doit être dans une constante en i=' + i}));
                 }
                 if(!dansCstRegex){
-                    return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash doit être dans une constante en i=' + i}));
+                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'un antislash doit être dans une constante en i=' + i}));
                 }
                 /*
                   =====================================================================================
@@ -1329,7 +1081,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(texte !== ''){
                     if(autoriserCstDansRacine !== true){
                         if(niveau === 0){
-                            return(logerreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
+                            return(__m_rev1.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes'}));
                         }
                     }
                     indice++;
@@ -1352,7 +1104,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                             constanteQuoteePrecedente=0;
                         }else{
                             if(niveauPrecedent < niveau){
-                                return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                                return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                         "__xst" : false ,
                                         "ind" : premier ,
                                         "__xme" : __m_rev1.nl2()+'une virgule ne doit pas être précédée d\'un vide' ,
@@ -1368,7 +1120,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                         }
                     }else{
                         if(niveauPrecedent < niveau){
-                            return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                            return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                     "__xst" : false ,
                                     "ind" : premier ,
                                     "__xme" : __m_rev1.nl2()+'une virgule ne doit pas être précédée d\'un vide' ,
@@ -1381,7 +1133,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                                     "autoriserCstDansRacine" : autoriserCstDansRacine
                                 })));
                         }else if(niveauPrecedent === niveau && texte_precedent === '' && constanteQuoteePrecedente === 0){
-                            return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                            return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                     "__xst" : false ,
                                     "ind" : premier ,
                                     "__xme" : __m_rev1.nl2()+'une virgule ne doit pas être précédée d\'un vide ' ,
@@ -1420,7 +1172,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
                 if(texte !== ''){
                     if(autoriserCstDansRacine !== true){
                         if(niveau === 0){
-                            return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                            return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                                     "__xst" : false ,
                                     "ind" : premier ,
                                     "__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes' ,
@@ -1470,7 +1222,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
       =============================================================================================================
     */
     if(niveau !== 0 && quitterSiErreurNiveau){
-        return(logerreur(__m_rev1.formatter_une_erreur_rev({
+        return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                 "__xst" : false ,
                 "ind" : l01 - 1 ,
                 "__xme" : __m_rev1.nl2()+'💥 des parenthèses ne correspondent pas, (' + (niveau > 0 ? ( 'il en manque :' ) : ( 'il y en a trop : ' )) + 'niveau=' + niveau + ') ' ,
@@ -1490,7 +1242,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
         indice=indice + 1;
         if(autoriserCstDansRacine !== true){
             if(niveau === 0){
-                return(logerreur(__m_rev1.formatter_une_erreur_rev({
+                return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                         "__xst" : false ,
                         "ind" : l01 - 1 ,
                         "__xme" : __m_rev1.nl2()+'la racine ne peut pas contenir des constantes ' ,
@@ -1520,7 +1272,7 @@ function functionToArray2(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRa
     try{
         T=JSON.parse(chaine_tableau);
     }catch(ejson){
-        return(logerreur(__m_rev1.formatter_une_erreur_rev({
+        return(__m_rev1.empiler_erreur(__m_rev1.formatter_une_erreur_rev({
                 "ejson" : ejson ,
                 "erreur_conversion_chaine_tableau_en_json" : true ,
                 "__xst" : false ,

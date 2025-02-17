@@ -22,13 +22,13 @@ class c_astsqliteparseur_vers_rev1{
     /*
       =============================================================================================================
     */
-    #astsql_logerreur(o){
+    #astsql_le(o){
         /*#
           if(o.hasOwnProperty('element') && o.element && o.element.hasOwnProperty('loc') && o.element.loc.hasOwnProperty('start')){
               o.plage=[o.element.loc.start.offset,o.element.loc.end.offset];
           }
         */
-        logerreur(o);
+        __m_rev1.empiler_erreur(o);
         return o;
     }
     /*
@@ -50,7 +50,7 @@ class c_astsqliteparseur_vers_rev1{
             }else if(element.variant === 'null'){
                 t+='NULL';
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0016 recupere_element_de_ast_sql variant non traite : "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0016 recupere_element_de_ast_sql variant non traite : "' + '"'}));
             }
         }else if(element.type && 'join' === element.type){
             if(element.variant === 'cross join'){
@@ -58,7 +58,7 @@ class c_astsqliteparseur_vers_rev1{
             }else if(element.variant === 'left join'){
                 t+='jointure_gauche(';
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0031 recupere_element_de_ast_sql variant non traite : "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0031 recupere_element_de_ast_sql variant non traite : "' + '"'}));
             }
             if(element.source){
                 var obj1=this.#recupere_element_de_ast_sql(element.source,niveau + 1,parent,options);
@@ -66,10 +66,10 @@ class c_astsqliteparseur_vers_rev1{
                     t+='\n' + esp0 + esp1 + esp1 + esp1 + 'source(' + obj1.__xva;
                     t+='\n' + esp0 + esp1 + esp1 + esp1 + ')';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
                 }
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0030 recupere_element_de_ast_sql variant non traite : "'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0030 recupere_element_de_ast_sql variant non traite : "'}));
             }
             if(element.constraint){
                 if(element.constraint.format && element.constraint.format === "on" && element.constraint.on){
@@ -77,10 +77,10 @@ class c_astsqliteparseur_vers_rev1{
                     if(obj1.__xst === true){
                         t+=',contrainte(' + obj1.__xva + ')';
                     }else{
-                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0042 recupere_element_de_ast_sql  : "'}));
+                        return(this.#astsql_le({"__xst" : false ,"__xme" : '0042 recupere_element_de_ast_sql  : "'}));
                     }
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0025 recupere_element_de_ast_sql variant non traite : "'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0025 recupere_element_de_ast_sql variant non traite : "'}));
                 }
             }
             t+=')';
@@ -121,7 +121,7 @@ class c_astsqliteparseur_vers_rev1{
                     nom_de_l_alias=element.alias;
                 }
                 if(nom_de_la_table === ''){
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0105 recupere_element_de_ast_sql table : "' + '"'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0105 recupere_element_de_ast_sql table : "' + '"'}));
                 }
                 t+='nom_de_la_table(' + nom_de_la_table + '' + (nom_de_l_alias !== '' ? ( ',alias(' + nom_de_l_alias + ')' ) : ( '' )) + '' + (nom_de_la_base !== '' ? ( ',base(' + nom_de_la_base + ')' ) : ( '' )) + ')';
             }else if(element.variant === 'expression'){
@@ -137,13 +137,13 @@ class c_astsqliteparseur_vers_rev1{
                         }
                         t+=')';
                     }else{
-                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0092 recupere_element_de_ast_sql pas de columns dans expression table : "' + '"'}));
+                        return(this.#astsql_le({"__xst" : false ,"__xme" : '0092 recupere_element_de_ast_sql pas de columns dans expression table : "' + '"'}));
                     }
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0088 recupere_element_de_ast_sql expression format non traite : "' + '"'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0088 recupere_element_de_ast_sql expression format non traite : "' + '"'}));
                 }
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0016 recupere_element_de_ast_sql variant non traite : "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0016 recupere_element_de_ast_sql variant non traite : "' + '"'}));
             }
         }else if(element.type && 'expression' === element.type && element.variant === 'order'){
             var obj1=this.#recupere_element_de_ast_sql(element.expression,niveau,parent,options);
@@ -160,14 +160,14 @@ class c_astsqliteparseur_vers_rev1{
                 }
                 t+=')';
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0042 recupere_element_de_ast_sql  : "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0042 recupere_element_de_ast_sql  : "' + '"'}));
             }
         }else if(element.type && 'expression' === element.type && element.format && element.format === 'binary'){
             var obj1=this.#traite_operation_dans_ast_sql(element,niveau,parent,options);
             if(obj1.__xst === true){
                 t+=obj1.__xva;
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0042 recupere_element_de_ast_sql  : "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0042 recupere_element_de_ast_sql  : "' + '"'}));
             }
         }else if(element.type && 'expression' === element.type && 'list' === element.variant){
             if(element.expression && element.expression.length > 0){
@@ -180,12 +180,12 @@ class c_astsqliteparseur_vers_rev1{
                     if(obj1.__xst === true){
                         t+=obj1.__xva;
                     }else{
-                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0142 recupere_element_de_ast_sql : '}));
+                        return(this.#astsql_le({"__xst" : false ,"__xme" : '0142 recupere_element_de_ast_sql : '}));
                     }
                 }
                 t+=')';
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0137 recupere_element_de_ast_sql pas de expression : "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0137 recupere_element_de_ast_sql pas de expression : "' + '"'}));
             }
         }else if(element.type && 'expression' === element.type && 'operation' === element.variant && element.format === "unary"){
             if(element.operator === '-' && element.expression.type === 'literal'){
@@ -193,14 +193,14 @@ class c_astsqliteparseur_vers_rev1{
             }else if(element.operator === '+' && element.expression.type === 'literal'){
                 t+='plus(' + element.expression.value + ')';
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0189 recupere_element_de_ast_sql : '}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0189 recupere_element_de_ast_sql : '}));
             }
         }else if(element.type && 'function' === element.type){
             var obj1=this.#traite_fonction_dans_ast_sql(element,niveau,null,options);
             if(obj1.__xst === true){
                 t+=obj1.__xva;
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0051 recupere_element_de_ast_sql : '}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0051 recupere_element_de_ast_sql : '}));
             }
         }else if(element.type && 'assignment' === element.type){
             var cible='';
@@ -210,20 +210,20 @@ class c_astsqliteparseur_vers_rev1{
                 if(obj1.__xst === true){
                     cible=obj1.__xva;
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0165 recupere_element_de_ast_sql : '}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0165 recupere_element_de_ast_sql : '}));
                 }
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0169 recupere_element_de_ast_sql : '}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0169 recupere_element_de_ast_sql : '}));
             }
             if(element.value){
                 var obj1=this.#recupere_element_de_ast_sql(element.value,niveau,parent,options);
                 if(obj1.__xst === true){
                     valeur=obj1.__xva;
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0180 recupere_element_de_ast_sql : '}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0180 recupere_element_de_ast_sql : '}));
                 }
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0180 recupere_element_de_ast_sql : '}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0180 recupere_element_de_ast_sql : '}));
             }
             t+='affecte(' + cible + ',' + valeur + ')';
         }else if(element.type && 'variable' === element.type){
@@ -234,17 +234,17 @@ class c_astsqliteparseur_vers_rev1{
             }else if(element.format === 'numbered'){
                 t+=element.name;
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0199 recupere_element_de_ast_sql type non traite : "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0199 recupere_element_de_ast_sql type non traite : "' + '"'}));
             }
         }else if(element.type && 'statement' === element.type){
             var obj=this.#traite_ast(element,niveau,parent,options);
             if(obj.__xst === true){
                 t+='sql(' + obj.__xva + ')';
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0237 convertion_sql "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0237 convertion_sql "' + '"'}));
             }
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0240 convertion_sql recupere_element_de_ast_sql type non traite : "' + '"'}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : '0240 convertion_sql recupere_element_de_ast_sql type non traite : "' + '"'}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -285,7 +285,7 @@ class c_astsqliteparseur_vers_rev1{
         }else if(nom_de_l_operateur === 'is'){
             return 'est';
         }else{
-            logerreur({"__xst" : false ,"__xme" : '0210 convertion_sql_en_rev operateur non trouvé : "' + nom_de_l_operateur + '"'});
+            this.#astsql_le({"__xst" : false ,"__xme" : '0210 convertion_sql_en_rev operateur non trouvé : "' + nom_de_l_operateur + '"'});
         }
     }
     /*
@@ -302,10 +302,10 @@ class c_astsqliteparseur_vers_rev1{
             if(obj1.__xst === true){
                 nom_de_la_fonction=obj1.__xva;
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0069 traite_fonction_dans_ast_sql nom de fonction : "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0069 traite_fonction_dans_ast_sql nom de fonction : "' + '"'}));
             }
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0060 traite_fonction_dans_ast_sql pas de nom de fonction trouvé : "' + '"'}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : '0060 traite_fonction_dans_ast_sql pas de nom de fonction trouvé : "' + '"'}));
         }
         if(element.args){
             if(element.args.type === 'expression' && element.args.variant === 'list'){
@@ -314,7 +314,7 @@ class c_astsqliteparseur_vers_rev1{
                     if(obj1.__xst === true){
                         les_arguments+=',' + obj1.__xva;
                     }else{
-                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0075 traite_fonction_dans_ast_sql type argument non traité : "' + '"'}));
+                        return(this.#astsql_le({"__xst" : false ,"__xme" : '0075 traite_fonction_dans_ast_sql type argument non traité : "' + '"'}));
                     }
                 }
             }else if(element.args.type === 'function'){
@@ -322,17 +322,17 @@ class c_astsqliteparseur_vers_rev1{
                 if(obj1.__xst === true){
                     les_arguments+=',' + obj1.__xva;
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0134 convertit_sql_select_de_ast_vers_rev : '}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0134 convertit_sql_select_de_ast_vers_rev : '}));
                 }
             }else if(element.args.type === 'identifier'){
                 var obj1=this.#recupere_element_de_ast_sql(element.args,niveau,parent,options);
                 if(obj1.__xst === true){
                     les_arguments+=',' + obj1.__xva;
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0109 traite_fonction_dans_ast_sql  : "' + '"'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0109 traite_fonction_dans_ast_sql  : "' + '"'}));
                 }
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0098 traite_fonction_dans_ast_sql type argument non traité : "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0098 traite_fonction_dans_ast_sql type argument non traité : "' + '"'}));
             }
             if(les_arguments.length > 0){
                 les_arguments=les_arguments.substr(1);
@@ -352,29 +352,29 @@ class c_astsqliteparseur_vers_rev1{
             if(element.operation){
                 var operation=this.#recupere_operateur_dans_sql_ast(element.operation);
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0017 pas de champ operation : '}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0017 pas de champ operation : '}));
             }
             if(element.left){
                 var obj_gauche=this.#recupere_element_de_ast_sql(element.left,niveau,parent,options);
                 if(obj_gauche.__xst === true){
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0034 traite_operation_dans_ast_sql recuperation element left : '}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0034 traite_operation_dans_ast_sql recuperation element left : '}));
                 }
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0032 pas de left trouve : '}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0032 pas de left trouve : '}));
             }
             if(element.right){
                 var obj_droite=this.#recupere_element_de_ast_sql(element.right,niveau,parent,options);
                 if(obj_droite.__xst === true){
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0034 traite_operation_dans_ast_sql recuperation element right : '}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0034 traite_operation_dans_ast_sql recuperation element right : '}));
                 }
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0032 pas de right trouve : '}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0032 pas de right trouve : '}));
             }
             t+=operation + '(' + obj_gauche.__xva + ' , ' + obj_droite.__xva + ')';
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0043 operation non binaire : '}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : '0043 operation non binaire : '}));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -392,10 +392,10 @@ class c_astsqliteparseur_vers_rev1{
             if(obj1.__xst === true){
                 t+='\n' + esp0 + esp1 + esp1 + obj1.__xva + '';
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0279 convertit_sql_update_sqlite_de_ast_vers_rev  : "'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0279 convertit_sql_update_sqlite_de_ast_vers_rev  : "'}));
             }
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0333 dans convertit_sql_update_sqlite_de_ast_vers_rev pas de into : '}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : '0333 dans convertit_sql_update_sqlite_de_ast_vers_rev pas de into : '}));
         }
         if(element.set && element.set.length > 0){
             t+='\n' + esp0 + esp1 + esp1 + ',valeurs(';
@@ -407,12 +407,12 @@ class c_astsqliteparseur_vers_rev1{
                 if(obj1.__xst === true){
                     t+='\n' + esp0 + esp1 + esp1 + esp1 + obj1.__xva + '';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0347 convertit_sql_update_sqlite_de_ast_vers_rev  : "'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0347 convertit_sql_update_sqlite_de_ast_vers_rev  : "'}));
                 }
             }
             t+='\n' + esp0 + esp1 + esp1 + ')';
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0338 dans convertit_sql_update_sqlite_de_ast_vers_rev pas de set : '}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : '0338 dans convertit_sql_update_sqlite_de_ast_vers_rev pas de set : '}));
         }
         if(element.where && element.where.length > 0){
             t+='\n' + esp0 + esp1 + ',conditions(';
@@ -421,7 +421,7 @@ class c_astsqliteparseur_vers_rev1{
                 if(obj1.__xst === true){
                     t+='\n' + esp0 + esp1 + esp1 + '' + obj1.__xva + ',';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0396 convertit_sql_update_sqlite_de_ast_vers_rev  : "'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0396 convertit_sql_update_sqlite_de_ast_vers_rev  : "'}));
                 }
             }
             t+='\n' + esp0 + esp1 + ')';
@@ -444,10 +444,10 @@ class c_astsqliteparseur_vers_rev1{
                     t+=CRLF + '    nom_de_la_table(' + element.from.name + ')';
                 }
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.into.type different de identifier : "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.into.type different de identifier : "' + '"'}));
             }
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0472 dans delete pas de from : '}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : '0472 dans delete pas de from : '}));
         }
         if(element.where && element.where.length > 0){
             t+='\n' + esp0 + esp1 + ',conditions(';
@@ -456,7 +456,7 @@ class c_astsqliteparseur_vers_rev1{
                 if(obj1.__xst === true){
                     t+='\n' + esp0 + esp1 + esp1 + '' + obj1.__xva + ',';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0396 convertit_sql_update_sqlite_de_ast_vers_rev  : "'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0396 convertit_sql_update_sqlite_de_ast_vers_rev  : "'}));
                 }
             }
             t+='\n' + esp0 + esp1 + ')';
@@ -483,18 +483,18 @@ class c_astsqliteparseur_vers_rev1{
                             tableau_des_champs.push(element.into.columns[i].name);
                         }
                     }else{
-                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0092 convertit_sql_insert_sqlite_de_ast_vers_rev pas de columns dans expression table : "' + '"'}));
+                        return(this.#astsql_le({"__xst" : false ,"__xme" : '0092 convertit_sql_insert_sqlite_de_ast_vers_rev pas de columns dans expression table : "' + '"'}));
                     }
                 }else if(element.into.variant === 'table' && element.into.type === 'identifier'){
                     t+='nom_de_la_table(' + element.into.name + ')';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0559 convertit_sql_insert_sqlite_de_ast_vers_rev : "' + '"'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0559 convertit_sql_insert_sqlite_de_ast_vers_rev : "' + '"'}));
                 }
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.into.type different de identifier : "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.into.type different de identifier : "' + '"'}));
             }
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0275 dans pas de into : '}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : '0275 dans pas de into : '}));
         }
         if(element.or){
             if(element.or === 'ignore'){
@@ -516,14 +516,14 @@ class c_astsqliteparseur_vers_rev1{
                         if(obj1.__xst === true){
                             t+=CRLF + '        affecte(champ(`' + tableau_des_champs[i] + '`) , ' + obj1.__xva + ')';
                         }else{
-                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0142 recupere_element_de_ast_sql : '}));
+                            return(this.#astsql_le({"__xst" : false ,"__xme" : '0142 recupere_element_de_ast_sql : '}));
                         }
                     }
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0137 recupere_element_de_ast_sql pas de expression : "' + '"'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0137 recupere_element_de_ast_sql pas de expression : "' + '"'}));
                 }
             }else{
-                return(this.#astsql_logerreur({
+                return(this.#astsql_le({
                         "__xst" : false ,
                         "__xme" : '0483 convertit_sql_insert_sqlite_de_ast_vers_rev element.result[0].type different de expression : "' + '"'
                     }));
@@ -541,7 +541,7 @@ class c_astsqliteparseur_vers_rev1{
             if(obj.__xst === true){
                 t+=',sql(' + obj.__xva + ')';
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0141 convertion_sql "' + '"'}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0141 convertion_sql "' + '"'}));
             }
         }
         t+='\n' + esp0 + ')';
@@ -564,12 +564,12 @@ class c_astsqliteparseur_vers_rev1{
                 if(obj1.__xst === true){
                     t+='\n' + esp0 + esp1 + esp1 + obj1.__xva + ',';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0226 convertit_sql_select_de_ast_vers_rev  : "' + '"'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0226 convertit_sql_select_de_ast_vers_rev  : "' + '"'}));
                 }
             }
             t+='\n' + esp0 + esp1 + ')';
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0050 dans select il n\'y a pas de result trouvé : '}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : '0050 dans select il n\'y a pas de result trouvé : '}));
         }
         if(element.from){
             t+='\n' + esp0 + esp1 + ',provenance(';
@@ -578,14 +578,14 @@ class c_astsqliteparseur_vers_rev1{
                 if(obj1.__xst === true){
                     t+='\n' + esp0 + esp1 + esp1 + 'table_reference(source(' + obj1.__xva + ')),';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0669 convertit_sql_select_de_ast_vers_rev  : "'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0669 convertit_sql_select_de_ast_vers_rev  : "'}));
                 }
             }else{
                 var obj1=this.#recupere_element_de_ast_sql(element.from,niveau,parent,options);
                 if(obj1.__xst === true){
                     t+='\n' + esp0 + esp1 + esp1 + 'table_reference(source(' + obj1.__xva + ')),';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0677 convertit_sql_select_de_ast_vers_rev  : "'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0677 convertit_sql_select_de_ast_vers_rev  : "'}));
                 }
             }
             if(element.from.map && element.from.map.length > 0){
@@ -594,7 +594,7 @@ class c_astsqliteparseur_vers_rev1{
                     if(obj1.__xst === true){
                         t+='\n' + esp0 + esp1 + esp1 + '' + obj1.__xva + ',';
                     }else{
-                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0257 convertit_sql_select_de_ast_vers_rev  : "'}));
+                        return(this.#astsql_le({"__xst" : false ,"__xme" : '0257 convertit_sql_select_de_ast_vers_rev  : "'}));
                     }
                 }
             }
@@ -607,7 +607,7 @@ class c_astsqliteparseur_vers_rev1{
                 if(obj1.__xst === true){
                     t+='\n' + esp0 + esp1 + esp1 + '' + obj1.__xva + ',';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0325 convertit_sql_select_de_ast_vers_rev  : "'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0325 convertit_sql_select_de_ast_vers_rev  : "'}));
                 }
             }
             t+='\n' + esp0 + esp1 + ')';
@@ -619,7 +619,7 @@ class c_astsqliteparseur_vers_rev1{
                 if(obj1.__xst === true){
                     t+=obj1.__xva + ',';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0340 convertit_sql_select_de_ast_vers_rev  : "'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0340 convertit_sql_select_de_ast_vers_rev  : "'}));
                 }
             }
             t+=')';
@@ -631,7 +631,7 @@ class c_astsqliteparseur_vers_rev1{
                 if(obj1.__xst === true){
                     t+='quantité(' + obj1.__xva + '),';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0340 convertit_sql_select_de_ast_vers_rev  : "'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0340 convertit_sql_select_de_ast_vers_rev  : "'}));
                 }
             }
             if(element.limit.offset){
@@ -639,7 +639,7 @@ class c_astsqliteparseur_vers_rev1{
                 if(obj1.__xst === true){
                     t+='début(' + obj1.__xva + ')';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0349 convertit_sql_select_de_ast_vers_rev  : "'}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0349 convertit_sql_select_de_ast_vers_rev  : "'}));
                 }
             }
             t+=')';
@@ -660,10 +660,10 @@ class c_astsqliteparseur_vers_rev1{
             if(element.name.type === "identifier"){
                 t+='\n' + esp0 + esp1 + 'nom_de_la_table(' + element.name.name + ')';
             }else{
-                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0034 conversion_de_ast_vers_sql : '}));
+                return(this.#astsql_le({"__xst" : false ,"__xme" : '0034 conversion_de_ast_vers_sql : '}));
             }
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0036 conversion_de_ast_vers_sql : '}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : '0036 conversion_de_ast_vers_sql : '}));
         }
         if(element.definition && element.definition.length > 0){
             t+='\n' + esp0 + esp1 + 'champs(#()';
@@ -673,10 +673,10 @@ class c_astsqliteparseur_vers_rev1{
                     if(element.definition[i].type === 'definition' && element.definition[i].variant === "column"){
                         t+='nom_du_champ(`' + element.definition[i].name + '`)';
                     }else{
-                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0062 pas définition de champ trouvé dans create_table field : '}));
+                        return(this.#astsql_le({"__xst" : false ,"__xme" : '0062 pas définition de champ trouvé dans create_table field : '}));
                     }
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0060 pas définition de champ trouvé dans create_table field : '}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0060 pas définition de champ trouvé dans create_table field : '}));
                 }
                 if(element.definition[i].datatype){
                     t+=' , type(' + element.definition[i].datatype.variant;
@@ -689,14 +689,14 @@ class c_astsqliteparseur_vers_rev1{
                             if(element.definition[i].datatype.args.expression[j].type === 'literal'){
                                 t+=element.definition[i].datatype.args.expression[j].value;
                             }else{
-                                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0077 problème sur un argument : '}));
+                                return(this.#astsql_le({"__xst" : false ,"__xme" : '0077 problème sur un argument : '}));
                             }
                         }
                         t+='';
                     }
                     t+=')';
                 }else{
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0071 pas type de données trouvé field : '}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0071 pas type de données trouvé field : '}));
                 }
                 if(element.definition[i].definition && element.definition[i].definition.length >= 1){
                     for( var j=0 ; j < element.definition[i].definition.length ; j++ ){
@@ -721,7 +721,7 @@ class c_astsqliteparseur_vers_rev1{
                             if(element.definition[i].definition[j].value.type === 'literal'){
                                 t+=' , default(\'' + element.definition[i].definition[j].value.value.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\')';
                             }else{
-                                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0099 contrainte non traitée trouvé value : '}));
+                                return(this.#astsql_le({"__xst" : false ,"__xme" : '0099 contrainte non traitée trouvé value : '}));
                             }
                         }
                         if(element.definition[i].definition[j].type === "constraint"
@@ -736,7 +736,7 @@ class c_astsqliteparseur_vers_rev1{
                                 ){
                                     t+='`' + element.definition[i].definition[j].references.columns[0].name + '`';
                                 }else{
-                                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0109 contrainte non traitée trouvé field : '}));
+                                    return(this.#astsql_le({"__xst" : false ,"__xme" : '0109 contrainte non traitée trouvé field : '}));
                                 }
                             }else{
                             }
@@ -748,7 +748,7 @@ class c_astsqliteparseur_vers_rev1{
             }
             t+='\n' + esp0 + esp1 + ')';
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0061 pas de champs trouvés dans create_table : '}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : '0061 pas de champs trouvés dans create_table : '}));
         }
         /* debugger; */
         t+='\n' + esp0 + ')';
@@ -766,7 +766,7 @@ class c_astsqliteparseur_vers_rev1{
         if(element.on && element.on.name){
             t+='sur_table(`' + element.on.name + '`)';
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'nom de la table de l\'index nn trouvé : '}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'nom de la table de l\'index nn trouvé : '}));
         }
         if(element.unique && element.unique === true){
             t+=',unique()';
@@ -774,7 +774,7 @@ class c_astsqliteparseur_vers_rev1{
         if(element.target && element.target.name){
             t+=',index_name(`' + element.target.name + '`)';
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'nom de l\'index nn trouvé : '}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'nom de l\'index nn trouvé : '}));
         }
         if(element.on && element.on.columns && element.on.columns.length > 0){
             t+=',champs(';
@@ -786,7 +786,7 @@ class c_astsqliteparseur_vers_rev1{
             }
             t+=')';
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' champs de l\'index nn trouvé : '}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' champs de l\'index nn trouvé : '}));
         }
         t+=')';
         return({"__xst" : true ,"__xva" : t});
@@ -834,7 +834,7 @@ class c_astsqliteparseur_vers_rev1{
         var esp0=' '.repeat(NBESPACESREV * niveau);
         var esp1=' '.repeat(NBESPACESREV);
         if(element === null){
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'null'}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'null'}));
         }
         element.en_cours_de_traitement=true;
         if(element.traite && element.traite === true){
@@ -849,7 +849,7 @@ class c_astsqliteparseur_vers_rev1{
                         if(obj1.__xst === true){
                             t+=obj1.__xva;
                         }else{
-                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'list'}));
+                            return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'list'}));
                         }
                     }
                     element.traite=true;
@@ -866,7 +866,7 @@ class c_astsqliteparseur_vers_rev1{
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
-                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0516 erreur conversion_de_ast_vers_sql dans un update  : '}));
+                        return(this.#astsql_le({"__xst" : false ,"__xme" : '0516 erreur conversion_de_ast_vers_sql dans un update  : '}));
                     }
                     break;
                     
@@ -880,7 +880,7 @@ class c_astsqliteparseur_vers_rev1{
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
-                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0054 erreur conversion_de_ast_vers_sql dans un insert  : '}));
+                        return(this.#astsql_le({"__xst" : false ,"__xme" : '0054 erreur conversion_de_ast_vers_sql dans un insert  : '}));
                     }
                     break;
                     
@@ -894,7 +894,7 @@ class c_astsqliteparseur_vers_rev1{
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
-                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : '0054 erreur conversion_de_ast_vers_sql dans un insert  : '}));
+                        return(this.#astsql_le({"__xst" : false ,"__xme" : '0054 erreur conversion_de_ast_vers_sql dans un insert  : '}));
                     }
                     break;
                     
@@ -910,7 +910,7 @@ class c_astsqliteparseur_vers_rev1{
                             if(obj.__xst === true){
                                 t+=obj.__xva;
                             }else{
-                                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
+                                return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
                             }
                             break;
                             
@@ -924,12 +924,12 @@ class c_astsqliteparseur_vers_rev1{
                             if(obj.__xst === true){
                                 t+=obj.__xva;
                             }else{
-                                return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
+                                return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
                             }
                             break;
                             
                         default:
-                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'create = "' + element.format + '" non traité '}));
+                            return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'create = "' + element.format + '" non traité '}));
                             
                     }
                     break;
@@ -944,7 +944,7 @@ class c_astsqliteparseur_vers_rev1{
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
-                        return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'select  : '}));
+                        return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'select  : '}));
                     }
                     break;
                     
@@ -993,7 +993,7 @@ class c_astsqliteparseur_vers_rev1{
                                         if(obj1.__xst === true){
                                             t+=obj1.__xva;
                                         }else{
-                                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
+                                            return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
                                         }
                                     }
                                 }
@@ -1006,17 +1006,17 @@ class c_astsqliteparseur_vers_rev1{
                         case 'rollback' : t+='\nrollback()';
                             break;
                         default:
-                            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'transaction action inconnue = "' + element.action + '" '}));
+                            return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'transaction action inconnue = "' + element.action + '" '}));
                             
                     }
                     break;
                     
                 default:
-                    return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'variant = "' + element.variant + '" non traité ' ,"element" : element}));
+                    return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'variant = "' + element.variant + '" non traité ' ,"element" : element}));
                     
             }
         }else{
-            return(this.#astsql_logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'element.type = "' + element.type + '" non traité '}));
+            return(this.#astsql_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'element.type = "' + element.type + '" non traité '}));
         }
         element.en_cours_de_traitement=false;
         element.traite=true;
@@ -1032,7 +1032,7 @@ class c_astsqliteparseur_vers_rev1{
             t=obj.__xva;
             return({"__xst" : true ,"__xva" : t});
         }else{
-            return(this.#astsql_logerreur({"__xst" : true ,"__me" : __m_rev1.nl2() + 'erreur de convertion'}));
+            return(this.#astsql_le({"__xst" : true ,"__me" : __m_rev1.nl2() + 'erreur de convertion'}));
         }
     }
     /*

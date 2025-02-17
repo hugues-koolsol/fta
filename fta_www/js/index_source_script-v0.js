@@ -45,10 +45,10 @@ function convertSource(objMatSrc){
                             if(objMatSrc.__xva[j][8] === 1 && objMatSrc.__xva[j + 1][2] === 'c'){
                                 tabConcatFichier.push(objMatSrc.__xva[j + 1][1]);
                             }else{
-                                return(logerreur({"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + ' concat fichjer ne doit avojr qu\'un seul argument '}));
+                                return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + ' concat fichjer ne doit avojr qu\'un seul argument '}));
                             }
                         }else{
-                            return(logerreur({"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + 'l\'élément ne doit pas se trouver là ' + JSON.stringify(objMatSrc.__xva[j])}));
+                            return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + 'l\'élément ne doit pas se trouver là ' + JSON.stringify(objMatSrc.__xva[j])}));
                         }
                     }
                 }
@@ -56,7 +56,7 @@ function convertSource(objMatSrc){
         }
     }
     if(type_source == ''){
-        return(logerreur({
+        return(__m_rev1.empiler_erreur({
                 "__xst" : false ,
                 "__xme" : 'file core , fonction convertSource la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '
             }));
@@ -68,7 +68,7 @@ function convertSource(objMatSrc){
             if(retProgrammeSource.__xst === true){
                 t+='<?php' + CRLF + retProgrammeSource.__xva + CRLF + '?>';
             }else{
-                return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un php'}));
+                return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un php'}));
             }
             t=t.replace(/\/\*\*\//g,'');
             t=t.replace(/\?><\?php/g,'');
@@ -96,7 +96,7 @@ function convertSource(objMatSrc){
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{
-                return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un javascript'}));
+                return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un javascript'}));
             }
             return({
                     "__xst" : true ,
@@ -111,7 +111,7 @@ function convertSource(objMatSrc){
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{
-                return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un html'}));
+                return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un html'}));
             }
             return({
                     "__xst" : true ,
@@ -126,7 +126,7 @@ function convertSource(objMatSrc){
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{
-                return(logerreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un sql'}));
+                return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un sql'}));
             }
             return({
                     "__xst" : true ,
@@ -138,7 +138,7 @@ function convertSource(objMatSrc){
                 });
         }
     }else{
-        return(logerreur({"__xst" : false ,"id" : 0 ,"__xme" : 'file_name, file_path and source must be filled'}));
+        return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : 0 ,"__xme" : 'file_name, file_path and source must be filled'}));
     }
 }
 /*
@@ -182,9 +182,9 @@ function sauvegardeTexteSource(){
         }
         sauvegarger_un_fichier_rev('za_ajax.php?sauvegarger_un_fichier_rev',ajax_param).then((donnees) => {
                 if(donnees.__xst === true){
-                    logerreur({"__xst" : true ,"__xme" : '👍 fichier sauvegardé'});
+                    __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : '👍 fichier sauvegardé'});
                 }
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
+                __gi1.remplir_et_afficher_les_messages1('zonesource');
             });
         document.getElementById('sauvegarderLeNormalise').disabled=true;
         document.getElementById('nomDuSource').disabled=true;
@@ -260,7 +260,7 @@ function concateneFichiers(tabConcatFichier,file_name,file_extension,file_path){
         }
         concatener_des_fichiers1('za_ajax.php?concatener_des_fichiers1',ajax_param).then((donnees) => {
                 if(donnees.__xst === true){
-                    logerreur({"__xst" : true ,"__xme" : 'le fichier ' + fichierAConcatener + ' a été concaténé'});
+                    __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : 'le fichier ' + fichierAConcatener + ' a été concaténé'});
                     if(donnees.__entree.tabConcatFichier){
                         concateneFichiers(donnees.__entree.tabConcatFichier,donnees.__entree.file_name,donnees.__entree.file_extension,donnees.__entree.file_path);
                     }
@@ -287,7 +287,7 @@ function concateneFichiers(tabConcatFichier,file_name,file_extension,file_path){
                 }
             });
     }
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
+    __gi1.remplir_et_afficher_les_messages1('zonesource');
 }
 /*
   =====================================================================================================================
@@ -313,11 +313,7 @@ function enregistrer2(){
     /* zonedonneesComplementaires.innerHTML=''; */
     var a=document.getElementById('zonesource');
     var startMicro=performance.now();
-    var tableau1=__m_rev1.txt_en_tableau(a.value);
-    var endMicro=performance.now();
-    console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
-    var startMicro=performance.now();
-    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+    var matriceFonction=__m_rev1.rev_tm(a.value);
     var endMicro=performance.now();
     console.log('analyse syntaxique et mise en matrice endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
     console.log('matriceFonction=',matriceFonction);
@@ -332,18 +328,17 @@ function enregistrer2(){
             memeHauteur('normalise','zonesource');
             var startMicro=performance.now();
             var compacteOriginal=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,false,1);
-            var tableau2=__m_rev1.txt_en_tableau(fonctionReecriteAvecRetour1.__xva);
-            var matriceDeLaFonctionReecrite=functionToArray2(tableau2.out,true,false,'');
+            var matriceDeLaFonctionReecrite=__m_rev1.rev_tm(fonctionReecriteAvecRetour1.__xva);
             var compacteReecrit=__m_rev1.matrice_vers_source_rev1(matriceDeLaFonctionReecrite.__xva,0,false,1);
             var endMicro=performance.now();
             console.log('comparaison des compactés=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
             if(compacteOriginal.__xst == true && compacteReecrit.__xst === true){
                 if(compacteOriginal.__xva == compacteReecrit.__xva){
                     sourcesCompactesIdentiques=true;
-                    logerreur({"__xst" : true ,"__xme" : '<b>👍 sources compactés Egaux</b>'});
+                    __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : '<b>👍 sources compactés Egaux</b>'});
                     var conversion=convertSource(matriceFonction);
                 }else{
-                    logerreur({"__xst" : false ,"__xme" : 'sources compactés différents'});
+                    __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'sources compactés différents'});
                 }
             }else{
             }
@@ -357,10 +352,10 @@ function enregistrer2(){
         document.getElementById('bouton_voir_tableau').style.display='inline-block';
         document.getElementById('zoneContenantLeSourceGenere2').value=conversion.__xva;
     }
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
+    __gi1.remplir_et_afficher_les_messages1('zonesource');
     if(matriceFonction.__xst === true && sourcesCompactesIdentiques){
         if(a.value == fonctionReecriteAvecRetour1.__xva.replace(/\r\n/g,'\n')){
-            logerreur({"__xst" : true ,"__xme" : '<b>👍👍 sources Egaux</b>'});
+            __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : '<b>👍👍 sources Egaux</b>'});
             document.getElementById('sauvegarderLeNormalise').disabled=false;
             document.getElementById('nomDuSource').disabled=false;
             if(conversion.__xst == true){
@@ -376,20 +371,20 @@ function enregistrer2(){
                 }
                 ecrire_fichier1('za_ajax.php?ecrire_fichier1',ajax_param).then((donnees) => {
                         if(donnees.__xst === true){
-                            logerreur({"__xst" : true ,"__xme" : '<b>👍👍👍 le programme résultant a été écrit sur le disque</b>'});
+                            __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : '<b>👍👍👍 le programme résultant a été écrit sur le disque</b>'});
                             if(conversion.tabConcatFichier.length > 0){
                                 concateneFichiers(conversion.tabConcatFichier,conversion.file_name,conversion.file_extension,conversion.file_path);
                             }
                             document.getElementById('sauvegarderLeNormalise').disabled=false;
                             document.getElementById('nomDuSource').disabled=false;
                         }else{
-                            logerreur({"__xst" : false ,"__xme" : 'il y a eu un problème d\'écriture sur disque'});
+                            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'il y a eu un problème d\'écriture sur disque'});
                         }
-                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
+                        __gi1.remplir_et_afficher_les_messages1('zonesource');
                     });
             }
         }else{
-            logerreur({
+            __m_rev1.empiler_erreur({
                     "__xst" : false ,
                     "__xme" : 'les sources sont différents mais les compactés sont égaux : <a href="javascript:reprendre()" style="border:2px lawngreen outset;background:lawngreen;">reprendre</a>&nbsp;<a style="border:2px lawngreen outset;background:lawngreen;" href="javascript:reprendreEtRecompiler()">reprendre et recompiler</a>  '
                 });
@@ -417,7 +412,7 @@ function voirMatrice1(div_de_la_zone_source){
     var zoneContenantLaMatrice=document.getElementById('zoneContenantLaMatrice');
     if(zoneContenantLaMatrice && document.getElementById('zoneContenantLaMatrice').innerHTML === ''){
         var contenu=document.getElementById(div_de_la_zone_source).value;
-        var matrice=rev_texte_vers_matrice(contenu);
+        var matrice=__m_rev1.rev_tm(contenu);
         if(matrice.__xst === true){
             var zoneMatrice=document.createElement('table');
             __gi1.construit_tableau_html_de_le_matrice_rev(zoneMatrice,matrice);
@@ -480,7 +475,7 @@ function chargerFichierRev(nomFichierSource){
                 document.getElementById('nomDuSource').disabled=true;
                 enregistrer2();
             }else{
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages','zonesource');
+                __gi1.remplir_et_afficher_les_messages1('zonesource');
             }
         });
 }

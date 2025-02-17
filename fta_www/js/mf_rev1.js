@@ -7,19 +7,57 @@ class c_rev1{
     #nom_de_la_variable='';
     #NBESPACESSOURCEPRODUIT=4;
     #NBESPACESREV=3;
-    #global_messages={
+    /*__m_rev1.globale_messages*/
+    globale_messages={
         "erreurs" : [] ,
         "avertissements" : [] ,
         "infos" : [] ,
         "lignes" : [] ,
         "ids" : [] ,
         "plages" : [] ,
-        "data" : {"matrice" : [] ,"tableau" : []}
     };
     /* function constructor */
     constructor(nom_de_la_variable){
         this.#nom_de_la_variable=nom_de_la_variable;
     }
+    
+    /*
+      =====================================================================================================================
+      met les valeurs dans la variable globale_messages ( l og erreu r ) logerreur __m_rev1.empiler_erreur
+      =====================================================================================================================
+    */
+    empiler_erreur(o){
+        var a_retourner={
+            "__xst" : o.hasOwnProperty('__xst') ? ( o.__xst ) : ( false ) ,
+            "__xva" : o.hasOwnProperty('__xva') ? ( o.__xva ) : ( null ) ,
+            "masquee" : o.hasOwnProperty('masquee') ? ( o.masquee ) : ( false ) ,
+            "plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null ) ,
+            "ligne" : o.hasOwnProperty('ligne') ? ( o.ligne ) : ( null )
+        };
+        if(o.hasOwnProperty('__xme')){
+            a_retourner[__xme]=o.__xme;
+        }
+        if(o.hasOwnProperty('__xav')){
+            a_retourner['__xav']=o.__xav;
+        }
+        if(o.hasOwnProperty('__xms')){
+            for(var i in o.__xms){
+                a_retourner.__xme=o.__xms[i];
+                this.globale_messages['erreurs'].push(a_retourner);
+            }
+        }else{
+            if(a_retourner.hasOwnProperty('__xav')){
+                this.globale_messages['avertissements'].push(a_retourner);
+            }
+            if(a_retourner.__xst === false){
+                this.globale_messages['erreurs'].push(a_retourner);
+            }else{
+                this.globale_messages['infos'].push(a_retourner);
+            }
+        }
+        return a_retourner;
+    }
+    
     /*
       =============================================================================================================
       fonction respr (__m_rev1.#respr) PRIVÉE : retour chariot + nouvelle ligne + n espaces dans les rev produits
@@ -394,6 +432,18 @@ class c_rev1{
         return t;
     }
     
+    /*
+      =====================================================================================================================
+      construit des espaces pour l'indentation des sources rev
+      =====================================================================================================================
+    */
+    espacesnrev(i){
+        var t='\r\n';
+        if(i > 0){
+            t+=' '.repeat(NBESPACESREV * i);
+        }
+        return t;
+    }
     
     
     /*#
@@ -438,7 +488,7 @@ class c_rev1{
         var obj={};
         var contient_en_commentaire_tbel=false;
         if(tab[debut][3] > 0){
-            var les_espaces=espacesnrev(true,tab[debut][3]);
+            var les_espaces=this.espacesnrev(tab[debut][3]);
         }else{
             var les_espaces='';
         }
@@ -657,7 +707,7 @@ class c_rev1{
                                     t+=les_espaces;
                                 }else if(tab[i][9] === tab[tab[i][7]][8]){
                                     /* si c'est le dernier enfant */
-                                    t+=espacesnrev(true,tab[debut][3]);
+                                    t+=this.espacesnrev(tab[debut][3]);
                                 }
                             }
                         }
@@ -678,13 +728,213 @@ class c_rev1{
         return({"__xst" : true ,"__xva" : t ,"retour_ligne_parent" : retourLigne});
     }
     /*
+      =====================================================================================================================
+      fonction qui se base sur la colonne 3[niveau] d'une matrice pour recalculer 
+      - le parent[7], 
+      - le nombre d'enfants[8], 
+      - le numéro d'enfant[9]
+      - la profondeur[10]
+      __m_rev1.indicer_le_tableau reIndicerLeTableau
+      =====================================================================================================================
+    */
+    indicer_le_tableau(tab){
+        const l01=tab.length;
+        var i=0;
+        var j=0;
+        var k=0;
+        var l=0;
+        var niveau=0;
+        /*
+          =============================================================================================================
+          indice et nombre d'enfants mis à zéro
+          =============================================================================================================
+        */
+        for( i=1 ; i < l01 ; i++ ){
+            tab[i][0]=i;
+            tab[i][8]=0;
+        }
+        /*
+          =============================================================================================================
+          parent et nombre d'enfants
+          =============================================================================================================
+        */
+        for( i=l01 - 1 ; i > 0 ; i-- ){
+            niveau=tab[i][3];
+            for( j=i ; j >= 0 ; j-- ){
+                if(tab[j][3] === niveau - 1){
+                    tab[i][7]=j;
+                    tab[j][8]=tab[j][8] + 1;
+                    break;
+                }
+            }
+        }
+        /*
+          =============================================================================================================
+          numéro d'enfant + bidouille performances car on boucle souvent sur les enfants
+          =============================================================================================================
+        */
+        var indice_enfant_precedent=0;
+        for( i=0 ; i < l01 ; i++ ){
+            k=0;
+            for( j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
+                if(tab[j][7] === tab[i][0]){
+                    k++;
+                    tab[j][9]=k;
+                    /*
+                      pour le dernier, on met l01
+                    */
+                    tab[j][12]=l01;
+                    if(k > 1){
+                        tab[indice_enfant_precedent][12]=j;
+                    }
+                    indice_enfant_precedent=j;
+                }
+            }
+        }
+        /*
+          =============================================================================================================
+          profondeur
+          =============================================================================================================
+        */
+        var niveau=0;
+        var id_parent=0;
+        for( i=l01 - 1 ; i > 0 ; i-- ){
+            /* si c'est une constante */
+            if(tab[i][2] === 'c'){
+                tab[i][10]=0;
+            }
+            if(tab[i][7] > 0){
+                /* si l'élément a un parent */
+                niveau=tab[i][3];
+                id_parent=tab[i][7];
+                /* pour chacun des niveaux enfants */
+                for( j=1 ; j <= niveau ; j++ ){
+                    if(tab[id_parent][10] < j){
+                        /* on change la profondeur */
+                        tab[id_parent][10]=j;
+                    }
+                    id_parent=tab[id_parent][7];
+                }
+            }
+        }
+        return tab;
+    }
+    
+    /*
+      =====================================================================================================================
+      fonction qui supprime un élément dans la matrice et descend les enfants de cet élément d'un niveau
+      concat(concat(a,b),c) => concat(a,b,c) baisserNiveauEtSupprimer __m_rev1.baisser_le_niveau_et_supprimer
+      =====================================================================================================================
+    */
+    baisser_le_niveau_et_supprimer(tab,id,niveau){
+        var i=0;
+        for( i=id + 1 ; i < tab.length ; i++ ){
+            if(tab[i][7] === id){
+                tab[i][3]=tab[i][3] - 1;
+                if(tab[i][2] === 'f'){
+                    /*
+                      appel récursif pour baisser le niveau des enfants des enfants des enfants ....
+                    */
+                    this.baisser_le_niveau_et_supprimer(tab,i,niveau+1);
+                }
+            }
+        }
+        if(niveau === 0){
+            /*
+              à la fin, on supprime l'élément et on recalcul les indices
+            */
+            tab.splice(id,1);
+            tab=this.indicer_le_tableau(tab);
+            return tab;
+        }
+    }
+    
+    /*
+      =====================================================================================================================
+      fonction qui supprime un élément et ses enfants dans la matrice
+      on supprime c de "a(b,c(d))" => a(b)
+      __m_rev1.supprimer_un_element_de_la_matrice
+      =====================================================================================================================
+    */
+    supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
+        var i=0;
+        if(niveau === 0){
+            var a_supprimer=[];
+        }
+        if(tab[id][2] === 'c' || tab[id][2] === 'f' && tab[id][8] === 0){
+            /*
+              si c'est une constante ou une fonction vide  on l'efface directement
+              son parent à un élément en moins
+            */
+            a_supprimer.push(id);
+        }else{
+            /*#
+              sinon, on efface recursivement tous ses enfants avant de l'effacer 
+              bien garder  tab.length  çi dessous
+                           VVVVVVVVVV
+            */
+            for( i=1 ; i < tab.length ; i++ ){
+                if(tab[i][7] === id){
+                    this.supprimer_un_element_de_la_matrice(tab,tab[i][0],niveau + 1,a_supprimer);
+                }
+            }
+            a_supprimer.push(id);
+        }
+        if(niveau === 0){
+            /*
+              à la fin on efface effectivement les lignes en partant du bas 
+              et on recalcul les indices
+            */
+            a_supprimer.sort(function(a,b){
+                    return(b - a);
+                });
+            for( i=0 ; i < a_supprimer.length ; i++ ){
+                tab.splice(a_supprimer[i],1);
+            }
+            tab=this.indicer_le_tableau(tab);
+            return tab;
+        }
+    }
+    
+    /*
+      =====================================================================================================================
+      Des fonctions raccourcies __m_rev1.rev_tm ( texte au format rev vers matrice sans constante dans la racine ) 
+      =====================================================================================================================
+    */
+    rev_tm(texte_rev){
+        var tableau1=__m_rev1.txt_en_tableau(texte_rev);
+        var matrice_fonction=functionToArray2( tableau1.__xva , /*niv*/true , /*cst_dlr*/false , /*par*/'');
+        return matrice_fonction;
+    }
+    /*
+      =====================================================================================================================
+      Des fonctions raccourcies __m_rev1.rev_tcm ( texte au format rev vers matrice avec constante dans la racine ) 
+      =====================================================================================================================
+    */
+    rev_tcm(texte_rev){
+        var tableau1=__m_rev1.txt_en_tableau(texte_rev);
+        var matrice_fonction=functionToArray2(tableau1.__xva,/*niv*/true,/*cst_dlr*/true,/*par*/'');
+        return matrice_fonction;
+    }
+    /*
+      =====================================================================================================================
+      Des fonctions raccourcies __m_rev1.rev_parenthe1 ( recherche de parenthèses )
+      =====================================================================================================================
+    */
+    rev_parenthe1(texte_rev,/* ouvrante ou fermante */parenthese){
+        var tableau1=__m_rev1.txt_en_tableau(texte_rev);
+        var matrice_fonction=functionToArray2(tableau1.__xva,/*niv*/false,/*cst_dlr*/false,parenthese);
+        return matrice_fonction;
+    }
+    
+    /*
       =============================================================================================================
       fonction txt_en_tableau (__m_rev1.txt_en_tableau) : transforme un texte en tableau, 
       =============================================================================================================
     */
     txt_en_tableau(str){
         const l01=str.length;
-        var out=[];
+        var tab=[];
         var i=0;
         var exceptions=0;
         var numLigne=0;
@@ -704,12 +954,13 @@ class c_rev1{
                 */
                 temp=codeCaractere & 0xF800;
                 if(temp === 55296){
-                    out[indiceTab]=[str.substr(i,2),2,i,numLigne];
+                    tab[indiceTab]=[str.substr(i,2),2,i,numLigne];
                     indiceTab++;
                     i++;
                 }else{
-                    out[indiceTab]=[str.substr(i,1),1,i,numLigne];
+                    tab[indiceTab]=[str.substr(i,1),1,i,numLigne];
                     indiceTab++;
+                    /*10 = x0A = \n */
                     if(codeCaractere === 10){
                         numLigne++;
                     }
@@ -718,7 +969,7 @@ class c_rev1{
                 exceptions=exceptions + 1;
             }
         }
-        return({"out" : out ,"numLigne" : numLigne ,"exceptions" : exceptions});
+        return({"__xva" : tab ,"numLigne" : numLigne ,"exceptions" : exceptions});
     }
     /*
       =====================================================================================================================

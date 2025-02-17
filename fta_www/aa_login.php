@@ -224,9 +224,9 @@ function verifier_formulaire_avant_envoi(){
             let minutes=d.getMinutes();
             let secondes=d.getSeconds();
             let heures=d.getHours();
-            minutes=heures + ':' + (minutes < 10 ? ( '0' + minutes ) : ( '' + minutes )) + ':' + (secondes < 10 ? ( '0' + secondes ) : ( '' + secondes )) + ' ';
-            logerreur({"__xst" : false ,"__xme" : minutes + 'Veuillez indiquer votre nom de connexion et votre mot de passe.'});
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+            let tt=heures + ':' + (minutes < 10 ? ( '0' + minutes ) : ( '' + minutes )) + ':' + (secondes < 10 ? ( '0' + secondes ) : ( '' + secondes )) + ' ';
+            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : tt + 'Veuillez indiquer votre nom de connexion et votre mot de passe.'});
+            __gi1.remplir_et_afficher_les_messages1();
         }else{
             retour=true;
         }

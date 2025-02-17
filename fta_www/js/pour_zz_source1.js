@@ -9,7 +9,7 @@ function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cibl
     var tableau1=__m_rev1.txt_en_tableau(a.value);
     var endMicro=performance.now();
     var startMicro=performance.now();
-    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+    var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
     if(matriceFonction.__xst === true){
         var objSql=__m_rev_vers_sql1.c_tab_vers_js(matriceFonction.__xva,{});
         if(objSql.__xst === true){
@@ -31,9 +31,9 @@ function convertir_sqlite_en_rev(chp_rev_source,chp_genere_source){
     if(obj.__xst === true){
         document.getElementById(chp_rev_source).value=obj.__xva;
     }else{
-        logerreur({"__xst" : false ,"__xme" : 'Erreur de convertion'});
+        __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'Erreur de convertion'});
     }
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+    __gi1.remplir_et_afficher_les_messages1('');
 }
 /*
   =====================================================================================================================
@@ -57,17 +57,17 @@ async function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(id_so
                 var date_de_debut_traitement=donnees.__entree.date_de_debut_traitement;
                 var nombre_de_secondes=(date_de_fin_traitement - date_de_debut_traitement) / 1000;
                 if(donnees.__entree.parametres_sauvegarde.nom_du_source){
-                    logerreur({
+                    __m_rev1.empiler_erreur({
                             "__xst" : true ,
                             "__xme" : 'la réécriture de ' + donnees.__entree.parametres_sauvegarde.nom_du_source + ' a été faite en ' + nombre_de_secondes + ' secondes'
                         });
                 }else{
-                    logerreur({"__xst" : true ,"__xme" : 'la réécriture du fichier a été faite en ' + nombre_de_secondes + ' secondes'});
+                    __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : 'la réécriture du fichier a été faite en ' + nombre_de_secondes + ' secondes'});
                 }
             }else{
                 console.log(donnees);
             }
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('');
         });
 }
 /*
@@ -80,7 +80,7 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
     var objRev=__m_astsqliteparseur_vers_rev1.traite_ast_de_sqliteparseur(ast);
     if(objRev.__xst === true){
         var tableau1=__m_rev1.txt_en_tableau(objRev.__xva);
-        var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+        var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
         if(matriceFonction.__xst === true){
             var objSql=__m_rev_vers_sql1.c_tab_vers_js(matriceFonction.__xva,{});
             if(objSql.__xst === true){
@@ -106,26 +106,26 @@ function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_sou
         if(obj.__xst === true){
             document.getElementById(chp_rev_source).value=obj.__xva;
             var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
-            var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+            var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
             if(matriceFonction.__xst === true){
                 var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                 if(obj2.__xst === true){
                     document.getElementById(chp_rev_source).value=obj2.__xva;
                 }
             }else{
-                logerreur({"__xst" : false ,"__xme" : 'erreur rev'});
+                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur rev'});
             }
         }else{
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+            __gi1.remplir_et_afficher_les_messages1('txtar1');
         }
     }catch(e){
         /* console.error('e=',e); */
         if(e.pos){
-            logerreur({"__xst" : false ,"__xme" : '0115 erreur dans un source javascript' ,"plage" : [e.pos,e.pos]});
+            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '0115 erreur dans un source javascript' ,"plage" : [e.pos,e.pos]});
         }else{
-            logerreur({"__xst" : false ,"__xme" : '0117 erreur dans un source javascript'});
+            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '0117 erreur dans un source javascript'});
         }
-        __gi1.remplir_et_afficher_les_messages1('zone_global_messages','chp_genere_source');
+        __gi1.remplir_et_afficher_les_messages1('chp_genere_source');
     }
 }
 /*
@@ -133,9 +133,9 @@ function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_sou
 */
 function sauvegarder_html_en_ligne(format_rev,donnees){
     var tableau1=__m_rev1.txt_en_tableau(format_rev);
-    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+    var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
     if(matriceFonction.__xst === false){
-        logerreur({"__xst" : false ,"__xme" : '0128 erreur sauvegarder_html_en_ligne'});
+        __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '0128 erreur sauvegarder_html_en_ligne'});
         return({"__xst" : false ,"__xme" : '0129 erreur sauvegarder_html_en_ligne'});
     }
     var obj2=__module_html1.tabToHtml1(matriceFonction.__xva,0,false,0);
@@ -143,8 +143,8 @@ function sauvegarder_html_en_ligne(format_rev,donnees){
         sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(donnees.__entree.id_source,format_rev,obj2.__xva,donnees.__entree.date_de_debut_traitement,matriceFonction.__xva);
         return({"__xst" : true});
     }else{
-        logerreur({"__xst" : false ,"__xme" : '0143 erreur sauvegarder_html_en_ligne'});
-        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+        __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '0143 erreur sauvegarder_html_en_ligne'});
+        __gi1.remplir_et_afficher_les_messages1('');
     }
 }
 /*
@@ -156,8 +156,8 @@ function sauvegarder_js_en_ligne2(format_rev,donnees){
         sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(donnees.__entree.id_source,format_rev,objJs.__xva,donnees.__entree.date_de_debut_traitement,objJs.matriceFonction);
         return({"__xst" : true});
     }else{
-        logerreur({"__xst" : false ,"__xme" : '0195 erreur sauvegarder_js_en_ligne'});
-        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+        __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '0195 erreur sauvegarder_js_en_ligne'});
+        __gi1.remplir_et_afficher_les_messages1('');
     }
 }
 /*
@@ -169,7 +169,7 @@ function sauvegarder_php_en_ligne2(format_rev,donnees){
         sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(donnees.__entree.id_source,format_rev,objPhp.__xva,donnees.__entree.date_de_debut_traitement,objPhp.matriceFonction);
         return({"__xst" : true});
     }else{
-        return(logerreur({"__xst" : false ,"__xme" : '0182 erreur pour_zz_source'}));
+        return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '0182 erreur pour_zz_source'}));
     }
 }
 /*
@@ -203,21 +203,21 @@ function zz_l1_convertir_un_source_js_sur_disque3(id_source){
                             var parametres={"__entree" : {"id_source" : donnees.db['T0.chi_id_source'] ,"date_de_debut_traitement" : date_de_debut_traitement}};
                             var obj2=sauvegarder_js_en_ligne2(obj.__xva,parametres);
                         }else{
-                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+                            __gi1.remplir_et_afficher_les_messages1('txtar1');
                         }
                     }catch(e){
                         /* console.error('e=',e); */
                         if(e.pos){
-                            logerreur({"__xst" : false ,"__xme" : nl1(e) + 'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]});
+                            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : nl1(e) + 'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]});
                         }else{
-                            logerreur({"__xst" : false ,"__xme" : nl1(e) + ' ' + e.message});
+                            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : nl1(e) + ' ' + e.message});
                         }
                     }
                 }
             }else{
                 console.log(donnees);
             }
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('');
         });
 }
 /*
@@ -251,20 +251,20 @@ function zz_l1_convertir_un_source_php_sur_disque3(id_source){
                             var parametres={"__entree" : {"id_source" : donnees.db['T0.chi_id_source'] ,"date_de_debut_traitement" : date_de_debut_traitement}};
                             var obj2=sauvegarder_php_en_ligne2(obj.__xva,parametres);
                         }else{
-                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages','txtar1');
+                            __gi1.remplir_et_afficher_les_messages1('txtar1');
                         }
                     }catch(e){
                         if(e.hasOwnProperty('lineNumber')){
-                            logerreur({"__xst" : false ,"__xme" : 'Il y a une erreur dans le source php "" ' ,"ligne" : e.lineNumber});
+                            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'Il y a une erreur dans le source php "" ' ,"ligne" : e.lineNumber});
                         }else{
-                            logerreur({"__xst" : false ,"__xme" : 'Il y a une erreur dans le source php '});
+                            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'Il y a une erreur dans le source php '});
                         }
                     }
                 }
             }else{
                 console.log(donnees);
             }
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('');
         });
 }
 /*
@@ -296,7 +296,7 @@ function zz_l1_convertir_un_source_sur_disque(id_source){
             }else{
                 console.log(donnees);
             }
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('');
         });
 }
 /*
@@ -310,7 +310,7 @@ function convertir_texte_en_rev(nom_zone_genere,nom_zone_source){
     if(obj_texte.__xst === true){
         document.getElementById(nom_zone_source).value=obj_texte.__xva;
     }
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+    __gi1.remplir_et_afficher_les_messages1('');
 }
 /*
   =====================================================================================================================
@@ -322,14 +322,14 @@ function convertir_rev_en_texte(nom_zone_source,nom_zone_genere,id_source,id_cib
     var tableau1=__m_rev1.txt_en_tableau(a.value);
     var endMicro=performance.now();
     var startMicro=performance.now();
-    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+    var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
     console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
     if(matriceFonction.__xst === true){
         var objTexte=convertir_tableau_rev_vers_texte_racine(matriceFonction.__xva,0,0);
         if(objTexte.__xst === true){
             document.getElementById(nom_zone_genere).value=objTexte.__xva;
         }else{
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_zone_source);
+            __gi1.remplir_et_afficher_les_messages1(nom_zone_source);
         }
         var parametres_sauvegarde={"matrice" : matriceFonction.__xva ,"chp_provenance_rev" : 'source' ,"chx_source_rev" : id_source ,"id_cible" : id_cible};
         sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
@@ -347,7 +347,7 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
         var obj=TransformAstPhpEnRev(ast,0,null,false);
         if(obj.__xst === true){
             var tableau1=__m_rev1.txt_en_tableau('php(' + obj.__xva + ')');
-            var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+            var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
             if(matriceFonction.__xst === true){
                 var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                 if(obj2.__xst === true){
@@ -359,15 +359,15 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
                 document.getElementById(ret.__entree.opt.nom_zone_rev).value='php(' + obj.__xva + ')';
             }
         }else{
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages',ret.__entree.opt.nom_zone_genere);
+            __gi1.remplir_et_afficher_les_messages1(ret.__entree.opt.nom_zone_genere);
         }
     }catch(e){
-        astphp_logerreur({
+        __m_rev1.empiler_erreur({
                 "__xst" : false ,
                 "__xme" : 'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify(e.stack).replace(/\\n/g,'\n<br />')
             });
     }
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages',ret.__entree.opt.nom_zone_genere);
+    __gi1.remplir_et_afficher_les_messages1(ret.__entree.opt.nom_zone_genere);
 }
 /*
   =====================================================================================================================
@@ -379,7 +379,7 @@ function convertir_html_en_rev(nom_zone_genere,nom_zone_source){
     var objRev=__module_html1.TransformHtmlEnRev(a.value,0);
     if(objRev.__xst === true){
         var tableau1=__m_rev1.txt_en_tableau(objRev.__xva);
-        var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+        var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
         if(matriceFonction.__xst === true){
             var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
             if(obj2.__xst === true){
@@ -391,7 +391,7 @@ function convertir_html_en_rev(nom_zone_genere,nom_zone_source){
             document.getElementById(nom_zone_source).value=objRev.__xva;
         }
     }
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages',nom_zone_genere);
+    __gi1.remplir_et_afficher_les_messages1(nom_zone_genere);
 }
 /*
   =====================================================================================================================
@@ -404,7 +404,7 @@ function convertir_rev_en_html(nom_zone_source,nom_zone_genere,id_source,id_cibl
     var endMicro=performance.now();
     console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
     var startMicro=performance.now();
-    var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+    var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
     if(matriceFonction.__xst === true){
         var objHtml=__module_html1.tabToHtml1(matriceFonction.__xva,0,false,0);
         if(objHtml.__xst === true){
@@ -414,7 +414,7 @@ function convertir_rev_en_html(nom_zone_source,nom_zone_genere,id_source,id_cibl
         sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
     }else{
     }
-    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+    __gi1.remplir_et_afficher_les_messages1('');
 }
 /*
   =====================================================================================================================
@@ -433,7 +433,7 @@ function supprimer_un_fichier_du_disque(nom_de_fichier_encrypte){
                 document.location=String(document.location);
                 return;
             }else{
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                __gi1.remplir_et_afficher_les_messages1('');
             }
         });
 }
@@ -453,7 +453,7 @@ function lire_un_fichier_du_disque(nom_de_fichier_encrypte){
             if(donnees.__xst === true){
                 document.getElementById('chp_genere_source').value=donnees.__xva;
             }else{
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                __gi1.remplir_et_afficher_les_messages1('');
             }
         });
 }

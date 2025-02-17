@@ -144,10 +144,10 @@ class module_svg_bdd{
                 var le_json=JSON.parse(t);
                 return le_json;
             }catch(e){
-                logerreur({"__xst" : false ,"__xme" : 'erreur sur convertion json, texte non json=' + t});
-                logerreur({"__xst" : false ,"__xme" : 'url=' + url});
-                logerreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree)});
-                logerreur({"__xst" : false ,"__xme" : JSON.stringify(donnees)});
+                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur sur convertion json, texte non json=' + t});
+                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'url=' + url});
+                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree)});
+                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : JSON.stringify(donnees)});
                 return({"__xst" : false ,"message" : 'le retour n\'est pas en json'});
             }
         }catch(e){
@@ -723,7 +723,7 @@ class module_svg_bdd{
     */
     ajouter_un_index_dans_base_de_modale(id_svg_rectangle_de_l_index,nom_de_l_index,nom_de_la_table){
         var rev_texte='add_index(' + document.getElementById(id_svg_rectangle_de_l_index).getAttribute('donnees_rev_de_l_index') + ')';
-        var obj1=rev_texte_vers_matrice(rev_texte);
+        var obj1=__m_rev1.rev_tm(rev_texte);
         if(obj1.__xst === true){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
@@ -756,7 +756,7 @@ class module_svg_bdd{
         if(a.getAttribute('type_element') && a.getAttribute('type_element') == 'rectangle_de_champ'){
             var nom_du_champ=a.getAttribute('nom_du_champ');
             definition_du_champ+='sql(field(' + a.getAttribute('donnees_rev_du_champ') + '))';
-            var obj1=rev_texte_vers_matrice(definition_du_champ);
+            var obj1=__m_rev1.rev_tm(definition_du_champ);
             if(obj1.__xst === true){
                 var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
                 if(obj2.__xst === true){
@@ -814,7 +814,7 @@ class module_svg_bdd{
                   
                   il faut supprimer le champ de cet index puis supprimer l'index s'il n'y a plus de champ
                 */
-                var obj=functionToArray(elt.proprietes.donnees_rev_de_l_index,true,false,'');
+                var obj=__m_rev1.rev_tm(elt.proprietes.donnees_rev_de_l_index);
                 if(obj.__xst === true){
                     var j=0;
                     for( j=0 ; j < obj.__xva.length ; j++ ){
@@ -1105,7 +1105,7 @@ class module_svg_bdd{
             if(lst[i].nodeName.toLowerCase() === 'rect' && 'rectangle_d_index' === lst[i].getAttribute('type_element')){
                 id_svg_rectangle_de_l_index=lst[i].getAttribute('id');
                 if(lst[i].getAttribute('donnees_rev_de_l_index') && lst[i].getAttribute('donnees_rev_de_l_index') !== ''){
-                    var obj_matrice_de_l_index=functionToArray(lst[i].getAttribute('donnees_rev_de_l_index'),true,false,'');
+                    var obj_matrice_de_l_index=__m_rev1.rev_tm(lst[i].getAttribute('donnees_rev_de_l_index'));
                     if(obj_matrice_de_l_index.__xst === true){
                         for( k=1 ; k < obj_matrice_de_l_index.__xva.length ; k++ ){
                             if(obj_matrice_de_l_index.__xva[k][7] === 0){
@@ -1238,7 +1238,7 @@ class module_svg_bdd{
             if(lst[i].nodeName.toLowerCase() === 'rect' && 'rectangle_de_champ' === lst[i].getAttribute('type_element')){
                 id_svg_rectangle_du_champ=lst[i].getAttribute('id');
                 if(lst[i].getAttribute('donnees_rev_du_champ') && lst[i].getAttribute('donnees_rev_du_champ') !== ''){
-                    var obj_matrice_du_champ=functionToArray(lst[i].getAttribute('donnees_rev_du_champ'),true,false,'');
+                    var obj_matrice_du_champ=__m_rev1.rev_tm(lst[i].getAttribute('donnees_rev_du_champ'));
                     if(obj_matrice_du_champ.__xst === true){
                         for( k=1 ; k < obj_matrice_du_champ.__xva.length ; k++ ){
                             if(obj_matrice_du_champ.__xva[k][7] === 0){
@@ -1379,20 +1379,20 @@ class module_svg_bdd{
                 tables[a2].presente_dans_tableau_2=true;
             }else{
                 tables[a2]={"presente_dans_tableau_1" : false ,"presente_dans_tableau_2" : true};
-                logerreur({"__xst" : false ,"__xme" : ' la table ' + a2 + ' est absente du tableau1 '});
+                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : ' la table ' + a2 + ' est absente du tableau1 '});
                 differences_entre_les_tables=true;
             }
         }
         for(var a0 in tables){
             if(tables[a0].presente_dans_tableau_2 === false){
-                logerreur({"__xst" : false ,"__xme" : ' la table ' + a0 + ' est absente du tableau2'});
+                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : ' la table ' + a0 + ' est absente du tableau2'});
                 differences_entre_les_tables=true;
             }
         }
         if(differences_entre_les_tables === true){
-            logerreur({"__xst" : false ,"__xme" : ' des tables ne sont pas les mêmes'});
+            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : ' des tables ne sont pas les mêmes'});
         }else{
-            logerreur({"__xst" : true ,"__xme" : ' il y a les mêmes tables dans les deux tableaux'});
+            __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : ' il y a les mêmes tables dans les deux tableaux'});
         }
         if(differences_entre_les_tables === false){
             for(var a0 in tables){
@@ -1539,12 +1539,12 @@ class module_svg_bdd{
                                     }else{
                                         if('cid' === typechamp){
                                         }else if(typechamp === 'auto_increment'){
-                                            logerreur({
+                                            __m_rev1.empiler_erreur({
                                                     "__xst" : false ,
                                                     "__xme" : ' pour la table ' + a0 + ' , le champ ' + champ + ' , le type ' + typechamp + ' on a une différence mais ce n\'est peut-être pas une erreur ! '
                                                 });
                                         }else{
-                                            logerreur({"__xst" : false ,"__xme" : ' pour la table ' + a0 + ' , le champ ' + champ + ' , le type ' + typechamp + ' on a une différence'});
+                                            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : ' pour la table ' + a0 + ' , le champ ' + champ + ' , le type ' + typechamp + ' on a une différence'});
                                         }
                                     }
                                 }
@@ -1561,12 +1561,12 @@ class module_svg_bdd{
                             */
                         }else{
                             if(champs[champ].presente_dans_tableau_1 === true && champs[champ].presente_dans_tableau_2 === false){
-                                logerreur({
+                                __m_rev1.empiler_erreur({
                                         "__xst" : false ,
                                         "__xme" : ' pour la table ' + a0 + ' , le champ ' + champ + ' est dans la base physique mais pas dans la base du champ généré '
                                     });
                             }else{
-                                logerreur({
+                                __m_rev1.empiler_erreur({
                                         "__xst" : false ,
                                         "__xme" : ' pour la table ' + a0 + ' , le champ ' + champ + ' est dans la base du champ généré mais pas dans la base physique  '
                                     });
@@ -1748,7 +1748,7 @@ class module_svg_bdd{
     comparer_la_base_physique_et_la_base_virtuelle(id_bdd_de_la_base_en_cours){
         var obj1=this.#creer_rev_de_la_base_a_partir_de_svg(id_bdd_de_la_base_en_cours);
         if(obj1.__xst === true){
-            var obj2=rev_texte_vers_matrice(obj1.__xva);
+            var obj2=__m_rev1.rev_tm(obj1.__xva);
             if(obj2.__xst === true){
                 var obj3=__m_rev_vers_sql1.c_tab_vers_js(obj2.__xva,{});
                 if(obj3.__xst === true){
@@ -1793,23 +1793,23 @@ class module_svg_bdd{
         var obj=this.#creer_rev_de_la_base_a_partir_de_svg(this.#id_bdd_de_la_base_en_cours);
         if(obj.__xst === true){
             var texte_rev=obj.__xva;
-            var obj2=rev_texte_vers_matrice(texte_rev);
+            var obj2=__m_rev1.rev_tm(texte_rev);
             if(obj2.__xst === true){
                 var obj3=__m_rev_vers_sql1.c_tab_vers_js(obj2.__xva,{});
                 if(obj3.__xst === true){
                     var source_sql_de_la_base=obj3.__xva;
                 }else{
-                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                    __gi1.remplir_et_afficher_les_messages1('');
                     alert('Problème sur reecrire_la_base 1739 ');
                     return;
                 }
             }else{
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                __gi1.remplir_et_afficher_les_messages1('');
                 alert('Problème sur reecrire_la_base 1739 ');
                 return;
             }
         }else{
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('');
             alert('Problème sur reecrire_la_base 1746 ');
             return;
         }
@@ -1842,7 +1842,7 @@ class module_svg_bdd{
         var obj=this.#creer_rev_de_la_base_a_partir_de_svg(this.#id_bdd_de_la_base_en_cours);
         if(obj.__xst === true){
             var texte_rev=obj.__xva;
-            var obj2=rev_texte_vers_matrice(texte_rev);
+            var obj2=__m_rev1.rev_tm(texte_rev);
             if(obj2.__xst === true){
                 var obj3=__m_rev_vers_sql1.c_tab_vers_js(obj2.__xva,{});
                 if(obj3.__xst === true){
@@ -1856,7 +1856,7 @@ class module_svg_bdd{
                                     if(tab[j][8] === 1){
                                         liste_des_tables.push(tab[j + 1][1]);
                                     }else{
-                                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                                        __gi1.remplir_et_afficher_les_messages1('');
                                         alert('Problème sur reecrire_la_base 1739 ');
                                         return;
                                     }
@@ -1865,17 +1865,17 @@ class module_svg_bdd{
                         }
                     }
                 }else{
-                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                    __gi1.remplir_et_afficher_les_messages1('');
                     alert('Problème sur reecrire_la_base 1739 ');
                     return;
                 }
             }else{
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                __gi1.remplir_et_afficher_les_messages1('');
                 alert('Problème sur reecrire_la_base 1739 ');
                 return;
             }
         }else{
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('');
             alert('Problème sur reecrire_la_base 1746 ');
             return;
         }
@@ -1916,7 +1916,7 @@ class module_svg_bdd{
             if(lst[i].nodeName.toLowerCase() === 'rect' && 'rectangle_de_base' === lst[i].getAttribute('type_element')){
                 id_svg_rectangle_de_la_base=lst[i].getAttribute('id');
                 if(lst[i].getAttribute('donnees_rev_meta_de_la_base') && lst[i].getAttribute('donnees_rev_meta_de_la_base') !== ''){
-                    var obj_matrice_de_la_table=functionToArray(lst[i].getAttribute('donnees_rev_meta_de_la_base'),true,false,'');
+                    var obj_matrice_de_la_table=__m_rev1.rev_tm(lst[i].getAttribute('donnees_rev_meta_de_la_base'));
                     if(obj_matrice_de_la_table.__xst === true){
                         var l=1;
                         for( l=1 ; l < obj_matrice_de_la_table.__xva.length ; l++ ){
@@ -2025,7 +2025,7 @@ class module_svg_bdd{
         }
         var nouveau_rev=(t0 + nouveauTableau.join(',')) + '))';
         var chaine_create_table='';
-        var obj1=rev_texte_vers_matrice(nouveau_rev);
+        var obj1=__m_rev1.rev_tm(nouveau_rev);
         if(obj1.__xst === true){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
@@ -2038,7 +2038,7 @@ class module_svg_bdd{
         }
         var i=0;
         for( i=0 ; i < tab_des_index_rev.length ; i++ ){
-            var obj1=rev_texte_vers_matrice(tab_des_index_rev[i]);
+            var obj1=__m_rev1.rev_tm(tab_des_index_rev[i]);
             if(obj1.__xst === true){
                 var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
                 if(obj2.__xst === true){
@@ -2106,7 +2106,7 @@ class module_svg_bdd{
           supprimer récursivement tous les éléments de la table
         */
         this.#supprimer_recursivement_les_elements_de_l_arbre(id_bdd_de_la_base,id_svg_conteneur_table);
-        var obj1=rev_texte_vers_matrice(nouveau_rev);
+        var obj1=__m_rev1.rev_tm(nouveau_rev);
         if(obj1.__xst === true){
             var indice_courant=this.#recuperer_prochain_id_svg();
             this.#ajouter_table_et_index_a_arbre(obj1.__xva,1,indice_courant,id_bdd_de_la_base,nom_de_la_table);
@@ -2282,7 +2282,7 @@ class module_svg_bdd{
             if(lst[i].nodeName.toLowerCase() === 'rect' && 'rectangle_de_table' === lst[i].getAttribute('type_element')){
                 id_svg_rectangle_de_la_table=lst[i].getAttribute('id');
                 if(lst[i].getAttribute('meta_rev_de_la_table') && lst[i].getAttribute('meta_rev_de_la_table') !== ''){
-                    var obj_matrice_de_la_table=functionToArray(lst[i].getAttribute('meta_rev_de_la_table'),true,false,'');
+                    var obj_matrice_de_la_table=__m_rev1.rev_tm(lst[i].getAttribute('meta_rev_de_la_table'));
                     if(obj_matrice_de_la_table.__xst === true){
                         var l=1;
                         for( l=1 ; l < obj_matrice_de_la_table.__xva.length ; l++ ){
@@ -2715,7 +2715,7 @@ class module_svg_bdd{
     */
     ajouter_la_table_en_base_de_modale(id_svg_rectangle_de_la_table,nom_de_la_table){
         var t=this.#creer_definition_table_en_rev(document.getElementById(id_svg_rectangle_de_la_table));
-        var obj1=rev_texte_vers_matrice(t);
+        var obj1=__m_rev1.rev_tm(t); 
         if(obj1.__xst === true){
             var obj2=tabToSql0(obj1.__xva,0,0,{"tableau_tables_champs" : []});
             if(obj2.__xst === true){
@@ -2769,7 +2769,7 @@ class module_svg_bdd{
                   
                   On repère tous les champs qui font référence à cette table         
                 */
-                var obj=functionToArray(this.#arbre[this.#id_bdd_de_la_base_en_cours].arbre_svg[i].proprietes.donnees_rev_du_champ,true,false,'');
+                var obj=__m_rev1.rev_tm(this.#arbre[this.#id_bdd_de_la_base_en_cours].arbre_svg[i].proprietes.donnees_rev_du_champ);
                 if(obj.__xst === true){
                     var j=0;
                     for( j=0 ; j < obj.__xva.length ; j++ ){
@@ -2948,7 +2948,7 @@ class module_svg_bdd{
         if(type_element === 'base'){
             var id_svg_rectangle=id_svg_element + 1;
             var texte_rev=document.getElementById(id_svg_rectangle).getAttribute(nom_propriete);
-            var obj1=rev_texte_vers_matrice(texte_rev);
+            var obj1=__m_rev1.rev_tm(texte_rev);
             var nouveau_rev='';
             if(obj1.__xst === true){
                 var i=0;
@@ -2973,7 +2973,7 @@ class module_svg_bdd{
         }else if(type_element === 'table'){
             var id_svg_rectangle=id_svg_element + 1;
             var texte_rev=document.getElementById(id_svg_rectangle).getAttribute(nom_propriete);
-            var obj1=rev_texte_vers_matrice(texte_rev);
+            var obj1=__m_rev1.rev_tm(texte_rev);
             var nouveau_rev='';
             if(obj1.__xst === true){
                 var i=0;
@@ -3379,7 +3379,7 @@ class module_svg_bdd{
             }
         }
         if(racine_du_svg === null){
-            return(logerreur({"__xst" : false ,"__xme" : '2670 il y a eu un problème lors de la récupération de l\'arbre svg'}));
+            return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '2670 il y a eu un problème lors de la récupération de l\'arbre svg'}));
         }
         this.#id_svg_de_la_base_en_cours=parseInt(racine_du_svg.getAttribute('id_svg_de_la_base_en_cours'),10);
         /*
@@ -3416,7 +3416,7 @@ class module_svg_bdd{
         if(obj.__xst === true){
             t=obj.__xva;
         }else{
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('');
             alert('Problème sur la sauvegarde de la base ');
             return;
         }
@@ -3430,19 +3430,19 @@ class module_svg_bdd{
         };
         envoyer_le_rev_de_le_base_en_post('za_ajax.php?envoyer_le_rev_de_le_base_en_post',ajax_param,this).then((donnees) => {
                 if(donnees.__xst === true){
-                    logerreur({"__xst" : true ,"__xme" : ' Le schema de la base est sauvegardé'});
+                    __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : ' Le schema de la base est sauvegardé'});
                 }else{
                     console.log(donnees);
                     if(donnees.hasOwnProperty('__xms')){
                         if( typeof donnees.__xms === 'object' && !Array.isArray(donnees.__xms) && donnees.__xms !== null){
                             for(var i in donnees.__xms){
-                                logerreur({"__xst" : false ,"__xme" : donnees.__xms[i]});
+                                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : donnees.__xms[i]});
                             }
                         }
                     }
-                    logerreur({"__xst" : false ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la base'});
+                    __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la base'});
                 }
-                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                __gi1.remplir_et_afficher_les_messages1('');
             });
     }
     /*
@@ -3645,11 +3645,11 @@ class module_svg_bdd{
         var couleur_nom_de_champ='navy';
         var non_nulle=false;
         if(donnees_rev_du_champ !== ''){
-            objrev=functionToArray(donnees_rev_du_champ,true,false,'');
+            objrev=__m_rev1.rev_tm(donnees_rev_du_champ);
             if(objrev.__xst === true){
                 tabrev=objrev.__xva;
             }else{
-                logerreur({"__xst" : false ,"__xme" : '2653'});
+                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '2653'});
             }
             var o=1;
             for( o=1 ; o < tabrev.length ; o++ ){
@@ -3974,8 +3974,8 @@ class module_svg_bdd{
                                         if(obj1.__xst === true){
                                             var donnees_rev_du_champ=obj1.__xva;
                                         }else{
-                                            logerreur({"__xst" : true ,"__xme" : '0849 problème sur les données du champ "' + nom_du_champ + '"'});
-                                            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                                            __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : '0849 problème sur les données du champ "' + nom_du_champ + '"'});
+                                            __gi1.remplir_et_afficher_les_messages1('');
                                             return;
                                         }
                                         var a=this.#ajouter_champ_a_arbre(nom_du_champ,indice_courant,id_svg_conteneur_table,nom_de_la_table,id_bdd_de_la_base,donnees_rev_du_champ);
@@ -4021,8 +4021,8 @@ class module_svg_bdd{
                                     if(obj1.__xst === true){
                                         donnees_rev_de_l_index=obj1.__xva;
                                     }else{
-                                        logerreur({"__xst" : true ,"__xme" : '0849 problème sur les données de l\'index "' + nom_de_l_index + '"'});
-                                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                                        __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : '0849 problème sur les données de l\'index "' + nom_de_l_index + '"'});
+                                        __gi1.remplir_et_afficher_les_messages1('');
                                     }
                                     var a=this.#ajouter_index_a_table(id_bdd_de_la_base,indice_courant,nom_de_l_index,id_svg_conteneur_table,nom_de_la_table,donnees_rev_de_l_index);
                                     indice_courant=a.indice_courant;
@@ -4101,9 +4101,9 @@ class module_svg_bdd{
         recuperer_les_donnees_de_le_base_en_post('za_ajax.php?recuperer_zone_travail_pour_les_bases',ajax_param,this).then((donnees) => {
                 if(donnees.__xst !== true){
                     console.log('donnees=',donnees);
-                    logerreur({"__xst" : false ,"__xme" : donnees.message});
-                    logerreur({"__xst" : false ,"__xme" : '0132 erreur de récupération des données de la base'});
-                    __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                    __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : donnees.message});
+                    __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '0132 erreur de récupération des données de la base'});
+                    __gi1.remplir_et_afficher_les_messages1('');
                 }else{
                     var nouvel_arbre={};
                     var i={};
@@ -4114,16 +4114,16 @@ class module_svg_bdd{
                             "chp_nom_basedd" : donnees.__xva[i]['T0.chp_nom_basedd']
                         };
                         if(donnees.__xva[i]['T0.chp_rev_travail_basedd'] === '' || donnees.__xva[i]['T0.chp_rev_travail_basedd'] === null){
-                            logerreur({"__xst" : false ,"__xme" : '0803 le champ chp_rev_travail_basedd est vide [module_svg[charger_les_bases_en_asynchrone]]'});
+                            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '0803 le champ chp_rev_travail_basedd est vide [module_svg[charger_les_bases_en_asynchrone]]'});
                         }
                         if(donnees.__xva[i]['T0.chp_rev_travail_basedd'] === null || donnees.__xva[i]['T0.chp_rev_travail_basedd'] === ''){
                         }else{
-                            var obj1=functionToArray(donnees.__xva[i]['T0.chp_rev_travail_basedd'],true,false,'');
+                            var obj1=__m_rev1.rev_tm(donnees.__xva[i]['T0.chp_rev_travail_basedd']);
                             if(obj1.__xst === true){
                                 this.#arbre[donnees.__xva[i]['T0.chi_id_basedd']]['matrice']=obj1.__xva;
                             }else{
-                                logerreur({"__xst" : false ,"__xme" : '0126'});
-                                __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '0126'});
+                                __gi1.remplir_et_afficher_les_messages1('');
                                 return;
                             }
                         }

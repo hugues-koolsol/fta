@@ -72,10 +72,10 @@ function convertir_tableau_rev_vers_texte1(tab,id,niveau){
                     if(objTexte.__xst === true){
                         t+=objTexte.value;
                     }else{
-                        return(logerreur({"__xst" : false ,"id" : i ,"__xme" : '0070 erreur dans un texte'}));
+                        return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xme" : '0070 erreur dans un texte'}));
                     }
                 }else{
-                    return(logerreur({"__xst" : false ,"id" : i ,"__xme" : '0067seules les fonctions texte et # sont admises dans un texte'}));
+                    return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xme" : '0067seules les fonctions texte et # sont admises dans un texte'}));
                 }
             }else if(tab[i][2] === 'c'){
                 /*

@@ -64,7 +64,7 @@ async function recuperer_un_fetch_dans_module_travail_en_ap(url,donnees){
             var le_json=JSON.parse(t);
             if(le_json.hasOwnProperty('__xms')){
                 for(var i in le_json.__xms){
-                    logerreur({"__xst" : le_json.__xst ,"__xme" : le_json.__xms[i]});
+                    console.log(le_json.__xms[i]);
                 }
             }
             return le_json;
@@ -324,7 +324,7 @@ function traite_une_suppression(id_tache,arg){
                                 e[n + 13]
                             ]);
                     }
-                    var tab1=reIndicerLeTableau(tab);
+                    var tab1=__m_rev1.indicer_le_tableau(tab);
                     if(extension === '.html' || extension === '.htm' || extension === '.php' || extension === '.js'){
                         tache_en_cours=true;
                         if(extension === '.html' || extension === '.htm'){

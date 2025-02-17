@@ -6,44 +6,30 @@ php(
    ),
    appelf(
       nomf(define),
-      p("BNF"),
-      p(appelf(nomf(basename) , p(__FILE__)))
+      p( "BNF"),
+      p( appelf( nomf(basename) , p(__FILE__) ))
    ),
    #(
      ===============================================================================================================
-     Puis l'inclusion des fonctions communes et initialisation des session et de la bdd
+     Puis l'inclusion des fonctions communes et initialisation des session(true) et de la bdd(true)
      ===============================================================================================================
    ),
-   appelf(nomf(require_once) , p('aa_include.php')),
-   appelf(nomf(initialiser_les_services) , p(vrai) , p(vrai)),
-   #(===================================================================================================================),
-   fonction(
-      definition(nom(supprimerLesValeursDeSession)),
-      contenu(
-         appelf(
-            nomf(unset),
-            p(tableau(nomt($_SESSION) , p(APP_KEY)))
-         )
+   appelf( nomf(require_once) , p( 'aa_include.php' )),
+   appelf(
+      nomf(initialiser_les_services),
+      p(
+         #(session),
+         vrai
+      ),
+      p(
+         #(bdd),
+         faux
       )
    ),
    #(===================================================================================================================),
    fonction(
-      definition(nom(texte_aleatoire) , argument($length)),
-      contenu(
-         affecte($str , appelf(nomf(random_bytes) , p($length))),
-         affecte($str , appelf(nomf(base64_encode) , p($str))),
-         affecte(
-            $str,
-            appelf(
-               nomf(str_replace),
-               p(defTab(("+") , ("/") , ("="))),
-               p(""),
-               p($str)
-            )
-         ),
-         affecte($str , appelf(nomf(substr) , p($str) , p(0) , p($length))),
-         retourner($str)
-      )
+      definition( nom(supprimerLesValeursDeSession)),
+      contenu( appelf( nomf(unset) , p($_SESSION[APP_KEY]) ))
    ),
    #(
      ===============================================================================================================
@@ -54,8 +40,8 @@ php(
       si(
          condition(
             et(
-               appelf(nomf(isset) , p($_POST)),
-               sup(appelf(nomf(count) , p($_POST)) , 0)
+               appelf( nomf(isset) , p($_POST)),
+               sup( appelf( nomf(count) , p($_POST) ) , 0)
             )
          ),
          alors(
@@ -65,36 +51,47 @@ php(
                      et(
                         appelf(
                            nomf(isset),
-                           p(tableau(nomt($_POST) , p('nom_de_connexion')))
+                           p( tableau( nomt($_POST) , p( 'nom_de_connexion' ) ))
                         ),
                         appelf(
                            nomf(isset),
-                           p(tableau(nomt($_POST) , p('mot_de_passe')))
+                           p( tableau( nomt($_POST) , p( 'mot_de_passe' ) ))
                         )
                      )
                   ),
                   alors(
+                     appelf(
+                        nomf(initialiser_les_services),
+                        p(
+                           #(session),
+                           vrai
+                        ),
+                        p(
+                           #(bdd),
+                           vrai
+                        )
+                     ),
                      #(#
-  ===========================================================================
-  on importe la fonction sql 1 ( sql_inclure_reference(1)) qui recherche 
-  l'utilisateur en base grâce à son nom de connexion
-  le format rev de la requête est :
-  ===========================================================================
-  sélectionner(
-   valeurs(
-     champ(`T0` , `chi_id_utilisateur`) , 
-     champ(`T0` , `chp_mot_de_passe_utilisateur`) , 
-     champ(`T0` , `chp_parametres_utilisateur`)
-   ),
-   provenance(
-    table_reference(
-     source(nom_de_la_table(tbl_utilisateurs , alias(T0) , base(b1)))
-    )
-   ),
-   conditions(egal(champ(`T0` , `chp_nom_de_connexion_utilisateur`) , :nom_de_connexion)),
-   complements(limité_à(quantité(1) , début(0)))
-  )          
-  ===========================================================================
+                       ===========================================================================
+                       on importe la fonction sql 1 ( sql_inclure_reference(1)) qui recherche 
+                       l'utilisateur en base grâce à son nom de connexion
+                       le format rev de la requête est :
+                       ===========================================================================
+                       sélectionner(
+                        valeurs(
+                          champ(`T0` , `chi_id_utilisateur`) , 
+                          champ(`T0` , `chp_mot_de_passe_utilisateur`) , 
+                          champ(`T0` , `chp_parametres_utilisateur`)
+                        ),
+                        provenance(
+                         table_reference(
+                          source(nom_de_la_table(tbl_utilisateurs , alias(T0) , base(b1)))
+                         )
+                        ),
+                        conditions(egal(champ(`T0` , `chp_nom_de_connexion_utilisateur`) , :nom_de_connexion)),
+                        complements(limité_à(quantité(1) , début(0)))
+                       )          
+                       ===========================================================================
                      ),
                      sql_inclure_reference(1),
                      affecte(
@@ -103,27 +100,18 @@ php(
                            nomf(sql_1),
                            p(
                               defTab(
-                                 ('nom_de_connexion' , tableau(nomt($_POST) , p('nom_de_connexion')))
+                                 ( 'nom_de_connexion' , tableau( nomt($_POST) , p( 'nom_de_connexion' ) ))
                               )
                            )
                         )
                      ),
                      choix(
                         si(
-                           condition(
-                              diffstricte(tableau(nomt($sql1) , p(__xst)) , vrai)
-                           ),
+                           condition( diffstricte( $sql1[__xst] , vrai )),
                            alors(
-                              appelf(
-                                 nomf(ajouterMessage),
-                                 p('erreur'),
-                                 p(
-                                    concat(__LINE__ , ' ' , tableau(nomt($sql1) , p(__xme)))
-                                 ),
-                                 p(BNF)
-                              ),
-                              appelf(nomf(supprimerLesValeursDeSession)),
-                              appelf(nomf(recharger_la_page) , p(BNF))
+                              appelf( nomf(ajouterMessage) , p( 'erreur' ) , p( concat( __LINE__ , ' ' , $sql1[__xme] ) ) , p(BNF)),
+                              appelf( nomf(supprimerLesValeursDeSession)),
+                              appelf( nomf(recharger_la_page) , p(BNF))
                            )
                         )
                      ),
@@ -132,18 +120,8 @@ php(
                            condition(
                               appelf(
                                  nomf(password_verify),
-                                 p(tableau(nomt($_POST) , p('mot_de_passe'))),
-                                 p(
-                                    tableau(
-                                       nomt(
-                                          tableau(
-                                             nomt(tableau(nomt($sql1) , p(__xva))),
-                                             p(0)
-                                          )
-                                       ),
-                                       p('T0.chp_mot_de_passe_utilisateur')
-                                    )
-                                 )
+                                 p( tableau( nomt($_POST) , p( 'mot_de_passe' ) )),
+                                 p( tableau( nomt($sql1[__xva][0]) , p( 'T0.chp_mot_de_passe_utilisateur' ) ))
                               )
                            ),
                            alors(
@@ -153,51 +131,17 @@ php(
                                 et on met les données en session
                                 
                               ),
+                              affecte( tableau( nomt($_SESSION[APP_KEY]) , p( 'sess_id_utilisateur' ) ) , tableau( nomt($sql1[__xva][0]) , p( 'T0.chi_id_utilisateur' ) )),
+                              affecte( tableau( nomt($_SESSION[APP_KEY]) , p( 'sess_id_utilisateur_init' ) ) , tableau( nomt($sql1[__xva][0]) , p( 'T0.chi_id_utilisateur' ) )),
                               affecte(
-                                 tableau(
-                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
-                                    p('sess_id_utilisateur')
-                                 ),
-                                 tableau(
-                                    nomt(
-                                       tableau(
-                                          nomt(tableau(nomt($sql1) , p(__xva))),
-                                          p(0)
-                                       )
-                                    ),
-                                    p('T0.chi_id_utilisateur')
-                                 )
-                              ),
-                              affecte(
-                                 tableau(
-                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
-                                    p('sess_id_utilisateur_init')
-                                 ),
-                                 tableau(
-                                    nomt(
-                                       tableau(
-                                          nomt(tableau(nomt($sql1) , p(__xva))),
-                                          p(0)
-                                       )
-                                    ),
-                                    p('T0.chi_id_utilisateur')
-                                 )
-                              ),
-                              affecte(
-                                 tableau(
-                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
-                                    p('sess_premiere_cle_chiffrement')
-                                 ),
+                                 tableau( nomt($_SESSION[APP_KEY]) , p( 'sess_premiere_cle_chiffrement' )),
                                  appelf(
                                     nomf(base64_encode),
-                                    p(appelf(nomf(openssl_random_pseudo_bytes) , p(16)))
+                                    p( appelf( nomf(openssl_random_pseudo_bytes) , p(16) ))
                                  )
                               ),
                               affecte(
-                                 tableau(
-                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
-                                    p('sess_deuxième_cle_chiffrement')
-                                 ),
+                                 tableau( nomt($_SESSION[APP_KEY]) , p( 'sess_deuxième_cle_chiffrement' )),
                                  appelf(
                                     nomf(base64_encode),
                                     p(
@@ -205,7 +149,7 @@ php(
                                           nomf(texte_aleatoire),
                                           p(
                                              plus(
-                                                mult(appelf(nomf(rand) , p(1) , p(2)) , 10),
+                                                mult( appelf( nomf(rand) , p(1) , p(2) ) , 10),
                                                 20
                                              )
                                           )
@@ -213,64 +157,26 @@ php(
                                     )
                                  )
                               ),
+                              affecte( tableau( nomt($_SESSION[APP_KEY]) , p( '__filtres' ) ) , defTab()),
+                              affecte( tableau( nomt($_SESSION[APP_KEY]) , p( 'sess_travaux_en_arriere_plan' ) ) , defTab()),
                               affecte(
-                                 tableau(
-                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
-                                    p('__filtres')
-                                 ),
-                                 defTab()
-                              ),
-                              affecte(
-                                 tableau(
-                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
-                                    p('sess_travaux_en_arriere_plan')
-                                 ),
-                                 defTab()
-                              ),
-                              affecte(
-                                 tableau(
-                                    nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
-                                    p('__parametres_utilisateurs')
-                                 ),
+                                 tableau( nomt($_SESSION[APP_KEY]) , p( '__parametres_utilisateurs' )),
                                  testEnLigne(
                                     condition(
-                                       (
-                                          diffstricte(
-                                             tableau(
-                                                nomt(
-                                                   tableau(
-                                                      nomt(tableau(nomt($sql1) , p(__xva))),
-                                                      p(0)
-                                                   )
-                                                ),
-                                                p('T0.chp_parametres_utilisateur')
-                                             ),
-                                             ''
-                                          )
-                                       )
+                                       diffstricte( tableau( nomt($sql1[__xva][0]) , p( 'T0.chp_parametres_utilisateur' ) ) , '')
                                     ),
                                     siVrai(
                                        appelf(
                                           nomf(json_decode),
-                                          p(
-                                             tableau(
-                                                nomt(
-                                                   tableau(
-                                                      nomt(tableau(nomt($sql1) , p(__xva))),
-                                                      p(0)
-                                                   )
-                                                ),
-                                                p('T0.chp_parametres_utilisateur')
-                                             )
-                                          ),
+                                          p( tableau( nomt($sql1[__xva][0]) , p( 'T0.chp_parametres_utilisateur' ) )),
                                           p(vrai)
                                        )
                                     ),
-                                    siFaux(defTab())
+                                    siFaux( defTab())
                                  )
                               ),
-                              appelf(nomf(ajouterMessage) , p('info') , p(concat(__LINE__ , ' connexion effectuée avec succes :-)'))),
-                              appelf(nomf(recharger_la_page) , p('index.php'))
+                              appelf( nomf(ajouterMessage) , p( 'info' ) , p( concat( __LINE__ , ' connexion effectuée avec succes :-)' ) )),
+                              appelf( nomf(recharger_la_page) , p( 'index.php' ))
                            )
                         ),
                         sinon(
@@ -280,10 +186,11 @@ php(
                                 ... sinon on efface la session et on recharge la page
                                 
                               ),
-                              appelf(nomf(supprimerLesValeursDeSession)),
-                              appelf(nomf(ajouterMessage) , p('erreur') , p(concat(__LINE__ , ' identifiant ou mot de passe incorrectes')) , p(BNF)),
-                              appelf(nomf(sleep) , p(2)),
-                              appelf(nomf(recharger_la_page) , p(concat(BNF , '?raz1')))
+                              appelf( nomf(supprimerLesValeursDeSession)),
+                              appelf( nomf(ajouterMessage) , p( 'erreur' ) , p( concat( __LINE__ , ' la combinaison de l\'identifiant et du mot de passe est inconnue' ) ) , p(BNF)),
+                              #(on fait patienter l'utilisateur pendant deux secondes pour qu'il réfléchisse ! ),
+                              appelf( nomf(sleep) , p(2)),
+                              appelf( nomf(recharger_la_page) , p( concat( BNF , '?raz1' ) ))
                            )
                         )
                      )
@@ -293,13 +200,12 @@ php(
                   condition(
                      appelf(
                         nomf(isset),
-                        p(tableau(nomt($_POST) , p('logout')))
+                        p( tableau( nomt($_POST) , p( 'logout' ) ))
                      )
                   ),
-                  alors(appelf(nomf(supprimerLesValeursDeSession)))
+                  alors( appelf( nomf(supprimerLesValeursDeSession) ) , appelf( nomf(recharger_la_page) , p(BNF) ))
                )
-            ),
-            appelf(nomf(recharger_la_page) , p(BNF))
+            )
          )
       )
    ),
@@ -313,8 +219,8 @@ php(
       si(
          condition(
             et(
-               appelf(nomf(isset) , p($_GET)),
-               sup(appelf(nomf(count) , p($_GET)) , 0)
+               appelf( nomf(isset) , p($_GET)),
+               sup( appelf( nomf(count) , p($_GET) ) , 0)
             )
          ),
          alors(
@@ -324,12 +230,12 @@ php(
                      et(
                         appelf(
                            nomf(isset),
-                           p(tableau(nomt($_GET) , p('a')))
+                           p( tableau( nomt($_GET) , p( 'a' ) ))
                         ),
-                        egal(tableau(nomt($_GET) , p('a')) , 'logout')
+                        egal( tableau( nomt($_GET) , p( 'a' ) ) , 'logout')
                      )
                   ),
-                  alors(appelf(nomf(supprimerLesValeursDeSession)) , appelf(nomf(recharger_la_page) , p(BNF)))
+                  alors( appelf( nomf(supprimerLesValeursDeSession) ) , appelf( nomf(recharger_la_page) , p(BNF) ))
                )
             )
          )
@@ -340,18 +246,18 @@ php(
      affichage de l'html 
      ===============================================================================================================
    ),
-   affecte($o1 , ''),
-   affecte($a , defTab(('title' , 'login') , ('description' , 'login'))),
-   affecte($o1 , appelf(nomf(html_header1) , p($a))),
+   affecte( $o1 , ''),
+   affecte( $a , defTab( ( 'title' , 'login' ) , ( 'description' , 'login' ) )),
+   affecte( $o1 , appelf( nomf(html_header1) , p($a) )),
    #(
      ===============================================================================================================
      on imprime le l'entête ...
    ),
-   appelf(nomf(print) , p($o1)),
+   appelf( nomf(print) , p($o1)),
    #(
      ... puis on le reinitialise,
    ),
-   affecte($o1 , ''),
+   affecte( $o1 , ''),
    #(
      ===============================================================================================================
      l'utilisateur est-il déjà connecté ? ...
@@ -363,20 +269,9 @@ php(
             et(
                appelf(
                   nomf(isset),
-                  p(
-                     tableau(
-                        nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
-                        p('sess_id_utilisateur')
-                     )
-                  )
+                  p( tableau( nomt($_SESSION[APP_KEY]) , p( 'sess_id_utilisateur' ) ))
                ),
-               diff(
-                  0,
-                  tableau(
-                     nomt(tableau(nomt($_SESSION) , p(APP_KEY))),
-                     p('sess_id_utilisateur')
-                  )
-               )
+               diff( 0 , tableau( nomt($_SESSION[APP_KEY]) , p( 'sess_id_utilisateur' ) ))
             )
          ),
          alors(
@@ -385,9 +280,15 @@ php(
               ... si oui on lui affiche un formulaire de DEconnexion
               =============================================================================================
             ),
-            html(
+            html_dans_php(
                #(  formulaire html en dehors du php  ),
-               form(('id' , "boite_de_connexion") , ('method' , "post") , ('style' , "margin-top:50px;") , input(('type' , "hidden") , ('name' , "logout") , ('id' , "logout") , ('value' , "")) , button(('type' , "submit") , ('style' , "margin:0 auto;") , 'cliquez ici pour vous déconnecter'))
+               form(
+                  ( 'id' , "boite_de_connexion"),
+                  ( 'method' , "post"),
+                  ( 'style' , "margin-top:50px;"),
+                  input( ( 'type' , "hidden" ) , ( 'name' , "logout" ) , ( 'id' , "logout" ) , ( 'value' , "" )),
+                  button( ( 'type' , "submit" ) , ( 'style' , "margin:0 auto;" ) , 'cliquez ici pour vous déconnecter')
+               )
             )
          )
       ),
@@ -398,89 +299,112 @@ php(
               ... sinon on lui affiche un formulaire de connexion
               =============================================================================================
             ),
-            html(
+            html_dans_php(
                #(  formulaire html en dehors du php  ),
                form(
-                  ('id' , "boite_de_connexion"),
-                  ('method' , "post"),
-                  ('onsubmit' , "return checkSubmit1()"),
-                  ('style' , "margin-top:50px;"),
-                  div('Veuillez indiquer votre nom de connexion et votre mot de passe'),
+                  ( 'id' , "boite_de_connexion"),
+                  ( 'method' , "post"),
+                  ( 'onsubmit' , "return verifier_formulaire_avant_envoi()"),
+                  ( 'style' , "margin-top:50px;"),
+                  div( 'Veuillez indiquer votre nom de connexion et votre mot de passe'),
                   hr(),
-                  label(('for' , "nom_de_connexion") , 'nom de connexion'),
-                  input(('type' , "text") , ('name' , "nom_de_connexion") , ('id' , "nom_de_connexion") , ('value' , "")),
-                  label(('for' , "mot_de_passe") , 'mot de passe'),
-                  input(('type' , "password") , ('name' , "mot_de_passe") , ('id' , "mot_de_passe") , ('value' , "")),
-                  button(('class' , "yyinfo") , ('type' , "submit") , ('style' , "margin:1em auto;") , 'cliquez ici pour vous connecter'),
-                  marquee(('scrollamount' , "6") , 'Essayez' , span(('style' , "color:red;background:white;") , 'admin/admin') , ', si vous ne l\'avez pas deviné. C\'est encore un environnement de test :-)')
+                  label( ( 'for' , "nom_de_connexion" ) , 'nom de connexion'),
+                  input( ( 'type' , "text" ) , ( 'name' , "nom_de_connexion" ) , ( 'id' , "nom_de_connexion" ) , ( 'value' , "" )),
+                  label( ( 'for' , "mot_de_passe" ) , 'mot de passe'),
+                  input( ( 'type' , "password" ) , ( 'name' , "mot_de_passe" ) , ( 'id' , "mot_de_passe" ) , ( 'value' , "" )),
+                  button( ( 'class' , "yyinfo" ) , ( 'type' , "submit" ) , ( 'style' , "margin:1em auto;" ) , 'cliquez ici pour vous connecter'),
+                  marquee( ( 'scrollamount' , "6" ) , 'Essayez' , span( ( 'style' , "color:red;background:white;" ) , 'admin/admin' ) , ', si vous ne l\'avez pas deviné. C\'est encore un environnement de test :-)')
                ),
                javascriptDansHtml(
-                  ('type' , "text/javascript"),
-                  useStrict(),
-                  fonction(
-                     definition(nom(checkSubmit1)),
-                     contenu(
-                        appelf(element(__gi1) , nomf(raz_des_messages)),
-                        declare(valRet , false),
-                        declare(zone_nom_de_connexion , appelf(element(document) , nomf(getElementById) , p('nom_de_connexion'))),
-                        declare(zone_mot_de_passe , appelf(element(document) , nomf(getElementById) , p('mot_de_passe'))),
-                        essayer(
-                           faire(
-                              choix(
-                                 si(
-                                    condition(
-                                       (
-                                          (egal(zone_mot_de_passe.value , '')),
-                                          ou((egal(zone_nom_de_connexion.value , '')))
+                  ( 'type' , "text/javascript"),
+                  source(
+                     directive( "use strict"),
+                     #(
+                       normalement j'évite de mettre du js dans du php mais pour l'exemple, je le fais ici
+                       car le js ci dessous est passe par l'étape rev 
+                     ),
+                     fonction(
+                        definition( nom(verifier_formulaire_avant_envoi)),
+                        contenu(
+                           appelf( element(__gi1) , nomf(raz_des_messages) , p()),
+                           declare( retour , false),
+                           declare( zone_nom_de_connexion , appelf( element(document) , nomf(getElementById) , p( 'nom_de_connexion' ) )),
+                           declare( zone_mot_de_passe , appelf( element(document) , nomf(getElementById) , p( 'mot_de_passe' ) )),
+                           essayer(
+                              faire(
+                                 choix(
+                                    si(
+                                       condition( ou( egal( zone_mot_de_passe.value , '' ) , egal( zone_nom_de_connexion.value , '' ) )),
+                                       alors(
+                                          affecte( retour , false),
+                                          declare_constante(
+                                             d,
+                                             new( appelf( nomf(Date) , p() ))
+                                          ),
+                                          declare_variable( minutes , appelf( element(d) , nomf(getMinutes) , p() )),
+                                          declare_variable( secondes , appelf( element(d) , nomf(getSeconds) , p() )),
+                                          declare_variable( heures , appelf( element(d) , nomf(getHours) , p() )),
+                                          declare_variable(
+                                             tt,
+                                             concat(
+                                                heures,
+                                                ':',
+                                                testEnLigne( condition( inf( minutes , 10 ) ) , siVrai( concat( '0' , minutes ) ) , siFaux( concat( '' , minutes ) )),
+                                                ':',
+                                                testEnLigne( condition( inf( secondes , 10 ) ) , siVrai( concat( '0' , secondes ) ) , siFaux( concat( '' , secondes ) )),
+                                                ' '
+                                             )
+                                          ),
+                                          appelf(
+                                             element(__m_rev1),
+                                             nomf(empiler_erreur),
+                                             p(
+                                                obj( ( "__xst" , false ) , ( "__xme" , concat( tt , 'Veuillez indiquer votre nom de connexion et votre mot de passe.' ) ))
+                                             )
+                                          ),
+                                          appelf( element(__gi1) , nomf(remplir_et_afficher_les_messages1) , p())
                                        )
                                     ),
-                                    alors(affecte(valRet , false) , appelf(element(global_messages.errors) , nomf(push) , p('Veuillez indiquer votre nom de connexion et votre mot de passe.')) , appelf(element(__gi1) , nomf(remplir_et_afficher_les_messages1) , p('zone_global_messages')))
-                                 ),
-                                 sinon(alors(affecte(valRet , true)))
+                                    sinon( alors( affecte( retour , true ) ))
+                                 )
+                              ),
+                              sierreur(
+                                 e,
+                                 faire( appelf( nomf(alert) , p( 'Il y a eu un problème :-(' ) ))
                               )
                            ),
-                           sierreur(
-                              e,
-                              faire(appelf(nomf(alert) , p('Il y a eu un problème :-(')))
-                           )
-                        ),
-                        retourner(valRet)
-                     )
-                  ),
-                  declare(myURL , window.location.href),
-                  choix(
-                     si(
-                        condition(
-                           (
-                              (
-                                 supeg(appelf(element(myURL) , nomf(indexOf) , p('?raz1')) , 0)
-                              ),
+                           retourner(retour)
+                        )
+                     ),
+                     declare( myURL , window.location.href),
+                     choix(
+                        si(
+                           condition(
                               ou(
-                                 (
-                                    supeg(appelf(element(myURL) , nomf(indexOf) , p('&raz1')) , 0)
-                                 )
+                                 supeg( appelf( element(myURL) , nomf(indexOf) , p( '?raz1' ) ) , 0),
+                                 supeg( appelf( element(myURL) , nomf(indexOf) , p( '&raz1' ) ) , 0)
                               )
-                           )
-                        ),
-                        alors(
-                           appelf(
-                              nomf(setTimeout),
-                              p(
-                                 appelf(
-                                    nomf(function),
-                                    contenu(
-                                       affecte(appelf(element(document) , nomf(getElementById) , p('nom_de_connexion') , prop(value)) , ''),
-                                       affecte(appelf(element(document) , nomf(getElementById) , p('mot_de_passe') , prop(value)) , ''),
-                                       appelf(
-                                          element(document),
-                                          nomf(getElementById),
-                                          p('nom_de_connexion'),
-                                          prop(appelf(nomf(focus)))
-                                       )
+                           ),
+                           alors(
+                              appelf(
+                                 nomf(setTimeout),
+                                 p(
+                                    appelf(
+                                       nomf(function),
+                                       contenu(
+                                          affecte( appelf( element(document) , nomf(getElementById) , p( 'nom_de_connexion' ) , prop(value) ) , ''),
+                                          affecte( appelf( element(document) , nomf(getElementById) , p( 'mot_de_passe' ) , prop(value) ) , ''),
+                                          appelf(
+                                             element( appelf( element(document) , nomf(getElementById) , p( 'nom_de_connexion' ) )),
+                                             nomf(focus),
+                                             p()
+                                          )
+                                       ),
+                                       p()
                                     )
-                                 )
-                              ),
-                              p(700)
+                                 ),
+                                 p(700)
+                              )
                            )
                         )
                      )
@@ -495,17 +419,14 @@ php(
       defTab(
          (
             defTab(
-               ('nomDeLaFonctionAappeler' , '#ne_rien_faire1'),
-               ('parametre' , defTab(('c\'est pour') , ('l\'exemple')))
+               ( 'nomDeLaFonctionAappeler' , '#ne_rien_faire1'),
+               ( 'parametre' , defTab( ( 'c\'est pour' ) , ( 'l\'exemple' ) ))
             )
          )
       )
    ),
-   affecte($par , defTab(('js_a_inclure' , defTab()) , ('js_a_executer_apres_chargement' , $js_a_executer_apres_chargement))),
-   affecte(
-      $o1,
-      concat($o1 , appelf(nomf(html_footer1) , p($par)))
-   ),
-   appelf(nomf(print) , p($o1)),
-   affecte($o1 , '')
+   affecte( $par , defTab( ( 'js_a_inclure' , defTab() ) , ( 'js_a_executer_apres_chargement' , $js_a_executer_apres_chargement ) )),
+   affecteop( '.=' , $o1 , appelf( nomf(html_footer1) , p($par) )),
+   appelf( nomf(print) , p($o1)),
+   affecte( $o1 , '')
 )

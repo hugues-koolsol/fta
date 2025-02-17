@@ -140,7 +140,7 @@ class requete_sql{
         that.#obj_webs.bases=init.bases;
         console.log('that.#obj_webs.tableau_des_bases_tables_champs=',that.#obj_webs.tableau_des_bases_tables_champs);
         var tableau1=__m_rev1.txt_en_tableau(that.#globale_rev_requete);
-        var obj1=functionToArray2(tableau1.out,false,true,'');
+        var obj1=functionToArray2(tableau1.__xva,false,true,'');
         if(obj1.__xst !== true){
             return;
         }
@@ -478,10 +478,10 @@ class requete_sql{
                                                     }
                                                     formule_update+='affecte(' + obj.__xva + ')';
                                                 }else{
-                                                    logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' il faut un affecte pour une requete update '});
+                                                    __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' il faut un affecte pour une requete update '});
                                                 }
                                             }else{
-                                                logerreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' il faut un affecte pour une requete update '});
+                                                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' il faut un affecte pour une requete update '});
                                             }
                                         }else{
                                             this.#obj_webs['champs_sortie'].push({
@@ -907,7 +907,7 @@ class requete_sql{
     ajouter_la_formule(destination){
         var zone_formule=document.getElementById('zone_formule');
         var rev_de_la_formule=zone_formule.value;
-        var obj=functionToArray(rev_de_la_formule,true,true,'');
+        var obj=__m_rev1.rev_tcm(rev_de_la_formule);
         if(obj.__xst === true){
             if(!this.#obj_webs[destination]){
                 this.#obj_webs[destination]=[];
@@ -1128,7 +1128,7 @@ class requete_sql{
     enregistrer_la_formule_de_destination(ind,destination){
         var zone_formule=document.getElementById('zone_formule');
         var rev_de_la_formule=zone_formule.value;
-        var obj=functionToArray(rev_de_la_formule,true,true,'');
+        var obj=__m_rev1.rev_tcm(rev_de_la_formule);
         if(obj.__xst === true){
             if((this.#obj_webs.type_de_requete === 'select'
                        || this.#obj_webs.type_de_requete === 'select_liste')
@@ -1536,7 +1536,7 @@ class requete_sql{
         }
         rev_texte+=CRLF + ')';
         var tableau1=__m_rev1.txt_en_tableau(rev_texte);
-        var matriceFonction=functionToArray2(tableau1.out,true,false,'');
+        var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
         if(matriceFonction.__xst === true){
             var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
             if(obj2.__xst === true){
@@ -1686,10 +1686,10 @@ class requete_sql{
                 var le_json=JSON.parse(t);
                 return le_json;
             }catch(e){
-                logerreur({"__xst" : false ,"__xme" : 'erreur sur convertion json, texte non json=' + t});
-                logerreur({"__xst" : false ,"__xme" : 'url=' + url});
-                logerreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree)});
-                logerreur({"__xst" : false ,"__xme" : JSON.stringify(donnees)});
+                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur sur convertion json, texte non json=' + t});
+                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'url=' + url});
+                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree)});
+                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : JSON.stringify(donnees)});
                 return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t});
             }
         }catch(e){
@@ -1709,7 +1709,7 @@ class requete_sql{
             return(that.#recupérer_un_fetch(url,ajax_param));
         }
         var tableau1=__m_rev1.txt_en_tableau(document.getElementById('txtar1').value);
-        var obj1=functionToArray2(tableau1.out,false,true,'');
+        var obj1=functionToArray2(tableau1.__xva,false,true,'');
         if(obj1.__xst === true){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
@@ -1726,13 +1726,13 @@ class requete_sql{
                 modifier_la_requete_en_base(this.#globale_debut_url + '?modifier_la_requete_en_base',ajax_param,this).then((donnees) => {
                         console.log('donnees=',donnees);
                         if(donnees.__xst === true){
-                            logerreur({"__xst" : true ,"__xme" : ' requête sauvegardée'});
+                            __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : ' requête sauvegardée'});
                             console.log(true);
                         }else{
                             console.log('donnees=',donnees);
-                            logerreur({"__xst" : false ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la requête'});
+                            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la requête'});
                         }
-                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                        __gi1.remplir_et_afficher_les_messages1('');
                     });
             }else{
             }
@@ -1750,7 +1750,7 @@ class requete_sql{
             return(that.#recupérer_un_fetch(url,ajax_param,that));
         }
         var tableau1=__m_rev1.txt_en_tableau(document.getElementById('txtar1').value);
-        var obj1=functionToArray2(tableau1.out,false,true,'');
+        var obj1=functionToArray2(tableau1.__xva,false,true,'');
         if(obj1.__xst === true){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
@@ -1772,9 +1772,9 @@ class requete_sql{
                             return;
                         }else{
                             console.log('donnees=',donnees);
-                            logerreur({"__xst" : false ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la requête'});
+                            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la requête'});
                         }
-                        __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+                        __gi1.remplir_et_afficher_les_messages1('');
                     });
             }else{
             }
@@ -1819,7 +1819,7 @@ class requete_sql{
     #obtenir_le_tableau_des_conditions(formule,obj3){
         var tableau_des_conditions=[];
         var tableau1=__m_rev1.txt_en_tableau(formule);
-        var matriceFonction=functionToArray2(tableau1.out,true,true,'');
+        var matriceFonction=functionToArray2(tableau1.__xva,true,true,'');
         var tab=matriceFonction.__xva;
         var l01=tab.length;
         var options={
@@ -2060,7 +2060,7 @@ class requete_sql{
                 if(this.#obj_webs['champs_sortie'][champ_sortie].type_d_element === 'formule'){
                     var formule=this.#obj_webs['champs_sortie'][champ_sortie].formule;
                     var tableau1=__m_rev1.txt_en_tableau(formule);
-                    var matriceFonction=functionToArray2(tableau1.out,true,true,'');
+                    var matriceFonction=functionToArray2(tableau1.__xva,true,true,'');
                     var tab=matriceFonction.__xva;
                     var l01=tab.length;
                     var nom_du_champ='';
@@ -2083,7 +2083,7 @@ class requete_sql{
                                                 if(obj.__xst === true){
                                                     valeur_du_champ=obj.__xva;
                                                 }else{
-                                                    return(logerreur({"__xst" : false ,"__xme" : '0198 erreur sur fonction dans update conditions "' + tab[l][1] + '"'}));
+                                                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '0198 erreur sur fonction dans update conditions "' + tab[l][1] + '"'}));
                                                 }
                                             }else{
                                                 if(tab[m][1].toLowerCase() === 'null' && tab[m][4] === 0){
@@ -2339,7 +2339,7 @@ class requete_sql{
                 t+='    $where0=\' WHERE 1=1 \'.PHP_EOL;' + CRLF;
                 var formule=this.#obj_webs.conditions[0].formule;
                 var tableau1=__m_rev1.txt_en_tableau(formule);
-                var matriceFonction=functionToArray2(tableau1.out,true,true,'');
+                var matriceFonction=functionToArray2(tableau1.__xva,true,true,'');
                 var tab=matriceFonction.__xva;
                 var l01=tab.length;
                 var options={
@@ -2518,7 +2518,7 @@ class requete_sql{
     */
     transform_source_rev_vers_sql(source_rev,id_requete){
         var tableau1=__m_rev1.txt_en_tableau(source_rev);
-        var obj1=functionToArray2(tableau1.out,false,true,'');
+        var obj1=functionToArray2(tableau1.__xva,false,true,'');
         if(obj1.__xst === true){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
@@ -2556,16 +2556,16 @@ class requete_sql{
                     if(obj4.__xst === true){
                         return({"__xst" : true ,"source_sql" : obj2.__xva ,"source_php" : obj4.__xva});
                     }else{
-                        return(logerreur({"__xst" : false ,"source_sql" : obj2.__xva ,"__xme" : 'module_requete erreur 2455 erreur de conversion en php '}));
+                        return(__m_rev1.empiler_erreur({"__xst" : false ,"source_sql" : obj2.__xva ,"__xme" : 'module_requete erreur 2455 erreur de conversion en php '}));
                     }
                 }else{
-                    return(logerreur({"__xst" : false ,"source_sql" : obj2.__xva ,"message" : 'module_requete erreur 2456 erreur de conversion en sql '}));
+                    return(__m_rev1.empiler_erreur({"__xst" : false ,"source_sql" : obj2.__xva ,"message" : 'module_requete erreur 2456 erreur de conversion en sql '}));
                 }
             }else{
-                return(logerreur({"__xst" : false ,"__xme" : 'module_requete erreur 2457 erreur de conversion en sql '}));
+                return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'module_requete erreur 2457 erreur de conversion en sql '}));
             }
         }else{
-            return(logerreur({"__xst" : false ,"__xme" : 'module_requete erreur 2458'}));
+            return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'module_requete erreur 2458'}));
         }
     }
     /*
@@ -2579,8 +2579,8 @@ class requete_sql{
               ne rien faire
             */
         }else if( typeof globale_requete_en_cours === 'object'){
-            __gi1.raz_des_messages('zone_global_messages');
-            __gi1.masquer_les_messages1('zone_global_messages');
+            __gi1.raz_des_messages();
+            __gi1.masquer_les_messages1('');
             var obj1=this.transform_source_rev_vers_sql(document.getElementById(txtarea_source).value,id_requete);
             if(obj1.__xst === true){
                 document.getElementById(txtarea_dest).value=obj1.source_sql;
@@ -2590,7 +2590,7 @@ class requete_sql{
                     document.getElementById(txtarea_dest).value=obj1.source_sql;
                 }
             }
-            __gi1.remplir_et_afficher_les_messages1('zone_global_messages');
+            __gi1.remplir_et_afficher_les_messages1('');
         }
     }
     /*
@@ -2621,7 +2621,7 @@ class requete_sql{
                     this.#obj_init['bases']={};
                     var i={};
                     for(i in donnees.__xva){
-                        var obj2=rev_texte_vers_matrice(donnees.__xva[i]['T0.chp_rev_travail_basedd']);
+                        var obj2=__m_rev1.rev_tm(donnees.__xva[i]['T0.chp_rev_travail_basedd']);
                         if(obj2.__xst === true){
                             this.#obj_init['bases'][donnees.__xva[i]['T0.chi_id_basedd']]={
                                 "chi_id_basedd" : donnees.__xva[i]['T0.chi_id_basedd'] ,
