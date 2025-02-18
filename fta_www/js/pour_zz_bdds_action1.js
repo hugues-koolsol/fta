@@ -1,4 +1,7 @@
 'use strict';
+/*
+  =====================================================================================================================
+*/
 function comparer_deux_tableaux_de_bases_sqlite(par){
     console.log('dans comparer_deux_tableaux_de_bases_sqlite');
     __gi1.raz_des_messages();
@@ -12,15 +15,17 @@ function comparer_deux_tableaux_de_bases_sqlite(par){
     /* ✍ console.log(tables); */
     __gi1.remplir_et_afficher_les_messages1();
 }
+/*
+  =====================================================================================================================
+*/
 function bdd_convertir_rev_en_sql(nom_zone_source,nom_zone_genere,id_bdd,id_cible){
     __gi1.raz_des_messages();
     var a=document.getElementById(nom_zone_source);
-    var startMicro=performance.now();
-    var tableau1=__m_rev1.txt_en_tableau(a.value);
-    var endMicro=performance.now();
-    console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
-    var startMicro=performance.now();
-    var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+    /*
+      var tableau1=__m_rev1.txt_en_tableau(a.value);
+      var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+    */
+    var matriceFonction=__m_rev1.rev_tm(a.value);
     if(matriceFonction.__xst === true){
         var objSql=__m_rev_vers_sql1.c_tab_vers_js(matriceFonction.__xva,{});
         if(objSql.__xst === true){

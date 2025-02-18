@@ -67,5 +67,6 @@ $__aa_php_sql=array(
 "64"=>"SELECT \n`T0`.`chi_id_tache` , `T0`.`chx_utilisateur_tache` , `T0`.`chp_texte_tache` , `T0`.`chp_priorite_tache`\n FROM b1.tbl_taches T0\nWHERE (`T0`.`chx_utilisateur_tache` = :T0_chx_utilisateur_tache\n   AND `T0`.`chp_priorite_tache` < :T0_chp_priorite_tache) \nORDER BY `T0`.`chp_priorite_tache` ASC;",
 "65"=>"\nUPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache\nWHERE (`chi_id_tache` = :c_chi_id_tache\n   AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache) ;",
 "66"=>"\nUPDATE b1.tbl_requetes SET `cht_rev_requete` = :n_cht_rev_requete , `cht_sql_requete` = :n_cht_sql_requete , `cht_php_requete` = :n_cht_php_requete\nWHERE (`chi_id_requete` = :c_chi_id_requete\n   AND `chx_cible_requete` = :c_chx_cible_requete) ;",
+"67"=>"SELECT \n`T0`.`chi_id_test` , `T0`.`chp_nom_test` , `T0`.`chp_texte1_test` , `T0`.`chx_test_parent_test`\n FROM b1.tbl_tests T0\nWHERE (`T0`.`chi_id_test` = :T0_chi_id_test) \nORDER BY `T0`.`chi_id_test` \nLIMIT :quantitee OFFSET :debut  DESC  \nLIMIT :quantitee OFFSET :debut ;",
 );
 ?>

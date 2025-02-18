@@ -31,7 +31,7 @@
   dans ce javascript, on définit une fonction factorielle
   =====================================================================================================================
 */
-function factorielle(nombre){
+function factorielle( nombre ){
     if(nombre <= 0){
         /* on retourne 1 */
         return 1;
@@ -45,7 +45,7 @@ function factorielle(nombre){
           quand les expressions sont simples et ne comportent
           pas des parenthèses
         */
-        return(nombre * factorielle(nombre-1));
+        return(nombre * factorielle( nombre-1 ));
     }
 }
 /*
@@ -53,7 +53,7 @@ function factorielle(nombre){
   puis on utilise cette fonction en affichant le résultat 
   =====================================================================================================================
 */
-document.getElementById('zoneResultat').innerHTML=factorielle(5);
+document.getElementById( 'zoneResultat' ).innerHTML=factorielle( 5 );
 /*#
   en lisp la fonction factorielle est ecrite comme ça :
   =================================================

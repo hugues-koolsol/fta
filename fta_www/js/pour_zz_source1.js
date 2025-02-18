@@ -5,11 +5,11 @@
 function convertir_rev_en_sql(chp_rev_source,chp_genere_source,id_source,id_cible){
     __gi1.raz_des_messages();
     var a=document.getElementById(chp_rev_source);
-    var startMicro=performance.now();
-    var tableau1=__m_rev1.txt_en_tableau(a.value);
-    var endMicro=performance.now();
-    var startMicro=performance.now();
-    var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+    /*
+      var tableau1=__m_rev1.txt_en_tableau(a.value);
+      var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+    */
+    var matriceFonction=__m_rev1.rev_tm(a.value);
     if(matriceFonction.__xst === true){
         var objSql=__m_rev_vers_sql1.c_tab_vers_js(matriceFonction.__xva,{});
         if(objSql.__xst === true){
@@ -79,8 +79,11 @@ function traitement_apres_ajax_pour_conversion_fichier_sql(par){
     var ast=window.sqliteParser(source_sqlite,{});
     var objRev=__m_astsqliteparseur_vers_rev1.traite_ast_de_sqliteparseur(ast);
     if(objRev.__xst === true){
-        var tableau1=__m_rev1.txt_en_tableau(objRev.__xva);
-        var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+        /*
+          var tableau1=__m_rev1.txt_en_tableau(objRev.__xva);
+          var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+        */
+        var matriceFonction=__m_rev1.rev_tm(objRev.__xva);
         if(matriceFonction.__xst === true){
             var objSql=__m_rev_vers_sql1.c_tab_vers_js(matriceFonction.__xva,{});
             if(objSql.__xst === true){
@@ -105,8 +108,11 @@ function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_sou
         var obj=__m_astjs_vers_rev1.traite_ast(obj.body,tabComment,{});
         if(obj.__xst === true){
             document.getElementById(chp_rev_source).value=obj.__xva;
-            var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
-            var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+            /*
+              var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
+              var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+            */
+            var matriceFonction=__m_rev1.rev_tm(obj.__xva);
             if(matriceFonction.__xst === true){
                 var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                 if(obj2.__xst === true){
@@ -132,8 +138,11 @@ function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3(chp_genere_sou
   =====================================================================================================================
 */
 function sauvegarder_html_en_ligne(format_rev,donnees){
-    var tableau1=__m_rev1.txt_en_tableau(format_rev);
-    var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+    /*
+      var tableau1=__m_rev1.txt_en_tableau(format_rev);
+      var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+    */
+    var matriceFonction=__m_rev1.rev_tm(format_rev);
     if(matriceFonction.__xst === false){
         __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '0128 erreur sauvegarder_html_en_ligne'});
         return({"__xst" : false ,"__xme" : '0129 erreur sauvegarder_html_en_ligne'});
@@ -318,12 +327,11 @@ function convertir_texte_en_rev(nom_zone_genere,nom_zone_source){
 function convertir_rev_en_texte(nom_zone_source,nom_zone_genere,id_source,id_cible){
     __gi1.raz_des_messages();
     var a=document.getElementById(nom_zone_source);
-    var startMicro=performance.now();
-    var tableau1=__m_rev1.txt_en_tableau(a.value);
-    var endMicro=performance.now();
-    var startMicro=performance.now();
-    var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
-    console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
+    /*
+      var tableau1=__m_rev1.txt_en_tableau(a.value);
+      var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+    */
+    var matriceFonction=__m_rev1.rev_tm(a.value);
     if(matriceFonction.__xst === true){
         var objTexte=convertir_tableau_rev_vers_texte_racine(matriceFonction.__xva,0,0);
         if(objTexte.__xst === true){
@@ -346,8 +354,12 @@ function traitement_apres_recuperation_ast_dans_zz_source_action(ret){
         var ast=JSON.parse(ret.__xva);
         var obj=TransformAstPhpEnRev(ast,0,null,false);
         if(obj.__xst === true){
-            var tableau1=__m_rev1.txt_en_tableau('php(' + obj.__xva + ')');
-            var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+            /*
+              var tableau1=__m_rev1.txt_en_tableau('php(' + obj.__xva + ')');
+              var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+            */
+            var matriceFonction=__m_rev1.rev_tm('php(' + obj.__xva + ')');
+            debugger
             if(matriceFonction.__xst === true){
                 var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                 if(obj2.__xst === true){
@@ -378,8 +390,11 @@ function convertir_html_en_rev(nom_zone_genere,nom_zone_source){
     var startMicro=performance.now();
     var objRev=__module_html1.TransformHtmlEnRev(a.value,0);
     if(objRev.__xst === true){
-        var tableau1=__m_rev1.txt_en_tableau(objRev.__xva);
-        var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+        /*
+          var tableau1=__m_rev1.txt_en_tableau(objRev.__xva);
+          var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+        */
+        var matriceFonction=__m_rev1.rev_tm(objRev.__xva);
         if(matriceFonction.__xst === true){
             var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
             if(obj2.__xst === true){
@@ -399,12 +414,11 @@ function convertir_html_en_rev(nom_zone_genere,nom_zone_source){
 function convertir_rev_en_html(nom_zone_source,nom_zone_genere,id_source,id_cible){
     __gi1.raz_des_messages();
     var a=document.getElementById(nom_zone_source);
-    var startMicro=performance.now();
-    var tableau1=__m_rev1.txt_en_tableau(a.value);
-    var endMicro=performance.now();
-    console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
-    var startMicro=performance.now();
-    var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+    /*
+      var tableau1=__m_rev1.txt_en_tableau(a.value);
+      var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+    */
+    var matriceFonction=__m_rev1.rev_tm(a.value);
     if(matriceFonction.__xst === true){
         var objHtml=__module_html1.tabToHtml1(matriceFonction.__xva,0,false,0);
         if(objHtml.__xst === true){

@@ -65,7 +65,6 @@ class module_svg_bdd{
       function constructor
     */
     constructor(nom_de_la_variable,nom_de_la_div_contenant_le_svg,taille_bordure,id_text_area_contenant_les_id_des_bases){
-        __gi1.raz_des_messages();
         this.#nom_de_la_variable=nom_de_la_variable;
         /*
           si on utilise ce module en dehors d'un dessin svg par exemple pour comparer des tableaux des tables/champs
@@ -81,6 +80,7 @@ class module_svg_bdd{
             nom_de_la_div_contenant_le_svg=null;
         }
         if(nom_de_la_div_contenant_le_svg !== null && le_test !== null){
+            __gi1.raz_des_messages();
             this.#div_svg=document.getElementById(nom_de_la_div_contenant_le_svg);
             this.#taille_bordure=taille_bordure;
             this.#id_text_area_contenant_les_id_des_bases=id_text_area_contenant_les_id_des_bases;
@@ -834,7 +834,7 @@ class module_svg_bdd{
                                         */
                                         this.#supprimer_recursivement_les_elements_de_l_arbre(this.#id_bdd_de_la_base_en_cours,elt.id_parent);
                                     }else{
-                                        var nouvelle_matrice=supprimer_un_element_de_la_matrice(obj.__xva,k,0);
+                                        var nouvelle_matrice=__m_rev1.supprimer_un_element_de_la_matrice(obj.__xva,k,0);
                                         var obj=__m_rev1.matrice_vers_source_rev1(nouvelle_matrice,0,false,1);
                                         if(obj.__xst === true){
                                             this.#arbre[this.#id_bdd_de_la_base_en_cours].arbre_svg[i].proprietes.donnees_rev_de_l_index=obj.__xva;
@@ -2954,7 +2954,7 @@ class module_svg_bdd{
                 var i=0;
                 for( i=0 ; i < obj1.__xva.length ; i++ ){
                     if(obj1.__xva[i][3] === 1 && obj1.__xva[i][1] === 'transform_base_sur_svg'){
-                        var tab=supprimer_un_element_de_la_matrice(obj1.__xva,i - 1,0);
+                        var tab=__m_rev1.supprimer_un_element_de_la_matrice(obj1.__xva,i - 1,0);
                         var obj2=__m_rev1.matrice_vers_source_rev1(tab,0,false,1);
                         if(obj2.__xst === true){
                             if(obj2.__xva !== ''){
@@ -2979,7 +2979,7 @@ class module_svg_bdd{
                 var i=0;
                 for( i=0 ; i < obj1.__xva.length ; i++ ){
                     if(obj1.__xva[i][3] === 1 && obj1.__xva[i][1] === 'transform_table_sur_svg'){
-                        var tab=supprimer_un_element_de_la_matrice(obj1.__xva,i - 1,0);
+                        var tab=__m_rev1.supprimer_un_element_de_la_matrice(obj1.__xva,i - 1,0);
                         var obj2=__m_rev1.matrice_vers_source_rev1(tab,0,false,1);
                         if(obj2.__xst === true){
                             if(obj2.__xva !== ''){

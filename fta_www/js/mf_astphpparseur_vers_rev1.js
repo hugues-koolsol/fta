@@ -2387,11 +2387,14 @@ class c_astphpparseur_vers_rev1{
                 if(gauche.substr(0,4) === 'non('){
                     /*
                       cas if(!$a instanceof $b){
-                      il y a un bug dans ce parseur car instance a une priorité supérieure à !
+                      il y a un bug dans ce parseur car instance a une priorité supérieure à !(not)
                     */
                     var valeur_non='';
+                    /*
                     var tableau1=__m_rev1.txt_en_tableau(gauche);
                     var o=functionToArray2(tableau1.__xva,false,true,'');
+                    */                    
+                    var o=__m_rev1.rev_tm(gauche);
                     if(o.__xst === true){
                         var obj1=__m_rev1.matrice_vers_source_rev1(o.__xva,1,false,2);
                         if(obj1.__xst === true){
@@ -2422,8 +2425,12 @@ class c_astphpparseur_vers_rev1{
               $b.($c+$d)
               et dans ce dernier cas, ce parseur fonctionne
             */
+/*
             var tableau1=__m_rev1.txt_en_tableau(t);
             var o=functionToArray2(tableau1.__xva,false,true,'');
+*/
+            var o=__m_rev1.rev_tm(t);
+            
             if(o.__xst === true){
                 debugger;
             }else{
@@ -2437,8 +2444,12 @@ class c_astphpparseur_vers_rev1{
                || t.substr(0,12) === 'moins(moins('
                || t.substr(0,22) === 'ou_binaire(ou_binaire('
         ){
+/*
             var tableau1=__m_rev1.txt_en_tableau(t);
             var o=functionToArray2(tableau1.__xva,false,true,'');
+*/            
+            var o=__m_rev1.rev_tm(t);
+            
             if(o.__xst === true){
                 var nouveauTableau=__m_rev1.baisser_le_niveau_et_supprimer(o.__xva,2,0);
                 var obj1=__m_rev1.matrice_vers_source_rev1(nouveauTableau,0,true,1);

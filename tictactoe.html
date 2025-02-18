@@ -89,40 +89,40 @@ var numero_de_joueur='x';
 var termine=false;
 var message1=' clique sur une case ';
 /* ================================================================ */
-function verifie_gagnant1(nj){
+function verifie_gagnant1( nj ){
     var i=0;
     for( i=0 ; i < 3 ; i++ ){
-        if(document.getElementById(i * 3 + 0).innerHTML === nj
-               && document.getElementById(i * 3 + 1).innerHTML === nj
-               && document.getElementById(i * 3 + 2).innerHTML === nj
+        if(document.getElementById( i * 3 + 0 ).innerHTML === nj
+               && document.getElementById( i * 3 + 1 ).innerHTML === nj
+               && document.getElementById( i * 3 + 2 ).innerHTML === nj
         ){
             return 1;
         }
     }
     var i=0;
     for( i=0 ; i < 3 ; i++ ){
-        if(document.getElementById(i + 0).innerHTML === nj
-               && document.getElementById(i + 3).innerHTML === nj
-               && document.getElementById(i + 6).innerHTML === nj
+        if(document.getElementById( i + 0 ).innerHTML === nj
+               && document.getElementById( i + 3 ).innerHTML === nj
+               && document.getElementById( i + 6 ).innerHTML === nj
         ){
             return 1;
         }
     }
-    if(document.getElementById(0).innerHTML === nj
-           && document.getElementById(4).innerHTML === nj
-           && document.getElementById(8).innerHTML === nj
+    if(document.getElementById( 0 ).innerHTML === nj
+           && document.getElementById( 4 ).innerHTML === nj
+           && document.getElementById( 8 ).innerHTML === nj
     ){
         return 1;
     }
-    if(document.getElementById(6).innerHTML === nj
-           && document.getElementById(4).innerHTML === nj
-           && document.getElementById(2).innerHTML === nj
+    if(document.getElementById( 6 ).innerHTML === nj
+           && document.getElementById( 4 ).innerHTML === nj
+           && document.getElementById( 2 ).innerHTML === nj
     ){
         return 1;
     }
     /* egalite */
     var case_vide_trouve=false;
-    var lst=document.getElementById('t1').getElementsByTagName('td');
+    var lst=document.getElementById( 't1' ).getElementsByTagName( 'td' );
     var i=0;
     for( i=0 ; i < lst.length ; i++ ){
         if(lst[i].innerHTML === '&nbsp;'){
@@ -137,21 +137,21 @@ function verifie_gagnant1(nj){
 }
 /* ================================================================ */
 function recommencer(){
-    document.getElementById('numero_de_joueur').className='csb1';
-    var lst=document.getElementById('t1').getElementsByTagName('td');
+    document.getElementById( 'numero_de_joueur' ).className='csb1';
+    var lst=document.getElementById( 't1' ).getElementsByTagName( 'td' );
     var i=0;
     for( i=0 ; i < lst.length ; i++ ){
         lst[i].innerHTML='&nbsp;';
     }
     numero_de_joueur='x';
     termine=false;
-    document.getElementById('numero_de_joueur').innerHTML=numero_de_joueur + message1;
-    setTimeout(function(){
-            document.getElementById('numero_de_joueur').className='';
-        },250);
+    document.getElementById( 'numero_de_joueur' ).innerHTML=numero_de_joueur + message1;
+    setTimeout( function( ){
+            document.getElementById( 'numero_de_joueur' ).className='';
+        } , 250 );
 }
 /* ================================================================ */
-function monClick(e){
+function monClick( e ){
     if(termine === true){
         return;
     }
@@ -159,52 +159,52 @@ function monClick(e){
         return;
     }
     e.target.innerHTML=numero_de_joueur;
-    var a_gagne=verifie_gagnant1(numero_de_joueur);
+    var a_gagne=verifie_gagnant1( numero_de_joueur );
     if(a_gagne === 1){
         var t=numero_de_joueur + ' a gagné !';
         t+=' <button type="button" onclick="recommencer()">recommencer</button>';
-        document.getElementById('numero_de_joueur').innerHTML=t;
-        document.getElementById('numero_de_joueur').className='csb2';
+        document.getElementById( 'numero_de_joueur' ).innerHTML=t;
+        document.getElementById( 'numero_de_joueur' ).className='csb2';
         termine=true;
-        setTimeout(function(){
-                document.getElementById('numero_de_joueur').className='';
-            },1250);
+        setTimeout( function( ){
+                document.getElementById( 'numero_de_joueur' ).className='';
+            } , 1250 );
     }else if(a_gagne === 2){
         numero_de_joueur=numero_de_joueur === 'o' ? ( 'x' ) : ( 'o' );
-        document.getElementById('numero_de_joueur').innerHTML=numero_de_joueur + message1;
-        document.getElementById('numero_de_joueur').className='csb1';
-        setTimeout(function(){
-                document.getElementById('numero_de_joueur').className='';
-            },250);
+        document.getElementById( 'numero_de_joueur' ).innerHTML=numero_de_joueur + message1;
+        document.getElementById( 'numero_de_joueur' ).className='csb1';
+        setTimeout( function( ){
+                document.getElementById( 'numero_de_joueur' ).className='';
+            } , 250 );
     }else if(a_gagne === 0){
         var t=' égalité ! ';
         t+=' <button type="button" onclick="recommencer()">recommencer</button>';
-        document.getElementById('numero_de_joueur').innerHTML=t;
-        document.getElementById('numero_de_joueur').className='csb1';
+        document.getElementById( 'numero_de_joueur' ).innerHTML=t;
+        document.getElementById( 'numero_de_joueur' ).className='csb1';
         termine=true;
-        setTimeout(function(){
-                document.getElementById('numero_de_joueur').className='';
-            },1250);
+        setTimeout( function( ){
+                document.getElementById( 'numero_de_joueur' ).className='';
+            } , 1250 );
     }
 }
 /* ================================================================ */
 function init(){
-    var lst=document.getElementById('t1').getElementsByTagName('td');
+    var lst=document.getElementById( 't1' ).getElementsByTagName( 'td' );
     var i=0;
     for( i=0 ; i < lst.length ; i++ ){
-        lst[i].addEventListener('click',monClick);
+        lst[i].addEventListener( 'click' , monClick );
     }
-    document.getElementById('numero_de_joueur').innerHTML=numero_de_joueur + message1;
-    document.getElementById('numero_de_joueur').className='csb1';
-    setTimeout(function(){
-            document.getElementById('numero_de_joueur').className='';
-        },1250);
+    document.getElementById( 'numero_de_joueur' ).innerHTML=numero_de_joueur + message1;
+    document.getElementById( 'numero_de_joueur' ).className='csb1';
+    setTimeout( function( ){
+            document.getElementById( 'numero_de_joueur' ).className='';
+        } , 1250 );
 }
 /* ================================================================ */
-window.addEventListener('load',function(){
+window.addEventListener( 'load' , function( ){
         /* quand tout est chargé, on initialise le jeu */
-        init();
-    });
+        init( );
+    } );
 //</source_javascript_rev>
 //]]>
 </script>

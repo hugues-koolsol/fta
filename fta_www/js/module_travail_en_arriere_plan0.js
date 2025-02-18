@@ -7,11 +7,7 @@ try{
 }catch(e){
     debugger;
 }
-try{
-    importScripts('./core6.js');
-}catch(e){
-    debugger;
-}
+/* try{importScripts('./core6.js');}catch(e){debugger;}*/
 var liste_des_travaux_en_arriere_plan=[];
 var liste_des_taches_en_arriere_plan=[];
 var travail_en_cours=false;

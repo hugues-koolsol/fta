@@ -959,6 +959,11 @@ function html_header1($parametres){
     $o1 .= ' const CSS_TAILLE_REFERENCE_MARGIN=' . $css_taille_reference_margin . ';' . PHP_EOL;
     $o1 .= ' const CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV=' . $css_hauteur_mini_conteneur . ';' . PHP_EOL;
     $o1 .= <<<EOT
+const CRLF='\\r\\n';
+const CR='\\r';
+const LF='\\n';
+const NBESPACESREV=3;
+const NBESPACESSOURCEPRODUIT=4;
 const __debut_execution=performance.now();
 const __xst='__xst';
 const __xme='__xme';
@@ -1009,9 +1014,9 @@ function initialiser_le_module_apres_chargement(element){
           import(element.src).then(function(Module){
                 __m_astphpnikic_vers_rev1=new Module.c_astphpnikic_vers_rev1('__m_astphpnikic_vers_rev1');
             });
-    }else if(element.src.indexOf("js/mf_astsqliteparseur_vers_rev1.js") >= 0){
+    }else if(element.src.indexOf("js/module_requete_sql.js") >= 0){
          import(element.src).then(function(Module){
-                __m_astsqliteparseur_vers_rev1=new Module.c_astsqliteparseur_vers_rev1('__m_astsqliteparseur_vers_rev1');
+                __module_requete_sql1=new Module.requete_sql('__module_requete_sql1','div_de_travail');
             });
     }else if(element.src.indexOf("js/mf_astjs_vers_rev1.js") >= 0){
          import(element.src).then(function(Module){
@@ -1192,7 +1197,7 @@ function html_footer1($parametres=array()){
     }
 
     $o1 .= '</div>' . PHP_EOL;
-    $o1 .= '  <script type="text/javascript" src="js/core6.js"></script>' . PHP_EOL;
+//    $o1 .= '  <script type="text/javascript" src="js/core6.js"></script>' . PHP_EOL;
     /*
       d'un point de vue fonctionnel, ce n'est pas util car les modules sont chargés dynamiquement
       mais grâce à ces lignes, le module js est mis en cache et les appels suivants sont plus rapides

@@ -884,7 +884,7 @@ class interface1{
             if(obj.__xst === true){
                 document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;
                 var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
-                var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+                var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,true,false,'');
                 if(matriceFonction.__xst === true){
                     /*
                       var startMicro = performance.now();
@@ -969,7 +969,7 @@ class interface1{
         var tableau1=__m_rev1.txt_en_tableau(a.value);
         var endMicro=performance.now();
         /* console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms'); */
-        var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+        var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,true,false,'');
         if(matriceFonction.__xst === true){
             var objPhp=__m_rev_vers_php1.c_tab_vers_php(matriceFonction.__xva,{});
             debugger;
@@ -1021,7 +1021,7 @@ class interface1{
                 }else{
                     var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
                 }
-                var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+                var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,true,false,'');
                 if(matriceFonction.__xst === true){
                     var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                     if(obj2.__xst === true){
@@ -1058,7 +1058,7 @@ class interface1{
         __gi1.raz_des_messages();
         var a=document.getElementById(nom_de_la_textarea_rev);
         var tableau1=__m_rev1.txt_en_tableau(a.value);
-        var obj1=functionToArray2(tableau1.__xva,false,true,'');
+        var obj1=__m_rev1.tb_vers_matrice(tableau1.__xva,false,true,'');
         if(obj1.__xst === true){
             var obj2=__module_html1.tabToHtml1(obj1.__xva,0,false,0);
             if(obj2.__xst === true){
@@ -1101,7 +1101,7 @@ class interface1{
             if(obj.hasOwnProperty('traitements_javascript_integres_en_cours') && obj.traitements_javascript_integres_en_cours === true){
             }else{
                 var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
-                var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+                var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,true,false,'');
                 if(matriceFonction.__xst === true){
                     var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                     if(obj2.__xst === true){
@@ -1159,7 +1159,7 @@ class interface1{
                     }else{
                         var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
                     }
-                    var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+                    var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,true,false,'');
                     if(matriceFonction.__xst === true){
                         var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
                         if(obj2.__xst === true){
@@ -1227,7 +1227,7 @@ class interface1{
     transform_rev_de_textarea_en_sql2(nom_de_la_textarea_rev,nom_de_la_textarea_sql){
         this.raz_des_messages();
         var tableau1=__m_rev1.txt_en_tableau(document.getElementById(nom_de_la_textarea_rev).value);
-        var obj1=functionToArray2(tableau1.__xva,false,true,'');
+        var obj1=__m_rev1.tb_vers_matrice(tableau1.__xva,false,true,'');
         if(obj1.__xst === true){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
             if(obj2.__xst === true){
@@ -1254,7 +1254,7 @@ class interface1{
                 document.getElementById(nom_de_la_textarea_rev).value=obj.__xva;
                 this.remplir_et_afficher_les_messages1(nom_de_la_textarea_rev);
                 var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
-                var obj1=functionToArray2(tableau1.__xva,false,true,'');
+                var obj1=__m_rev1.tb_vers_matrice(tableau1.__xva,false,true,'');
                 if(obj1.__xst === true){
                     var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
                     if(obj2.__xst === true){
@@ -1281,55 +1281,6 @@ class interface1{
             this.remplir_et_afficher_les_messages1(nom_de_la_textarea_sql);
         }
     }
-    /*
-      =============================================================================================================
-      transform_sql_de_textarea_en_rev1(nom_de_la_textarea_sql,nom_de_la_textarea_rev){
-      this.raz_des_messages();
-      var texte=document.getElementById(nom_de_la_textarea_sql).value;
-      localStorage.setItem('fta_traiteSql_dernier_fichier_charge',texte);
-      try{
-      var obj=convertion_texte_sql_en_rev(texte);
-      if(obj.__xst === true){
-      document.getElementById(nom_de_la_textarea_rev).value=obj.__xva;
-      var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
-      var obj1=functionToArray2(tableau1.__xva,false,true,'');
-      if(obj1.__xst === true){
-      var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
-      if(obj2.__xst === true){
-      __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : 'sql => rev ok et rev => sql  OK'});
-      this.remplir_et_afficher_les_messages1('');
-      obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
-      document.getElementById('txtar3').value=obj2.__xva;
-      }else{
-      this.remplir_et_afficher_les_messages1('');
-      return;
-      }
-      }else{
-      this.remplir_et_afficher_les_messages1(nom_de_la_textarea_rev);
-      return;
-      }
-      }else{
-      __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur de reconstruction du sql'});
-      this.remplir_et_afficher_les_messages1(nom_de_la_textarea_sql);
-      return;
-      }
-      }catch(e){
-      debugger;
-      console.error('e=',e);
-      if(e.hasOwnProperty('location')
-      && e.location.hasOwnProperty('start')
-      && e.location.start.hasOwnProperty('line')
-      && e.location.start.line > 0
-      ){
-      __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur dans le sql' ,"ligne" : e.location.start.line});
-      }else{
-      __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur dans le sql'});
-      }
-      this.remplir_et_afficher_les_messages1(nom_de_la_textarea_sql);
-      return;
-      }
-      }    
-    */
     /*
       =============================================================================================================
     */
@@ -1364,7 +1315,7 @@ class interface1{
         console.log('mise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
         /* ✍  console.log(a.value.substr(4,1),a.value.length) */
         var startMicro=performance.now();
-        var matriceFonction1=functionToArray2(tableau1.__xva,true,autoriser_constante_dans_la_racine,'');
+        var matriceFonction1=__m_rev1.tb_vers_matrice(tableau1.__xva,true,autoriser_constante_dans_la_racine,'');
         var endMicro=performance.now();
         console.log('analyse syntaxique endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
         var tempsTraitement=(parseInt((endMicro - beginMicro) * 1000,10) / 1000) + ' ms';
@@ -1380,7 +1331,7 @@ class interface1{
             if(fonctionReecriteAvecRetour1.__xst === true){
                 var compacteOriginal=__m_rev1.matrice_vers_source_rev1(matriceFonction1.__xva,0,false,1);
                 var tableau2=__m_rev1.txt_en_tableau(fonctionReecriteAvecRetour1.__xva);
-                var matriceDeLaFonctionReecrite=functionToArray2(tableau2.__xva,true,autoriser_constante_dans_la_racine,'');
+                var matriceDeLaFonctionReecrite=__m_rev1.tb_vers_matrice(tableau2.__xva,true,autoriser_constante_dans_la_racine,'');
                 var compacteReecrit=__m_rev1.matrice_vers_source_rev1(matriceDeLaFonctionReecrite.__xva,0,false,1);
                 if(compacteOriginal.__xst === true && compacteReecrit.__xst === true){
                     if(compacteOriginal.__xva == compacteReecrit.__xva){
@@ -1726,9 +1677,12 @@ COMMIT;
     */
     formatter_le_source_rev(nom_de_la_textarea){
         var a=document.getElementById(nom_de_la_textarea);
+        //var t0 = performance.now();
         var tableau1=__m_rev1.txt_en_tableau(a.value);
+        //var t1 = performance.now();
+        /* console.log( "L'appel de txt_en_tableau a demandé " + (t1 - t0) + " millisecondes."); */
         /*ici, on ne quitte pas si il y a une erreur de niveau*/
-        var matriceFonction=functionToArray2(tableau1.__xva,/*niv*/false,false,'');
+        var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,/*niv*/false,false,'');
         if(matriceFonction.__xst === true){
             /*
               var startMicro = performance.now();
@@ -2242,7 +2196,7 @@ COMMIT;
                       en allant chercher le parenthèse ouvrante précédente
                     */
                     var tableau1=__m_rev1.txt_en_tableau(texte);
-                    var matriceFonction=functionToArray2(tableau1.__xva,false,true,'');
+                    var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,false,true,'');
                     if(matriceFonction.__xst === true){
                         var l01=matriceFonction.__xva.length;
                         var fait=false;

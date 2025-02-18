@@ -2101,12 +2101,13 @@ let x16=a.b ?. c(a.b);
             if(element.value.params && element.value.params.length > 0){
                 t+=',';
                 for( j=0 ; j < element.value.params.length ; j++ ){
+                    var le_commentaire=this.#comm_dans_arguments_appel_fonction(element.value.params[j],niveau,element,tab_comm);
                     if(element.value.params[j].type === "Identifier"){
-                        t+='argument(' + element.value.params[j].name + ')';
+                        t+='argument('+le_commentaire + element.value.params[j].name + ')';
                     }else if(element.value.params[j].type === "AssignmentPattern"){
                         obj=this.#traiteAssignmentPattern(element.value.params[j],niveau + 1,element,tab_comm);
                         if(obj.__xst === true){
-                            t+='argument(' + obj.__xva + ')';
+                            t+='argument('+le_commentaire + obj.__xva + ')';
                         }else{
                             return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                         }
@@ -2114,13 +2115,13 @@ let x16=a.b ?. c(a.b);
                            && element.value.params[j].argument
                            && element.value.params[j].argument.type === 'Identifier'
                     ){
-                        t+='argument(...' + element.value.params[j].argument.name + ')';
+                        t+='argument('+le_commentaire+' ...' + element.value.params[j].argument.name + ')';
                     }else if(element.value.params[j].type === "ObjectPattern"){
                         obj=this.#traite_element(element.value.params[j],niveau,element,tab_comm,false);
                         if(obj.__xst === false){
                             return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
                         }
-                        t+='argument(' + obj.__xva + ')';
+                        t+='argument('+le_commentaire + obj.__xva + ')';
                     }else{
                         return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + '"' + element.value.params[j].type + '"' ,"element" : element}));
                     }

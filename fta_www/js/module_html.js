@@ -391,8 +391,13 @@ class traitements_sur_html{
               le rev retourné inclut toujours une balise html et/ou body et/ou head
               Si ces balises ne contiennent pas d'éléments, on les retire 
             */
+            /*
             var tableau1=__m_rev1.txt_en_tableau(t);
             var matriceFonction=functionToArray2(tableau1.__xva,false,true,'');
+            */
+            var matriceFonction=__m_rev1.rev_tcm(t);
+            /*afr dans quel cas passe-t-on par ici*/
+            debugger
             if(matriceFonction.__xst === true){
                 if(matriceFonction.__xva[1][1] === 'html' && matriceFonction.__xva[1][8] <= 2){
                     /*
@@ -1158,14 +1163,13 @@ class traitements_sur_html{
                                 };
                                 document.getElementById('txtar2').value=nouveau_source;
                                 return;
-                            }else{
+                            }else{ 
                                 if(options.hasOwnProperty('zone_html_rev')){
                                     try{
                                         if(document.getElementById(options.zone_html_rev)){
                                             document.getElementById(options.zone_html_rev).value=source_rev;
                                         }
-                                        var tableau1=__m_rev1.txt_en_tableau(source_rev);
-                                        var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+                                        var matriceFonction=__m_rev1.rev_tm(source_rev);
                                         if(matriceFonction.__xst === false){
                                             __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '1344 erreur module_html conversion en matrice'});
                                             return({"__xst" : false ,"__xme" : '1345 erreur module_html conversion en matrice'});
@@ -1195,8 +1199,7 @@ class traitements_sur_html{
                             }else if(options.hasOwnProperty('zone_html_rev')){
                                 try{
                                     document.getElementById(options.zone_html_rev).value=obj.__xva.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r').replace(/\\\\¶\\\\LF\\\\¶/g,'\n').replace(/\\\\¶\\\\CR\\\\¶/g,'\r');
-                                    var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
-                                    var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
+                                    var matriceFonction=__m_rev1.rev_tm(obj.__xva);
                                     if(matriceFonction.__xst === false){
                                         __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '1412 erreur module_html conversion en matrice'});
                                         return({"__xst" : false ,"__xme" : '1413 erreur module_html conversion en matrice'});
