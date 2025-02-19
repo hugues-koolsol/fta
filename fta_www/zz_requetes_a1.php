@@ -65,9 +65,7 @@ $o1='';
     </ul>
 </div>
 <h1>Requête Sql</h1>
-<div id="div_de_travail" style="max-width:100%;">
-    Veuillez patienter
-</div>
+<div id="div_de_travail" style="max-width:100%;">Veuillez patienter</div>
 <div class="yyconteneur_de_texte1">
     <textarea class="txtar1" id="txtar2" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 </div>
@@ -133,22 +131,6 @@ $par=array(/**/
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
-?>
-<script>
-//<![CDATA[
-//<source_javascript_rev>
-/*
-window.addEventListener('load',function(){
-        import('./js/module_requete_sql.js').then(function(Module){
-                __module_requete_sql1=new Module.requete_sql('__module_requete_sql1','div_de_travail');
-            });
-    });
-*/    
-//</source_javascript_rev>
-//]]>
-</script>
-
-<?php
 $o1 .= '';
 $o1 .= html_footer1($par);
 print($o1);

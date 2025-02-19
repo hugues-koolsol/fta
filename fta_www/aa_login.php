@@ -189,19 +189,13 @@ if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['
     <form id="boite_de_connexion" method="post" onsubmit="return verifier_formulaire_avant_envoi()" style="margin-top:50px;">
         <div>Veuillez indiquer votre nom de connexion et votre mot de passe</div>
         <hr />
-        <label for="nom_de_connexion">
-            nom de connexion
-        </label>
+        <label for="nom_de_connexion">nom de connexion</label>
         <input type="text" name="nom_de_connexion" id="nom_de_connexion" value="" />
-        <label for="mot_de_passe">
-            mot de passe
-        </label>
+        <label for="mot_de_passe">mot de passe</label>
         <input type="password" name="mot_de_passe" id="mot_de_passe" value="" />
         <button class="yyinfo" type="submit" style="margin:1em auto;">cliquez ici pour vous connecter</button>
-        <marquee scrollamount="6">
-            Essayez
-            <span style="color:red;background:white;">admin/admin</span>
-            , si vous ne l'avez pas deviné. C'est encore un environnement de test :-)
+        <marquee scrollamount="6">Essayez
+            <span style="color:red;background:white;">admin/admin</span>, si vous ne l'avez pas deviné. C'est encore un environnement de test :-)
         </marquee>
     </form>
 <script type="text/javascript">
@@ -215,8 +209,8 @@ if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['
 function verifier_formulaire_avant_envoi(){
     __gi1.raz_des_messages();
     var retour=false;
-    var zone_nom_de_connexion=document.getElementById('nom_de_connexion');
-    var zone_mot_de_passe=document.getElementById('mot_de_passe');
+    var zone_nom_de_connexion=document.getElementById( 'nom_de_connexion' );
+    var zone_mot_de_passe=document.getElementById( 'mot_de_passe' );
     try{
         if(zone_mot_de_passe.value == '' || zone_nom_de_connexion.value == ''){
             retour=false;
@@ -224,24 +218,24 @@ function verifier_formulaire_avant_envoi(){
             let minutes=d.getMinutes();
             let secondes=d.getSeconds();
             let heures=d.getHours();
-            let tt=heures + ':' + (minutes < 10 ? ( '0' + minutes ) : ( '' + minutes )) + ':' + (secondes < 10 ? ( '0' + secondes ) : ( '' + secondes )) + ' ';
-            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : tt + 'Veuillez indiquer votre nom de connexion et votre mot de passe.'});
-            __gi1.remplir_et_afficher_les_messages1();
+            minutes=heures + ':' + (minutes < 10 ? ( '0' + minutes ) : ( '' + minutes )) + ':' + (secondes < 10 ? ( '0' + secondes ) : ( '' + secondes )) + ' ';
+            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : minutes + 'Veuillez indiquer votre nom de connexion et votre mot de passe.'} );
+            __gi1.remplir_et_afficher_les_messages1( '' );
         }else{
             retour=true;
         }
     }catch(e){
-        alert('Il y a eu un problème :-(');
+        alert( 'Il y a eu un problème :-(' );
     }
     return retour;
 }
 var myURL=window.location.href;
-if(myURL.indexOf('?raz1') >= 0 || myURL.indexOf('&raz1') >= 0){
-    setTimeout(function(){
-            document.getElementById('nom_de_connexion').value='';
-            document.getElementById('mot_de_passe').value='';
-            document.getElementById('nom_de_connexion').focus();
-        },700);
+if(myURL.indexOf( '?raz1' ) >= 0 || myURL.indexOf( '&raz1' ) >= 0){
+    setTimeout( function(){
+            document.getElementById( 'nom_de_connexion' ).value='';
+            document.getElementById( 'mot_de_passe' ).value='';
+            document.getElementById( 'nom_de_connexion' ).focus();
+        } , 700 );
 }
 //</source_javascript_rev>
 //]]>

@@ -44,8 +44,7 @@ $o1='';
     <a href="javascript:__gi1.parentheses1(&quot;zonesource&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>
 </div>
 <div class="yy_div_limitee">
-    <!-- un test pour le défilement horizontal -->
-    abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_
+    <!-- un test pour le défilement horizontal -->abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_abcdefghijklmnopqrstuvwxyz_
 </div>
 <table>
     <tbody>
@@ -63,19 +62,14 @@ $o1='';
     </tbody>
 </table>
 <table id="arrayed"></table>
-
-
 <div id="donneesComplementaires">
     <a id="bouton_voir_tableau" href="javascript:voirTableau1('zonesource')" style="display: none; padding: 2px; border: 2px solid red; margin: 2px;">Voir tableau</a>
     <a id="bouton_voir_matrice" href="javascript:voirMatrice1('zonesource')" style="display: none; padding: 2px; border: 2px solid red; margin: 2px;">Voir matrice</a>
     <a id="bouton_voir_source" href="javascript:voirSourceGenere(0)" style="display: none; padding: 2px; border: 2px solid red; margin: 2px;">Voir source généré</a>
-    <div id="zoneContenantLeTableauCaracteres" style="display: none;"></div>
-    <div id="zoneContenantLaMatrice" class="tableau1" style="display: none;"></div>
+    <div id="zoneContenantLeTableauCaracteres" style="display: none;overflow-x:scroll;"></div>
+    <div id="zoneContenantLaMatrice" class="tableau1" style="display: none;overflow-x:scroll;"></div>
     <textarea rows="30" cols="120" id="zoneContenantLeSourceGenere2" style="display:none;background: lightcyan;"></textarea>
 </div>
-
-
-
 <?php
 /*
   ici finit le php spécifique de la page

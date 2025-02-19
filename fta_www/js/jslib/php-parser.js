@@ -9,17 +9,17 @@
   *   @url http://glayzzle.com
   *
 */
-(function webpackUniversalModuleDefinition(root,factory){
+(function webpackUniversalModuleDefinition( root , factory ){
         if( typeof exports === 'object' &&  typeof module === 'object'){
             module.exports=factory();
         }else if( typeof define === 'function' && define.amd){
-            define([],factory);
+            define( [] , factory );
         }else if( typeof exports === 'object'){
             exports["PhpParser"]=factory();
         }else{
             root["PhpParser"]=factory();
         }
-})(self,() => {
+})( self , () => {
         return(/* **** */(() => {
                 /* webpackBootstrap */
                 /* **** */
@@ -28,14 +28,14 @@
                 var __webpack_modules__={
                      /* * */
                      /* * */
-                    "8938" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8938" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Location=__webpack_require__(4778);
-                        var Position=__webpack_require__(8822);
+                        var Location=__webpack_require__( 4778 );
+                        var Position=__webpack_require__( 8822 );
                         /*#
                           * ## Class hierarchy
                           *
@@ -151,7 +151,7 @@
                           * @property {Boolean} withPositions - Should locate any node (by default false)
                           * @property {Boolean} withSource - Should extract the node original code (by default false)
                         */
-                        var AST=function AST(withPositions,withSource){
+                        var AST=function AST( withPositions , withSource ){
                             this.withPositions=withPositions;
                             this.withSource=withSource;
                         };
@@ -187,11 +187,11 @@
                                 ["**"],
                                 /* TODO: [ (array) */
                                 /* TODO: clone, new */
-                            ].forEach(function(list,index){
-                                list.forEach(function(operator){
+                            ].forEach( function( list , index ){
+                                list.forEach( function( operator ){
                                         AST.precedence[operator]=index + 1;
-                                    });
-                            });
+                                    } );
+                            } );
                         /*#
                           * @private
                           * @function AST#isRightAssociative
@@ -199,7 +199,7 @@
                           * @param operator
                           * @return {boolean}
                         */
-                        AST.prototype.isRightAssociative=function(operator){
+                        AST.prototype.isRightAssociative=function( operator ){
                             return(operator === "**" || operator === "??");
                         };
                         /*#
@@ -208,12 +208,12 @@
                           * @function AST#swapLocations
                           * @memberOf module:php-parser
                         */
-                        AST.prototype.swapLocations=function(target,first,last,parser){
+                        AST.prototype.swapLocations=function( target , first , last , parser ){
                             if(this.withPositions){
                                 target.loc.start=first.loc.start;
                                 target.loc.end=last.loc.end;
                                 if(this.withSource){
-                                    target.loc.source=parser.lexer._input.substring(target.loc.start.offset,target.loc.end.offset);
+                                    target.loc.source=parser.lexer._input.substring( target.loc.start.offset , target.loc.end.offset );
                                 }
                             }
                         };
@@ -223,7 +223,7 @@
                           * @function AST#resolveLocations
                           * @memberOf module:php-parser
                         */
-                        AST.prototype.resolveLocations=function(target,first,last,parser){
+                        AST.prototype.resolveLocations=function( target , first , last , parser ){
                             if(this.withPositions){
                                 if(target.loc.start.offset > first.loc.start.offset){
                                     target.loc.start=first.loc.start;
@@ -233,7 +233,7 @@
                                     target.loc.end=last.loc.end;
                                 }
                                 if(this.withSource){
-                                    target.loc.source=parser.lexer._input.substring(target.loc.start.offset,target.loc.end.offset);
+                                    target.loc.source=parser.lexer._input.substring( target.loc.start.offset , target.loc.end.offset );
                                 }
                             }
                         };
@@ -243,30 +243,30 @@
                           * @function AST#resolvePrecedence
                           * @memberOf module:php-parser
                         */
-                        AST.prototype.resolvePrecedence=function(result,parser){
+                        AST.prototype.resolvePrecedence=function( result , parser ){
                             var buffer;
                             var lLevel;
                             var rLevel;
                             /* handling precendence */
                             if(result.kind === "call"){
                                 /* including what argument into location */
-                                this.resolveLocations(result,result.what,result,parser);
+                                this.resolveLocations( result , result.what , result , parser );
                             }else if(result.kind === "propertylookup" || result.kind === "staticlookup" || result.kind === "offsetlookup" && result.offset){
                                 /* including what argument into location */
-                                this.resolveLocations(result,result.what,result.offset,parser);
+                                this.resolveLocations( result , result.what , result.offset , parser );
                             }else if(result.kind === "bin"){
                                 if(result.right && !result.right.parenthesizedExpression){
                                     if(result.right.kind === "bin"){
                                         lLevel=AST.precedence[result.type];
                                         rLevel=AST.precedence[result.right.type];
-                                        if(lLevel && rLevel && rLevel <= lLevel && (result.type !== result.right.type || !this.isRightAssociative(result.type))){
+                                        if(lLevel && rLevel && rLevel <= lLevel && (result.type !== result.right.type || !this.isRightAssociative( result.type ))){
                                             /* https://github.com/glayzzle/php-parser/issues/79 */
                                             /* shift precedence */
                                             buffer=result.right;
                                             result.right=result.right.left;
-                                            this.swapLocations(result,result.left,result.right,parser);
-                                            buffer.left=this.resolvePrecedence(result,parser);
-                                            this.swapLocations(buffer,buffer.left,buffer.right,parser);
+                                            this.swapLocations( result , result.left , result.right , parser );
+                                            buffer.left=this.resolvePrecedence( result , parser );
+                                            this.swapLocations( buffer , buffer.left , buffer.right , parser );
                                             result=buffer;
                                         }
                                     }else if(result.right.kind === "retif"){
@@ -275,9 +275,9 @@
                                         if(lLevel && rLevel && rLevel <= lLevel){
                                             buffer=result.right;
                                             result.right=result.right.test;
-                                            this.swapLocations(result,result.left,result.right,parser);
-                                            buffer.test=this.resolvePrecedence(result,parser);
-                                            this.swapLocations(buffer,buffer.test,buffer.falseExpr,parser);
+                                            this.swapLocations( result , result.left , result.right , parser );
+                                            buffer.test=this.resolvePrecedence( result , parser );
+                                            this.swapLocations( buffer , buffer.test , buffer.falseExpr , parser );
                                             result=buffer;
                                         }
                                     }
@@ -287,16 +287,16 @@
                                 if(result.expr.kind === "bin"){
                                     buffer=result.expr;
                                     result.expr=result.expr.left;
-                                    this.swapLocations(result,result,result.expr,parser);
-                                    buffer.left=this.resolvePrecedence(result,parser);
-                                    this.swapLocations(buffer,buffer.left,buffer.right,parser);
+                                    this.swapLocations( result , result , result.expr , parser );
+                                    buffer.left=this.resolvePrecedence( result , parser );
+                                    this.swapLocations( buffer , buffer.left , buffer.right , parser );
                                     result=buffer;
                                 }else if(result.expr.kind === "retif"){
                                     buffer=result.expr;
                                     result.expr=result.expr.test;
-                                    this.swapLocations(result,result,result.expr,parser);
-                                    buffer.test=this.resolvePrecedence(result,parser);
-                                    this.swapLocations(buffer,buffer.test,buffer.falseExpr,parser);
+                                    this.swapLocations( result , result , result.expr , parser );
+                                    buffer.test=this.resolvePrecedence( result , parser );
+                                    this.swapLocations( buffer , buffer.test , buffer.falseExpr , parser );
                                     result=buffer;
                                 }
                             }else if(result.kind === "unary"){
@@ -306,16 +306,16 @@
                                     if(result.what.kind === "bin"){
                                         buffer=result.what;
                                         result.what=result.what.left;
-                                        this.swapLocations(result,result,result.what,parser);
-                                        buffer.left=this.resolvePrecedence(result,parser);
-                                        this.swapLocations(buffer,buffer.left,buffer.right,parser);
+                                        this.swapLocations( result , result , result.what , parser );
+                                        buffer.left=this.resolvePrecedence( result , parser );
+                                        this.swapLocations( buffer , buffer.left , buffer.right , parser );
                                         result=buffer;
                                     }else if(result.what.kind === "retif"){
                                         buffer=result.what;
                                         result.what=result.what.test;
-                                        this.swapLocations(result,result,result.what,parser);
-                                        buffer.test=this.resolvePrecedence(result,parser);
-                                        this.swapLocations(buffer,buffer.test,buffer.falseExpr,parser);
+                                        this.swapLocations( result , result , result.what , parser );
+                                        buffer.test=this.resolvePrecedence( result , parser );
+                                        this.swapLocations( buffer , buffer.test , buffer.falseExpr , parser );
                                         result=buffer;
                                     }
                                 }
@@ -324,9 +324,9 @@
                                 if(result.falseExpr && result.falseExpr.kind === "retif" && !result.falseExpr.parenthesizedExpression){
                                     buffer=result.falseExpr;
                                     result.falseExpr=buffer.test;
-                                    this.swapLocations(result,result.test,result.falseExpr,parser);
-                                    buffer.test=this.resolvePrecedence(result,parser);
-                                    this.swapLocations(buffer,buffer.test,buffer.falseExpr,parser);
+                                    this.swapLocations( result , result.test , result.falseExpr , parser );
+                                    buffer.test=this.resolvePrecedence( result , parser );
+                                    this.swapLocations( buffer , buffer.test , buffer.falseExpr , parser );
                                     result=buffer;
                                 }
                             }else if(result.kind === "assign"){
@@ -339,12 +339,12 @@
                                         buffer=result.right;
                                         result.right=result.right.left;
                                         buffer.left=result;
-                                        this.swapLocations(buffer,buffer.left,result.right,parser);
+                                        this.swapLocations( buffer , buffer.left , result.right , parser );
                                         result=buffer;
                                     }
                                 }
                             }else if(result.kind === "expressionstatement"){
-                                this.swapLocations(result,result.expression,result,parser);
+                                this.swapLocations( result , result.expression , result , parser );
                             }
                             return result;
                         };
@@ -358,7 +358,7 @@
                           * @param {Parser} parser - The parser instance (use for extracting locations)
                           * @return {Function}
                         */
-                        AST.prototype.prepare=function(kind,docs,parser){
+                        AST.prototype.prepare=function( kind , docs , parser ){
                             var start=null;
                             if(this.withPositions || this.withSource){
                                 start=parser.position();
@@ -367,17 +367,17 @@
                             /* returns the node */
                             var _result=function result(){
                                 var location=null;
-                                var args=Array.prototype.slice.call(arguments);
-                                args.push(docs);
+                                var args=Array.prototype.slice.call( arguments );
+                                args.push( docs );
                                 if(self.withPositions || self.withSource){
                                     var src=null;
                                     if(self.withSource){
-                                        src=parser.lexer._input.substring(start.offset,parser.prev[2]);
+                                        src=parser.lexer._input.substring( start.offset , parser.prev[2] );
                                     }
                                     /* if with source, need location on swapLocations function */
-                                    location=new Location(src,start,new Position(parser.prev[0],parser.prev[1],parser.prev[2]));
+                                    location=new Location( src , start , new Position( parser.prev[0] , parser.prev[1] , parser.prev[2] ) );
                                     /* last argument is always the location */
-                                    args.push(location);
+                                    args.push( location );
                                 }
                                 /* handle lazy kind definitions */
                                 if(!kind){
@@ -386,10 +386,10 @@
                                 /* build the object */
                                 var node=self[kind];
                                 if( typeof node !== "function"){
-                                    throw new Error('Undefined node "' + kind + '"');
+                                    throw new Error( 'Undefined node "' + kind + '"' );
                                 }
-                                var astNode=Object.create(node.prototype);
-                                node.apply(astNode,args);
+                                var astNode=Object.create( node.prototype );
+                                node.apply( astNode , args );
                                 _result.instance=astNode;
                                 /* istanbul ignore next */
                                 if(_result.trailingComments){
@@ -397,19 +397,19 @@
                                     astNode.trailingComments=_result.trailingComments;
                                 }
                                 if( typeof _result.postBuild === "function"){
-                                    _result.postBuild(astNode);
+                                    _result.postBuild( astNode );
                                 }
                                 if(parser.debug){
                                     delete self.stack[_result.stackUid];
                                 }
-                                return(self.resolvePrecedence(astNode,parser));
+                                return(self.resolvePrecedence( astNode , parser ));
                             };
                             if(parser.debug){
                                 if(!this.stack){
                                     this.stack={};
                                     this.stackUid=1;
                                 }
-                                this.stack[++this.stackUid]={"position" : start ,"stack" : (new Error()).stack.split("\n").slice(3,5)};
+                                this.stack[++this.stackUid]={"position" : start ,"stack" : (new Error()).stack.split( "\n" ).slice( 3 , 5 )};
                                 _result.stackUid=this.stackUid;
                             }
                             /*#
@@ -417,10 +417,10 @@
                               * @private
                               * @param {*} docs
                             */
-                            _result.setTrailingComments=function(docs){
+                            _result.setTrailingComments=function( docs ){
                                 if(_result.instance){
                                     /* already created */
-                                    _result.instance.setTrailingComments(docs);
+                                    _result.instance.setTrailingComments( docs );
                                 }else{
                                     _result.trailingComments=docs;
                                 }
@@ -430,14 +430,14 @@
                               * @private
                               * @param {*} target
                             */
-                            _result.destroy=function(target){
+                            _result.destroy=function( target ){
                                 if(docs){
                                     /* release current docs stack */
                                     if(target){
                                         if(!target.leadingComments){
                                             target.leadingComments=docs;
                                         }else{
-                                            target.leadingComments=docs.concat(target.leadingComments);
+                                            target.leadingComments=docs.concat( target.leadingComments );
                                         }
                                     }else{
                                         parser._docIndex=parser._docs.length - docs.length;
@@ -452,9 +452,9 @@
                         AST.prototype.checkNodes=function(){
                             var errors=[];
                             for(var k in this.stack){
-                                if(Object.prototype.hasOwnProperty.call(this.stack,k)){
+                                if(Object.prototype.hasOwnProperty.call( this.stack , k )){
                                     this.stack[k].key=k;
-                                    errors.push(this.stack[k]);
+                                    errors.push( this.stack[k] );
                                 }
                             }
                             this.stack={};
@@ -462,134 +462,134 @@
                         };
                         /* Define all AST nodes */
                         [
-                                __webpack_require__(3160),
-                                __webpack_require__(1654),
-                                __webpack_require__(1240),
-                                __webpack_require__(3979),
-                                __webpack_require__(5553),
-                                __webpack_require__(2207),
-                                __webpack_require__(2916),
-                                __webpack_require__(4628),
-                                __webpack_require__(7509),
-                                __webpack_require__(2906),
-                                __webpack_require__(5723),
-                                __webpack_require__(7561),
-                                __webpack_require__(6473),
-                                __webpack_require__(9626),
-                                __webpack_require__(4782),
-                                __webpack_require__(8477),
-                                __webpack_require__(5045),
-                                __webpack_require__(900),
-                                __webpack_require__(4824),
-                                __webpack_require__(1020),
-                                __webpack_require__(9847),
-                                __webpack_require__(2790),
-                                __webpack_require__(1333),
-                                __webpack_require__(2112),
-                                __webpack_require__(9960),
-                                __webpack_require__(8533),
-                                __webpack_require__(5947),
-                                __webpack_require__(7786),
-                                __webpack_require__(5436),
-                                __webpack_require__(1136),
-                                __webpack_require__(380),
-                                __webpack_require__(6129),
-                                __webpack_require__(9723),
-                                __webpack_require__(5125),
-                                __webpack_require__(9632),
-                                __webpack_require__(4300),
-                                __webpack_require__(1515),
-                                __webpack_require__(3411),
-                                __webpack_require__(9781),
-                                __webpack_require__(839),
-                                __webpack_require__(8374),
-                                __webpack_require__(9754),
-                                __webpack_require__(4251),
-                                __webpack_require__(6553),
-                                __webpack_require__(8630),
-                                __webpack_require__(9786),
-                                __webpack_require__(9742),
-                                __webpack_require__(1234),
-                                __webpack_require__(6),
-                                __webpack_require__(8861),
-                                __webpack_require__(7860),
-                                __webpack_require__(9834),
-                                __webpack_require__(2724),
-                                __webpack_require__(6025),
-                                __webpack_require__(2687),
-                                __webpack_require__(7633),
-                                __webpack_require__(5514),
-                                __webpack_require__(7427),
-                                __webpack_require__(1122),
-                                __webpack_require__(7256),
-                                __webpack_require__(7416),
-                                __webpack_require__(8140),
-                                __webpack_require__(6258),
-                                __webpack_require__(9474),
-                                __webpack_require__(6827),
-                                __webpack_require__(4427),
-                                __webpack_require__(4065),
-                                __webpack_require__(4297),
-                                __webpack_require__(5859),
-                                __webpack_require__(6985),
-                                __webpack_require__(9302),
-                                __webpack_require__(8212),
-                                __webpack_require__(864),
-                                __webpack_require__(8268),
-                                __webpack_require__(7190),
-                                __webpack_require__(8519),
-                                __webpack_require__(4835),
-                                __webpack_require__(2056),
-                                __webpack_require__(4838),
-                                __webpack_require__(7869),
-                                __webpack_require__(1908),
-                                __webpack_require__(170),
-                                __webpack_require__(1091),
-                                __webpack_require__(8276),
-                                __webpack_require__(1842),
-                                __webpack_require__(5739),
-                                __webpack_require__(1274),
-                                __webpack_require__(4352),
-                                __webpack_require__(9672),
-                                __webpack_require__(711),
-                                __webpack_require__(1231),
-                                __webpack_require__(1865),
-                                __webpack_require__(1102),
-                                __webpack_require__(7472),
-                                __webpack_require__(6133),
-                                __webpack_require__(1197),
-                                __webpack_require__(6649),
-                                __webpack_require__(1837),
-                                __webpack_require__(2277),
-                                __webpack_require__(8010),
-                                __webpack_require__(7579),
-                                __webpack_require__(3460),
-                                __webpack_require__(2702),
-                                __webpack_require__(514),
-                                __webpack_require__(5684),
-                                __webpack_require__(8019),
-                                __webpack_require__(7721),
-                                __webpack_require__(4369),
-                                __webpack_require__(40),
-                                __webpack_require__(4919),
-                                __webpack_require__(7676),
-                                __webpack_require__(2596),
-                                __webpack_require__(6744)
-                            ].forEach(function(ctor){
+                                __webpack_require__( 3160 ),
+                                __webpack_require__( 1654 ),
+                                __webpack_require__( 1240 ),
+                                __webpack_require__( 3979 ),
+                                __webpack_require__( 5553 ),
+                                __webpack_require__( 2207 ),
+                                __webpack_require__( 2916 ),
+                                __webpack_require__( 4628 ),
+                                __webpack_require__( 7509 ),
+                                __webpack_require__( 2906 ),
+                                __webpack_require__( 5723 ),
+                                __webpack_require__( 7561 ),
+                                __webpack_require__( 6473 ),
+                                __webpack_require__( 9626 ),
+                                __webpack_require__( 4782 ),
+                                __webpack_require__( 8477 ),
+                                __webpack_require__( 5045 ),
+                                __webpack_require__( 900 ),
+                                __webpack_require__( 4824 ),
+                                __webpack_require__( 1020 ),
+                                __webpack_require__( 9847 ),
+                                __webpack_require__( 2790 ),
+                                __webpack_require__( 1333 ),
+                                __webpack_require__( 2112 ),
+                                __webpack_require__( 9960 ),
+                                __webpack_require__( 8533 ),
+                                __webpack_require__( 5947 ),
+                                __webpack_require__( 7786 ),
+                                __webpack_require__( 5436 ),
+                                __webpack_require__( 1136 ),
+                                __webpack_require__( 380 ),
+                                __webpack_require__( 6129 ),
+                                __webpack_require__( 9723 ),
+                                __webpack_require__( 5125 ),
+                                __webpack_require__( 9632 ),
+                                __webpack_require__( 4300 ),
+                                __webpack_require__( 1515 ),
+                                __webpack_require__( 3411 ),
+                                __webpack_require__( 9781 ),
+                                __webpack_require__( 839 ),
+                                __webpack_require__( 8374 ),
+                                __webpack_require__( 9754 ),
+                                __webpack_require__( 4251 ),
+                                __webpack_require__( 6553 ),
+                                __webpack_require__( 8630 ),
+                                __webpack_require__( 9786 ),
+                                __webpack_require__( 9742 ),
+                                __webpack_require__( 1234 ),
+                                __webpack_require__( 6 ),
+                                __webpack_require__( 8861 ),
+                                __webpack_require__( 7860 ),
+                                __webpack_require__( 9834 ),
+                                __webpack_require__( 2724 ),
+                                __webpack_require__( 6025 ),
+                                __webpack_require__( 2687 ),
+                                __webpack_require__( 7633 ),
+                                __webpack_require__( 5514 ),
+                                __webpack_require__( 7427 ),
+                                __webpack_require__( 1122 ),
+                                __webpack_require__( 7256 ),
+                                __webpack_require__( 7416 ),
+                                __webpack_require__( 8140 ),
+                                __webpack_require__( 6258 ),
+                                __webpack_require__( 9474 ),
+                                __webpack_require__( 6827 ),
+                                __webpack_require__( 4427 ),
+                                __webpack_require__( 4065 ),
+                                __webpack_require__( 4297 ),
+                                __webpack_require__( 5859 ),
+                                __webpack_require__( 6985 ),
+                                __webpack_require__( 9302 ),
+                                __webpack_require__( 8212 ),
+                                __webpack_require__( 864 ),
+                                __webpack_require__( 8268 ),
+                                __webpack_require__( 7190 ),
+                                __webpack_require__( 8519 ),
+                                __webpack_require__( 4835 ),
+                                __webpack_require__( 2056 ),
+                                __webpack_require__( 4838 ),
+                                __webpack_require__( 7869 ),
+                                __webpack_require__( 1908 ),
+                                __webpack_require__( 170 ),
+                                __webpack_require__( 1091 ),
+                                __webpack_require__( 8276 ),
+                                __webpack_require__( 1842 ),
+                                __webpack_require__( 5739 ),
+                                __webpack_require__( 1274 ),
+                                __webpack_require__( 4352 ),
+                                __webpack_require__( 9672 ),
+                                __webpack_require__( 711 ),
+                                __webpack_require__( 1231 ),
+                                __webpack_require__( 1865 ),
+                                __webpack_require__( 1102 ),
+                                __webpack_require__( 7472 ),
+                                __webpack_require__( 6133 ),
+                                __webpack_require__( 1197 ),
+                                __webpack_require__( 6649 ),
+                                __webpack_require__( 1837 ),
+                                __webpack_require__( 2277 ),
+                                __webpack_require__( 8010 ),
+                                __webpack_require__( 7579 ),
+                                __webpack_require__( 3460 ),
+                                __webpack_require__( 2702 ),
+                                __webpack_require__( 514 ),
+                                __webpack_require__( 5684 ),
+                                __webpack_require__( 8019 ),
+                                __webpack_require__( 7721 ),
+                                __webpack_require__( 4369 ),
+                                __webpack_require__( 40 ),
+                                __webpack_require__( 4919 ),
+                                __webpack_require__( 7676 ),
+                                __webpack_require__( 2596 ),
+                                __webpack_require__( 6744 )
+                            ].forEach( function( ctor ){
                                 AST.prototype[ctor.kind]=ctor;
-                            });
+                            } );
                         module.exports=AST;
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "3160" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "3160" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expr=__webpack_require__(839);
+                        var Expr=__webpack_require__( 839 );
                         var KIND="array";
                         /*#
                           * Defines an array structure
@@ -617,22 +617,22 @@
                           * @property {Array<Entry|Expression|Variable>} items List of array items
                           * @property {boolean} shortForm Indicate if the short array syntax is used, ex `[]` instead `array()`
                         */
-                        module.exports=Expr["extends"](KIND,function Array(shortForm,items,docs,location){
-                            Expr.apply(this,[KIND,docs,location]);
+                        module.exports=Expr["extends"]( KIND , function Array( shortForm , items , docs , location ){
+                            Expr.apply( this , [KIND,docs,location] );
                             this.items=items;
                             this.shortForm=shortForm;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1654" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1654" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="arrowfunc";
                         /*#
                           * Defines an arrow function (it's like a closure)
@@ -646,26 +646,26 @@
                           * @property {boolean} nullable
                           * @property {boolean} isStatic
                         */
-                        module.exports=Expression["extends"](KIND,function Closure(args,byref,body,type,nullable,isStatic,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Closure( args , byref , body , type , nullable , isStatic , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.arguments=args;
                             this.byref=byref;
                             this.body=body;
                             this.type=type;
                             this.nullable=nullable;
                             this.isStatic=isStatic || false;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1240" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1240" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="assign";
                         /*#
                           * Assigns a value to the specified target
@@ -676,23 +676,23 @@
                           * @property {Expression} right
                           * @property {String} operator
                         */
-                        module.exports=Expression["extends"](KIND,function Assign(left,right,operator,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Assign( left , right , operator , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.left=left;
                             this.right=right;
                             this.operator=operator;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "3979" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "3979" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="assignref";
                         /*#
                           * Assigns a value to the specified target
@@ -703,22 +703,22 @@
                           * @property {Expression} right
                           * @property {String} operator
                         */
-                        module.exports=Expression["extends"](KIND,function AssignRef(left,right,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function AssignRef( left , right , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.left=left;
                             this.right=right;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "2207" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "2207" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="attrgroup";
                         /*#
                           * Attribute group
@@ -727,21 +727,21 @@
                           * @extends {Node}
                           * @property {Attribute[]} attrs
                         */
-                        module.exports=Node["extends"](KIND,function AttrGroup(attrs,docs,location){
-                            Node.apply(this,[KIND,docs,location]);
+                        module.exports=Node["extends"]( KIND , function AttrGroup( attrs , docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
                             this.attrs=attrs || [];
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "5553" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "5553" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="attribute";
                         /*#
                           * Attribute Value
@@ -751,22 +751,22 @@
                           * @property {String} name
                           * @property {Parameter[]} args
                         */
-                        module.exports=Node["extends"](KIND,function Attribute(name,args,docs,location){
-                            Node.apply(this,[KIND,docs,location]);
+                        module.exports=Node["extends"]( KIND , function Attribute( name , args , docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
                             this.name=name;
                             this.args=args;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "2916" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "2916" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Operation=__webpack_require__(8268);
+                        var Operation=__webpack_require__( 8268 );
                         var KIND="bin";
                         /*#
                           * Binary operations
@@ -777,23 +777,23 @@
                           * @property {Expression} left
                           * @property {Expression} right
                         */
-                        module.exports=Operation["extends"](KIND,function Bin(type,left,right,docs,location){
-                            Operation.apply(this,[KIND,docs,location]);
+                        module.exports=Operation["extends"]( KIND , function Bin( type , left , right , docs , location ){
+                            Operation.apply( this , [KIND,docs,location] );
                             this.type=type;
                             this.left=left;
                             this.right=right;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "4628" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "4628" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="block";
                         /*#
                           * A block statement, i.e., a sequence of statements surrounded by braces.
@@ -802,21 +802,21 @@
                           * @extends {Statement}
                           * @property {Node[]} children
                         */
-                        module.exports=Statement["extends"](KIND,function Block(kind,children,docs,location){
-                            Statement.apply(this,[kind || KIND,docs,location]);
-                            this.children=children.filter(Boolean);
-                        });
+                        module.exports=Statement["extends"]( KIND , function Block( kind , children , docs , location ){
+                            Statement.apply( this , [kind || KIND,docs,location] );
+                            this.children=children.filter( Boolean );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7509" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7509" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Literal=__webpack_require__(5514);
+                        var Literal=__webpack_require__( 5514 );
                         var KIND="boolean";
                         /*#
                           * Defines a boolean value (true/false)
@@ -825,20 +825,20 @@
                           * @extends {Literal}
                           * @property {boolean} value
                         */
-                        module.exports=Literal["extends"](KIND,function Boolean(value,raw,docs,location){
-                            Literal.apply(this,[KIND,value,raw,docs,location]);
-                        });
+                        module.exports=Literal["extends"]( KIND , function Boolean( value , raw , docs , location ){
+                            Literal.apply( this , [KIND,value,raw,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "2906" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "2906" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="break";
                         /*#
                           * A break statement
@@ -847,21 +847,21 @@
                           * @extends {Statement}
                           * @property {Number|Null} level
                         */
-                        module.exports=Statement["extends"](KIND,function Break(level,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Break( level , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.level=level;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "5723" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "5723" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="byref";
                         /*#
                           * Passing by Reference - so the function can modify the variable
@@ -870,21 +870,21 @@
                           * @extends {Expression}
                           * @property {ExpressionStatement} what
                         */
-                        module.exports=Expression["extends"](KIND,function ByRef(what,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function ByRef( what , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.what=what;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7561" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7561" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="call";
                         /*#
                           * Executes a call statement
@@ -894,22 +894,22 @@
                           * @property {Identifier|Variable} what
                           * @property {Expression[]} arguments
                         */
-                        module.exports=Expression["extends"](KIND,function Call(what,args,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Call( what , args , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.what=what;
                             this.arguments=args;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6473" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "6473" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="case";
                         /*#
                           * A switch case statement
@@ -919,22 +919,22 @@
                           * @property {Expression|null} test - if null, means that the default case
                           * @property {Block|null} body
                         */
-                        module.exports=Statement["extends"](KIND,function Case(test,body,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Case( test , body , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.test=test;
                             this.body=body;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9626" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9626" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Operation=__webpack_require__(8268);
+                        var Operation=__webpack_require__( 8268 );
                         var KIND="cast";
                         /*#
                           * Binary operations
@@ -945,23 +945,23 @@
                           * @property {String} raw
                           * @property {Expression} expr
                         */
-                        module.exports=Operation["extends"](KIND,function Cast(type,raw,expr,docs,location){
-                            Operation.apply(this,[KIND,docs,location]);
+                        module.exports=Operation["extends"]( KIND , function Cast( type , raw , expr , docs , location ){
+                            Operation.apply( this , [KIND,docs,location] );
                             this.type=type;
                             this.raw=raw;
                             this.expr=expr;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "4782" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "4782" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="catch";
                         /*#
                           * Defines a catch statement
@@ -973,23 +973,23 @@
                           * @property {Block} body
                           * @see http://php.net/manual/en/language.exceptions.php
                         */
-                        module.exports=Statement["extends"](KIND,function Catch(body,what,variable,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Catch( body , what , variable , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.body=body;
                             this.what=what;
                             this.variable=variable;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "8477" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8477" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Declaration=__webpack_require__(8533);
+                        var Declaration=__webpack_require__( 8533 );
                         var KIND="class";
                         /*#
                           * A class definition
@@ -1005,26 +1005,26 @@
                           * @property {boolean} isReadonly
                           * @property {AttrGroup[]} attrGroups
                         */
-                        module.exports=Declaration["extends"](KIND,function Class(name,ext,impl,body,flags,docs,location){
-                            Declaration.apply(this,[KIND,name,docs,location]);
+                        module.exports=Declaration["extends"]( KIND , function Class( name , ext , impl , body , flags , docs , location ){
+                            Declaration.apply( this , [KIND,name,docs,location] );
                             this.isAnonymous=name ? ( false ) : ( true );
                             this["extends"]=ext;
                             this["implements"]=impl;
                             this.body=body;
                             this.attrGroups=[];
-                            this.parseFlags(flags);
-                        });
+                            this.parseFlags( flags );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "5045" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "5045" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var ConstantStatement=__webpack_require__(2112);
+                        var ConstantStatement=__webpack_require__( 2112 );
                         var KIND="classconstant";
                         var IS_UNDEFINED="";
                         var IS_PUBLIC="public";
@@ -1041,13 +1041,13 @@
                           * @property {TypeReference|IntersectionType|UnionType|null} type
                           * @property {AttrGroup[]} attrGroups
                         */
-                        var ClassConstant=ConstantStatement["extends"](KIND,function ClassConstant(kind,constants,flags,nullable,type,attrGroups,docs,location){
-                            ConstantStatement.apply(this,[kind || KIND,constants,docs,location]);
-                            this.parseFlags(flags);
+                        var ClassConstant=ConstantStatement["extends"]( KIND , function ClassConstant( kind , constants , flags , nullable , type , attrGroups , docs , location ){
+                            ConstantStatement.apply( this , [kind || KIND,constants,docs,location] );
+                            this.parseFlags( flags );
                             this.nullable=nullable;
                             this.type=type;
                             this.attrGroups=attrGroups;
-                        });
+                        } );
                         /*#
                           * Generic flags parser
                           * @function
@@ -1056,7 +1056,7 @@
                           * @param {Array<number|null>} flags
                           * @return {void}
                         */
-                        ClassConstant.prototype.parseFlags=function(flags){
+                        ClassConstant.prototype.parseFlags=function( flags ){
                             if(flags[0] === -1){
                                 this.visibility=IS_UNDEFINED;
                             }else if(flags[0] === null){
@@ -1076,13 +1076,13 @@
                     } ,
                      /* * */
                      /* * */
-                    "900" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "900" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="clone";
                         /*#
                           * Defines a clone call
@@ -1091,21 +1091,21 @@
                           * @extends {Expression}
                           * @property {Expression} what
                         */
-                        module.exports=Expression["extends"](KIND,function Clone(what,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Clone( what , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.what=what;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "4824" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "4824" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="closure";
                         /*#
                           * Defines a closure
@@ -1121,8 +1121,8 @@
                           * @property {boolean} isStatic
                           * @property {AttrGroup[]} attrGroups
                         */
-                        module.exports=Expression["extends"](KIND,function Closure(args,byref,uses,type,nullable,isStatic,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Closure( args , byref , uses , type , nullable , isStatic , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.uses=uses;
                             this.arguments=args;
                             this.byref=byref;
@@ -1131,18 +1131,18 @@
                             this.isStatic=isStatic || false;
                             this.body=null;
                             this.attrGroups=[];
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1020" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1020" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         /*#
                           * Abstract documentation node (ComentLine or CommentBlock)
                           * @constructor Comment
@@ -1150,21 +1150,21 @@
                           * @extends {Node}
                           * @property {String} value
                         */
-                        module.exports=Node["extends"]("comment",function Comment(kind,value,docs,location){
-                            Node.apply(this,[kind,docs,location]);
+                        module.exports=Node["extends"]( "comment" , function Comment( kind , value , docs , location ){
+                            Node.apply( this , [kind,docs,location] );
                             this.value=value;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9847" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9847" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Comment=__webpack_require__(1020);
+                        var Comment=__webpack_require__( 1020 );
                         var KIND="commentblock";
                         /*#
                           * A comment block (multiline)
@@ -1172,20 +1172,20 @@
                           * @memberOf module:php-parser
                           * @extends {Comment}
                         */
-                        module.exports=Comment["extends"](KIND,function CommentBlock(value,docs,location){
-                            Comment.apply(this,[KIND,value,docs,location]);
-                        });
+                        module.exports=Comment["extends"]( KIND , function CommentBlock( value , docs , location ){
+                            Comment.apply( this , [KIND,value,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "2790" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "2790" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Comment=__webpack_require__(1020);
+                        var Comment=__webpack_require__( 1020 );
                         var KIND="commentline";
                         /*#
                           * A single line comment
@@ -1193,20 +1193,20 @@
                           * @memberOf module:php-parser
                           * @extends {Comment}
                         */
-                        module.exports=Comment["extends"](KIND,function CommentLine(value,docs,location){
-                            Comment.apply(this,[KIND,value,docs,location]);
-                        });
+                        module.exports=Comment["extends"]( KIND , function CommentLine( value , docs , location ){
+                            Comment.apply( this , [KIND,value,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1333" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1333" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="constant";
                         /*#
                           * Defines a constant
@@ -1216,22 +1216,22 @@
                           * @property {string} name
                           * @property {Node|string|number|boolean|null} value
                         */
-                        module.exports=Node["extends"](KIND,function Constant(name,value,docs,location){
-                            Node.apply(this,[KIND,docs,location]);
+                        module.exports=Node["extends"]( KIND , function Constant( name , value , docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
                             this.name=name;
                             this.value=value;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "2112" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "2112" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="constantstatement";
                         /*#
                           * Declares a constants into the current scope
@@ -1240,21 +1240,21 @@
                           * @extends {Statement}
                           * @property {Constant[]} constants
                         */
-                        module.exports=Statement["extends"](KIND,function ConstantStatement(kind,constants,docs,location){
-                            Statement.apply(this,[kind || KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function ConstantStatement( kind , constants , docs , location ){
+                            Statement.apply( this , [kind || KIND,docs,location] );
                             this.constants=constants;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9960" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9960" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="continue";
                         /*#
                           * A continue statement
@@ -1263,21 +1263,21 @@
                           * @extends {Statement}
                           * @property {number|null} level
                         */
-                        module.exports=Statement["extends"](KIND,function Continue(level,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Continue( level , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.level=level;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "8533" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8533" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="declaration";
                         var IS_UNDEFINED="";
                         var IS_PUBLIC="public";
@@ -1290,10 +1290,10 @@
                           * @extends {Statement}
                           * @property {Identifier|string} name
                         */
-                        var Declaration=Statement["extends"](KIND,function Declaration(kind,name,docs,location){
-                            Statement.apply(this,[kind || KIND,docs,location]);
+                        var Declaration=Statement["extends"]( KIND , function Declaration( kind , name , docs , location ){
+                            Statement.apply( this , [kind || KIND,docs,location] );
                             this.name=name;
-                        });
+                        } );
                         /*#
                           * Generic flags parser
                           * @function
@@ -1302,7 +1302,7 @@
                           * @param {Array<number|null>} flags
                           * @return {void}
                         */
-                        Declaration.prototype.parseFlags=function(flags){
+                        Declaration.prototype.parseFlags=function( flags ){
                             this.isAbstract=flags[2] === 1;
                             this.isFinal=flags[2] === 2;
                             this.isReadonly=flags[3] === 1;
@@ -1327,13 +1327,13 @@
                     } ,
                      /* * */
                      /* * */
-                    "5947" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "5947" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Block=__webpack_require__(4628);
+                        var Block=__webpack_require__( 4628 );
                         var KIND="declare";
                         /*#
                           * The declare construct is used to set execution directives for a block of code
@@ -1344,11 +1344,11 @@
                           * @property {string} mode
                           * @see http://php.net/manual/en/control-structures.declare.php
                         */
-                        var Declare=Block["extends"](KIND,function Declare(directives,body,mode,docs,location){
-                            Block.apply(this,[KIND,body,docs,location]);
+                        var Declare=Block["extends"]( KIND , function Declare( directives , body , mode , docs , location ){
+                            Block.apply( this , [KIND,body,docs,location] );
                             this.directives=directives;
                             this.mode=mode;
-                        });
+                        } );
                         /*#
                           * The node is declared as a short tag syntax :
                           * ```php
@@ -1393,13 +1393,13 @@
                     } ,
                      /* * */
                      /* * */
-                    "7786" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7786" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="declaredirective";
                         /*#
                           * Defines a constant
@@ -1409,22 +1409,22 @@
                           * @property {Identifier} key
                           * @property {Node|string|number|boolean|null} value
                         */
-                        module.exports=Node["extends"](KIND,function DeclareDirective(key,value,docs,location){
-                            Node.apply(this,[KIND,docs,location]);
+                        module.exports=Node["extends"]( KIND , function DeclareDirective( key , value , docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
                             this.key=key;
                             this.value=value;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "5436" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "5436" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="do";
                         /*#
                           * Defines a do/while statement
@@ -1434,22 +1434,22 @@
                           * @property {Expression} test
                           * @property {Block | null} body
                         */
-                        module.exports=Statement["extends"](KIND,function Do(test,body,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Do( test , body , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.test=test;
                             this.body=body;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1136" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1136" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="echo";
                         /*#
                           * Defines system based call
@@ -1459,22 +1459,22 @@
                           * @property {Expression[]} expressions
                           * @extends {Statement}
                         */
-                        module.exports=Statement["extends"](KIND,function Echo(expressions,shortForm,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Echo( expressions , shortForm , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.shortForm=shortForm;
                             this.expressions=expressions;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "380" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "380" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="empty";
                         /*#
                           * Defines an empty check call
@@ -1482,21 +1482,21 @@
                           * @memberOf module:php-parser
                           * @extends {Expression}
                         */
-                        module.exports=Expression["extends"](KIND,function Empty(expression,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Empty( expression , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.expression=expression;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6129" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "6129" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Literal=__webpack_require__(5514);
+                        var Literal=__webpack_require__( 5514 );
                         var KIND="encapsed";
                         /*#
                           * Defines an encapsed string (contains expressions)
@@ -1507,10 +1507,10 @@
                           * @property {String|Null} label - The heredoc label, defined only when the type is heredoc
                           * @property {EncapsedPart[]} value
                         */
-                        var Encapsed=Literal["extends"](KIND,function Encapsed(value,raw,type,docs,location){
-                            Literal.apply(this,[KIND,value,raw,docs,location]);
+                        var Encapsed=Literal["extends"]( KIND , function Encapsed( value , raw , type , docs , location ){
+                            Literal.apply( this , [KIND,value,raw,docs,location] );
                             this.type=type;
-                        });
+                        } );
                         /*#
                           * The node is a double quote string :
                           * ```php
@@ -1559,13 +1559,13 @@
                     } ,
                      /* * */
                      /* * */
-                    "9723" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9723" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="encapsedpart";
                         /*#
                           * Part of `Encapsed` node
@@ -1576,23 +1576,23 @@
                           * @property {String} syntax
                           * @property {Boolean} curly
                         */
-                        module.exports=Expression["extends"](KIND,function EncapsedPart(expression,syntax,curly,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function EncapsedPart( expression , syntax , curly , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.expression=expression;
                             this.syntax=syntax;
                             this.curly=curly;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "5125" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "5125" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="entry";
                         /*#
                           * An array entry - see [Array](#array)
@@ -1604,24 +1604,24 @@
                           * @property {Boolean} byRef By reference
                           * @property {Boolean} unpack Argument unpacking
                         */
-                        module.exports=Expression["extends"](KIND,function Entry(key,value,byRef,unpack,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Entry( key , value , byRef , unpack , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.key=key;
                             this.value=value;
                             this.byRef=byRef;
                             this.unpack=unpack;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9632" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9632" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Declaration=__webpack_require__(8533);
+                        var Declaration=__webpack_require__( 8533 );
                         var KIND="enum";
                         /*#
                           * A enum definition
@@ -1633,24 +1633,24 @@
                           * @property {Declaration[]} body
                           * @property {AttrGroup[]} attrGroups
                         */
-                        module.exports=Declaration["extends"](KIND,function Enum(name,valueType,impl,body,docs,location){
-                            Declaration.apply(this,[KIND,name,docs,location]);
+                        module.exports=Declaration["extends"]( KIND , function Enum( name , valueType , impl , body , docs , location ){
+                            Declaration.apply( this , [KIND,name,docs,location] );
                             this.valueType=valueType;
                             this["implements"]=impl;
                             this.body=body;
                             this.attrGroups=[];
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "4300" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "4300" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="enumcase";
                         /*#
                           * Declares a cases into the current scope
@@ -1660,22 +1660,22 @@
                           * @property {string} name
                           * @property {string|number|null} value
                         */
-                        module.exports=Node["extends"](KIND,function EnumCase(name,value,docs,location){
-                            Node.apply(this,[KIND,docs,location]);
+                        module.exports=Node["extends"]( KIND , function EnumCase( name , value , docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
                             this.name=name;
                             this.value=value;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1515" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1515" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="error";
                         /*#
                           * Defines an error node (used only on silentMode)
@@ -1687,24 +1687,24 @@
                           * @property {number|string} token
                           * @property {string|array} expected
                         */
-                        module.exports=Node["extends"](KIND,function Error(message,token,line,expected,docs,location){
-                            Node.apply(this,[KIND,docs,location]);
+                        module.exports=Node["extends"]( KIND , function Error( message , token , line , expected , docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
                             this.message=message;
                             this.token=token;
                             this.line=line;
                             this.expected=expected;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "3411" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "3411" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="eval";
                         /*#
                           * Defines an eval statement
@@ -1713,21 +1713,21 @@
                           * @extends {Expression}
                           * @property {Node} source
                         */
-                        module.exports=Expression["extends"](KIND,function Eval(source,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Eval( source , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.source=source;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9781" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9781" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="exit";
                         /*#
                           * Defines an exit / die call
@@ -1737,22 +1737,22 @@
                           * @property {Node|null} expression
                           * @property {boolean} useDie
                         */
-                        module.exports=Expression["extends"](KIND,function Exit(expression,useDie,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Exit( expression , useDie , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.expression=expression;
                             this.useDie=useDie;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "839" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "839" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="expression";
                         /*#
                           * Any expression node. Since the left-hand side of an assignment may
@@ -1761,20 +1761,20 @@
                           * @memberOf module:php-parser
                           * @extends {Node}
                         */
-                        module.exports=Node["extends"](KIND,function Expression(kind,docs,location){
-                            Node.apply(this,[kind || KIND,docs,location]);
-                        });
+                        module.exports=Node["extends"]( KIND , function Expression( kind , docs , location ){
+                            Node.apply( this , [kind || KIND,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "8374" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8374" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="expressionstatement";
                         /*#
                           * Defines an expression based statement
@@ -1783,21 +1783,21 @@
                           * @extends {Statement}
                           * @property {Expression} expression
                         */
-                        module.exports=Statement["extends"](KIND,function ExpressionStatement(expr,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function ExpressionStatement( expr , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.expression=expr;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9754" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9754" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="for";
                         /*#
                           * Defines a for iterator
@@ -1811,25 +1811,25 @@
                           * @property {boolean} shortForm
                           * @see http://php.net/manual/en/control-structures.for.php
                         */
-                        module.exports=Statement["extends"](KIND,function For(init,test,increment,body,shortForm,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function For( init , test , increment , body , shortForm , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.init=init;
                             this.test=test;
                             this.increment=increment;
                             this.shortForm=shortForm;
                             this.body=body;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "4251" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "4251" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="foreach";
                         /*#
                           * Defines a foreach iterator
@@ -1843,25 +1843,25 @@
                           * @property {boolean} shortForm
                           * @see http://php.net/manual/en/control-structures.foreach.php
                         */
-                        module.exports=Statement["extends"](KIND,function Foreach(source,key,value,body,shortForm,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Foreach( source , key , value , body , shortForm , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.source=source;
                             this.key=key;
                             this.value=value;
                             this.shortForm=shortForm;
                             this.body=body;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6553" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "6553" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Declaration=__webpack_require__(8533);
+                        var Declaration=__webpack_require__( 8533 );
                         var KIND="function";
                         /*#
                           * Defines a classic function
@@ -1875,26 +1875,26 @@
                           * @property {Block|null} body
                           * @property {AttrGroup[]} attrGroups
                         */
-                        module.exports=Declaration["extends"](KIND,function _Function(name,args,byref,type,nullable,docs,location){
-                            Declaration.apply(this,[KIND,name,docs,location]);
+                        module.exports=Declaration["extends"]( KIND , function _Function( name , args , byref , type , nullable , docs , location ){
+                            Declaration.apply( this , [KIND,name,docs,location] );
                             this.arguments=args;
                             this.byref=byref;
                             this.type=type;
                             this.nullable=nullable;
                             this.body=null;
                             this.attrGroups=[];
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "8630" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8630" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="global";
                         /*#
                           * Imports a variable from the global scope
@@ -1903,21 +1903,21 @@
                           * @extends {Statement}
                           * @property {Variable[]} items
                         */
-                        module.exports=Statement["extends"](KIND,function Global(items,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Global( items , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.items=items;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9786" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9786" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="goto";
                         /*#
                           * Defines goto statement
@@ -1927,21 +1927,21 @@
                           * @property {string} label
                           * @see {Label}
                         */
-                        module.exports=Statement["extends"](KIND,function Goto(label,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Goto( label , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.label=label;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9742" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9742" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="halt";
                         /*#
                           * Halts the compiler execution
@@ -1951,21 +1951,21 @@
                           * @property {String} after - String after the halt statement
                           * @see http://php.net/manual/en/function.halt-compiler.php
                         */
-                        module.exports=Statement["extends"](KIND,function Halt(after,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Halt( after , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.after=after;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1234" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1234" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="identifier";
                         /*#
                           * Defines an identifier node
@@ -1974,22 +1974,22 @@
                           * @extends {Node}
                           * @property {string} name
                         */
-                        var Identifier=Node["extends"](KIND,function Identifier(name,docs,location){
-                            Node.apply(this,[KIND,docs,location]);
+                        var Identifier=Node["extends"]( KIND , function Identifier( name , docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
                             this.name=name;
-                        });
+                        } );
                         module.exports=Identifier;
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "6" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="if";
                         /*#
                           * Defines a if statement
@@ -2001,24 +2001,24 @@
                           * @property {Block|If|null} alternate
                           * @property {boolean} shortForm
                         */
-                        module.exports=Statement["extends"](KIND,function If(test,body,alternate,shortForm,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function If( test , body , alternate , shortForm , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.test=test;
                             this.body=body;
                             this.alternate=alternate;
                             this.shortForm=shortForm;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "8861" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8861" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="include";
                         /*#
                           * Defines system include call
@@ -2029,23 +2029,23 @@
                           * @property {boolean} once
                           * @property {boolean} require
                         */
-                        module.exports=Expression["extends"](KIND,function Include(once,require,target,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Include( once , require , target , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.once=once;
                             this.require=require;
                             this.target=target;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7860" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7860" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Literal=__webpack_require__(5514);
+                        var Literal=__webpack_require__( 5514 );
                         var KIND="inline";
                         /*#
                           * Defines inline html output (treated as echo output)
@@ -2054,20 +2054,20 @@
                           * @extends {Literal}
                           * @property {string} value
                         */
-                        module.exports=Literal["extends"](KIND,function Inline(value,raw,docs,location){
-                            Literal.apply(this,[KIND,value,raw,docs,location]);
-                        });
+                        module.exports=Literal["extends"]( KIND , function Inline( value , raw , docs , location ){
+                            Literal.apply( this , [KIND,value,raw,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9834" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9834" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Declaration=__webpack_require__(8533);
+                        var Declaration=__webpack_require__( 8533 );
                         var KIND="interface";
                         /*#
                           * An interface definition
@@ -2078,23 +2078,23 @@
                           * @property {Declaration[]} body
                           * @property {AttrGroup[]} attrGroups
                         */
-                        module.exports=Declaration["extends"](KIND,function Interface(name,ext,body,attrGroups,docs,location){
-                            Declaration.apply(this,[KIND,name,docs,location]);
+                        module.exports=Declaration["extends"]( KIND , function Interface( name , ext , body , attrGroups , docs , location ){
+                            Declaration.apply( this , [KIND,name,docs,location] );
                             this["extends"]=ext;
                             this.body=body;
                             this.attrGroups=attrGroups;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "2724" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "2724" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Declaration=__webpack_require__(8533);
+                        var Declaration=__webpack_require__( 8533 );
                         var KIND="intersectiontype";
                         /*#
                           * A union of types
@@ -2103,21 +2103,21 @@
                           * @extends {Declaration}
                           * @property {TypeReference[]} types
                         */
-                        module.exports=Declaration["extends"](KIND,function IntersectionType(types,docs,location){
-                            Declaration.apply(this,[KIND,null,docs,location]);
+                        module.exports=Declaration["extends"]( KIND , function IntersectionType( types , docs , location ){
+                            Declaration.apply( this , [KIND,null,docs,location] );
                             this.types=types;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6025" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "6025" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="isset";
                         /*#
                           * Defines an isset call
@@ -2125,21 +2125,21 @@
                           * @memberOf module:php-parser
                           * @extends {Expression}
                         */
-                        module.exports=Expression["extends"](KIND,function Isset(variables,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Isset( variables , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.variables=variables;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "2687" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "2687" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="label";
                         /*#
                           * A label statement (referenced by goto)
@@ -2148,21 +2148,21 @@
                           * @extends {Statement}
                           * @property {String} name
                         */
-                        module.exports=Statement["extends"](KIND,function Label(name,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Label( name , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.name=name;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7633" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7633" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="list";
                         /*#
                           * Defines list assignment
@@ -2172,22 +2172,22 @@
                           * @property {boolean} shortForm
                           * @property {Entry[]} items
                         */
-                        module.exports=Expression["extends"](KIND,function List(items,shortForm,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function List( items , shortForm , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.items=items;
                             this.shortForm=shortForm;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "5514" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "5514" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="literal";
                         /*#
                           * Defines an array structure
@@ -2197,18 +2197,18 @@
                           * @property {string} raw
                           * @property {EncapsedPart[]|Node|string|number|boolean|null} value
                         */
-                        module.exports=Expression["extends"](KIND,function Literal(kind,value,raw,docs,location){
-                            Expression.apply(this,[kind || KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Literal( kind , value , raw , docs , location ){
+                            Expression.apply( this , [kind || KIND,docs,location] );
                             this.value=value;
                             if(raw){
                                 this.raw=raw;
                             }
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "4778" : (module) => {
+                    "4778" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -2222,7 +2222,7 @@
                           * @property {Position} start
                           * @property {Position} end
                         */
-                        var Location=function Location(source,start,end){
+                        var Location=function Location( source , start , end ){
                             this.source=source;
                             this.start=start;
                             this.end=end;
@@ -2232,13 +2232,13 @@
                     } ,
                      /* * */
                      /* * */
-                    "7427" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7427" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expr=__webpack_require__(839);
+                        var Expr=__webpack_require__( 839 );
                         var KIND="lookup";
                         /*#
                           * Lookup on an offset in the specified object
@@ -2248,22 +2248,22 @@
                           * @property {Expression} what
                           * @property {Expression} offset
                         */
-                        module.exports=Expr["extends"](KIND,function Lookup(kind,what,offset,docs,location){
-                            Expr.apply(this,[kind || KIND,docs,location]);
+                        module.exports=Expr["extends"]( KIND , function Lookup( kind , what , offset , docs , location ){
+                            Expr.apply( this , [kind || KIND,docs,location] );
                             this.what=what;
                             this.offset=offset;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1122" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1122" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Literal=__webpack_require__(5514);
+                        var Literal=__webpack_require__( 5514 );
                         var KIND="magic";
                         /*#
                           * Defines magic constant
@@ -2271,20 +2271,20 @@
                           * @memberOf module:php-parser
                           * @extends {Literal}
                         */
-                        module.exports=Literal["extends"](KIND,function Magic(value,raw,docs,location){
-                            Literal.apply(this,[KIND,value,raw,docs,location]);
-                        });
+                        module.exports=Literal["extends"]( KIND , function Magic( value , raw , docs , location ){
+                            Literal.apply( this , [KIND,value,raw,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7256" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7256" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="match";
                         /*#
                           * Defines a match expression
@@ -2294,22 +2294,22 @@
                           * @property {Expression} cond Condition expression to match against
                           * @property {MatchArm[]} arms Arms for comparison
                         */
-                        module.exports=Expression["extends"](KIND,function Match(cond,arms,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Match( cond , arms , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.cond=cond;
                             this.arms=arms;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7416" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7416" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="matcharm";
                         /*#
                           * An array entry - see [Array](#array)
@@ -2319,22 +2319,22 @@
                           * @property {Expression[]|null} conds The match condition expression list - null indicates default arm
                           * @property {Expression} body The return value expression
                         */
-                        module.exports=Expression["extends"](KIND,function MatchArm(conds,body,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function MatchArm( conds , body , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.conds=conds;
                             this.body=body;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "8140" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8140" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Function_=__webpack_require__(6553);
+                        var Function_=__webpack_require__( 6553 );
                         var KIND="method";
                         /*#
                           * Defines a class/interface/trait method
@@ -2346,21 +2346,21 @@
                           * @property {boolean} isStatic
                           * @property {string} visibility
                         */
-                        module.exports=Function_["extends"](KIND,function Method(){
-                            Function_.apply(this,arguments);
+                        module.exports=Function_["extends"]( KIND , function Method(){
+                            Function_.apply( this , arguments );
                             this.kind=KIND;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6258" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "6258" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Reference=__webpack_require__(8276);
+                        var Reference=__webpack_require__( 8276 );
                         var KIND="name";
                         /*#
                           * Defines a class reference node
@@ -2370,11 +2370,11 @@
                           * @property {string} name
                           * @property {string} resolution
                         */
-                        var Name=Reference["extends"](KIND,function Name(name,resolution,docs,location){
-                            Reference.apply(this,[KIND,docs,location]);
-                            this.name=name.replace(/\\$/,"");
+                        var Name=Reference["extends"]( KIND , function Name( name , resolution , docs , location ){
+                            Reference.apply( this , [KIND,docs,location] );
+                            this.name=name.replace( /\\$/ , "" );
                             this.resolution=resolution;
-                        });
+                        } );
                         /*#
                           * This is an identifier without a namespace separator, such as Foo
                           * @constant {String} Name#UNQUALIFIED_NAME
@@ -2406,13 +2406,13 @@
                     } ,
                      /* * */
                      /* * */
-                    "6827" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "6827" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="namedargument";
                         /*#
                           * Named arguments.
@@ -2423,22 +2423,22 @@
                           * @property {Expression} value
                           * @see https://www.php.net/manual/en/functions.arguments.php#functions.named-arguments
                         */
-                        module.exports=Expression["extends"](KIND,function namedargument(name,value,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function namedargument( name , value , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.name=name;
                             this.value=value;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9474" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9474" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Block=__webpack_require__(4628);
+                        var Block=__webpack_require__( 4628 );
                         var KIND="namespace";
                         /*#
                           * The main program node
@@ -2448,22 +2448,22 @@
                           * @property {string} name
                           * @property {boolean} withBrackets
                         */
-                        module.exports=Block["extends"](KIND,function Namespace(name,children,withBrackets,docs,location){
-                            Block.apply(this,[KIND,children,docs,location]);
+                        module.exports=Block["extends"]( KIND , function Namespace( name , children , withBrackets , docs , location ){
+                            Block.apply( this , [KIND,children,docs,location] );
                             this.name=name;
                             this.withBrackets=withBrackets || false;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "4427" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "4427" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="new";
                         /*#
                           * Creates a new instance of the specified class
@@ -2473,16 +2473,16 @@
                           * @property {Identifier|Variable|Class} what
                           * @property {Variable[]} arguments
                         */
-                        module.exports=Expression["extends"](KIND,function New(what,args,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function New( what , args , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.what=what;
                             this.arguments=args;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "4065" : (module) => {
+                    "4065" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -2497,7 +2497,7 @@
                           * @property {CommentBlock[]|Comment[]|null} trailingComments
                           * @property {string} kind
                         */
-                        var Node=function Node(kind,docs,location){
+                        var Node=function Node( kind , docs , location ){
                             this.kind=kind;
                             if(docs){
                                 this.leadingComments=docs;
@@ -2512,7 +2512,7 @@
                           * @memberOf module:php-parser
                           * @param {*} docs
                         */
-                        Node.prototype.setTrailingComments=function(docs){
+                        Node.prototype.setTrailingComments=function( docs ){
                             this.trailingComments=docs;
                         };
                         /*#
@@ -2520,21 +2520,21 @@
                           * @function Node#destroy
                           * @memberOf module:php-parser
                         */
-                        Node.prototype.destroy=function(node){
+                        Node.prototype.destroy=function( node ){
                             if(!node){
                                 /* istanbul ignore next */
-                                throw new Error("Node already initialized, you must swap with another node");
+                                throw new Error( "Node already initialized, you must swap with another node" );
                             }
                             if(this.leadingComments){
                                 if(node.leadingComments){
-                                    node.leadingComments=Array.concat(this.leadingComments,node.leadingComments);
+                                    node.leadingComments=Array.concat( this.leadingComments , node.leadingComments );
                                 }else{
                                     node.leadingComments=this.leadingComments;
                                 }
                             }
                             if(this.trailingComments){
                                 if(node.trailingComments){
-                                    node.trailingComments=Array.concat(this.trailingComments,node.trailingComments);
+                                    node.trailingComments=Array.concat( this.trailingComments , node.trailingComments );
                                 }else{
                                     node.trailingComments=this.trailingComments;
                                 }
@@ -2547,7 +2547,7 @@
                           * @memberOf module:php-parser
                           * @param {*} parser
                         */
-                        Node.prototype.includeToken=function(parser){
+                        Node.prototype.includeToken=function( parser ){
                             if(this.loc){
                                 if(this.loc.end){
                                     this.loc.end.line=parser.lexer.yylloc.last_line;
@@ -2555,7 +2555,7 @@
                                     this.loc.end.offset=parser.lexer.offset;
                                 }
                                 if(parser.ast.withSource){
-                                    this.loc.source=parser.lexer._input.substring(this.loc.start.offset,parser.lexer.offset);
+                                    this.loc.source=parser.lexer._input.substring( this.loc.start.offset , parser.lexer.offset );
                                 }
                             }
                             return this;
@@ -2568,8 +2568,8 @@
                           * @param {Function} constructor
                           * @return {Function}
                         */
-                        Node["extends"]=function(type,constructor){
-                            constructor.prototype=Object.create(this.prototype);
+                        Node["extends"]=function( type , constructor ){
+                            constructor.prototype=Object.create( this.prototype );
                             constructor["extends"]=this["extends"];
                             constructor.prototype.constructor=constructor;
                             constructor.kind=type;
@@ -2580,13 +2580,13 @@
                     } ,
                      /* * */
                      /* * */
-                    "4297" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "4297" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="noop";
                         /*#
                           * Ignore this node, it implies a no operation block, for example :
@@ -2595,20 +2595,20 @@
                           * @memberOf module:php-parser
                           * @extends {Node}
                         */
-                        module.exports=Node["extends"](KIND,function Noop(docs,location){
-                            Node.apply(this,[KIND,docs,location]);
-                        });
+                        module.exports=Node["extends"]( KIND , function Noop( docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "5859" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "5859" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Literal=__webpack_require__(5514);
+                        var Literal=__webpack_require__( 5514 );
                         var KIND="nowdoc";
                         /*#
                           * Defines a nowdoc string
@@ -2619,21 +2619,21 @@
                           * @property {string} raw
                           * @property {string} value
                         */
-                        module.exports=Literal["extends"](KIND,function Nowdoc(value,raw,label,docs,location){
-                            Literal.apply(this,[KIND,value,raw,docs,location]);
+                        module.exports=Literal["extends"]( KIND , function Nowdoc( value , raw , label , docs , location ){
+                            Literal.apply( this , [KIND,value,raw,docs,location] );
                             this.label=label;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6985" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "6985" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="nullkeyword";
                         /*#
                           * Represents the null keyword
@@ -2641,21 +2641,21 @@
                           * @memberOf module:php-parser
                           * @extends {Node}
                         */
-                        module.exports=Node["extends"](KIND,function NullKeyword(raw,docs,location){
-                            Node.apply(this,[KIND,docs,location]);
+                        module.exports=Node["extends"]( KIND , function NullKeyword( raw , docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
                             this.raw=raw;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9302" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9302" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Lookup=__webpack_require__(7427);
+                        var Lookup=__webpack_require__( 7427 );
                         var KIND="nullsafepropertylookup";
                         /*#
                           * Lookup to an object property
@@ -2663,20 +2663,20 @@
                           * @constructor NullSafePropertyLookup
                           * @extends {Lookup}
                         */
-                        module.exports=Lookup["extends"](KIND,function NullSafePropertyLookup(what,offset,docs,location){
-                            Lookup.apply(this,[KIND,what,offset,docs,location]);
-                        });
+                        module.exports=Lookup["extends"]( KIND , function NullSafePropertyLookup( what , offset , docs , location ){
+                            Lookup.apply( this , [KIND,what,offset,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "8212" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8212" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Literal=__webpack_require__(5514);
+                        var Literal=__webpack_require__( 5514 );
                         var KIND="number";
                         /*#
                           * Defines a numeric value
@@ -2685,20 +2685,20 @@
                           * @extends {Literal}
                           * @property {number} value
                         */
-                        module.exports=Literal["extends"](KIND,function Number(value,raw,docs,location){
-                            Literal.apply(this,[KIND,value,raw,docs,location]);
-                        });
+                        module.exports=Literal["extends"]( KIND , function Number( value , raw , docs , location ){
+                            Literal.apply( this , [KIND,value,raw,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "864" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "864" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Lookup=__webpack_require__(7427);
+                        var Lookup=__webpack_require__( 7427 );
                         var KIND="offsetlookup";
                         /*#
                           * Lookup on an offset in an array
@@ -2706,20 +2706,20 @@
                           * @memberOf module:php-parser
                           * @extends {Lookup}
                         */
-                        module.exports=Lookup["extends"](KIND,function OffsetLookup(what,offset,docs,location){
-                            Lookup.apply(this,[KIND,what,offset,docs,location]);
-                        });
+                        module.exports=Lookup["extends"]( KIND , function OffsetLookup( what , offset , docs , location ){
+                            Lookup.apply( this , [KIND,what,offset,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "8268" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8268" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expr=__webpack_require__(839);
+                        var Expr=__webpack_require__( 839 );
                         var KIND="operation";
                         /*#
                           * Defines binary operations
@@ -2727,20 +2727,20 @@
                           * @memberOf module:php-parser
                           * @extends {Expression}
                         */
-                        module.exports=Expr["extends"](KIND,function Operation(kind,docs,location){
-                            Expr.apply(this,[kind || KIND,docs,location]);
-                        });
+                        module.exports=Expr["extends"]( KIND , function Operation( kind , docs , location ){
+                            Expr.apply( this , [kind || KIND,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7190" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7190" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Declaration=__webpack_require__(8533);
+                        var Declaration=__webpack_require__( 8533 );
                         var KIND="parameter";
                         /*#
                           * @memberOf module:php-parser
@@ -2771,8 +2771,8 @@
                           * @property {AttrGroup[]} attrGroups
                           * @property {MODIFIER_PUBLIC|MODIFIER_PROTECTED|MODIFIER_PRIVATE} flags
                         */
-                        module.exports=Declaration["extends"](KIND,function Parameter(name,type,value,isRef,isVariadic,readonly,nullable,flags,docs,location){
-                            Declaration.apply(this,[KIND,name,docs,location]);
+                        module.exports=Declaration["extends"]( KIND , function Parameter( name , type , value , isRef , isVariadic , readonly , nullable , flags , docs , location ){
+                            Declaration.apply( this , [KIND,name,docs,location] );
                             this.value=value;
                             this.type=type;
                             this.byref=isRef;
@@ -2781,18 +2781,18 @@
                             this.nullable=nullable;
                             this.flags=flags || 0;
                             this.attrGroups=[];
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "8519" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8519" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Reference=__webpack_require__(8276);
+                        var Reference=__webpack_require__( 8276 );
                         var KIND="parentreference";
                         /*#
                           * Defines a class reference node
@@ -2800,16 +2800,16 @@
                           * @memberOf module:php-parser
                           * @extends {Reference}
                         */
-                        var ParentReference=Reference["extends"](KIND,function ParentReference(raw,docs,location){
-                            Reference.apply(this,[KIND,docs,location]);
+                        var ParentReference=Reference["extends"]( KIND , function ParentReference( raw , docs , location ){
+                            Reference.apply( this , [KIND,docs,location] );
                             this.raw=raw;
-                        });
+                        } );
                         module.exports=ParentReference;
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "8822" : (module) => {
+                    "8822" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -2823,7 +2823,7 @@
                           * @property {number} column
                           * @property {number} offset
                         */
-                        var Position=function Position(line,column,offset){
+                        var Position=function Position( line , column , offset ){
                             this.line=line;
                             this.column=column;
                             this.offset=offset;
@@ -2833,13 +2833,13 @@
                     } ,
                      /* * */
                      /* * */
-                    "4835" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "4835" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Operation=__webpack_require__(8268);
+                        var Operation=__webpack_require__( 8268 );
                         var KIND="post";
                         /*#
                           * Defines a post operation `$i++` or `$i--`
@@ -2849,22 +2849,22 @@
                           * @property {String} type
                           * @property {Variable} what
                         */
-                        module.exports=Operation["extends"](KIND,function Post(type,what,docs,location){
-                            Operation.apply(this,[KIND,docs,location]);
+                        module.exports=Operation["extends"]( KIND , function Post( type , what , docs , location ){
+                            Operation.apply( this , [KIND,docs,location] );
                             this.type=type;
                             this.what=what;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "2056" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "2056" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Operation=__webpack_require__(8268);
+                        var Operation=__webpack_require__( 8268 );
                         var KIND="pre";
                         /*#
                           * Defines a pre operation `++$i` or `--$i`
@@ -2874,22 +2874,22 @@
                           * @property {String} type
                           * @property {Variable} what
                         */
-                        module.exports=Operation["extends"](KIND,function Pre(type,what,docs,location){
-                            Operation.apply(this,[KIND,docs,location]);
+                        module.exports=Operation["extends"]( KIND , function Pre( type , what , docs , location ){
+                            Operation.apply( this , [KIND,docs,location] );
                             this.type=type;
                             this.what=what;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "4838" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "4838" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="print";
                         /*#
                           * Outputs
@@ -2897,21 +2897,21 @@
                           * @memberOf module:php-parser
                           * @extends {Expression}
                         */
-                        module.exports=Expression["extends"](KIND,function Print(expression,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Print( expression , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.expression=expression;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7869" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7869" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Block=__webpack_require__(4628);
+                        var Block=__webpack_require__( 4628 );
                         var KIND="program";
                         /*#
                           * The main program node
@@ -2922,8 +2922,8 @@
                           * @property {Comment[]|null} comments
                           * @property {String[]|null} tokens
                         */
-                        module.exports=Block["extends"](KIND,function Program(children,errors,comments,tokens,docs,location){
-                            Block.apply(this,[KIND,children,docs,location]);
+                        module.exports=Block["extends"]( KIND , function Program( children , errors , comments , tokens , docs , location ){
+                            Block.apply( this , [KIND,children,docs,location] );
                             this.errors=errors;
                             if(comments){
                                 this.comments=comments;
@@ -2931,18 +2931,18 @@
                             if(tokens){
                                 this.tokens=tokens;
                             }
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1908" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1908" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="property";
                         /*#
                           * Defines a class property
@@ -2956,26 +2956,26 @@
                           * @property {Identifier|Array<Identifier>|null} type
                           * @property {AttrGroup[]} attrGroups
                         */
-                        module.exports=Statement["extends"](KIND,function Property(name,value,readonly,nullable,type,attrGroups,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Property( name , value , readonly , nullable , type , attrGroups , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.name=name;
                             this.value=value;
                             this.readonly=readonly;
                             this.nullable=nullable;
                             this.type=type;
                             this.attrGroups=attrGroups;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "170" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "170" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Lookup=__webpack_require__(7427);
+                        var Lookup=__webpack_require__( 7427 );
                         var KIND="propertylookup";
                         /*#
                           * Lookup to an object property
@@ -2983,20 +2983,20 @@
                           * @constructor PropertyLookup
                           * @extends {Lookup}
                         */
-                        module.exports=Lookup["extends"](KIND,function PropertyLookup(what,offset,docs,location){
-                            Lookup.apply(this,[KIND,what,offset,docs,location]);
-                        });
+                        module.exports=Lookup["extends"]( KIND , function PropertyLookup( what , offset , docs , location ){
+                            Lookup.apply( this , [KIND,what,offset,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1091" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1091" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="propertystatement";
                         var IS_UNDEFINED="";
                         var IS_PUBLIC="public";
@@ -3011,11 +3011,11 @@
                           * @property {string|null} visibility
                           * @property {boolean} isStatic
                         */
-                        var PropertyStatement=Statement["extends"](KIND,function PropertyStatement(kind,properties,flags,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        var PropertyStatement=Statement["extends"]( KIND , function PropertyStatement( kind , properties , flags , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.properties=properties;
-                            this.parseFlags(flags);
-                        });
+                            this.parseFlags( flags );
+                        } );
                         /*#
                           * Generic flags parser
                           * @function PropertyStatement#parseFlags
@@ -3023,7 +3023,7 @@
                           * @param {Array<number|null>} flags
                           * @return {void}
                         */
-                        PropertyStatement.prototype.parseFlags=function(flags){
+                        PropertyStatement.prototype.parseFlags=function( flags ){
                             if(flags[0] === -1){
                                 this.visibility=IS_UNDEFINED;
                             }else if(flags[0] === null){
@@ -3042,13 +3042,13 @@
                     } ,
                      /* * */
                      /* * */
-                    "8276" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8276" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="reference";
                         /*#
                           * Defines a reference node
@@ -3056,21 +3056,21 @@
                           * @memberOf module:php-parser
                           * @extends {Node}
                         */
-                        var Reference=Node["extends"](KIND,function Reference(kind,docs,location){
-                            Node.apply(this,[kind || KIND,docs,location]);
-                        });
+                        var Reference=Node["extends"]( KIND , function Reference( kind , docs , location ){
+                            Node.apply( this , [kind || KIND,docs,location] );
+                        } );
                         module.exports=Reference;
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1842" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1842" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="retif";
                         /*#
                           * Defines a short if statement that returns a value
@@ -3081,23 +3081,23 @@
                           * @property {Expression} trueExpr
                           * @property {Expression} falseExpr
                         */
-                        module.exports=Expression["extends"](KIND,function RetIf(test,trueExpr,falseExpr,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function RetIf( test , trueExpr , falseExpr , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.test=test;
                             this.trueExpr=trueExpr;
                             this.falseExpr=falseExpr;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "5739" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "5739" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="return";
                         /*#
                           * A continue statement
@@ -3106,21 +3106,21 @@
                           * @extends {Statement}
                           * @property {Expression|null} expr
                         */
-                        module.exports=Statement["extends"](KIND,function Return(expr,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Return( expr , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.expr=expr;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1274" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1274" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Reference=__webpack_require__(8276);
+                        var Reference=__webpack_require__( 8276 );
                         var KIND="selfreference";
                         /*#
                           * Defines a class reference node
@@ -3128,22 +3128,22 @@
                           * @memberOf module:php-parser
                           * @extends {Reference}
                         */
-                        var SelfReference=Reference["extends"](KIND,function SelfReference(raw,docs,location){
-                            Reference.apply(this,[KIND,docs,location]);
+                        var SelfReference=Reference["extends"]( KIND , function SelfReference( raw , docs , location ){
+                            Reference.apply( this , [KIND,docs,location] );
                             this.raw=raw;
-                        });
+                        } );
                         module.exports=SelfReference;
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "4352" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "4352" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="silent";
                         /*#
                           * Avoids to show/log warnings & notices from the inner expression
@@ -3152,21 +3152,21 @@
                           * @extends {Expression}
                           * @property {Expression} expr
                         */
-                        module.exports=Expression["extends"](KIND,function Silent(expr,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Silent( expr , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.expr=expr;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9672" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9672" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="statement";
                         /*#
                           * Any statement.
@@ -3174,20 +3174,20 @@
                           * @memberOf module:php-parser
                           * @extends {Node}
                         */
-                        module.exports=Node["extends"](KIND,function Statement(kind,docs,location){
-                            Node.apply(this,[kind || KIND,docs,location]);
-                        });
+                        module.exports=Node["extends"]( KIND , function Statement( kind , docs , location ){
+                            Node.apply( this , [kind || KIND,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "711" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "711" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="static";
                         /*#
                           * Declares a static variable into the current scope
@@ -3196,21 +3196,21 @@
                           * @extends {Statement}
                           * @property {StaticVariable[]} variables
                         */
-                        module.exports=Statement["extends"](KIND,function Static(variables,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Static( variables , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.variables=variables;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1865" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1865" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Lookup=__webpack_require__(7427);
+                        var Lookup=__webpack_require__( 7427 );
                         var KIND="staticlookup";
                         /*#
                           * Lookup to a static property
@@ -3218,20 +3218,20 @@
                           * @memberOf module:php-parser
                           * @extends {Lookup}
                         */
-                        module.exports=Lookup["extends"](KIND,function StaticLookup(what,offset,docs,location){
-                            Lookup.apply(this,[KIND,what,offset,docs,location]);
-                        });
+                        module.exports=Lookup["extends"]( KIND , function StaticLookup( what , offset , docs , location ){
+                            Lookup.apply( this , [KIND,what,offset,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1102" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1102" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Reference=__webpack_require__(8276);
+                        var Reference=__webpack_require__( 8276 );
                         var KIND="staticreference";
                         /*#
                           * Defines a class reference node
@@ -3239,22 +3239,22 @@
                           * @memberOf module:php-parser
                           * @extends {Reference}
                         */
-                        var StaticReference=Reference["extends"](KIND,function StaticReference(raw,docs,location){
-                            Reference.apply(this,[KIND,docs,location]);
+                        var StaticReference=Reference["extends"]( KIND , function StaticReference( raw , docs , location ){
+                            Reference.apply( this , [KIND,docs,location] );
                             this.raw=raw;
-                        });
+                        } );
                         module.exports=StaticReference;
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1231" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1231" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="staticvariable";
                         /*#
                           * Defines a constant
@@ -3264,22 +3264,22 @@
                           * @property {Variable} variable
                           * @property {Node|string|number|boolean|null} defaultValue
                         */
-                        module.exports=Node["extends"](KIND,function StaticVariable(variable,defaultValue,docs,location){
-                            Node.apply(this,[KIND,docs,location]);
+                        module.exports=Node["extends"]( KIND , function StaticVariable( variable , defaultValue , docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
                             this.variable=variable;
                             this.defaultValue=defaultValue;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7472" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7472" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Literal=__webpack_require__(5514);
+                        var Literal=__webpack_require__( 5514 );
                         var KIND="string";
                         /*#
                           * Defines a string (simple or double quoted) - chars are already escaped
@@ -3291,22 +3291,22 @@
                           * @see {Encapsed}
                           * @property {string} value
                         */
-                        module.exports=Literal["extends"](KIND,function String(isDoubleQuote,value,unicode,raw,docs,location){
-                            Literal.apply(this,[KIND,value,raw,docs,location]);
+                        module.exports=Literal["extends"]( KIND , function String( isDoubleQuote , value , unicode , raw , docs , location ){
+                            Literal.apply( this , [KIND,value,raw,docs,location] );
                             this.unicode=unicode;
                             this.isDoubleQuote=isDoubleQuote;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6133" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "6133" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="switch";
                         /*#
                           * Defines a switch statement
@@ -3317,23 +3317,23 @@
                           * @property {Block} body
                           * @property {boolean} shortForm
                         */
-                        module.exports=Statement["extends"](KIND,function Switch(test,body,shortForm,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Switch( test , body , shortForm , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.test=test;
                             this.body=body;
                             this.shortForm=shortForm;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1197" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1197" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="throw";
                         /*#
                           * Defines a throw statement
@@ -3342,21 +3342,21 @@
                           * @extends {Statement}
                           * @property {Expression} what
                         */
-                        module.exports=Statement["extends"](KIND,function Throw(what,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Throw( what , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.what=what;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6649" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "6649" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Declaration=__webpack_require__(8533);
+                        var Declaration=__webpack_require__( 8533 );
                         var KIND="trait";
                         /*#
                           * A trait definition
@@ -3365,21 +3365,21 @@
                           * @extends {Declaration}
                           * @property {Declaration[]} body
                         */
-                        module.exports=Declaration["extends"](KIND,function Trait(name,body,docs,location){
-                            Declaration.apply(this,[KIND,name,docs,location]);
+                        module.exports=Declaration["extends"]( KIND , function Trait( name , body , docs , location ){
+                            Declaration.apply( this , [KIND,name,docs,location] );
                             this.body=body;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "1837" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "1837" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="traitalias";
                         var IS_UNDEFINED="";
                         var IS_PUBLIC="public";
@@ -3395,8 +3395,8 @@
                           * @property {Identifier|null} as
                           * @property {string|null} visibility
                         */
-                        module.exports=Node["extends"](KIND,function TraitAlias(trait,method,as,flags,docs,location){
-                            Node.apply(this,[KIND,docs,location]);
+                        module.exports=Node["extends"]( KIND , function TraitAlias( trait , method , as , flags , docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
                             this.trait=trait;
                             this.method=method;
                             this.as=as;
@@ -3410,18 +3410,18 @@
                                     this.visibility=IS_PRIVATE;
                                 }
                             }
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "2277" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "2277" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="traitprecedence";
                         /*#
                           * Defines a trait alias
@@ -3432,23 +3432,23 @@
                           * @property {Identifier} method
                           * @property {Identifier[]} instead
                         */
-                        module.exports=Node["extends"](KIND,function TraitPrecedence(trait,method,instead,docs,location){
-                            Node.apply(this,[KIND,docs,location]);
+                        module.exports=Node["extends"]( KIND , function TraitPrecedence( trait , method , instead , docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
                             this.trait=trait;
                             this.method=method;
                             this.instead=instead;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "8010" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8010" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="traituse";
                         /*#
                           * Defines a trait usage
@@ -3458,22 +3458,22 @@
                           * @property {Identifier[]} traits
                           * @property {Node[]|null} adaptations
                         */
-                        module.exports=Node["extends"](KIND,function TraitUse(traits,adaptations,docs,location){
-                            Node.apply(this,[KIND,docs,location]);
+                        module.exports=Node["extends"]( KIND , function TraitUse( traits , adaptations , docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
                             this.traits=traits;
                             this.adaptations=adaptations;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7579" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7579" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="try";
                         /*#
                           * Defines a try statement
@@ -3484,23 +3484,23 @@
                           * @property {Catch[]} catches
                           * @property {Block} always
                         */
-                        module.exports=Statement["extends"](KIND,function Try(body,catches,always,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Try( body , catches , always , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.body=body;
                             this.catches=catches;
                             this.always=always;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "3460" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "3460" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Reference=__webpack_require__(8276);
+                        var Reference=__webpack_require__( 8276 );
                         var KIND="typereference";
                         /*#
                           * Defines a class reference node
@@ -3509,11 +3509,11 @@
                           * @extends {Reference}
                           * @property {string} name
                         */
-                        var TypeReference=Reference["extends"](KIND,function TypeReference(name,raw,docs,location){
-                            Reference.apply(this,[KIND,docs,location]);
+                        var TypeReference=Reference["extends"]( KIND , function TypeReference( name , raw , docs , location ){
+                            Reference.apply( this , [KIND,docs,location] );
                             this.name=name;
                             this.raw=raw;
-                        });
+                        } );
                         TypeReference.types=[
                             "int",
                             "float",
@@ -3531,13 +3531,13 @@
                     } ,
                      /* * */
                      /* * */
-                    "2702" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "2702" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Operation=__webpack_require__(8268);
+                        var Operation=__webpack_require__( 8268 );
                         var KIND="unary";
                         /*#
                           * Unary operations
@@ -3547,22 +3547,22 @@
                           * @property {string} type
                           * @property {Expression} what
                         */
-                        module.exports=Operation["extends"](KIND,function Unary(type,what,docs,location){
-                            Operation.apply(this,[KIND,docs,location]);
+                        module.exports=Operation["extends"]( KIND , function Unary( type , what , docs , location ){
+                            Operation.apply( this , [KIND,docs,location] );
                             this.type=type;
                             this.what=what;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "514" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "514" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Declaration=__webpack_require__(8533);
+                        var Declaration=__webpack_require__( 8533 );
                         var KIND="uniontype";
                         /*#
                           * A union of types
@@ -3571,21 +3571,21 @@
                           * @extends {Declaration}
                           * @property {TypeReference[]} types
                         */
-                        module.exports=Declaration["extends"](KIND,function UnionType(types,docs,location){
-                            Declaration.apply(this,[KIND,null,docs,location]);
+                        module.exports=Declaration["extends"]( KIND , function UnionType( types , docs , location ){
+                            Declaration.apply( this , [KIND,null,docs,location] );
                             this.types=types;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "5684" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "5684" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="unset";
                         /*#
                           * Deletes references to a list of variables
@@ -3593,21 +3593,21 @@
                           * @memberOf module:php-parser
                           * @extends {Statement}
                         */
-                        module.exports=Statement["extends"](KIND,function Unset(variables,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function Unset( variables , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.variables=variables;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "8019" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "8019" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="usegroup";
                         /*#
                           * Defines a use statement (with a list of use items)
@@ -3620,23 +3620,23 @@
                           * @see {Namespace}
                           * @see http://php.net/manual/en/language.namespaces.importing.php
                         */
-                        module.exports=Statement["extends"](KIND,function UseGroup(name,type,items,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function UseGroup( name , type , items , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.name=name;
                             this.type=type;
                             this.items=items;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7721" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7721" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="useitem";
                         /*#
                           * Defines a use statement (from namespace)
@@ -3649,12 +3649,12 @@
                           * @see {Namespace}
                           * @see http://php.net/manual/en/language.namespaces.importing.php
                         */
-                        var UseItem=Statement["extends"](KIND,function UseItem(name,alias,type,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        var UseItem=Statement["extends"]( KIND , function UseItem( name , alias , type , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.name=name;
                             this.alias=alias;
                             this.type=type;
-                        });
+                        } );
                         /*#
                           * Importing a constant
                           * @constant {string} UseItem#TYPE_CONST
@@ -3672,13 +3672,13 @@
                     } ,
                      /* * */
                      /* * */
-                    "4369" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "4369" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="variable";
                         /*#
                           * Any expression node. Since the left-hand side of an assignment may
@@ -3698,22 +3698,22 @@
                           * @property {string|Node} name The variable name (can be a complex expression when the name is resolved dynamically)
                           * @property {boolean} curly Indicate if the name is defined between curlies, ex `${foo}`
                         */
-                        module.exports=Expression["extends"](KIND,function Variable(name,curly,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Variable( name , curly , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.name=name;
                             this.curly=curly || false;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "40" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "40" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="variadic";
                         /*#
                           * Introduce a list of items into the arguments of the call
@@ -3723,21 +3723,21 @@
                           * @property {Array|Expression} what
                           * @see https://wiki.php.net/rfc/argument_unpacking
                         */
-                        module.exports=Expression["extends"](KIND,function variadic(what,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function variadic( what , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.what=what;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "4919" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "4919" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Node=__webpack_require__(4065);
+                        var Node=__webpack_require__( 4065 );
                         var KIND="variadicplaceholder";
                         /*#
                           * Defines a variadic placeholder (the ellipsis in PHP 8.1+'s first-class callable syntax)
@@ -3747,20 +3747,20 @@
                           * @see {Namespace}
                           * @see http://php.net/manual/en/language.namespaces.importing.php
                         */
-                        module.exports=Node["extends"](KIND,function VariadicPlaceholder(docs,location){
-                            Node.apply(this,[KIND,docs,location]);
-                        });
+                        module.exports=Node["extends"]( KIND , function VariadicPlaceholder( docs , location ){
+                            Node.apply( this , [KIND,docs,location] );
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7676" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7676" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Statement=__webpack_require__(9672);
+                        var Statement=__webpack_require__( 9672 );
                         var KIND="while";
                         /*#
                           * Defines a while statement
@@ -3771,23 +3771,23 @@
                           * @property {Block | null} body
                           * @property {boolean} shortForm
                         */
-                        module.exports=Statement["extends"](KIND,function While(test,body,shortForm,docs,location){
-                            Statement.apply(this,[KIND,docs,location]);
+                        module.exports=Statement["extends"]( KIND , function While( test , body , shortForm , docs , location ){
+                            Statement.apply( this , [KIND,docs,location] );
                             this.test=test;
                             this.body=body;
                             this.shortForm=shortForm;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "2596" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "2596" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="yield";
                         /*#
                           * Defines a yield generator statement
@@ -3798,22 +3798,22 @@
                           * @property {Expression|null} key
                           * @see http://php.net/manual/en/language.generators.syntax.php
                         */
-                        module.exports=Expression["extends"](KIND,function Yield(value,key,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function Yield( value , key , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.value=value;
                             this.key=key;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6744" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "6744" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Expression=__webpack_require__(839);
+                        var Expression=__webpack_require__( 839 );
                         var KIND="yieldfrom";
                         /*#
                           * Defines a yield from generator statement
@@ -3823,43 +3823,43 @@
                           * @property {Expression} value
                           * @see http://php.net/manual/en/language.generators.syntax.php
                         */
-                        module.exports=Expression["extends"](KIND,function YieldFrom(value,docs,location){
-                            Expression.apply(this,[KIND,docs,location]);
+                        module.exports=Expression["extends"]( KIND , function YieldFrom( value , docs , location ){
+                            Expression.apply( this , [KIND,docs,location] );
                             this.value=value;
-                        });
+                        } );
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "5362" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "5362" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2020 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        function _typeof(o){
+                        function _typeof( o ){
                             "@babel/helpers - typeof";
                             return(_typeof="function" ==  typeof Symbol && "symbol" ==  typeof Symbol.iterator ?
                                   ( 
-                                    function(o){
+                                    function( o ){
                                             return( typeof o);
                                         }
                                   ) : ( 
-                                    function(o){
+                                    function( o ){
                                             return(o && "function" ==  typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? ( "symbol" ) : (  typeof o ));
                                         }
                                   ),
-                            _typeof(o));
+                            _typeof( o ));
                         }
-                        var lexer=__webpack_require__(9108);
-                        var parser=__webpack_require__(7259);
-                        var tokens=__webpack_require__(1906);
-                        var AST=__webpack_require__(8938);
+                        var lexer=__webpack_require__( 9108 );
+                        var parser=__webpack_require__( 7259 );
+                        var tokens=__webpack_require__( 1906 );
+                        var AST=__webpack_require__( 8938 );
                         /*#
                           * @private
                         */
-                        function combine(src,to){
-                            var keys=Object.keys(src);
+                        function combine( src , to ){
+                            var keys=Object.keys( src );
                             var i=keys.length;
                             while(i--){
                                 var k=keys[i];
@@ -3867,11 +3867,11 @@
                                 if(val === null){
                                     delete to[k];
                                 }else if( typeof val === "function"){
-                                    to[k]=val.bind(to);
-                                }else if(Array.isArray(val)){
-                                    to[k]=Array.isArray(to[k]) ? ( to[k].concat(val) ) : ( val );
-                                }else if(_typeof(val) === "object"){
-                                    to[k]=_typeof(to[k]) === "object" ? ( combine(val,to[k]) ) : ( val );
+                                    to[k]=val.bind( to );
+                                }else if(Array.isArray( val )){
+                                    to[k]=Array.isArray( to[k] ) ? ( to[k].concat( val ) ) : ( val );
+                                }else if(_typeof( val ) === "object"){
+                                    to[k]=_typeof( to[k] ) === "object" ? ( combine( val , to[k] ) ) : ( val );
                                 }else{
                                     to[k]=val;
                                 }
@@ -3911,15 +3911,15 @@
                           * @property {AST} ast
                           * @property {Object} tokens
                         */
-                        var Engine=function Engine(options){
+                        var Engine=function Engine( options ){
                             if( typeof this === "function"){
-                                return(new this(options));
+                                return(new this( options ));
                             }
                             this.tokens=tokens;
-                            this.lexer=new lexer(this);
+                            this.lexer=new lexer( this );
                             this.ast=new AST();
-                            this.parser=new parser(this.lexer,this.ast);
-                            if(options && _typeof(options) === "object"){
+                            this.parser=new parser( this.lexer , this.ast );
+                            if(options && _typeof( options ) === "object"){
                                 /* disable php7 from lexer if already disabled from parser */
                                 if(options.parser){
                                     if(!options.lexer){
@@ -3927,22 +3927,22 @@
                                     }
                                     if(options.parser.version){
                                         if( typeof options.parser.version === "string"){
-                                            var version=options.parser.version.split(".");
-                                            version=parseInt(version[0]) * 100 + parseInt(version[1]);
-                                            if(isNaN(version)){
-                                                throw new Error("Bad version number : " + options.parser.version);
+                                            var version=options.parser.version.split( "." );
+                                            version=parseInt( version[0] ) * 100 + parseInt( version[1] );
+                                            if(isNaN( version )){
+                                                throw new Error( "Bad version number : " + options.parser.version );
                                             }else{
                                                 options.parser.version=version;
                                             }
                                         }else if( typeof options.parser.version !== "number"){
-                                            throw new Error("Expecting a number for version");
+                                            throw new Error( "Expecting a number for version" );
                                         }
                                         if(options.parser.version < 500 || options.parser.version > 900){
-                                            throw new Error("Can only handle versions between 5.x to 8.x");
+                                            throw new Error( "Can only handle versions between 5.x to 8.x" );
                                         }
                                     }
                                 }
-                                combine(options,this);
+                                combine( options , this );
                                 /* same version flags based on parser options */
                                 this.lexer.version=this.parser.version;
                             }
@@ -3953,7 +3953,7 @@
                           * @param  {Buffer|String} buffer Input value that can be either a buffer or a string
                           * @return {String}   Returns the string from input
                         */
-                        var getStringBuffer=function getStringBuffer(buffer){
+                        var getStringBuffer=function getStringBuffer( buffer ){
                             return( typeof buffer.write === "function" ? ( buffer.toString() ) : ( buffer ));
                         };
                         /*#
@@ -3962,40 +3962,40 @@
                           * @return {Engine}
                           * @private
                         */
-                        Engine.create=function(options){
-                            return(new Engine(options));
+                        Engine.create=function( options ){
+                            return(new Engine( options ));
                         };
                         /*#
                           * Evaluate the buffer
                           * @private
                         */
-                        Engine.parseEval=function(buffer,options){
-                            var self=new Engine(options);
-                            return(self.parseEval(buffer));
+                        Engine.parseEval=function( buffer , options ){
+                            var self=new Engine( options );
+                            return(self.parseEval( buffer ));
                         };
                         /*#
                           * Parse an evaluating mode string (no need to open php tags)
                           * @param {String} buffer
                           * @return {Program}
                         */
-                        Engine.prototype.parseEval=function(buffer){
+                        Engine.prototype.parseEval=function( buffer ){
                             this.lexer.mode_eval=true;
                             this.lexer.all_tokens=false;
-                            buffer=getStringBuffer(buffer);
-                            return(this.parser.parse(buffer,"eval"));
+                            buffer=getStringBuffer( buffer );
+                            return(this.parser.parse( buffer , "eval" ));
                         };
                         /*#
                           * Static function that parse a php code with open/close tags
                           * @private
                         */
-                        Engine.parseCode=function(buffer,filename,options){
-                            if(_typeof(filename) === "object" && !options){
+                        Engine.parseCode=function( buffer , filename , options ){
+                            if(_typeof( filename ) === "object" && !options){
                                 /* retro-compatibility */
                                 options=filename;
                                 filename="unknown";
                             }
-                            var self=new Engine(options);
-                            return(self.parseCode(buffer,filename));
+                            var self=new Engine( options );
+                            return(self.parseCode( buffer , filename ));
                         };
                         /*#
                           * Function that parse a php code with open/close tags
@@ -4017,19 +4017,19 @@
                           * @param {String} filename - Filename
                           * @return {Program}
                         */
-                        Engine.prototype.parseCode=function(buffer,filename){
+                        Engine.prototype.parseCode=function( buffer , filename ){
                             this.lexer.mode_eval=false;
                             this.lexer.all_tokens=false;
-                            buffer=getStringBuffer(buffer);
-                            return(this.parser.parse(buffer,filename));
+                            buffer=getStringBuffer( buffer );
+                            return(this.parser.parse( buffer , filename ));
                         };
                         /*#
                           * Split the buffer into tokens
                           * @private
                         */
-                        Engine.tokenGetAll=function(buffer,options){
-                            var self=new Engine(options);
-                            return(self.tokenGetAll(buffer));
+                        Engine.tokenGetAll=function( buffer , options ){
+                            var self=new Engine( options );
+                            return(self.tokenGetAll( buffer ));
                         };
                         /*#
                           * Extract tokens from the specified buffer.
@@ -4037,21 +4037,21 @@
                           * @param {string} buffer
                           * @return {Array<string|string[]>} - Each item can be a string or an array with following informations [token_name, text, line_number]
                         */
-                        Engine.prototype.tokenGetAll=function(buffer){
+                        Engine.prototype.tokenGetAll=function( buffer ){
                             this.lexer.mode_eval=false;
                             this.lexer.all_tokens=true;
-                            buffer=getStringBuffer(buffer);
+                            buffer=getStringBuffer( buffer );
                             var EOF=this.lexer.EOF;
                             var names=this.tokens.values;
-                            this.lexer.setInput(buffer);
+                            this.lexer.setInput( buffer );
                             var token=this.lexer.lex() || EOF;
                             var result=[];
                             while(token != EOF){
                                 var entry=this.lexer.yytext;
-                                if(Object.prototype.hasOwnProperty.call(names,token)){
+                                if(Object.prototype.hasOwnProperty.call( names , token )){
                                     entry=[names[token],entry,this.lexer.yylloc.first_line];
                                 }
-                                result.push(entry);
+                                result.push( entry );
                                 token=this.lexer.lex() || EOF;
                             }
                             return result;
@@ -4072,7 +4072,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "9108" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "9108" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -4093,21 +4093,21 @@
                           * @property {object} keywords List of php keyword
                           * @property {object} castKeywords List of php keywords for type casting
                         */
-                        function _typeof(o){
+                        function _typeof( o ){
                             "@babel/helpers - typeof";
                             return(_typeof="function" ==  typeof Symbol && "symbol" ==  typeof Symbol.iterator ?
                                   ( 
-                                    function(o){
+                                    function( o ){
                                             return( typeof o);
                                         }
                                   ) : ( 
-                                    function(o){
+                                    function( o ){
                                             return(o && "function" ==  typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? ( "symbol" ) : (  typeof o ));
                                         }
                                   ),
-                            _typeof(o));
+                            _typeof( o ));
                         }
-                        var Lexer=function Lexer(engine){
+                        var Lexer=function Lexer( engine ){
                             this.engine=engine;
                             this.tok=this.engine.tokens.names;
                             this.EOF=1;
@@ -4218,7 +4218,7 @@
                           * @function Lexer#setInput
                           * @memberOf module:php-parser
                         */
-                        Lexer.prototype.setInput=function(input){
+                        Lexer.prototype.setInput=function( input ){
                             this._input=input;
                             this.size=input.length;
                             this.yylineno=1;
@@ -4244,10 +4244,10 @@
                             this.done=this.offset >= this.size;
                             if(!this.all_tokens && this.mode_eval){
                                 this.conditionStack=["INITIAL"];
-                                this.begin("ST_IN_SCRIPTING");
+                                this.begin( "ST_IN_SCRIPTING" );
                             }else{
                                 this.conditionStack=[];
-                                this.begin("INITIAL");
+                                this.begin( "INITIAL" );
                             }
                             /* https://github.com/php/php-src/blob/999e32b65a8a4bb59e27e538fa68ffae4b99d863/Zend/zend_language_scanner.h#L59 */
                             /* Used for heredoc and nowdoc */
@@ -4302,7 +4302,7 @@
                           * @function Lexer#unput
                           * @memberOf module:php-parser
                         */
-                        Lexer.prototype.unput=function(size){
+                        Lexer.prototype.unput=function( size ){
                             if(size === 1){
                                 /* 1 char unput (most cases) */
                                 this.offset--;
@@ -4317,11 +4317,11 @@
                                 }else{
                                     this.yylloc.last_column--;
                                 }
-                                this.yytext=this.yytext.substring(0,this.yytext.length - size);
+                                this.yytext=this.yytext.substring( 0 , this.yytext.length - size );
                             }else if(size > 0){
                                 this.offset-=size;
                                 if(size < this.yytext.length){
-                                    this.yytext=this.yytext.substring(0,this.yytext.length - size);
+                                    this.yytext=this.yytext.substring( 0 , this.yytext.length - size );
                                     /* re-calculate position */
                                     this.yylloc.last_line=this.yylloc.first_line;
                                     this.yylloc.last_column=this.yyprevcol=this.yylloc.first_column;
@@ -4364,8 +4364,8 @@
                           * @param {string} text
                           * @returns {boolean}
                         */
-                        Lexer.prototype.tryMatch=function(text){
-                            return(text === this.ahead(text.length));
+                        Lexer.prototype.tryMatch=function( text ){
+                            return(text === this.ahead( text.length ));
                         };
                         /*#
                           * check if the text matches
@@ -4374,8 +4374,8 @@
                           * @param {string} text
                           * @returns {boolean}
                         */
-                        Lexer.prototype.tryMatchCaseless=function(text){
-                            return(text === this.ahead(text.length).toLowerCase());
+                        Lexer.prototype.tryMatchCaseless=function( text ){
+                            return(text === this.ahead( text.length ).toLowerCase());
                         };
                         /*#
                           * look ahead
@@ -4384,8 +4384,8 @@
                           * @param {number} size
                           * @returns {string}
                         */
-                        Lexer.prototype.ahead=function(size){
-                            var text=this._input.substring(this.offset,this.offset + size);
+                        Lexer.prototype.ahead=function( size ){
+                            var text=this._input.substring( this.offset , this.offset + size );
                             if(text[text.length - 1] === "\r" && this._input[this.offset + size + 1] === "\n"){
                                 text+="\n";
                             }
@@ -4398,7 +4398,7 @@
                           * @param {number} size
                           * @returns {Lexer}
                         */
-                        Lexer.prototype.consume=function(size){
+                        Lexer.prototype.consume=function( size ){
                             for( var i=0 ; i < size ; i++ ){
                                 var ch=this._input[this.offset];
                                 if(!ch){
@@ -4447,7 +4447,7 @@
                           * @function Lexer#setState
                           * @memberOf module:php-parser
                         */
-                        Lexer.prototype.setState=function(state){
+                        Lexer.prototype.setState=function( state ){
                             this.yytext=state.yytext;
                             this.offset=state.offset;
                             this.yylineno=state.yylineno;
@@ -4466,8 +4466,8 @@
                           * @param {*} ahead
                           * @returns {Lexer}
                         */
-                        Lexer.prototype.appendToken=function(value,ahead){
-                            this.tokens.push([value,ahead]);
+                        Lexer.prototype.appendToken=function( value , ahead ){
+                            this.tokens.push( [value,ahead] );
                             return this;
                         };
                         /*#
@@ -4523,13 +4523,13 @@
                           * @param {*} condition
                           * @returns {Lexer}
                         */
-                        Lexer.prototype.begin=function(condition){
-                            this.conditionStack.push(condition);
+                        Lexer.prototype.begin=function( condition ){
+                            this.conditionStack.push( condition );
                             this.curCondition=condition;
                             this.stateCb=this["match" + condition];
                             /* istanbul ignore next */
                             if( typeof this.stateCb !== "function"){
-                                throw new Error('Undefined condition state "' + condition + '"');
+                                throw new Error( 'Undefined condition state "' + condition + '"' );
                             }
                             return this;
                         };
@@ -4546,7 +4546,7 @@
                             this.stateCb=this["match" + this.curCondition];
                             /* istanbul ignore next */
                             if( typeof this.stateCb !== "function"){
-                                throw new Error('Undefined condition state "' + this.curCondition + '"');
+                                throw new Error( 'Undefined condition state "' + this.curCondition + '"' );
                             }
                             return condition;
                         };
@@ -4573,14 +4573,14 @@
                             }
                             if(this.tokens.length > 0){
                                 token=this.tokens.shift();
-                                if(_typeof(token[1]) === "object"){
-                                    this.setState(token[1]);
+                                if(_typeof( token[1] ) === "object"){
+                                    this.setState( token[1] );
                                 }else{
-                                    this.consume(token[1]);
+                                    this.consume( token[1] );
                                 }
                                 token=token[0];
                             }else{
-                                token=this.stateCb.apply(this,[]);
+                                token=this.stateCb.apply( this , [] );
                             }
                             if(this.offset >= this.size && this.tokens.length === 0){
                                 this.done=true;
@@ -4593,34 +4593,34 @@
                                 }else{
                                     tName='"' + tName + '"';
                                 }
-                                var e=new Error(tName + "\tfrom " + this.yylloc.first_line + "," + this.yylloc.first_column + "\t - to " + this.yylloc.last_line + "," + this.yylloc.last_column + '\t"' + this.yytext + '"');
+                                var e=new Error( tName + "\tfrom " + this.yylloc.first_line + "," + this.yylloc.first_column + "\t - to " + this.yylloc.last_line + "," + this.yylloc.last_column + '\t"' + this.yytext + '"' );
                                 /* eslint-disable-next-line no-console */
-                                console.error(e.stack);
+                                console.error( e.stack );
                             }
                             return token;
                         };
                         /* extends the lexer with states */
                         [
-                                __webpack_require__(9671),
-                                __webpack_require__(2429),
-                                __webpack_require__(3683),
-                                __webpack_require__(6545),
-                                __webpack_require__(3810),
-                                __webpack_require__(8510),
-                                __webpack_require__(4401),
-                                __webpack_require__(4349),
-                                __webpack_require__(8582)
-                            ].forEach(function(ext){
+                                __webpack_require__( 9671 ),
+                                __webpack_require__( 2429 ),
+                                __webpack_require__( 3683 ),
+                                __webpack_require__( 6545 ),
+                                __webpack_require__( 3810 ),
+                                __webpack_require__( 8510 ),
+                                __webpack_require__( 4401 ),
+                                __webpack_require__( 4349 ),
+                                __webpack_require__( 8582 )
+                            ].forEach( function( ext ){
                                 for(var k in ext){
                                     Lexer.prototype[k]=ext[k];
                                 }
-                            });
+                            } );
                         module.exports=Lexer;
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "9671" : (module) => {
+                    "9671" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -4635,7 +4635,7 @@
                                     do{
                                         ch=this.input();
                                     }while(this.is_WHITESPACE());
-                                    this.unput(1);
+                                    this.unput( 1 );
                                     return null;
                                 }
                                 switch (ch){
@@ -4689,7 +4689,7 @@
                                         var _ch=this.input();
                                         if(!(this.is_LABEL() || _ch === "\\")){
                                             if(_ch){
-                                                this.unput(1);
+                                                this.unput( 1 );
                                             }
                                             break;
                                         }
@@ -4699,14 +4699,14 @@
                                     return(this.consume_NUM());
                                 }
                                 /* istanbul ignore next */
-                                throw new Error("Bad terminal sequence \"".concat(ch,"\" at line ").concat(this.yylineno," (offset ").concat(this.offset,")"));
+                                throw new Error( "Bad terminal sequence \"".concat( ch , "\" at line " ).concat( this.yylineno , " (offset " ).concat( this.offset , ")" ) );
                             }
                         };
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "2429" : (module) => {
+                    "2429" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -4722,10 +4722,10 @@
                                     if(ch === "\n" || ch === "\r"){
                                         return this.tok.T_COMMENT;
                                     }else if(ch === "?" && !this.aspTagMode && this._input[this.offset] === ">"){
-                                        this.unput(1);
+                                        this.unput( 1 );
                                         return this.tok.T_COMMENT;
                                     }else if(ch === "%" && this.aspTagMode && this._input[this.offset] === ">"){
-                                        this.unput(1);
+                                        this.unput( 1 );
                                         return this.tok.T_COMMENT;
                                     }
                                 }
@@ -4747,7 +4747,7 @@
                                     if(ch === "/"){
                                         return token;
                                     }else{
-                                        this.unput(1);
+                                        this.unput( 1 );
                                         /* reset */
                                     }
                                 }
@@ -4765,7 +4765,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "3683" : (module) => {
+                    "3683" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -4777,7 +4777,7 @@
                                     /* Return to HEREDOC/ST_DOUBLE_QUOTES mode */
                                     this.popState();
                                 }else{
-                                    this.begin("ST_IN_SCRIPTING");
+                                    this.begin( "ST_IN_SCRIPTING" );
                                 }
                                 return this;
                             } ,
@@ -4785,30 +4785,30 @@
                                 while(this.offset < this.size){
                                     var ch=this.input();
                                     if(ch == "<"){
-                                        ch=this.ahead(1);
+                                        ch=this.ahead( 1 );
                                         if(ch == "?"){
-                                            if(this.tryMatch("?=")){
-                                                this.unput(1).appendToken(this.tok.T_OPEN_TAG_WITH_ECHO,3).nextINITIAL();
+                                            if(this.tryMatch( "?=" )){
+                                                this.unput( 1 ).appendToken( this.tok.T_OPEN_TAG_WITH_ECHO , 3 ).nextINITIAL();
                                                 break;
-                                            }else if(this.tryMatchCaseless("?php")){
+                                            }else if(this.tryMatchCaseless( "?php" )){
                                                 ch=this._input[this.offset + 4];
                                                 if(ch === " " || ch === "\t" || ch === "\n" || ch === "\r"){
-                                                    this.unput(1).appendToken(this.tok.T_OPEN_TAG,6).nextINITIAL();
+                                                    this.unput( 1 ).appendToken( this.tok.T_OPEN_TAG , 6 ).nextINITIAL();
                                                     break;
                                                 }
                                             }
                                             if(this.short_tags){
-                                                this.unput(1).appendToken(this.tok.T_OPEN_TAG,2).nextINITIAL();
+                                                this.unput( 1 ).appendToken( this.tok.T_OPEN_TAG , 2 ).nextINITIAL();
                                                 break;
                                             }
                                         }else if(this.asp_tags && ch == "%"){
-                                            if(this.tryMatch("%=")){
+                                            if(this.tryMatch( "%=" )){
                                                 this.aspTagMode=true;
-                                                this.unput(1).appendToken(this.tok.T_OPEN_TAG_WITH_ECHO,3).nextINITIAL();
+                                                this.unput( 1 ).appendToken( this.tok.T_OPEN_TAG_WITH_ECHO , 3 ).nextINITIAL();
                                                 break;
                                             }else{
                                                 this.aspTagMode=true;
-                                                this.unput(1).appendToken(this.tok.T_OPEN_TAG,2).nextINITIAL();
+                                                this.unput( 1 ).appendToken( this.tok.T_OPEN_TAG , 2 ).nextINITIAL();
                                                 break;
                                             }
                                         }
@@ -4825,7 +4825,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "6545" : (module) => {
+                    "6545" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -4851,7 +4851,7 @@
                                         if(ch !== "_" && this.is_HEX()){
                                             return(this.consume_HNUM());
                                         }else{
-                                            this.unput(ch ? ( 2 ) : ( 1 ));
+                                            this.unput( ch ? ( 2 ) : ( 1 ) );
                                         }
                                         /* check binary notation */
                                     }else if(ch === "b" || ch === "B"){
@@ -4859,18 +4859,18 @@
                                         if(ch !== "_" && ch === "0" || ch === "1"){
                                             return(this.consume_BNUM());
                                         }else{
-                                            this.unput(ch ? ( 2 ) : ( 1 ));
+                                            this.unput( ch ? ( 2 ) : ( 1 ) );
                                         }
                                     }else if(ch === "o" || ch === "O"){
                                         ch=this.input();
                                         if(ch !== "_" && this.is_OCTAL()){
                                             return(this.consume_ONUM());
                                         }else{
-                                            this.unput(ch ? ( 2 ) : ( 1 ));
+                                            this.unput( ch ? ( 2 ) : ( 1 ) );
                                         }
                                     }else if(!this.is_NUM()){
                                         if(ch){
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                     }
                                 }
@@ -4880,32 +4880,32 @@
                                     if(ch === "_"){
                                         if(prev === "_"){
                                             /* restriction : next to underscore / 1__1; */
-                                            this.unput(2);
+                                            this.unput( 2 );
                                             /* keep 1 */
                                             break;
                                         }
                                         if(prev === "."){
                                             /* next to decimal point  "1._0" */
-                                            this.unput(1);
+                                            this.unput( 1 );
                                             /* keep 1. */
                                             break;
                                         }
                                         if(prev === "e" || prev === "E"){
                                             /* next to e "1e_10" */
-                                            this.unput(2);
+                                            this.unput( 2 );
                                             /* keep 1 */
                                             break;
                                         }
                                     }else if(ch === "."){
                                         if(hasPoint){
                                             /* no multiple points "1.0.5" */
-                                            this.unput(1);
+                                            this.unput( 1 );
                                             /* keep 1.0 */
                                             break;
                                         }
                                         if(prev === "_"){
                                             /* next to decimal point  "1_.0" */
-                                            this.unput(2);
+                                            this.unput( 2 );
                                             /* keep 1 */
                                             break;
                                         }
@@ -4914,7 +4914,7 @@
                                     }else if(ch === "e" || ch === "E"){
                                         if(prev === "_"){
                                             /* next to e "1_e10" */
-                                            this.unput(1);
+                                            this.unput( 1 );
                                             break;
                                         }
                                         var undo=2;
@@ -4928,14 +4928,14 @@
                                             this.consume_LNUM();
                                             return this.tok.T_DNUMBER;
                                         }
-                                        this.unput(ch ? ( undo ) : ( undo - 1 ));
+                                        this.unput( ch ? ( undo ) : ( undo - 1 ) );
                                         /* keep only 1 */
                                         break;
                                     }
                                     if(!this.is_NUM()){
                                         /* example : 10.0a */
                                         if(ch){
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                         /* keep 10.0 */
                                         break;
@@ -4958,7 +4958,7 @@
                                     var ch=this.input();
                                     if(!this.is_HEX()){
                                         if(ch){
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                         break;
                                     }
@@ -4971,7 +4971,7 @@
                                     var ch=this.input();
                                     if(!this.is_NUM()){
                                         if(ch){
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                         break;
                                     }
@@ -4985,7 +4985,7 @@
                                     ch=this.input();
                                     if(ch !== "0" && ch !== "1" && ch !== "_"){
                                         if(ch){
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                         break;
                                     }
@@ -4998,7 +4998,7 @@
                                     var ch=this.input();
                                     if(!this.is_OCTAL()){
                                         if(ch){
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                         break;
                                     }
@@ -5010,7 +5010,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "3810" : (module) => {
+                    "3810" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -5026,7 +5026,7 @@
                                         return this.tok.T_OBJECT_OPERATOR;
                                     }
                                     if(ch){
-                                        this.unput(1);
+                                        this.unput( 1 );
                                     }
                                 }else if(this.is_WHITESPACE()){
                                     return this.tok.T_WHITESPACE;
@@ -5039,7 +5039,7 @@
                                 /* https://github.com/php/php-src/blob/master/Zend/zend_language_scanner.l#L1306 */
                                 this.popState();
                                 if(ch){
-                                    this.unput(1);
+                                    this.unput( 1 );
                                 }
                                 return false;
                             } ,
@@ -5047,21 +5047,21 @@
                                 var ch=this.input();
                                 /* SHIFT STATE */
                                 this.popState();
-                                this.begin("ST_IN_SCRIPTING");
+                                this.begin( "ST_IN_SCRIPTING" );
                                 if(this.is_LABEL_START()){
                                     this.consume_LABEL();
                                     ch=this.input();
                                     if(ch === "[" || ch === "}"){
-                                        this.unput(1);
+                                        this.unput( 1 );
                                         return this.tok.T_STRING_VARNAME;
                                     }else{
                                         /* any char (that's started with a label sequence) */
-                                        this.unput(this.yytext.length);
+                                        this.unput( this.yytext.length );
                                     }
                                 }else{
                                     /* any char (thats not a label start sequence) */
                                     if(ch){
-                                        this.unput(1);
+                                        this.unput( 1 );
                                     }
                                 }
                                 /* stops looking for a varname and starts the scripting mode */
@@ -5082,7 +5082,7 @@
                                         return this.tok.T_VARIABLE;
                                     }else{
                                         /* istanbul ignore next */
-                                        throw new Error("Unexpected terminal");
+                                        throw new Error( "Unexpected terminal" );
                                     }
                                 }else if(this.is_LABEL_START()){
                                     this.consume_LABEL();
@@ -5099,7 +5099,7 @@
                                     return ch;
                                 }else{
                                     /* istanbul ignore next */
-                                    throw new Error("Unexpected terminal");
+                                    throw new Error( "Unexpected terminal" );
                                 }
                             }
                         };
@@ -5107,7 +5107,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "8510" : (module) => {
+                    "8510" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -5126,7 +5126,7 @@
                                         if(this.version >= 800 && this._input[this.offset] === "["){
                                             this.input();
                                             this.attributeListDepth[++this.attributeIndex]=0;
-                                            this.begin("ST_ATTRIBUTE");
+                                            this.begin( "ST_ATTRIBUTE" );
                                             return this.tok.T_ATTRIBUTE;
                                         }
                                         return(this.T_COMMENT());
@@ -5143,18 +5143,18 @@
                                     case "'" : return(this.T_CONSTANT_ENCAPSED_STRING());
                                     case '"' : return(this.ST_DOUBLE_QUOTES());
                                     case "`" :
-                                        this.begin("ST_BACKQUOTE");
+                                        this.begin( "ST_BACKQUOTE" );
                                         return "`";
                                         
                                     case "?" :
-                                        if(!this.aspTagMode && this.tryMatch(">")){
+                                        if(!this.aspTagMode && this.tryMatch( ">" )){
                                             this.input();
                                             var nextCH=this._input[this.offset];
                                             if(nextCH === "\n" || nextCH === "\r"){
                                                 this.input();
                                             }
                                             if(this.conditionStack.length > 1){
-                                                this.begin("INITIAL");
+                                                this.begin( "INITIAL" );
                                             }
                                             return this.tok.T_CLOSE_TAG;
                                         }
@@ -5172,14 +5172,14 @@
                                             }
                                             this.aspTagMode=false;
                                             if(this.conditionStack.length > 1){
-                                                this.begin("INITIAL");
+                                                this.begin( "INITIAL" );
                                             }
                                             return this.tok.T_CLOSE_TAG;
                                         }
                                         return(this.consume_TOKEN());
                                         
                                     case "{" :
-                                        this.begin("ST_IN_SCRIPTING");
+                                        this.begin( "ST_IN_SCRIPTING" );
                                         return "{";
                                         
                                     case "}" :
@@ -5196,7 +5196,7 @@
                                                 return(this.consume_NUM());
                                             }else{
                                                 if(ch){
-                                                    this.unput(1);
+                                                    this.unput( 1 );
                                                 }
                                             }
                                         }
@@ -5209,7 +5209,7 @@
                                         }
                                         
                                 }
-                                throw new Error('Bad terminal sequence "' + ch + '" at line ' + this.yylineno + " (offset " + this.offset + ")");
+                                throw new Error( 'Bad terminal sequence "' + ch + '" at line ' + this.yylineno + " (offset " + this.offset + ")" );
                             } ,
                             "T_WHITESPACE" : function T_WHITESPACE(){
                                 while(this.offset < this.size){
@@ -5218,7 +5218,7 @@
                                         continue;
                                     }
                                     if(ch){
-                                        this.unput(1);
+                                        this.unput( 1 );
                                     }
                                     break;
                                 }
@@ -5229,7 +5229,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "4401" : (module) => {
+                    "4401" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -5237,7 +5237,7 @@
                         */
                         var newline=["\n","\r"];
                         var valid_after_heredoc=["\n","\r",";"];
-                        var valid_after_heredoc_73=valid_after_heredoc.concat([
+                        var valid_after_heredoc_73=valid_after_heredoc.concat( [
                             "\t",
                             " ",
                             ",",
@@ -5246,7 +5246,7 @@
                             "/",
                             "=",
                             "!"
-                        ]);
+                        ] );
                         module.exports={
                             "T_CONSTANT_ENCAPSED_STRING" : function T_CONSTANT_ENCAPSED_STRING(){
                                 var ch;
@@ -5290,25 +5290,25 @@
                                                 break;
                                             }
                                         }
-                                        var yylabel=this._input.substring(yyoffset,this.offset - 1);
+                                        var yylabel=this._input.substring( yyoffset , this.offset - 1 );
                                         if(!tChar || tChar === this._input[this.offset - 1]){
                                             /* required ending quote */
                                             if(tChar){
                                                 this.offset++;
                                             }
                                             /* require newline */
-                                            if(newline.includes(this._input[this.offset - 1])){
+                                            if(newline.includes( this._input[this.offset - 1] )){
                                                 /* go go go */
                                                 this.heredoc_label.label=yylabel;
                                                 this.heredoc_label.length=yylabel.length;
                                                 this.heredoc_label.finished=false;
                                                 yyoffset=this.offset - revert;
                                                 this.offset=revert;
-                                                this.consume(yyoffset);
+                                                this.consume( yyoffset );
                                                 if(tChar === "'"){
-                                                    this.begin("ST_NOWDOC");
+                                                    this.begin( "ST_NOWDOC" );
                                                 }else{
-                                                    this.begin("ST_HEREDOC");
+                                                    this.begin( "ST_HEREDOC" );
                                                 }
                                                 /* prematch to get the indentation information from end of doc */
                                                 this.prematch_ENDOFDOC();
@@ -5331,20 +5331,20 @@
                                     }else if(ch == "$"){
                                         ch=this.input();
                                         if(ch == "{" || this.is_LABEL_START()){
-                                            this.unput(2);
+                                            this.unput( 2 );
                                             break;
                                         }
                                         if(ch){
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                     }else if(ch == "{"){
                                         ch=this.input();
                                         if(ch == "$"){
-                                            this.unput(2);
+                                            this.unput( 2 );
                                             break;
                                         }
                                         if(ch){
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                     }
                                 }
@@ -5356,20 +5356,20 @@
                                         prefix=2;
                                     }
                                     if(this.yytext.length > 2){
-                                        this.appendToken(this.tok.T_ENCAPSED_AND_WHITESPACE,this.yytext.length - prefix);
+                                        this.appendToken( this.tok.T_ENCAPSED_AND_WHITESPACE , this.yytext.length - prefix );
                                     }
-                                    this.unput(this.yytext.length - prefix);
-                                    this.begin("ST_DOUBLE_QUOTES");
+                                    this.unput( this.yytext.length - prefix );
+                                    this.begin( "ST_DOUBLE_QUOTES" );
                                     return this.yytext;
                                 }
                             } ,
                              /* check if its a DOC end sequence */
-                            "isDOC_MATCH" : function isDOC_MATCH(offset,consumeLeadingSpaces){
+                            "isDOC_MATCH" : function isDOC_MATCH( offset , consumeLeadingSpaces ){
                                 /* @fixme : check if out of text limits */
                                 /* consumeLeadingSpaces is false happen DOC prematch END HEREDOC stage. */
                                 /* Ensure current state is really after a new line break, not after a such as ${variables} */
                                 var prev_ch=this._input[offset - 2];
-                                if(!newline.includes(prev_ch)){
+                                if(!newline.includes( prev_ch )){
                                     return false;
                                 }
                                 /* skip leading spaces or tabs */
@@ -5391,18 +5391,18 @@
                                     /* Move offset to skip leading whitespace */
                                     offset=offset + indentation;
                                     /* return out if there was only whitespace on this line */
-                                    if(newline.includes(this._input[offset - 1])){
+                                    if(newline.includes( this._input[offset - 1] )){
                                         return false;
                                     }
                                 }
-                                if(this._input.substring(offset - 1,(offset - 1) + this.heredoc_label.length) === this.heredoc_label.label){
+                                if(this._input.substring( offset - 1 , (offset - 1) + this.heredoc_label.length ) === this.heredoc_label.label){
                                     var ch=this._input[(offset - 1) + this.heredoc_label.length];
-                                    if(this.version >= 703 ? ( valid_after_heredoc_73 ) : ( valid_after_heredoc ).includes(ch)){
+                                    if((this.version >= 703 ? ( valid_after_heredoc_73 ) : ( valid_after_heredoc.includes( ch ) ))){
                                         if(consumeLeadingSpaces){
-                                            this.consume(indentation);
+                                            this.consume( indentation );
                                             /* https://wiki.php.net/rfc/flexible_heredoc_nowdoc_syntaxes */
                                             if(indentation_uses_spaces && indentation_uses_tabs){
-                                                throw new Error("Parse error:  mixing spaces and tabs in ending marker at line " + this.yylineno + " (offset " + this.offset + ")");
+                                                throw new Error( "Parse error:  mixing spaces and tabs in ending marker at line " + this.yylineno + " (offset " + this.offset + ")" );
                                             }
                                         }else{
                                             /* Called in prematch_ENDOFDOC */
@@ -5427,12 +5427,12 @@
                                 var offset=this.offset + 1;
                                 while(offset < this._input.length){
                                     /* if match heredoc_label structrue will be set */
-                                    if(this.isDOC_MATCH(offset,false)){
+                                    if(this.isDOC_MATCH( offset , false )){
                                         return;
                                     }
-                                    if(!newline.includes(this._input[offset - 1])){
+                                    if(!newline.includes( this._input[offset - 1] )){
                                         /* skip one line */
-                                        while(!newline.includes(this._input[offset++]) && offset < this._input.length){
+                                        while(!newline.includes( this._input[offset++] ) && offset < this._input.length){
                                             /* skip */
                                         }
                                     }
@@ -5441,20 +5441,20 @@
                             } ,
                             "matchST_NOWDOC" : function matchST_NOWDOC(){
                                 /* edge case : empty now doc */
-                                if(this.isDOC_MATCH(this.offset,true)){
+                                if(this.isDOC_MATCH( this.offset , true )){
                                     /* @fixme : never reached (may be caused by quotes) */
-                                    this.consume(this.heredoc_label.length);
+                                    this.consume( this.heredoc_label.length );
                                     this.popState();
                                     return this.tok.T_END_HEREDOC;
                                 }
                                 /* SCANNING CONTENTS */
                                 var ch=this._input[this.offset - 1];
                                 while(this.offset < this.size){
-                                    if(newline.includes(ch)){
+                                    if(newline.includes( ch )){
                                         ch=this.input();
-                                        if(this.isDOC_MATCH(this.offset,true)){
-                                            this.unput(1).popState();
-                                            this.appendToken(this.tok.T_END_HEREDOC,this.heredoc_label.length);
+                                        if(this.isDOC_MATCH( this.offset , true )){
+                                            this.unput( 1 ).popState();
+                                            this.appendToken( this.tok.T_END_HEREDOC , this.heredoc_label.length );
                                             return this.tok.T_ENCAPSED_AND_WHITESPACE;
                                         }
                                     }else{
@@ -5467,8 +5467,8 @@
                             "matchST_HEREDOC" : function matchST_HEREDOC(){
                                 /* edge case : empty here doc */
                                 var ch=this.input();
-                                if(this.isDOC_MATCH(this.offset,true)){
-                                    this.consume(this.heredoc_label.length - 1);
+                                if(this.isDOC_MATCH( this.offset , true )){
+                                    this.consume( this.heredoc_label.length - 1 );
                                     this.popState();
                                     return this.tok.T_END_HEREDOC;
                                 }
@@ -5477,25 +5477,25 @@
                                     if(ch === "\\"){
                                         ch=this.input();
                                         /* ignore next */
-                                        if(!newline.includes(ch)){
+                                        if(!newline.includes( ch )){
                                             ch=this.input();
                                         }
                                     }
-                                    if(newline.includes(ch)){
+                                    if(newline.includes( ch )){
                                         ch=this.input();
-                                        if(this.isDOC_MATCH(this.offset,true)){
-                                            this.unput(1).popState();
-                                            this.appendToken(this.tok.T_END_HEREDOC,this.heredoc_label.length);
+                                        if(this.isDOC_MATCH( this.offset , true )){
+                                            this.unput( 1 ).popState();
+                                            this.appendToken( this.tok.T_END_HEREDOC , this.heredoc_label.length );
                                             return this.tok.T_ENCAPSED_AND_WHITESPACE;
                                         }
                                     }else if(ch === "$"){
                                         ch=this.input();
                                         if(ch === "{"){
                                             /* start of ${ */
-                                            this.begin("ST_LOOKING_FOR_VARNAME");
+                                            this.begin( "ST_LOOKING_FOR_VARNAME" );
                                             if(this.yytext.length > 2){
-                                                this.appendToken(this.tok.T_DOLLAR_OPEN_CURLY_BRACES,2);
-                                                this.unput(2);
+                                                this.appendToken( this.tok.T_DOLLAR_OPEN_CURLY_BRACES , 2 );
+                                                this.unput( 2 );
                                                 return this.tok.T_ENCAPSED_AND_WHITESPACE;
                                             }else{
                                                 return this.tok.T_DOLLAR_OPEN_CURLY_BRACES;
@@ -5505,8 +5505,8 @@
                                             var yyoffset=this.offset;
                                             var next=this.consume_VARIABLE();
                                             if(this.yytext.length > (this.offset - yyoffset) + 2){
-                                                this.appendToken(next,(this.offset - yyoffset) + 2);
-                                                this.unput((this.offset - yyoffset) + 2);
+                                                this.appendToken( next , (this.offset - yyoffset) + 2 );
+                                                this.unput( (this.offset - yyoffset) + 2 );
                                                 return this.tok.T_ENCAPSED_AND_WHITESPACE;
                                             }else{
                                                 return next;
@@ -5517,13 +5517,13 @@
                                         ch=this.input();
                                         if(ch === "$"){
                                             /* start of {$... */
-                                            this.begin("ST_IN_SCRIPTING");
+                                            this.begin( "ST_IN_SCRIPTING" );
                                             if(this.yytext.length > 2){
-                                                this.appendToken(this.tok.T_CURLY_OPEN,1);
-                                                this.unput(2);
+                                                this.appendToken( this.tok.T_CURLY_OPEN , 1 );
+                                                this.unput( 2 );
                                                 return this.tok.T_ENCAPSED_AND_WHITESPACE;
                                             }else{
-                                                this.unput(1);
+                                                this.unput( 1 );
                                                 return this.tok.T_CURLY_OPEN;
                                             }
                                         }
@@ -5538,23 +5538,23 @@
                                 this.consume_LABEL();
                                 var ch=this.input();
                                 if(ch == "["){
-                                    this.unput(1);
-                                    this.begin("ST_VAR_OFFSET");
+                                    this.unput( 1 );
+                                    this.begin( "ST_VAR_OFFSET" );
                                     return this.tok.T_VARIABLE;
                                 }else if(ch === "-"){
                                     if(this.input() === ">"){
                                         this.input();
                                         if(this.is_LABEL_START()){
-                                            this.begin("ST_LOOKING_FOR_PROPERTY");
+                                            this.begin( "ST_LOOKING_FOR_PROPERTY" );
                                         }
-                                        this.unput(3);
+                                        this.unput( 3 );
                                         return this.tok.T_VARIABLE;
                                     }else{
-                                        this.unput(2);
+                                        this.unput( 2 );
                                     }
                                 }else{
                                     if(ch){
-                                        this.unput(1);
+                                        this.unput( 1 );
                                     }
                                 }
                                 return this.tok.T_VARIABLE;
@@ -5565,7 +5565,7 @@
                                 if(ch === "$"){
                                     ch=this.input();
                                     if(ch === "{"){
-                                        this.begin("ST_LOOKING_FOR_VARNAME");
+                                        this.begin( "ST_LOOKING_FOR_VARNAME" );
                                         return this.tok.T_DOLLAR_OPEN_CURLY_BRACES;
                                     }else if(this.is_LABEL_START()){
                                         var tok=this.consume_VARIABLE();
@@ -5573,7 +5573,7 @@
                                     }
                                 }else if(ch === "{"){
                                     if(this._input[this.offset] === "$"){
-                                        this.begin("ST_IN_SCRIPTING");
+                                        this.begin( "ST_IN_SCRIPTING" );
                                         return this.tok.T_CURLY_OPEN;
                                     }
                                 }else if(ch === "`"){
@@ -5585,17 +5585,17 @@
                                     if(ch === "\\"){
                                         this.input();
                                     }else if(ch === "`"){
-                                        this.unput(1);
+                                        this.unput( 1 );
                                         this.popState();
-                                        this.appendToken("`",1);
+                                        this.appendToken( "`" , 1 );
                                         break;
                                     }else if(ch === "$"){
                                         ch=this.input();
                                         if(ch === "{"){
-                                            this.begin("ST_LOOKING_FOR_VARNAME");
+                                            this.begin( "ST_LOOKING_FOR_VARNAME" );
                                             if(this.yytext.length > 2){
-                                                this.appendToken(this.tok.T_DOLLAR_OPEN_CURLY_BRACES,2);
-                                                this.unput(2);
+                                                this.appendToken( this.tok.T_DOLLAR_OPEN_CURLY_BRACES , 2 );
+                                                this.unput( 2 );
                                                 return this.tok.T_ENCAPSED_AND_WHITESPACE;
                                             }else{
                                                 return this.tok.T_DOLLAR_OPEN_CURLY_BRACES;
@@ -5605,8 +5605,8 @@
                                             var yyoffset=this.offset;
                                             var next=this.consume_VARIABLE();
                                             if(this.yytext.length > (this.offset - yyoffset) + 2){
-                                                this.appendToken(next,(this.offset - yyoffset) + 2);
-                                                this.unput((this.offset - yyoffset) + 2);
+                                                this.appendToken( next , (this.offset - yyoffset) + 2 );
+                                                this.unput( (this.offset - yyoffset) + 2 );
                                                 return this.tok.T_ENCAPSED_AND_WHITESPACE;
                                             }else{
                                                 return next;
@@ -5617,13 +5617,13 @@
                                         ch=this.input();
                                         if(ch === "$"){
                                             /* start of {$... */
-                                            this.begin("ST_IN_SCRIPTING");
+                                            this.begin( "ST_IN_SCRIPTING" );
                                             if(this.yytext.length > 2){
-                                                this.appendToken(this.tok.T_CURLY_OPEN,1);
-                                                this.unput(2);
+                                                this.appendToken( this.tok.T_CURLY_OPEN , 1 );
+                                                this.unput( 2 );
                                                 return this.tok.T_ENCAPSED_AND_WHITESPACE;
                                             }else{
-                                                this.unput(1);
+                                                this.unput( 1 );
                                                 return this.tok.T_CURLY_OPEN;
                                             }
                                         }
@@ -5638,7 +5638,7 @@
                                 if(ch === "$"){
                                     ch=this.input();
                                     if(ch === "{"){
-                                        this.begin("ST_LOOKING_FOR_VARNAME");
+                                        this.begin( "ST_LOOKING_FOR_VARNAME" );
                                         return this.tok.T_DOLLAR_OPEN_CURLY_BRACES;
                                     }else if(this.is_LABEL_START()){
                                         var tok=this.consume_VARIABLE();
@@ -5646,7 +5646,7 @@
                                     }
                                 }else if(ch === "{"){
                                     if(this._input[this.offset] === "$"){
-                                        this.begin("ST_IN_SCRIPTING");
+                                        this.begin( "ST_IN_SCRIPTING" );
                                         return this.tok.T_CURLY_OPEN;
                                     }
                                 }else if(ch === '"'){
@@ -5658,17 +5658,17 @@
                                     if(ch === "\\"){
                                         this.input();
                                     }else if(ch === '"'){
-                                        this.unput(1);
+                                        this.unput( 1 );
                                         this.popState();
-                                        this.appendToken('"',1);
+                                        this.appendToken( '"' , 1 );
                                         break;
                                     }else if(ch === "$"){
                                         ch=this.input();
                                         if(ch === "{"){
-                                            this.begin("ST_LOOKING_FOR_VARNAME");
+                                            this.begin( "ST_LOOKING_FOR_VARNAME" );
                                             if(this.yytext.length > 2){
-                                                this.appendToken(this.tok.T_DOLLAR_OPEN_CURLY_BRACES,2);
-                                                this.unput(2);
+                                                this.appendToken( this.tok.T_DOLLAR_OPEN_CURLY_BRACES , 2 );
+                                                this.unput( 2 );
                                                 return this.tok.T_ENCAPSED_AND_WHITESPACE;
                                             }else{
                                                 return this.tok.T_DOLLAR_OPEN_CURLY_BRACES;
@@ -5678,33 +5678,33 @@
                                             var yyoffset=this.offset;
                                             var next=this.consume_VARIABLE();
                                             if(this.yytext.length > (this.offset - yyoffset) + 2){
-                                                this.appendToken(next,(this.offset - yyoffset) + 2);
-                                                this.unput((this.offset - yyoffset) + 2);
+                                                this.appendToken( next , (this.offset - yyoffset) + 2 );
+                                                this.unput( (this.offset - yyoffset) + 2 );
                                                 return this.tok.T_ENCAPSED_AND_WHITESPACE;
                                             }else{
                                                 return next;
                                             }
                                         }
                                         if(ch){
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                     }else if(ch === "{"){
                                         ch=this.input();
                                         if(ch === "$"){
                                             /* start of {$... */
-                                            this.begin("ST_IN_SCRIPTING");
+                                            this.begin( "ST_IN_SCRIPTING" );
                                             if(this.yytext.length > 2){
-                                                this.appendToken(this.tok.T_CURLY_OPEN,1);
-                                                this.unput(2);
+                                                this.appendToken( this.tok.T_CURLY_OPEN , 1 );
+                                                this.unput( 2 );
                                                 return this.tok.T_ENCAPSED_AND_WHITESPACE;
                                             }else{
                                                 /* @fixme : yytext = '"{$' (this.yytext.length > 3) */
-                                                this.unput(1);
+                                                this.unput( 1 );
                                                 return this.tok.T_CURLY_OPEN;
                                             }
                                         }
                                         if(ch){
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                     }
                                     ch=this.input();
@@ -5716,7 +5716,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "4349" : (module) => {
+                    "4349" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -5728,8 +5728,8 @@
                                 var id=this.keywords[token];
                                 if( typeof id !== "number"){
                                     if(token === "yield"){
-                                        if(this.version >= 700 && this.tryMatch(" from")){
-                                            this.consume(5);
+                                        if(this.version >= 700 && this.tryMatch( " from" )){
+                                            this.consume( 5 );
                                             id=this.tok.T_YIELD_FROM;
                                         }else{
                                             id=this.tok.T_YIELD;
@@ -5743,7 +5743,7 @@
                                             }else if(ch === "'"){
                                                 return(this.T_CONSTANT_ENCAPSED_STRING());
                                             }else if(ch){
-                                                this.unput(1);
+                                                this.unput( 1 );
                                             }
                                         }
                                     }
@@ -5763,10 +5763,10 @@
                                         while(this.is_LABEL()){
                                             _ch+=this.input();
                                         }
-                                        var label=_ch.slice(0,-1).toLowerCase();
+                                        var label=_ch.slice( 0 , -1 ).toLowerCase();
                                         isEnum=label !== "extends" && label !== "implements";
                                     }
-                                    this.unput(this.offset - initial);
+                                    this.unput( this.offset - initial );
                                     return(isEnum ? ( this.tok.T_ENUM ) : ( this.tok.T_STRING ));
                                 }
                                 if(this.offset < this.size && id !== this.tok.T_YIELD_FROM){
@@ -5785,7 +5785,7 @@
                                         }while(_ch2 === "\\");
                                     }
                                     if(_ch2){
-                                        this.unput(1);
+                                        this.unput( 1 );
                                     }
                                 }
                                 return id;
@@ -5795,7 +5795,7 @@
                                 var ch=this._input[this.offset - 1];
                                 var fn=this.tokenTerminals[ch];
                                 if(fn){
-                                    return(fn.apply(this,[]));
+                                    return(fn.apply( this , [] ));
                                 }else{
                                     return this.yytext;
                                 }
@@ -5816,7 +5816,7 @@
                                 "-" : function _(){
                                     var nchar=this._input[this.offset];
                                     if(nchar === ">"){
-                                        this.begin("ST_LOOKING_FOR_PROPERTY").input();
+                                        this.begin( "ST_LOOKING_FOR_PROPERTY" ).input();
                                         return this.tok.T_OBJECT_OPERATOR;
                                     }else if(nchar === "-"){
                                         this.input();
@@ -5841,10 +5841,10 @@
                                                 this.consume_LABEL();
                                                 ch=this.input();
                                             }while(ch === "\\");
-                                            this.unput(1);
+                                            this.unput( 1 );
                                             return this.tok.T_NAME_FULLY_QUALIFIED;
                                         }else{
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                     }
                                     return this.tok.T_NS_SEPARATOR;
@@ -5873,7 +5873,7 @@
                                     if(this.is_LABEL_START()){
                                         var yylen=this.yytext.length;
                                         this.consume_LABEL();
-                                        var castToken=this.yytext.substring(yylen - 1).toLowerCase();
+                                        var castToken=this.yytext.substring( yylen - 1 ).toLowerCase();
                                         var castId=this.castKeywords[castToken];
                                         if( typeof castId === "number"){
                                             this.input();
@@ -5886,7 +5886,7 @@
                                         }
                                     }
                                     /* revert the check */
-                                    this.unput(this.offset - initial);
+                                    this.unput( this.offset - initial );
                                     return "(";
                                 } ,
                                 "=" : function _(){
@@ -5896,7 +5896,7 @@
                                         return this.tok.T_DOUBLE_ARROW;
                                     }else if(nchar === "="){
                                         if(this._input[this.offset + 1] === "="){
-                                            this.consume(2);
+                                            this.consume( 2 );
                                             return this.tok.T_IS_IDENTICAL;
                                         }else{
                                             this.input();
@@ -5919,7 +5919,7 @@
                                 "!" : function _(){
                                     if(this._input[this.offset] === "="){
                                         if(this._input[this.offset + 1] === "="){
-                                            this.consume(2);
+                                            this.consume( 2 );
                                             return this.tok.T_IS_NOT_IDENTICAL;
                                         }else{
                                             this.input();
@@ -5931,7 +5931,7 @@
                                 "?" : function _(){
                                     if(this.version >= 700 && this._input[this.offset] === "?"){
                                         if(this.version >= 704 && this._input[this.offset + 1] === "="){
-                                            this.consume(2);
+                                            this.consume( 2 );
                                             return this.tok.T_COALESCE_EQUAL;
                                         }else{
                                             this.input();
@@ -5939,8 +5939,8 @@
                                         }
                                     }
                                     if(this.version >= 800 && this._input[this.offset] === "-" && this._input[this.offset + 1] === ">"){
-                                        this.consume(1);
-                                        this.begin("ST_LOOKING_FOR_PROPERTY").input();
+                                        this.consume( 1 );
+                                        this.begin( "ST_LOOKING_FOR_PROPERTY" ).input();
                                         return this.tok.T_NULLSAFE_OBJECT_OPERATOR;
                                     }
                                     return "?";
@@ -5950,7 +5950,7 @@
                                     if(nchar === "<"){
                                         nchar=this._input[this.offset + 1];
                                         if(nchar === "="){
-                                            this.consume(2);
+                                            this.consume( 2 );
                                             return this.tok.T_SL_EQUAL;
                                         }else if(nchar === "<"){
                                             if(this.is_HEREDOC()){
@@ -5981,7 +5981,7 @@
                                     }else if(nchar === ">"){
                                         nchar=this._input[this.offset + 1];
                                         if(nchar === "="){
-                                            this.consume(2);
+                                            this.consume( 2 );
                                             return this.tok.T_SR_EQUAL;
                                         }else{
                                             this.input();
@@ -6012,7 +6012,7 @@
                                         this.input();
                                         return this.tok.T_CONCAT_EQUAL;
                                     }else if(nchar === "." && this._input[this.offset + 1] === "."){
-                                        this.consume(2);
+                                        this.consume( 2 );
                                         return this.tok.T_ELLIPSIS;
                                     }
                                     return ".";
@@ -6059,7 +6059,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "8582" : (module) => {
+                    "8582" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -6069,22 +6069,22 @@
                         module.exports={
                              /* check if the char can be a numeric */
                             "is_NUM" : function is_NUM(){
-                                var ch=this._input.charCodeAt(this.offset - 1);
+                                var ch=this._input.charCodeAt( this.offset - 1 );
                                 return(ch > 47 && ch < 58 || ch === 95);
                             } ,
                              /* check if the char can be a numeric */
                             "is_NUM_START" : function is_NUM_START(){
-                                var ch=this._input.charCodeAt(this.offset - 1);
+                                var ch=this._input.charCodeAt( this.offset - 1 );
                                 return(ch > 47 && ch < 58);
                             } ,
                              /* check if current char can be a label */
                             "is_LABEL" : function is_LABEL(){
-                                var ch=this._input.charCodeAt(this.offset - 1);
+                                var ch=this._input.charCodeAt( this.offset - 1 );
                                 return(ch > 96 && ch < 123 || ch > 64 && ch < 91 || ch === 95 || ch > 47 && ch < 58 || ch > 126);
                             } ,
                              /* check if current char can be a label */
                             "is_LABEL_START" : function is_LABEL_START(){
-                                var ch=this._input.charCodeAt(this.offset - 1);
+                                var ch=this._input.charCodeAt( this.offset - 1 );
                                 /* A - Z */
                                 if(ch > 64 && ch < 91){
                                     return true;
@@ -6110,7 +6110,7 @@
                                     var ch=this.input();
                                     if(!this.is_LABEL()){
                                         if(ch){
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                         break;
                                     }
@@ -6120,7 +6120,7 @@
                              /* check if current char is a token char */
                             "is_TOKEN" : function is_TOKEN(){
                                 var ch=this._input[this.offset - 1];
-                                return(tokens.indexOf(ch) !== -1);
+                                return(tokens.indexOf( ch ) !== -1);
                             } ,
                              /* check if current char is a whitespace */
                             "is_WHITESPACE" : function is_WHITESPACE(){
@@ -6138,7 +6138,7 @@
                                     var ch=this.input();
                                     if(!this.is_TABSPACE()){
                                         if(ch){
-                                            this.unput(1);
+                                            this.unput( 1 );
                                         }
                                         break;
                                     }
@@ -6147,7 +6147,7 @@
                             } ,
                              /* check if current char can be a hexadecimal number */
                             "is_HEX" : function is_HEX(){
-                                var ch=this._input.charCodeAt(this.offset - 1);
+                                var ch=this._input.charCodeAt( this.offset - 1 );
                                 /* 0 - 9 */
                                 if(ch > 47 && ch < 58){
                                     return true;
@@ -6169,7 +6169,7 @@
                             } ,
                              /* check if current char can be an octal number */
                             "is_OCTAL" : function is_OCTAL(){
-                                var ch=this._input.charCodeAt(this.offset - 1);
+                                var ch=this._input.charCodeAt( this.offset - 1 );
                                 /* 0 - 7 */
                                 if(ch > 47 && ch < 56){
                                     return true;
@@ -6186,18 +6186,18 @@
                     } ,
                      /* * */
                      /* * */
-                    "7259" : (module,__unused_webpack_exports,__webpack_require__) => {
+                    "7259" : ( module , __unused_webpack_exports , __webpack_require__ ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        var Position=__webpack_require__(8822);
+                        var Position=__webpack_require__( 8822 );
                         /*#
                           * @private
                         */
-                        function isNumber(n){
-                            return(n != "." && n != "," && !isNaN(parseFloat(n)) && isFinite(n));
+                        function isNumber( n ){
+                            return(n != "." && n != "," && !isNaN( parseFloat( n ) ) && isFinite( n ));
                         }
                         /*#
                           * The PHP Parser class that build the AST tree from the lexer
@@ -6213,7 +6213,7 @@
                           * @property {boolean} suppressErrors - should ignore parsing errors and continue
                           * @property {boolean} debug - should output debug informations
                         */
-                        var Parser=function Parser(lexer,ast){
+                        var Parser=function Parser( lexer , ast ){
                             this.lexer=lexer;
                             this.ast=ast;
                             this.tok=lexer.tok;
@@ -6225,12 +6225,12 @@
                             this.extractDoc=false;
                             this.extractTokens=false;
                             this.suppressErrors=false;
-                            var mapIt=function mapIt(item){
+                            var mapIt=function mapIt( item ){
                                 return([item,null]);
                             };
                             this.entries={
                                  /* reserved_non_modifiers */
-                                "IDENTIFIER" : new Map([
+                                "IDENTIFIER" : new Map( [
                                     this.tok.T_ABSTRACT,
                                     this.tok.T_ARRAY,
                                     this.tok.T_AS,
@@ -6307,8 +6307,8 @@
                                     this.tok.T_VAR,
                                     this.tok.T_WHILE,
                                     this.tok.T_YIELD
-                                ].map(mapIt)) ,
-                                "VARIABLE" : new Map([
+                                ].map( mapIt ) ) ,
+                                "VARIABLE" : new Map( [
                                     this.tok.T_VARIABLE,
                                     "$",
                                     "&",
@@ -6318,8 +6318,8 @@
                                     this.tok.T_NAME_FULLY_QUALIFIED,
                                     this.tok.T_NAMESPACE,
                                     this.tok.T_STATIC
-                                ].map(mapIt)) ,
-                                "SCALAR" : new Map([
+                                ].map( mapIt ) ) ,
+                                "SCALAR" : new Map( [
                                     this.tok.T_CONSTANT_ENCAPSED_STRING,
                                     this.tok.T_START_HEREDOC,
                                     this.tok.T_LNUMBER,
@@ -6339,8 +6339,8 @@
                                     'B"',
                                     "-",
                                     this.tok.T_NS_SEPARATOR
-                                ].map(mapIt)) ,
-                                "T_MAGIC_CONST" : new Map([
+                                ].map( mapIt ) ) ,
+                                "T_MAGIC_CONST" : new Map( [
                                     this.tok.T_CLASS_C,
                                     this.tok.T_TRAIT_C,
                                     this.tok.T_FUNC_C,
@@ -6349,17 +6349,17 @@
                                     this.tok.T_FILE,
                                     this.tok.T_DIR,
                                     this.tok.T_NS_C
-                                ].map(mapIt)) ,
-                                "T_MEMBER_FLAGS" : new Map([
+                                ].map( mapIt ) ) ,
+                                "T_MEMBER_FLAGS" : new Map( [
                                     this.tok.T_PUBLIC,
                                     this.tok.T_PRIVATE,
                                     this.tok.T_PROTECTED,
                                     this.tok.T_STATIC,
                                     this.tok.T_ABSTRACT,
                                     this.tok.T_FINAL
-                                ].map(mapIt)) ,
-                                "EOS" : new Map([";",this.EOF,this.tok.T_INLINE_HTML].map(mapIt)) ,
-                                "EXPR" : new Map([
+                                ].map( mapIt ) ) ,
+                                "EOS" : new Map( [";",this.EOF,this.tok.T_INLINE_HTML].map( mapIt ) ) ,
+                                "EXPR" : new Map( [
                                     "@",
                                     "-",
                                     "+",
@@ -6420,7 +6420,7 @@
                                     'B"',
                                     "-",
                                     this.tok.T_NS_SEPARATOR
-                                ].map(mapIt)) ,
+                                ].map( mapIt ) ) ,
                                  /* using VARIABLES : */
                                  /* using SCALAR : */
                                  /* @see variable.js line 45 > conflict with variable = shift/reduce :] */
@@ -6431,8 +6431,8 @@
                           * @function Parser#getTokenName
                           * @memberOf module:php-parser
                         */
-                        Parser.prototype.getTokenName=function(token){
-                            if(!isNumber(token)){
+                        Parser.prototype.getTokenName=function( token ){
+                            if(!isNumber( token )){
                                 return("'" + token + "'");
                             }else{
                                 if(token == this.EOF){
@@ -6446,7 +6446,7 @@
                           * @function Parser#parse
                           * @memberOf module:php-parser
                         */
-                        Parser.prototype.parse=function(code,filename){
+                        Parser.prototype.parse=function( code , filename ){
                             this._errors=[];
                             this.filename=filename || "eval";
                             this.currentNamespace=[""];
@@ -6462,38 +6462,38 @@
                             }
                             this._docIndex=0;
                             this._lastNode=null;
-                            this.lexer.setInput(code);
+                            this.lexer.setInput( code );
                             this.lexer.all_tokens=this.extractTokens;
                             this.lexer.comment_tokens=this.extractDoc;
                             this.length=this.lexer._input.length;
                             this.innerList=false;
                             this.innerListForm=false;
-                            var program=this.node("program");
+                            var program=this.node( "program" );
                             var childs=[];
                             this.next();
                             while(this.token != this.EOF){
-                                childs.push(this.read_start());
+                                childs.push( this.read_start() );
                             }
                             /* append last comment */
                             if(childs.length === 0 && this.extractDoc && this._docs.length > this._docIndex){
-                                childs.push(this.node("noop")());
+                                childs.push( this.node( "noop" )() );
                             }
                             /* #176 : register latest position */
                             this.prev=[this.lexer.yylloc.last_line,this.lexer.yylloc.last_column,this.lexer.offset];
-                            var result=program(childs,this._errors,this._docs,this._tokens);
+                            var result=program( childs , this._errors , this._docs , this._tokens );
                             if(this.debug){
                                 var errors=this.ast.checkNodes();
                                 /* istanbul ignore next */
                                 if(errors.length > 0){
-                                    errors.forEach(function(error){
+                                    errors.forEach( function( error ){
                                             if(error.position){
                                                 /* eslint-disable-next-line no-console */
-                                                console.log("Node at line " + error.position.line + ", column " + error.position.column);
+                                                console.log( "Node at line " + error.position.line + ", column " + error.position.column );
                                             }
                                             /* eslint-disable-next-line no-console */
-                                            console.log(error.stack.join("\n"));
-                                        });
-                                    throw new Error("Some nodes are not closed");
+                                            console.log( error.stack.join( "\n" ) );
+                                        } );
+                                    throw new Error( "Some nodes are not closed" );
                                 }
                             }
                             return result;
@@ -6503,18 +6503,18 @@
                           * @function Parser#raiseError
                           * @memberOf module:php-parser
                         */
-                        Parser.prototype.raiseError=function(message,msgExpect,expect,token){
+                        Parser.prototype.raiseError=function( message , msgExpect , expect , token ){
                             message+=" on line " + this.lexer.yylloc.first_line;
                             if(!this.suppressErrors){
-                                var err=new SyntaxError(message,this.filename,this.lexer.yylloc.first_line);
+                                var err=new SyntaxError( message , this.filename , this.lexer.yylloc.first_line );
                                 err.lineNumber=this.lexer.yylloc.first_line;
                                 err.fileName=this.filename;
                                 err.columnNumber=this.lexer.yylloc.first_column;
                                 throw err;
                             }
                             /* Error node : */
-                            var node=this.ast.prepare("error",null,this)(message,token,this.lexer.yylloc.first_line,expect);
-                            this._errors.push(node);
+                            var node=this.ast.prepare( "error" , null , this )( message , token , this.lexer.yylloc.first_line , expect );
+                            this._errors.push( node );
                             return node;
                         };
                         /*#
@@ -6522,28 +6522,28 @@
                           * @function Parser#error
                           * @memberOf module:php-parser
                         */
-                        Parser.prototype.error=function(expect){
+                        Parser.prototype.error=function( expect ){
                             var msg="Parse Error : syntax error";
-                            var token=this.getTokenName(this.token);
+                            var token=this.getTokenName( this.token );
                             var msgExpect="";
                             if(this.token !== this.EOF){
-                                if(isNumber(this.token)){
+                                if(isNumber( this.token )){
                                     var symbol=this.text();
                                     /* istanbul ignore next */
                                     if(symbol.length > 10){
-                                        symbol=symbol.substring(0,7) + "...";
+                                        symbol=symbol.substring( 0 , 7 ) + "...";
                                     }
                                     token="'" + symbol + "' (" + token + ")";
                                 }
                                 msg+=", unexpected " + token;
                             }
-                            if(expect && !Array.isArray(expect)){
-                                if(isNumber(expect) || expect.length === 1){
-                                    msgExpect=", expecting " + this.getTokenName(expect);
+                            if(expect && !Array.isArray( expect )){
+                                if(isNumber( expect ) || expect.length === 1){
+                                    msgExpect=", expecting " + this.getTokenName( expect );
                                 }
                                 msg+=msgExpect;
                             }
-                            return(this.raiseError(msg,msgExpect,expect,token));
+                            return(this.raiseError( msg , msgExpect , expect , token ));
                         };
                         /*#
                           * Create a position node from the lexers position
@@ -6553,28 +6553,28 @@
                           * @return {Position}
                         */
                         Parser.prototype.position=function(){
-                            return(new Position(this.lexer.yylloc.first_line,this.lexer.yylloc.first_column,this.lexer.yylloc.first_offset));
+                            return(new Position( this.lexer.yylloc.first_line , this.lexer.yylloc.first_column , this.lexer.yylloc.first_offset ));
                         };
                         /*#
                           * Creates a new AST node
                           * @function Parser#node
                           * @memberOf module:php-parser
                         */
-                        Parser.prototype.node=function(name){
+                        Parser.prototype.node=function( name ){
                             if(this.extractDoc){
                                 var docs=null;
                                 if(this._docIndex < this._docs.length){
-                                    docs=this._docs.slice(this._docIndex);
+                                    docs=this._docs.slice( this._docIndex );
                                     this._docIndex=this._docs.length;
                                     /* istanbul ignore next */
                                     if(this.debug){
                                         /* eslint-disable-next-line no-console */
-                                        console.log(new Error("Append docs on " + name));
+                                        console.log( new Error( "Append docs on " + name ) );
                                         /* eslint-disable-next-line no-console */
-                                        console.log(docs);
+                                        console.log( docs );
                                     }
                                 }
-                                var node=this.ast.prepare(name,docs,this);
+                                var node=this.ast.prepare( name , docs , this );
                                 /*
                                   * TOKENS :
                                   * node1 commentA token commmentB node2 commentC token commentD node3 commentE token
@@ -6604,7 +6604,7 @@
                                   * NOTE : As the trailingComment Behavior depends on AST, it will be build on
                                   * the AST layer - last child node will keep it's trailingComment nodes
                                 */
-                                node.postBuild=function(self){
+                                node.postBuild=function( self ){
                                     if(this._docIndex < this._docs.length){
                                         if(this._lastNode){
                                             var offset=this.prev[2];
@@ -6616,20 +6616,20 @@
                                             }
                                             if(max > this._docIndex){
                                                 /* inject trailing comment on child node */
-                                                this._lastNode.setTrailingComments(this._docs.slice(this._docIndex,max));
+                                                this._lastNode.setTrailingComments( this._docs.slice( this._docIndex , max ) );
                                                 this._docIndex=max;
                                             }
                                         }else if(this.token === this.EOF){
                                             /* end of content */
-                                            self.setTrailingComments(this._docs.slice(this._docIndex));
+                                            self.setTrailingComments( this._docs.slice( this._docIndex ) );
                                             this._docIndex=this._docs.length;
                                         }
                                     }
                                     this._lastNode=self;
-                                }.bind(this);
+                                }.bind( this );
                                 return node;
                             }
-                            return(this.ast.prepare(name,null,this));
+                            return(this.ast.prepare( name , null , this ));
                         };
                         /*#
                           * expects an end of statement or end of file
@@ -6637,15 +6637,15 @@
                           * @memberOf module:php-parser
                           * @return {boolean}
                         */
-                        Parser.prototype.expectEndOfStatement=function(node){
+                        Parser.prototype.expectEndOfStatement=function( node ){
                             if(this.token === ";"){
                                 /* include only real ';' statements */
                                 /* https://github.com/glayzzle/php-parser/issues/164 */
                                 if(node && this.lexer.yytext === ";"){
-                                    node.includeToken(this);
+                                    node.includeToken( this );
                                 }
                             }else if(this.token !== this.tok.T_INLINE_HTML && this.token !== this.EOF){
-                                this.error(";");
+                                this.error( ";" );
                                 return false;
                             }
                             this.next();
@@ -6659,14 +6659,14 @@
                           * @memberOf module:php-parser
                         */
                         Parser.prototype.showlog=function(){
-                            var stack=(new Error()).stack.split("\n");
+                            var stack=(new Error()).stack.split( "\n" );
                             var line;
                             for( var offset=2 ; offset < stack.length ; offset++ ){
                                 line=stack[offset].trim();
                                 var found=false;
                                 for( var i=0 ; i < ignoreStack.length ; i++ ){
                                     /* istanbul ignore next */
-                                    if(line.substring(3,3 + ignoreStack[i].length) === ignoreStack[i]){
+                                    if(line.substring( 3 , 3 + ignoreStack[i].length ) === ignoreStack[i]){
                                         found=true;
                                         break;
                                     }
@@ -6677,7 +6677,7 @@
                                 }
                             }
                             /* eslint-disable-next-line no-console */
-                            console.log("Line " + this.lexer.yylloc.first_line + " : " + this.getTokenName(this.token) + ">" + this.lexer.yytext + "<" + " @-->" + line);
+                            console.log( "Line " + this.lexer.yylloc.first_line + " : " + this.getTokenName( this.token ) + ">" + this.lexer.yytext + "<" + " @-->" + line );
                             return this;
                         };
                         /*#
@@ -6695,14 +6695,14 @@
                           * @return {boolean}
                           * @throws Error
                         */
-                        Parser.prototype.expect=function(token){
-                            if(Array.isArray(token)){
-                                if(token.indexOf(this.token) === -1){
-                                    this.error(token);
+                        Parser.prototype.expect=function( token ){
+                            if(Array.isArray( token )){
+                                if(token.indexOf( this.token ) === -1){
+                                    this.error( token );
                                     return false;
                                 }
                             }else if(this.token != token){
-                                this.error(token);
+                                this.error( token );
                                 return false;
                             }
                             return true;
@@ -6739,9 +6739,9 @@
                                 while(this.token === this.tok.T_COMMENT || this.token === this.tok.T_DOC_COMMENT){
                                     /* APPEND COMMENTS */
                                     if(this.token === this.tok.T_COMMENT){
-                                        this._docs.push(this.read_comment());
+                                        this._docs.push( this.read_comment() );
                                     }else{
-                                        this._docs.push(this.read_doc_comment());
+                                        this._docs.push( this.read_doc_comment() );
                                     }
                                 }
                             }
@@ -6756,7 +6756,7 @@
                         Parser.prototype.peek=function(){
                             var lexerState=this.lexer.getState();
                             var nextToken=this.lexer.lex();
-                            this.lexer.setState(lexerState);
+                            this.lexer.setState( lexerState );
                             return nextToken;
                         };
                         /*#
@@ -6775,12 +6775,12 @@
                                         return this;
                                     }
                                     var entry=this.lexer.yytext;
-                                    if(Object.prototype.hasOwnProperty.call(this.lexer.engine.tokens.values,this.token)){
+                                    if(Object.prototype.hasOwnProperty.call( this.lexer.engine.tokens.values , this.token )){
                                         entry=[this.lexer.engine.tokens.values[this.token],entry,this.lexer.yylloc.first_line,this.lexer.yylloc.first_offset,this.lexer.offset];
                                     }else{
                                         entry=[null,entry,this.lexer.yylloc.first_line,this.lexer.yylloc.first_offset,this.lexer.offset];
                                     }
-                                    this._tokens.push(entry);
+                                    this._tokens.push( entry );
                                     if(this.token === this.tok.T_CLOSE_TAG){
                                         /* https://github.com/php/php-src/blob/7ff186434e82ee7be7c59d0db9a976641cf7b09c/Zend/zend_compile.c#L1680 */
                                         this.token=";";
@@ -6810,46 +6810,46 @@
                           * @function Parser#is
                           * @memberOf module:php-parser
                         */
-                        Parser.prototype.is=function(type){
-                            if(Array.isArray(type)){
-                                return(type.indexOf(this.token) !== -1);
+                        Parser.prototype.is=function( type ){
+                            if(Array.isArray( type )){
+                                return(type.indexOf( this.token ) !== -1);
                             }
-                            return(this.entries[type].has(this.token));
+                            return(this.entries[type].has( this.token ));
                         };
                         /* extends the parser with syntax files */
                         [
-                                __webpack_require__(5525),
-                                __webpack_require__(7072),
-                                __webpack_require__(3997),
-                                __webpack_require__(6477),
-                                __webpack_require__(979),
-                                __webpack_require__(8214),
-                                __webpack_require__(9461),
-                                __webpack_require__(5931),
-                                __webpack_require__(9147),
-                                __webpack_require__(9219),
-                                __webpack_require__(7170),
-                                __webpack_require__(6261),
-                                __webpack_require__(2478),
-                                __webpack_require__(77),
-                                __webpack_require__(6077),
-                                __webpack_require__(1130)
-                            ].forEach(function(ext){
+                                __webpack_require__( 5525 ),
+                                __webpack_require__( 7072 ),
+                                __webpack_require__( 3997 ),
+                                __webpack_require__( 6477 ),
+                                __webpack_require__( 979 ),
+                                __webpack_require__( 8214 ),
+                                __webpack_require__( 9461 ),
+                                __webpack_require__( 5931 ),
+                                __webpack_require__( 9147 ),
+                                __webpack_require__( 9219 ),
+                                __webpack_require__( 7170 ),
+                                __webpack_require__( 6261 ),
+                                __webpack_require__( 2478 ),
+                                __webpack_require__( 77 ),
+                                __webpack_require__( 6077 ),
+                                __webpack_require__( 1130 )
+                            ].forEach( function( ext ){
                                 for(var k in ext){
                                     /* istanbul ignore next */
-                                    if(Object.prototype.hasOwnProperty.call(Parser.prototype,k)){
+                                    if(Object.prototype.hasOwnProperty.call( Parser.prototype , k )){
                                         /* @see https://github.com/glayzzle/php-parser/issues/234 */
-                                        throw new Error("Function " + k + " is already defined - collision");
+                                        throw new Error( "Function " + k + " is already defined - collision" );
                                     }
                                     Parser.prototype[k]=ext[k];
                                 }
-                            });
+                            } );
                         module.exports=Parser;
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "5525" : (module) => {
+                    "5525" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -6866,9 +6866,9 @@
                             "read_array" : function read_array(){
                                 var expect=null;
                                 var shortForm=false;
-                                var result=this.node("array");
+                                var result=this.node( "array" );
                                 if(this.token === this.tok.T_ARRAY){
-                                    this.next().expect("(");
+                                    this.next().expect( "(" );
                                     expect=")";
                                 }else{
                                     shortForm=true;
@@ -6876,11 +6876,11 @@
                                 }
                                 var items=[];
                                 if(this.next().token !== expect){
-                                    items=this.read_array_pair_list(shortForm);
+                                    items=this.read_array_pair_list( shortForm );
                                 }
-                                this.expect(expect);
+                                this.expect( expect );
                                 this.next();
-                                return(result(shortForm,items));
+                                return(result( shortForm , items ));
                             } ,
                              /*
                               * Reads an array of items
@@ -6888,11 +6888,11 @@
                               * array_pair_list ::= array_pair (',' array_pair?)*
                               * ```
                              */
-                            "read_array_pair_list" : function read_array_pair_list(shortForm){
+                            "read_array_pair_list" : function read_array_pair_list( shortForm ){
                                 var self=this;
-                                return(this.read_list(function(){
-                                        return(self.read_array_pair(shortForm));
-                                    },",",true));
+                                return(this.read_list( function(){
+                                        return(self.read_array_pair( shortForm ));
+                                    } , "," , true ));
                             } ,
                              /*
                               * Reads an entry
@@ -6904,14 +6904,14 @@
                               *  | expr T_DOUBLE_ARROW T_LIST '(' array_pair_list ')'
                               *  | T_LIST '(' array_pair_list ')'
                              */
-                            "read_array_pair" : function read_array_pair(shortForm){
+                            "read_array_pair" : function read_array_pair( shortForm ){
                                 if(!shortForm && this.token === ")" || shortForm && this.token === "]"){
                                     return;
                                 }
                                 if(this.token === ","){
-                                    return(this.node("noop")());
+                                    return(this.node( "noop" )());
                                 }
-                                var entry=this.node("entry");
+                                var entry=this.node( "entry" );
                                 var key=null;
                                 var value=null;
                                 var byRef=false;
@@ -6919,7 +6919,7 @@
                                 if(this.token === "&"){
                                     this.next();
                                     byRef=true;
-                                    value=this.read_variable(true,false);
+                                    value=this.read_variable( true , false );
                                 }else if(this.token === this.tok.T_ELLIPSIS && this.version >= 704){
                                     this.next();
                                     if(this.token === "&"){
@@ -6935,7 +6935,7 @@
                                         if(this.token === "&"){
                                             this.next();
                                             byRef=true;
-                                            value=this.read_variable(true,false);
+                                            value=this.read_variable( true , false );
                                         }else{
                                             value=this.read_expr();
                                         }
@@ -6943,26 +6943,26 @@
                                         value=expr;
                                     }
                                 }
-                                return(entry(key,value,byRef,unpack));
+                                return(entry( key , value , byRef , unpack ));
                             }
                         };
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "7072" : (module) => {
+                    "7072" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
-                        function _slicedToArray(r,e){
-                            return(_arrayWithHoles(r) || _iterableToArrayLimit(r,e) || _unsupportedIterableToArray(r,e) || _nonIterableRest());
+                        function _slicedToArray( r , e ){
+                            return(_arrayWithHoles( r ) || _iterableToArrayLimit( r , e ) || _unsupportedIterableToArray( r , e ) || _nonIterableRest());
                         }
                         function _nonIterableRest(){
-                            throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+                            throw new TypeError( "Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method." );
                         }
-                        function _iterableToArrayLimit(r,l){
+                        function _iterableToArrayLimit( r , l ){
                             var t=null == r ?
                               ( 
                                 null
@@ -6978,13 +6978,13 @@
                                 var f=!0;
                                 var o=!1;
                                 try{
-                                    if((i=(t=t.call(r)).next,0 === l)){
-                                        if(Object(t) !== t){
+                                    if((i=(t=t.call( r )).next,0 === l)){
+                                        if(Object( t ) !== t){
                                             return;
                                         }
                                         f=!1;
-                                    }else if(!(f=(e=i.call(t)).done) && (a.push(e.value),a.length !== l)){
-                                        for(  ; !(f=(e=i.call(t)).done) && (a.push(undefined),undefined !== l) ; f=!0 ){
+                                    }else if(!(f=(e=i.call( t )).done) && (a.push( e.value ),a.length !== l)){
+                                        for(  ; !(f=(e=i.call( t )).done) && (a.push( undefined ),undefined !== l) ; f=!0 ){
                                             
                                         }
                                     }
@@ -6992,7 +6992,7 @@
                                     o=!0,n=r;
                                 }finally{
                                     try{
-                                        if(!f && null != t["return"] && (u=t["return"](),Object(u) !== u)){
+                                        if(!f && null != t["return"] && (u=t["return"](),Object( u ) !== u)){
                                             return;
                                         }
                                     }
@@ -7005,45 +7005,45 @@
                                 return a;
                             }
                         }
-                        function _arrayWithHoles(r){
-                            if(Array.isArray(r)){
+                        function _arrayWithHoles( r ){
+                            if(Array.isArray( r )){
                                 return r;
                             }
                         }
-                        function _toConsumableArray(r){
-                            return(_arrayWithoutHoles(r) || _iterableToArray(r) || _unsupportedIterableToArray(r) || _nonIterableSpread());
+                        function _toConsumableArray( r ){
+                            return(_arrayWithoutHoles( r ) || _iterableToArray( r ) || _unsupportedIterableToArray( r ) || _nonIterableSpread());
                         }
                         function _nonIterableSpread(){
-                            throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+                            throw new TypeError( "Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method." );
                         }
-                        function _unsupportedIterableToArray(r,a){
+                        function _unsupportedIterableToArray( r , a ){
                             if(r){
                                 if("string" ==  typeof r){
-                                    return(_arrayLikeToArray(r,a));
+                                    return(_arrayLikeToArray( r , a ));
                                 }
-                                var t={}.toString.call(r).slice(8,-1);
+                                var t={}.toString.call( r ).slice( 8 , -1 );
                                 return("Object" === t && r.constructor && (t=r.constructor.name),
                                 "Map" === t || "Set" === t ?
                                       ( 
-                                        Array.from(r)
+                                        Array.from( r )
                                       ) : ( 
-                                        "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? ( _arrayLikeToArray(r,a) ) : ( void(0) )
+                                        "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test( t ) ? ( _arrayLikeToArray( r , a ) ) : ( void( 0 ) )
                                       ));
                             }
                         }
-                        function _iterableToArray(r){
+                        function _iterableToArray( r ){
                             if("undefined" !=  typeof Symbol && null != r[Symbol.iterator] || null != r["@@iterator"]){
-                                return(Array.from(r));
+                                return(Array.from( r ));
                             }
                         }
-                        function _arrayWithoutHoles(r){
-                            if(Array.isArray(r)){
-                                return(_arrayLikeToArray(r));
+                        function _arrayWithoutHoles( r ){
+                            if(Array.isArray( r )){
+                                return(_arrayLikeToArray( r ));
                             }
                         }
-                        function _arrayLikeToArray(r,a){
+                        function _arrayLikeToArray( r , a ){
                             (null == a || a > r.length) && (a=r.length);
-                            for( var e=0,n=Array(a) ; e < a ; e++ ){
+                            for( var e=0,n=Array( a ) ; e < a ; e++ ){
                                 n[e]=r[e];
                             }
                             return n;
@@ -7055,47 +7055,47 @@
                               * class ::= class_scope? T_CLASS T_STRING (T_EXTENDS NAMESPACE_NAME)? (T_IMPLEMENTS (NAMESPACE_NAME ',')* NAMESPACE_NAME)? '{' CLASS_BODY '}'
                               * ```
                              */
-                            "read_class_declaration_statement" : function read_class_declaration_statement(attrs){
-                                var result=this.node("class");
+                            "read_class_declaration_statement" : function read_class_declaration_statement( attrs ){
+                                var result=this.node( "class" );
                                 var flag=this.read_class_modifiers();
                                 /* graceful mode : ignore token & go next */
                                 if(this.token !== this.tok.T_CLASS){
-                                    this.error(this.tok.T_CLASS);
+                                    this.error( this.tok.T_CLASS );
                                     this.next();
                                     return null;
                                 }
-                                this.next().expect(this.tok.T_STRING);
-                                var propName=this.node("identifier");
+                                this.next().expect( this.tok.T_STRING );
+                                var propName=this.node( "identifier" );
                                 var name=this.text();
                                 this.next();
-                                propName=propName(name);
+                                propName=propName( name );
                                 var propExtends=this.read_extends_from();
                                 var propImplements=this.read_implements_list();
-                                this.expect("{");
-                                var body=this.next().read_class_body(true,false);
-                                var node=result(propName,propExtends,propImplements,body,flag);
+                                this.expect( "{" );
+                                var body=this.next().read_class_body( true , false );
+                                var node=result( propName , propExtends , propImplements , body , flag );
                                 if(attrs){
                                     node.attrGroups=attrs;
                                 }
                                 return node;
                             } ,
                             "read_class_modifiers" : function read_class_modifiers(){
-                                var modifier=this.read_class_modifier({"readonly" : 0 ,"final_or_abstract" : 0});
+                                var modifier=this.read_class_modifier( {"readonly" : 0 ,"final_or_abstract" : 0} );
                                 return([0,0,modifier.final_or_abstract,modifier.readonly]);
                             } ,
-                            "read_class_modifier" : function read_class_modifier(memo){
+                            "read_class_modifier" : function read_class_modifier( memo ){
                                 if(this.token === this.tok.T_READ_ONLY){
                                     this.next();
                                     memo.readonly=1;
-                                    memo=this.read_class_modifier(memo);
+                                    memo=this.read_class_modifier( memo );
                                 }else if(memo.final_or_abstract === 0 && this.token === this.tok.T_ABSTRACT){
                                     this.next();
                                     memo.final_or_abstract=1;
-                                    memo=this.read_class_modifier(memo);
+                                    memo=this.read_class_modifier( memo );
                                 }else if(memo.final_or_abstract === 0 && this.token === this.tok.T_FINAL){
                                     this.next();
                                     memo.final_or_abstract=2;
-                                    memo=this.read_class_modifier(memo);
+                                    memo=this.read_class_modifier( memo );
                                 }
                                 return memo;
                             } ,
@@ -7105,30 +7105,30 @@
                               *   class_body ::= (member_flags? (T_VAR | T_STRING | T_FUNCTION))*
                               * ```
                              */
-                            "read_class_body" : function read_class_body(allow_variables,allow_enum_cases){
+                            "read_class_body" : function read_class_body( allow_variables , allow_enum_cases ){
                                 var result=[];
                                 var attrs=[];
                                 while(this.token !== this.EOF && this.token !== "}"){
                                     if(this.token === this.tok.T_COMMENT){
-                                        result.push(this.read_comment());
+                                        result.push( this.read_comment() );
                                         continue;
                                     }
                                     if(this.token === this.tok.T_DOC_COMMENT){
-                                        result.push(this.read_doc_comment());
+                                        result.push( this.read_doc_comment() );
                                         continue;
                                     }
                                     /* check T_USE trait */
                                     if(this.token === this.tok.T_USE){
-                                        result=result.concat(this.read_trait_use_statement());
+                                        result=result.concat( this.read_trait_use_statement() );
                                         continue;
                                     }
                                     /* check enum cases */
                                     if(allow_enum_cases && this.token === this.tok.T_CASE){
                                         var enumcase=this.read_enum_case();
-                                        if(this.expect(";")){
+                                        if(this.expect( ";" )){
                                             this.next();
                                         }
-                                        result=result.concat(enumcase);
+                                        result=result.concat( enumcase );
                                         continue;
                                     }
                                     if(this.token === this.tok.T_ATTRIBUTE){
@@ -7136,19 +7136,19 @@
                                     }
                                     var locStart=this.position();
                                     /* read member flags */
-                                    var flags=this.read_member_flags(false);
+                                    var flags=this.read_member_flags( false );
                                     /* check constant */
                                     if(this.token === this.tok.T_CONST){
-                                        var constants=this.read_constant_list(flags,attrs);
-                                        if(this.expect(";")){
+                                        var constants=this.read_constant_list( flags , attrs );
+                                        if(this.expect( ";" )){
                                             this.next();
                                         }
-                                        result=result.concat(constants);
+                                        result=result.concat( constants );
                                         continue;
                                     }
                                     /* jump over T_VAR then land on T_VARIABLE */
                                     if(allow_variables && this.token === this.tok.T_VAR){
-                                        this.next().expect(this.tok.T_VARIABLE);
+                                        this.next().expect( this.tok.T_VARIABLE );
                                         flags[0]=null;
                                         /* public (as null) */
                                         flags[1]=0;
@@ -7156,7 +7156,7 @@
                                     }
                                     if(this.token === this.tok.T_FUNCTION){
                                         /* reads a function */
-                                        result.push(this.read_function(false,flags,attrs,locStart));
+                                        result.push( this.read_function( false , flags , attrs , locStart ) );
                                         attrs=[];
                                     }else if(allow_variables
                                            && (this.token === this.tok.T_VARIABLE
@@ -7174,20 +7174,20 @@
                                                        || this.token === this.tok.T_STRING))
                                     ){
                                         /* reads a variable */
-                                        var variables=this.read_variable_list(flags,attrs);
+                                        var variables=this.read_variable_list( flags , attrs );
                                         attrs=[];
-                                        this.expect(";");
+                                        this.expect( ";" );
                                         this.next();
-                                        result=result.concat(variables);
+                                        result=result.concat( variables );
                                     }else{
                                         /* raise an error */
-                                        this.error([this.tok.T_CONST].concat(_toConsumableArray(allow_variables ? ( [this.tok.T_VARIABLE] ) : ( [] )),_toConsumableArray(allow_enum_cases ? ( [this.tok.T_CASE] ) : ( [] )),[this.tok.T_FUNCTION]));
+                                        this.error( [this.tok.T_CONST].concat( _toConsumableArray( allow_variables ? ( [this.tok.T_VARIABLE] ) : ( [] ) ) , _toConsumableArray( allow_enum_cases ? ( [this.tok.T_CASE] ) : ( [] ) ) , [this.tok.T_FUNCTION] ) );
                                         /* ignore token */
                                         this.next();
                                     }
                                     /* support https://wiki.php.net/rfc/typed_properties_v2 */
                                 }
-                                this.expect("}");
+                                this.expect( "}" );
                                 this.next();
                                 return result;
                             } ,
@@ -7197,42 +7197,42 @@
                               *  variable_list ::= (variable_declaration ',')* variable_declaration
                               * ```
                              */
-                            "read_variable_list" : function read_variable_list(flags,attrs){
-                                var result=this.node("propertystatement");
-                                var properties=this.read_list(function read_variable_declaration(){
-                                    var result=this.node("property");
+                            "read_variable_list" : function read_variable_list( flags , attrs ){
+                                var result=this.node( "propertystatement" );
+                                var properties=this.read_list( function read_variable_declaration(){
+                                    var result=this.node( "property" );
                                     var readonly=false;
                                     if(this.token === this.tok.T_READ_ONLY){
                                         readonly=true;
                                         this.next();
                                     }
                                     var _this$read_optional_t=this.read_optional_type();
-                                    var _this$read_optional_t2=_slicedToArray(_this$read_optional_t,2);
+                                    var _this$read_optional_t2=_slicedToArray( _this$read_optional_t , 2 );
                                     var nullable=_this$read_optional_t2[0];
                                     var type=_this$read_optional_t2[1];
-                                    this.expect(this.tok.T_VARIABLE);
-                                    var propName=this.node("identifier");
-                                    var name=this.text().substring(1);
+                                    this.expect( this.tok.T_VARIABLE );
+                                    var propName=this.node( "identifier" );
+                                    var name=this.text().substring( 1 );
                                     /* ignore $ */
                                     this.next();
-                                    propName=propName(name);
+                                    propName=propName( name );
                                     if(this.token === ";" || this.token === ","){
-                                        return(result(propName,null,readonly,nullable,type,attrs || []));
+                                        return(result( propName , null , readonly , nullable , type , attrs || [] ));
                                     }else if(this.token === "="){
                                         /* https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L815 */
-                                        return(result(propName,this.next().read_expr(),readonly,nullable,type,attrs || []));
+                                        return(result( propName , this.next().read_expr() , readonly , nullable , type , attrs || [] ));
                                     }else{
-                                        this.expect([",",";","="]);
-                                        return(result(propName,null,nullable,type,attrs || []));
+                                        this.expect( [",",";","="] );
+                                        return(result( propName , null , nullable , type , attrs || [] ));
                                     }
-                                }, /* 
+                                } ,  /* 
                                                                     * Reads a variable declaration
                                                                     *
                                                                     * ```ebnf
                                                                     *  variable_declaration ::= T_VARIABLE '=' scalar
                                                                     * ```
-                                                                   */ ",");
-                                return(result(null,properties,flags));
+                                                                   */ "," );
+                                return(result( null , properties , flags ));
                             } ,
                              /*
                               * Reads constant list
@@ -7240,40 +7240,40 @@
                               *  constant_list ::= T_CONST [type] (constant_declaration ',')* constant_declaration
                               * ```
                              */
-                            "read_constant_list" : function read_constant_list(flags,attrs){
-                                if(this.expect(this.tok.T_CONST)){
+                            "read_constant_list" : function read_constant_list( flags , attrs ){
+                                if(this.expect( this.tok.T_CONST )){
                                     this.next();
                                 }
                                 var _ref=this.version >= 830 ? ( this.read_optional_type() ) : ( [false,null] );
-                                var _ref2=_slicedToArray(_ref,2);
+                                var _ref2=_slicedToArray( _ref , 2 );
                                 var nullable=_ref2[0];
                                 var type=_ref2[1];
-                                var result=this.node("classconstant");
-                                var items=this.read_list(function read_constant_declaration(){
-                                    var result=this.node("constant");
+                                var result=this.node( "classconstant" );
+                                var items=this.read_list( function read_constant_declaration(){
+                                    var result=this.node( "constant" );
                                     var constName=null;
                                     var value=null;
-                                    if(this.token === this.tok.T_STRING || this.version >= 700 && this.is("IDENTIFIER")){
-                                        constName=this.node("identifier");
+                                    if(this.token === this.tok.T_STRING || this.version >= 700 && this.is( "IDENTIFIER" )){
+                                        constName=this.node( "identifier" );
                                         var name=this.text();
                                         this.next();
-                                        constName=constName(name);
+                                        constName=constName( name );
                                     }else{
-                                        this.expect("IDENTIFIER");
+                                        this.expect( "IDENTIFIER" );
                                     }
-                                    if(this.expect("=")){
+                                    if(this.expect( "=" )){
                                         value=this.next().read_expr();
                                     }
-                                    return(result(constName,value));
-                                }, /* 
+                                    return(result( constName , value ));
+                                } ,  /* 
                                                                     * Reads a constant declaration
                                                                     *
                                                                     * ```ebnf
                                                                     *  constant_declaration ::= (T_STRING | IDENTIFIER) '=' expr
                                                                     * ```
                                                                     * @return {Constant} [:link:](AST.md#constant)
-                                                                   */ ",");
-                                return(result(null,items,flags,nullable,type,attrs || []));
+                                                                   */ "," );
+                                return(result( null , items , flags , nullable , type , attrs || [] ));
                             } ,
                              /*
                               * Read member flags
@@ -7282,9 +7282,9 @@
                               *  2nd index : 0 => instance member, 1 => static member
                               *  3rd index : 0 => normal, 1 => abstract member, 2 => final member
                              */
-                            "read_member_flags" : function read_member_flags(asInterface){
+                            "read_member_flags" : function read_member_flags( asInterface ){
                                 var result=[-1,-1,-1];
-                                if(this.is("T_MEMBER_FLAGS")){
+                                if(this.is( "T_MEMBER_FLAGS" )){
                                     var idx=0;
                                     var val=0;
                                     do{
@@ -7323,7 +7323,7 @@
                                         if(asInterface){
                                             if(idx === 0 && val === 2){
                                                 /* an interface can't be private */
-                                                this.expect([this.tok.T_PUBLIC,this.tok.T_PROTECTED]);
+                                                this.expect( [this.tok.T_PUBLIC,this.tok.T_PROTECTED] );
                                                 val=-1;
                                             }else if(idx === 2 && val === 1){
                                                 /* an interface cant be abstract */
@@ -7337,7 +7337,7 @@
                                         }else if(val !== -1){
                                             result[idx]=val;
                                         }
-                                    }while(this.next().is("T_MEMBER_FLAGS"));
+                                    }while(this.next().is( "T_MEMBER_FLAGS" ));
                                 }
                                 if(result[1] === -1){
                                     result[1]=0;
@@ -7377,7 +7377,7 @@
                                 }
                                 var type=this.read_types();
                                 if(nullable && !type){
-                                    this.raiseError("Expecting a type definition combined with nullable operator");
+                                    this.raiseError( "Expecting a type definition combined with nullable operator" );
                                 }
                                 if(!nullable && !type){
                                     return([false,null]);
@@ -7388,10 +7388,10 @@
                                         this.next();
                                         var variant=this.read_type();
                                         if(!variant){
-                                            this.raiseError("Expecting a type definition");
+                                            this.raiseError( "Expecting a type definition" );
                                             break;
                                         }
-                                        type.push(variant);
+                                        type.push( variant );
                                     }while(this.token === "|");
                                 }
                                 return([nullable,type]);
@@ -7402,22 +7402,22 @@
                               * interface ::= T_INTERFACE T_STRING (T_EXTENDS (NAMESPACE_NAME ',')* NAMESPACE_NAME)? '{' INTERFACE_BODY '}'
                               * ```
                              */
-                            "read_interface_declaration_statement" : function read_interface_declaration_statement(attrs){
-                                var result=this.node("interface");
+                            "read_interface_declaration_statement" : function read_interface_declaration_statement( attrs ){
+                                var result=this.node( "interface" );
                                 if(this.token !== this.tok.T_INTERFACE){
-                                    this.error(this.tok.T_INTERFACE);
+                                    this.error( this.tok.T_INTERFACE );
                                     this.next();
                                     return null;
                                 }
-                                this.next().expect(this.tok.T_STRING);
-                                var propName=this.node("identifier");
+                                this.next().expect( this.tok.T_STRING );
+                                var propName=this.node( "identifier" );
                                 var name=this.text();
                                 this.next();
-                                propName=propName(name);
+                                propName=propName( name );
                                 var propExtends=this.read_interface_extends_list();
-                                this.expect("{");
+                                this.expect( "{" );
                                 var body=this.next().read_interface_body();
-                                return(result(propName,propExtends,body,attrs || []));
+                                return(result( propName , propExtends , body , attrs || [] ));
                             } ,
                              /*
                               * Reads an interface body
@@ -7430,41 +7430,41 @@
                                 var attrs=[];
                                 while(this.token !== this.EOF && this.token !== "}"){
                                     if(this.token === this.tok.T_COMMENT){
-                                        result.push(this.read_comment());
+                                        result.push( this.read_comment() );
                                         continue;
                                     }
                                     if(this.token === this.tok.T_DOC_COMMENT){
-                                        result.push(this.read_doc_comment());
+                                        result.push( this.read_doc_comment() );
                                         continue;
                                     }
                                     var locStart=this.position();
                                     attrs=this.read_attr_list();
                                     /* read member flags */
-                                    var flags=this.read_member_flags(true);
+                                    var flags=this.read_member_flags( true );
                                     /* check constant */
                                     if(this.token === this.tok.T_CONST){
-                                        var constants=this.read_constant_list(flags,attrs);
-                                        if(this.expect(";")){
+                                        var constants=this.read_constant_list( flags , attrs );
+                                        if(this.expect( ";" )){
                                             this.next();
                                         }
-                                        result=result.concat(constants);
+                                        result=result.concat( constants );
                                         attrs=[];
                                     }else if(this.token === this.tok.T_FUNCTION){
                                         /* reads a function */
-                                        var method=this.read_function_declaration(2,flags,attrs,locStart);
-                                        method.parseFlags(flags);
-                                        result.push(method);
-                                        if(this.expect(";")){
+                                        var method=this.read_function_declaration( 2 , flags , attrs , locStart );
+                                        method.parseFlags( flags );
+                                        result.push( method );
+                                        if(this.expect( ";" )){
                                             this.next();
                                         }
                                         attrs=[];
                                     }else{
                                         /* raise an error */
-                                        this.error([this.tok.T_CONST,this.tok.T_FUNCTION]);
+                                        this.error( [this.tok.T_CONST,this.tok.T_FUNCTION] );
                                         this.next();
                                     }
                                 }
-                                if(this.expect("}")){
+                                if(this.expect( "}" )){
                                     this.next();
                                 }
                                 return result;
@@ -7476,21 +7476,21 @@
                               * ```
                              */
                             "read_trait_declaration_statement" : function read_trait_declaration_statement(){
-                                var result=this.node("trait");
+                                var result=this.node( "trait" );
                                 /* graceful mode : ignore token & go next */
                                 if(this.token !== this.tok.T_TRAIT){
-                                    this.error(this.tok.T_TRAIT);
+                                    this.error( this.tok.T_TRAIT );
                                     this.next();
                                     return null;
                                 }
-                                this.next().expect(this.tok.T_STRING);
-                                var propName=this.node("identifier");
+                                this.next().expect( this.tok.T_STRING );
+                                var propName=this.node( "identifier" );
                                 var name=this.text();
                                 this.next();
-                                propName=propName(name);
-                                this.expect("{");
-                                var body=this.next().read_class_body(true,false);
-                                return(result(propName,body));
+                                propName=propName( name );
+                                this.expect( "{" );
+                                var body=this.next().read_class_body( true , false );
+                                return(result( propName , body ));
                             } ,
                              /*
                               * reading a use statement
@@ -7500,12 +7500,12 @@
                              */
                             "read_trait_use_statement" : function read_trait_use_statement(){
                                 /* defines use statements */
-                                var node=this.node("traituse");
-                                this.expect(this.tok.T_USE) && this.next();
+                                var node=this.node( "traituse" );
+                                this.expect( this.tok.T_USE ) && this.next();
                                 var traits=[this.read_namespace_name()];
                                 var adaptations=null;
                                 while(this.token === ","){
-                                    traits.push(this.next().read_namespace_name());
+                                    traits.push( this.next().read_namespace_name() );
                                 }
                                 if(this.token === "{"){
                                     adaptations=[];
@@ -7514,18 +7514,18 @@
                                         if(this.token === "}"){
                                             break;
                                         }
-                                        adaptations.push(this.read_trait_use_alias());
-                                        this.expect(";");
+                                        adaptations.push( this.read_trait_use_alias() );
+                                        this.expect( ";" );
                                     }
-                                    if(this.expect("}")){
+                                    if(this.expect( "}" )){
                                         this.next();
                                     }
                                 }else{
-                                    if(this.expect(";")){
+                                    if(this.expect( ";" )){
                                         this.next();
                                     }
                                 }
-                                return(node(traits,adaptations));
+                                return(node( traits , adaptations ));
                             } ,
                              /*
                               * Reading trait alias
@@ -7539,23 +7539,23 @@
                                 var node=this.node();
                                 var trait=null;
                                 var method;
-                                if(this.is("IDENTIFIER")){
-                                    method=this.node("identifier");
+                                if(this.is( "IDENTIFIER" )){
+                                    method=this.node( "identifier" );
                                     var methodName=this.text();
                                     this.next();
-                                    method=method(methodName);
+                                    method=method( methodName );
                                 }else{
                                     method=this.read_namespace_name();
                                     if(this.token === this.tok.T_DOUBLE_COLON){
                                         this.next();
-                                        if(this.token === this.tok.T_STRING || this.version >= 700 && this.is("IDENTIFIER")){
+                                        if(this.token === this.tok.T_STRING || this.version >= 700 && this.is( "IDENTIFIER" )){
                                             trait=method;
-                                            method=this.node("identifier");
+                                            method=this.node( "identifier" );
                                             var _methodName=this.text();
                                             this.next();
-                                            method=method(_methodName);
+                                            method=method( _methodName );
                                         }else{
-                                            this.expect(this.tok.T_STRING);
+                                            this.expect( this.tok.T_STRING );
                                         }
                                     }else{
                                         /* convert identifier as string */
@@ -7564,35 +7564,35 @@
                                 }
                                 /* handle trait precedence */
                                 if(this.token === this.tok.T_INSTEADOF){
-                                    return(node("traitprecedence",trait,method,this.next().read_name_list()));
+                                    return(node( "traitprecedence" , trait , method , this.next().read_name_list() ));
                                 }else if(this.token === this.tok.T_AS){
                                     /* handle trait alias */
                                     var flags=null;
                                     var alias=null;
-                                    if(this.next().is("T_MEMBER_FLAGS")){
+                                    if(this.next().is( "T_MEMBER_FLAGS" )){
                                         flags=this.read_member_flags();
                                     }
-                                    if(this.token === this.tok.T_STRING || this.version >= 700 && this.is("IDENTIFIER")){
-                                        alias=this.node("identifier");
+                                    if(this.token === this.tok.T_STRING || this.version >= 700 && this.is( "IDENTIFIER" )){
+                                        alias=this.node( "identifier" );
                                         var name=this.text();
                                         this.next();
-                                        alias=alias(name);
+                                        alias=alias( name );
                                     }else if(flags === false){
                                         /* no visibility flags and no name => too bad */
-                                        this.expect(this.tok.T_STRING);
+                                        this.expect( this.tok.T_STRING );
                                     }
-                                    return(node("traitalias",trait,method,alias,flags));
+                                    return(node( "traitalias" , trait , method , alias , flags ));
                                 }
                                 /* handle errors */
-                                this.expect([this.tok.T_AS,this.tok.T_INSTEADOF]);
-                                return(node("traitalias",trait,method,null,null));
+                                this.expect( [this.tok.T_AS,this.tok.T_INSTEADOF] );
+                                return(node( "traitalias" , trait , method , null , null ));
                             }
                         };
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "3997" : (module) => {
+                    "3997" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -7604,13 +7604,13 @@
                              */
                             "read_comment" : function read_comment(){
                                 var text=this.text();
-                                var result=this.ast.prepare(text.substring(0,2) === "/*" ? ( "commentblock" ) : ( "commentline" ),null,this);
+                                var result=this.ast.prepare( text.substring( 0 , 2 ) === "/*" ? ( "commentblock" ) : ( "commentline" ) , null , this );
                                 var offset=this.lexer.yylloc.first_offset;
                                 /* handle location on comment */
                                 var prev=this.prev;
                                 this.prev=[this.lexer.yylloc.last_line,this.lexer.yylloc.last_column,this.lexer.offset];
                                 this.lex();
-                                result=result(text);
+                                result=result( text );
                                 result.offset=offset;
                                 this.prev=prev;
                                 return result;
@@ -7619,13 +7619,13 @@
                               * Comments with / ** ... * /
                              */
                             "read_doc_comment" : function read_doc_comment(){
-                                var result=this.ast.prepare("commentblock",null,this);
+                                var result=this.ast.prepare( "commentblock" , null , this );
                                 var offset=this.lexer.yylloc.first_offset;
                                 var text=this.text();
                                 var prev=this.prev;
                                 this.prev=[this.lexer.yylloc.last_line,this.lexer.yylloc.last_column,this.lexer.offset];
                                 this.lex();
-                                result=result(text);
+                                result=result( text );
                                 result.offset=offset;
                                 this.prev=prev;
                                 return result;
@@ -7635,7 +7635,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "979" : (module) => {
+                    "979" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -7648,22 +7648,22 @@
                               * enum ::= enum_scope? T_ENUM T_STRING (':' NAMESPACE_NAME)? (T_IMPLEMENTS (NAMESPACE_NAME ',')* NAMESPACE_NAME)? '{' ENUM_BODY '}'
                               * ```
                              */
-                            "read_enum_declaration_statement" : function read_enum_declaration_statement(attrs){
-                                var result=this.node("enum");
+                            "read_enum_declaration_statement" : function read_enum_declaration_statement( attrs ){
+                                var result=this.node( "enum" );
                                 /* graceful mode : ignore token & go next */
-                                if(!this.expect(this.tok.T_ENUM)){
+                                if(!this.expect( this.tok.T_ENUM )){
                                     return null;
                                 }
-                                this.next().expect(this.tok.T_STRING);
-                                var propName=this.node("identifier");
+                                this.next().expect( this.tok.T_STRING );
+                                var propName=this.node( "identifier" );
                                 var name=this.text();
                                 this.next();
-                                propName=propName(name);
+                                propName=propName( name );
                                 var valueType=this.read_enum_value_type();
                                 var propImplements=this.read_implements_list();
-                                this.expect("{");
-                                var body=this.next().read_class_body(false,true);
-                                var node=result(propName,valueType,propImplements,body);
+                                this.expect( "{" );
+                                var body=this.next().read_class_body( false , true );
+                                var node=result( propName , valueType , propImplements , body );
                                 if(attrs){
                                     node.attrGroups=attrs;
                                 }
@@ -7676,129 +7676,129 @@
                                 return null;
                             } ,
                             "read_enum_case" : function read_enum_case(){
-                                this.expect(this.tok.T_CASE);
-                                var result=this.node("enumcase");
-                                var caseName=this.node("identifier");
+                                this.expect( this.tok.T_CASE );
+                                var result=this.node( "enumcase" );
+                                var caseName=this.node( "identifier" );
                                 var name=this.next().text();
                                 this.next();
-                                caseName=caseName(name);
+                                caseName=caseName( name );
                                 var value=this.token === "=" ? ( this.next().read_expr() ) : ( null );
-                                this.expect(";");
-                                return(result(caseName,value));
+                                this.expect( ";" );
+                                return(result( caseName , value ));
                             }
                         };
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6477" : (module) => {
+                    "6477" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
                           * @url http://glayzzle.com
                         */
                         module.exports={
-                            "read_expr" : function read_expr(expr){
+                            "read_expr" : function read_expr( expr ){
                                 var result=this.node();
                                 if(this.token === "@"){
                                     if(!expr){
                                         expr=this.next().read_expr();
                                     }
-                                    return(result("silent",expr));
+                                    return(result( "silent" , expr ));
                                 }
                                 if(!expr){
                                     expr=this.read_expr_item();
                                 }
                                 /* binary operations */
                                 if(this.token === "|"){
-                                    return(result("bin","|",expr,this.next().read_expr()));
+                                    return(result( "bin" , "|" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === "&"){
-                                    return(result("bin","&",expr,this.next().read_expr()));
+                                    return(result( "bin" , "&" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === "^"){
-                                    return(result("bin","^",expr,this.next().read_expr()));
+                                    return(result( "bin" , "^" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === "."){
-                                    return(result("bin",".",expr,this.next().read_expr()));
+                                    return(result( "bin" , "." , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === "+"){
-                                    return(result("bin","+",expr,this.next().read_expr()));
+                                    return(result( "bin" , "+" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === "-"){
-                                    return(result("bin","-",expr,this.next().read_expr()));
+                                    return(result( "bin" , "-" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === "*"){
-                                    return(result("bin","*",expr,this.next().read_expr()));
+                                    return(result( "bin" , "*" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === "/"){
-                                    return(result("bin","/",expr,this.next().read_expr()));
+                                    return(result( "bin" , "/" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === "%"){
-                                    return(result("bin","%",expr,this.next().read_expr()));
+                                    return(result( "bin" , "%" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_POW){
-                                    return(result("bin","**",expr,this.next().read_expr()));
+                                    return(result( "bin" , "**" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_SL){
-                                    return(result("bin","<<",expr,this.next().read_expr()));
+                                    return(result( "bin" , "<<" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_SR){
-                                    return(result("bin",">>",expr,this.next().read_expr()));
+                                    return(result( "bin" , ">>" , expr , this.next().read_expr() ));
                                 }
                                 /* more binary operations (formerly bool) */
                                 if(this.token === this.tok.T_BOOLEAN_OR){
-                                    return(result("bin","||",expr,this.next().read_expr()));
+                                    return(result( "bin" , "||" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_LOGICAL_OR){
-                                    return(result("bin","or",expr,this.next().read_expr()));
+                                    return(result( "bin" , "or" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_BOOLEAN_AND){
-                                    return(result("bin","&&",expr,this.next().read_expr()));
+                                    return(result( "bin" , "&&" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_LOGICAL_AND){
-                                    return(result("bin","and",expr,this.next().read_expr()));
+                                    return(result( "bin" , "and" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_LOGICAL_XOR){
-                                    return(result("bin","xor",expr,this.next().read_expr()));
+                                    return(result( "bin" , "xor" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_IS_IDENTICAL){
-                                    return(result("bin","===",expr,this.next().read_expr()));
+                                    return(result( "bin" , "===" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_IS_NOT_IDENTICAL){
-                                    return(result("bin","!==",expr,this.next().read_expr()));
+                                    return(result( "bin" , "!==" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_IS_EQUAL){
-                                    return(result("bin","==",expr,this.next().read_expr()));
+                                    return(result( "bin" , "==" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_IS_NOT_EQUAL){
-                                    return(result("bin","!=",expr,this.next().read_expr()));
+                                    return(result( "bin" , "!=" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === "<"){
-                                    return(result("bin","<",expr,this.next().read_expr()));
+                                    return(result( "bin" , "<" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === ">"){
-                                    return(result("bin",">",expr,this.next().read_expr()));
+                                    return(result( "bin" , ">" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_IS_SMALLER_OR_EQUAL){
-                                    return(result("bin","<=",expr,this.next().read_expr()));
+                                    return(result( "bin" , "<=" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_IS_GREATER_OR_EQUAL){
-                                    return(result("bin",">=",expr,this.next().read_expr()));
+                                    return(result( "bin" , ">=" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_SPACESHIP){
-                                    return(result("bin","<=>",expr,this.next().read_expr()));
+                                    return(result( "bin" , "<=>" , expr , this.next().read_expr() ));
                                 }
                                 if(this.token === this.tok.T_INSTANCEOF){
-                                    expr=result("bin","instanceof",expr,this.next().read_class_name_reference());
+                                    expr=result( "bin" , "instanceof" , expr , this.next().read_class_name_reference() );
                                     if(this.token !== ";" && this.token !== this.tok.T_INLINE_HTML && this.token !== this.EOF){
-                                        expr=this.read_expr(expr);
+                                        expr=this.read_expr( expr );
                                     }
                                 }
                                 /* extra operations : */
                                 /* $username = $_GET['user'] ?? 'nobody'; */
                                 if(this.token === this.tok.T_COALESCE){
-                                    return(result("bin","??",expr,this.next().read_expr()));
+                                    return(result( "bin" , "??" , expr , this.next().read_expr() ));
                                 }
                                 /* extra operations : */
                                 /* $username = $_GET['user'] ? true : false; */
@@ -7807,19 +7807,19 @@
                                     if(this.next().token !== ":"){
                                         trueArg=this.read_expr();
                                     }
-                                    this.expect(":") && this.next();
-                                    return(result("retif",expr,trueArg,this.read_expr()));
+                                    this.expect( ":" ) && this.next();
+                                    return(result( "retif" , expr , trueArg , this.read_expr() ));
                                 }else{
                                     /* see #193 */
-                                    result.destroy(expr);
+                                    result.destroy( expr );
                                 }
                                 return expr;
                             } ,
                              /*
                               * Reads a cast expression
                              */
-                            "read_expr_cast" : function read_expr_cast(type){
-                                return(this.node("cast")(type,this.text(),this.next().read_expr()));
+                            "read_expr_cast" : function read_expr_cast( type ){
+                                return(this.node( "cast" )( type , this.text() , this.next().read_expr() ));
                             } ,
                              /*
                               * Read a isset variable
@@ -7831,7 +7831,7 @@
                               * Reads isset variables
                              */
                             "read_isset_variables" : function read_isset_variables(){
-                                return(this.read_function_list(this.read_isset_variable,","));
+                                return(this.read_function_list( this.read_isset_variable , "," ));
                             } ,
                              /*
                               * Reads internal PHP functions
@@ -7841,60 +7841,60 @@
                                 switch (this.token){
                                     case this.tok.T_ISSET :
                                         {
-                                            result=this.node("isset");
-                                            if(this.next().expect("(")){
+                                            result=this.node( "isset" );
+                                            if(this.next().expect( "(" )){
                                                 this.next();
                                             }
                                             var variables=this.read_isset_variables();
-                                            if(this.expect(")")){
+                                            if(this.expect( ")" )){
                                                 this.next();
                                             }
-                                            result=result(variables);
+                                            result=result( variables );
                                         }
                                         break;
                                         
                                     case this.tok.T_EMPTY :
                                         {
-                                            result=this.node("empty");
-                                            if(this.next().expect("(")){
+                                            result=this.node( "empty" );
+                                            if(this.next().expect( "(" )){
                                                 this.next();
                                             }
                                             var expression=this.read_expr();
-                                            if(this.expect(")")){
+                                            if(this.expect( ")" )){
                                                 this.next();
                                             }
-                                            result=result(expression);
+                                            result=result( expression );
                                         }
                                         break;
                                         
                                     case this.tok.T_INCLUDE :
-                                        result=this.node("include")(false,false,this.next().read_expr());
+                                        result=this.node( "include" )( false , false , this.next().read_expr() );
                                         break;
                                         
                                     case this.tok.T_INCLUDE_ONCE :
-                                        result=this.node("include")(true,false,this.next().read_expr());
+                                        result=this.node( "include" )( true , false , this.next().read_expr() );
                                         break;
                                         
                                     case this.tok.T_EVAL :
                                         {
-                                            result=this.node("eval");
-                                            if(this.next().expect("(")){
+                                            result=this.node( "eval" );
+                                            if(this.next().expect( "(" )){
                                                 this.next();
                                             }
                                             var expr=this.read_expr();
-                                            if(this.expect(")")){
+                                            if(this.expect( ")" )){
                                                 this.next();
                                             }
-                                            result=result(expr);
+                                            result=result( expr );
                                         }
                                         break;
                                         
                                     case this.tok.T_REQUIRE :
-                                        result=this.node("include")(false,true,this.next().read_expr());
+                                        result=this.node( "include" )( false , true , this.next().read_expr() );
                                         break;
                                         
                                     case this.tok.T_REQUIRE_ONCE :
-                                        result=this.node("include")(true,true,this.next().read_expr());
+                                        result=this.node( "include" )( true , true , this.next().read_expr() );
                                         break;
                                         
                                 }
@@ -7903,7 +7903,7 @@
                              /*
                               * Reads optional expression
                              */
-                            "read_optional_expr" : function read_optional_expr(stopToken){
+                            "read_optional_expr" : function read_optional_expr( stopToken ){
                                 if(this.token !== stopToken){
                                     return(this.read_expr());
                                 }
@@ -7916,8 +7916,8 @@
                                 var expression=null;
                                 if(this.token === "("){
                                     this.next();
-                                    expression=this.read_optional_expr(")");
-                                    this.expect(")") && this.next();
+                                    expression=this.read_optional_expr( ")" );
+                                    this.expect( ")" ) && this.next();
                                 }
                                 return expression;
                             } ,
@@ -7932,43 +7932,43 @@
                                 var expr;
                                 var attrs=[];
                                 if(this.token === "+"){
-                                    return(this.node("unary")("+",this.next().read_expr()));
+                                    return(this.node( "unary" )( "+" , this.next().read_expr() ));
                                 }
                                 if(this.token === "-"){
-                                    return(this.node("unary")("-",this.next().read_expr()));
+                                    return(this.node( "unary" )( "-" , this.next().read_expr() ));
                                 }
                                 if(this.token === "!"){
-                                    return(this.node("unary")("!",this.next().read_expr()));
+                                    return(this.node( "unary" )( "!" , this.next().read_expr() ));
                                 }
                                 if(this.token === "~"){
-                                    return(this.node("unary")("~",this.next().read_expr()));
+                                    return(this.node( "unary" )( "~" , this.next().read_expr() ));
                                 }
                                 if(this.token === "("){
                                     expr=this.next().read_expr();
                                     expr.parenthesizedExpression=true;
-                                    this.expect(")") && this.next();
-                                    return(this.handleDereferencable(expr));
+                                    this.expect( ")" ) && this.next();
+                                    return(this.handleDereferencable( expr ));
                                 }
                                 if(this.token === "`"){
                                     /* https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1048 */
-                                    return(this.read_encapsed_string("`"));
+                                    return(this.read_encapsed_string( "`" ));
                                 }
                                 if(this.token === this.tok.T_LIST){
                                     var assign=null;
                                     var isInner=this.innerList;
-                                    result=this.node("list");
+                                    result=this.node( "list" );
                                     if(!isInner){
-                                        assign=this.node("assign");
+                                        assign=this.node( "assign" );
                                     }
-                                    if(this.next().expect("(")){
+                                    if(this.next().expect( "(" )){
                                         this.next();
                                     }
                                     if(!this.innerList){
                                         this.innerList=true;
                                     }
                                     /* reads inner items */
-                                    var assignList=this.read_array_pair_list(false);
-                                    if(this.expect(")")){
+                                    var assignList=this.read_array_pair_list( false );
+                                    if(this.expect( ")" )){
                                         this.next();
                                     }
                                     /* check if contains at least one assignment statement */
@@ -7981,31 +7981,35 @@
                                     }
                                     if(!hasItem){
                                         /* istanbul ignore next */
-                                        this.raiseError("Fatal Error :  Cannot use empty list on line " + this.lexer.yylloc.first_line);
+                                        this.raiseError( "Fatal Error :  Cannot use empty list on line " + this.lexer.yylloc.first_line );
                                     }
                                     /* handles the node resolution */
                                     if(!isInner){
                                         this.innerList=false;
-                                        if(this.expect("=")){
-                                            return(assign(result(assignList,false),this.next().read_expr(),"="));
+                                        if(this.expect( "=" )){
+                                            return(assign( result( assignList , false ) , this.next().read_expr() , "=" ));
                                         }else{
                                             /* error fallback : list($a, $b); */
                                             /* istanbul ignore next */
-                                            return(result(assignList,false));
+                                            return(result( assignList , false ));
                                         }
                                     }else{
-                                        return(result(assignList,false));
+                                        return(result( assignList , false ));
                                     }
                                 }
                                 if(this.token === this.tok.T_ATTRIBUTE){
                                     attrs=this.read_attr_list();
                                 }
                                 if(this.token === this.tok.T_CLONE){
-                                    return(this.node("clone")(this.next().read_expr()));
+                                    return(this.node( "clone" )( this.next().read_expr() ));
                                 }
                                 switch (this.token){
-                                    case this.tok.T_INC : return(this.node("pre")("+",this.next().read_variable(false,false)));
-                                    case this.tok.T_DEC : return(this.node("pre")("-",this.next().read_variable(false,false)));
+                                    case this.tok.T_INC :
+                                        return(this.node( "pre" )( "+" , this.next().read_variable( false , false ) ));
+                                        
+                                    case this.tok.T_DEC :
+                                        return(this.node( "pre" )( "-" , this.next().read_variable( false , false ) ));
+                                        
                                     case this.tok.T_NEW : return(this.read_new_expr());
                                     case this.tok.T_ISSET : 
                                     case this.tok.T_EMPTY : 
@@ -8015,41 +8019,41 @@
                                     case this.tok.T_REQUIRE : 
                                     case this.tok.T_REQUIRE_ONCE : return(this.read_internal_functions_in_yacc());
                                     case this.tok.T_MATCH : return(this.read_match_expression());
-                                    case this.tok.T_INT_CAST : return(this.read_expr_cast("int"));
-                                    case this.tok.T_DOUBLE_CAST : return(this.read_expr_cast("float"));
+                                    case this.tok.T_INT_CAST : return(this.read_expr_cast( "int" ));
+                                    case this.tok.T_DOUBLE_CAST : return(this.read_expr_cast( "float" ));
                                     case this.tok.T_STRING_CAST :
-                                        return(this.read_expr_cast(this.text().indexOf("binary") !== -1 ? ( "binary" ) : ( "string" )));
+                                        return(this.read_expr_cast( this.text().indexOf( "binary" ) !== -1 ? ( "binary" ) : ( "string" ) ));
                                         
-                                    case this.tok.T_ARRAY_CAST : return(this.read_expr_cast("array"));
-                                    case this.tok.T_OBJECT_CAST : return(this.read_expr_cast("object"));
-                                    case this.tok.T_BOOL_CAST : return(this.read_expr_cast("bool"));
-                                    case this.tok.T_UNSET_CAST : return(this.read_expr_cast("unset"));
+                                    case this.tok.T_ARRAY_CAST : return(this.read_expr_cast( "array" ));
+                                    case this.tok.T_OBJECT_CAST : return(this.read_expr_cast( "object" ));
+                                    case this.tok.T_BOOL_CAST : return(this.read_expr_cast( "bool" ));
+                                    case this.tok.T_UNSET_CAST : return(this.read_expr_cast( "unset" ));
                                     case this.tok.T_THROW :
                                         {
                                             if(this.version < 800){
-                                                this.raiseError("PHP 8+ is required to use throw as an expression");
+                                                this.raiseError( "PHP 8+ is required to use throw as an expression" );
                                             }
-                                            var _result=this.node("throw");
+                                            var _result=this.node( "throw" );
                                             var _expr=this.next().read_expr();
-                                            return(_result(_expr));
+                                            return(_result( _expr ));
                                         }
                                         
                                     case this.tok.T_EXIT :
                                         {
                                             var useDie=this.lexer.yytext.toLowerCase() === "die";
-                                            result=this.node("exit");
+                                            result=this.node( "exit" );
                                             this.next();
                                             var expression=this.read_exit_expr();
-                                            return(result(expression,useDie));
+                                            return(result( expression , useDie ));
                                         }
                                         
-                                    case this.tok.T_PRINT : return(this.node("print")(this.next().read_expr()));
+                                    case this.tok.T_PRINT : return(this.node( "print" )( this.next().read_expr() ));
                                     case this.tok.T_YIELD :
                                         {
                                             var value=null;
                                             var key=null;
-                                            result=this.node("yield");
-                                            if(this.next().is("EXPR")){
+                                            result=this.node( "yield" );
+                                            if(this.next().is( "EXPR" )){
                                                 /* reads the yield return value */
                                                 value=this.read_expr();
                                                 if(this.token === this.tok.T_DOUBLE_ARROW){
@@ -8058,37 +8062,37 @@
                                                     value=this.next().read_expr();
                                                 }
                                             }
-                                            return(result(value,key));
+                                            return(result( value , key ));
                                         }
                                         
                                     case this.tok.T_YIELD_FROM :
                                         /* T_YIELD (expr (T_DOUBLE_ARROW expr)?)? */
                                         /* T_YIELD_FROM expr */
-                                        result=this.node("yieldfrom");
+                                        result=this.node( "yieldfrom" );
                                         expr=this.next().read_expr();
-                                        return(result(expr));
+                                        return(result( expr ));
                                         
                                     case this.tok.T_FN : 
-                                    case this.tok.T_FUNCTION : return(this.read_inline_function(undefined,attrs));
+                                    case this.tok.T_FUNCTION : return(this.read_inline_function( undefined , attrs ));
                                     case this.tok.T_STATIC :
                                         {
                                             var backup=[this.token,this.lexer.getState()];
                                             this.next();
                                             if(this.token === this.tok.T_FUNCTION || this.version >= 704 && this.token === this.tok.T_FN){
                                                 /* handles static function */
-                                                return(this.read_inline_function([0,1,0],attrs));
+                                                return(this.read_inline_function( [0,1,0] , attrs ));
                                             }else{
                                                 /* rollback */
-                                                this.lexer.tokens.push(backup);
+                                                this.lexer.tokens.push( backup );
                                                 this.next();
                                             }
                                         }
                                         
                                 }
                                 /* SCALAR | VARIABLE */
-                                if(this.is("VARIABLE")){
+                                if(this.is( "VARIABLE" )){
                                     result=this.node();
-                                    expr=this.read_variable(false,false);
+                                    expr=this.read_variable( false , false );
                                     /* https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L877 */
                                     /* should accept only a variable */
                                     var isConst=expr.kind === "identifier" || expr.kind === "staticlookup" && expr.offset.kind === "identifier";
@@ -8097,131 +8101,131 @@
                                         case "=" :
                                             {
                                                 if(isConst){
-                                                    this.error("VARIABLE");
+                                                    this.error( "VARIABLE" );
                                                 }
                                                 if(this.next().token == "&"){
-                                                    return(this.read_assignref(result,expr));
+                                                    return(this.read_assignref( result , expr ));
                                                 }
-                                                return(result("assign",expr,this.read_expr(),"="));
+                                                return(result( "assign" , expr , this.read_expr() , "=" ));
                                             }
                                             
                                         case this.tok.T_PLUS_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),"+="));
+                                            return(result( "assign" , expr , this.next().read_expr() , "+=" ));
                                             
                                         case this.tok.T_MINUS_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),"-="));
+                                            return(result( "assign" , expr , this.next().read_expr() , "-=" ));
                                             
                                         case this.tok.T_MUL_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),"*="));
+                                            return(result( "assign" , expr , this.next().read_expr() , "*=" ));
                                             
                                         case this.tok.T_POW_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),"**="));
+                                            return(result( "assign" , expr , this.next().read_expr() , "**=" ));
                                             
                                         case this.tok.T_DIV_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),"/="));
+                                            return(result( "assign" , expr , this.next().read_expr() , "/=" ));
                                             
                                         case this.tok.T_CONCAT_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),".="));
+                                            return(result( "assign" , expr , this.next().read_expr() , ".=" ));
                                             
                                         case this.tok.T_MOD_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),"%="));
+                                            return(result( "assign" , expr , this.next().read_expr() , "%=" ));
                                             
                                         case this.tok.T_AND_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),"&="));
+                                            return(result( "assign" , expr , this.next().read_expr() , "&=" ));
                                             
                                         case this.tok.T_OR_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),"|="));
+                                            return(result( "assign" , expr , this.next().read_expr() , "|=" ));
                                             
                                         case this.tok.T_XOR_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),"^="));
+                                            return(result( "assign" , expr , this.next().read_expr() , "^=" ));
                                             
                                         case this.tok.T_SL_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),"<<="));
+                                            return(result( "assign" , expr , this.next().read_expr() , "<<=" ));
                                             
                                         case this.tok.T_SR_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),">>="));
+                                            return(result( "assign" , expr , this.next().read_expr() , ">>=" ));
                                             
                                         case this.tok.T_COALESCE_EQUAL :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
-                                            return(result("assign",expr,this.next().read_expr(),"??="));
+                                            return(result( "assign" , expr , this.next().read_expr() , "??=" ));
                                             
                                         case this.tok.T_INC :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
                                             this.next();
-                                            return(result("post","+",expr));
+                                            return(result( "post" , "+" , expr ));
                                             
                                         case this.tok.T_DEC :
                                             if(isConst){
-                                                this.error("VARIABLE");
+                                                this.error( "VARIABLE" );
                                             }
                                             this.next();
-                                            return(result("post","-",expr));
+                                            return(result( "post" , "-" , expr ));
                                             
                                         default:
                                             /* operations : */
                                             /* see #193 */
-                                            result.destroy(expr);
+                                            result.destroy( expr );
                                             
                                     }
-                                }else if(this.is("SCALAR")){
+                                }else if(this.is( "SCALAR" )){
                                     result=this.node();
                                     expr=this.read_scalar();
                                     if(expr.kind === "array" && expr.shortForm && this.token === "="){
                                         /* list assign */
-                                        var list=this.convertToList(expr);
+                                        var list=this.convertToList( expr );
                                         if(expr.loc){
                                             list.loc=expr.loc;
                                         }
                                         var right=this.next().read_expr();
-                                        return(result("assign",list,right,"="));
+                                        return(result( "assign" , list , right , "=" ));
                                     }else{
                                         /* see #189 - swap docs on nodes */
-                                        result.destroy(expr);
+                                        result.destroy( expr );
                                     }
                                     /* classic array */
-                                    return(this.handleDereferencable(expr));
+                                    return(this.handleDereferencable( expr ));
                                 }else{
-                                    this.error("EXPR");
+                                    this.error( "EXPR" );
                                     this.next();
                                 }
                                 /* returns variable | scalar */
@@ -8230,15 +8234,15 @@
                              /*
                               * Recursively convert nested array to nested list.
                              */
-                            "convertToList" : function convertToList(array){
+                            "convertToList" : function convertToList( array ){
                                 var _this=this;
-                                var convertedItems=array.items.map(function(entry){
+                                var convertedItems=array.items.map( function( entry ){
                                     if(entry.value && entry.value.kind === "array" && entry.value.shortForm){
-                                        entry.value=_this.convertToList(entry.value);
+                                        entry.value=_this.convertToList( entry.value );
                                     }
                                     return entry;
-                                });
-                                var node=this.node("list")(convertedItems,true);
+                                } );
+                                var node=this.node( "list" )( convertedItems , true );
                                 if(array.loc){
                                     node.loc=array.loc;
                                 }
@@ -8254,7 +8258,7 @@
                               * Reads assignment
                               * @param {*} left
                              */
-                            "read_assignref" : function read_assignref(result,left){
+                            "read_assignref" : function read_assignref( result , left ){
                                 this.next();
                                 var right;
                                 if(this.token === this.tok.T_NEW){
@@ -8263,9 +8267,9 @@
                                     }
                                     right=this.read_new_expr();
                                 }else{
-                                    right=this.read_variable(false,false);
+                                    right=this.read_variable( false , false );
                                 }
-                                return(result("assignref",left,right));
+                                return(result( "assignref" , left , right ));
                             } ,
                              /*
                               *
@@ -8282,30 +8286,30 @@
                               * 				  ((zend_ast_decl *) $$)->lex_pos = $10;
                               * 				  CG(extra_fn_flags) = $9; }   *
                              */
-                            "read_inline_function" : function read_inline_function(flags,attrs){
+                            "read_inline_function" : function read_inline_function( flags , attrs ){
                                 if(this.token === this.tok.T_FUNCTION){
-                                    var _result2=this.read_function(true,flags,attrs);
+                                    var _result2=this.read_function( true , flags , attrs );
                                     _result2.attrGroups=attrs;
                                     return _result2;
                                 }
                                 /* introduced in PHP 7.4 */
                                 if(!this.version >= 704){
-                                    this.raiseError("Arrow Functions are not allowed");
+                                    this.raiseError( "Arrow Functions are not allowed" );
                                 }
                                 /* as an arrowfunc */
-                                var node=this.node("arrowfunc");
+                                var node=this.node( "arrowfunc" );
                                 /* eat T_FN */
-                                if(this.expect(this.tok.T_FN)){
+                                if(this.expect( this.tok.T_FN )){
                                     this.next();
                                 }
                                 /* check the & */
                                 var isRef=this.is_reference();
                                 /* ... */
-                                if(this.expect("(")){
+                                if(this.expect( "(" )){
                                     this.next();
                                 }
                                 var params=this.read_parameter_list();
-                                if(this.expect(")")){
+                                if(this.expect( ")" )){
                                     this.next();
                                 }
                                 var nullable=false;
@@ -8317,49 +8321,49 @@
                                     }
                                     returnType=this.read_types();
                                 }
-                                if(this.expect(this.tok.T_DOUBLE_ARROW)){
+                                if(this.expect( this.tok.T_DOUBLE_ARROW )){
                                     this.next();
                                 }
                                 var body=this.read_expr();
-                                var result=node(params,isRef,body,returnType,nullable,flags ? ( true ) : ( false ));
+                                var result=node( params , isRef , body , returnType , nullable , flags ? ( true ) : ( false ) );
                                 result.attrGroups=attrs;
                                 return result;
                             } ,
                             "read_match_expression" : function read_match_expression(){
-                                var node=this.node("match");
-                                this.expect(this.tok.T_MATCH) && this.next();
+                                var node=this.node( "match" );
+                                this.expect( this.tok.T_MATCH ) && this.next();
                                 if(this.version < 800){
-                                    this.raiseError("Match statements are not allowed before PHP 8");
+                                    this.raiseError( "Match statements are not allowed before PHP 8" );
                                 }
                                 var cond=null;
                                 var arms=[];
-                                if(this.expect("(")){
+                                if(this.expect( "(" )){
                                     this.next();
                                 }
                                 cond=this.read_expr();
-                                if(this.expect(")")){
+                                if(this.expect( ")" )){
                                     this.next();
                                 }
-                                if(this.expect("{")){
+                                if(this.expect( "{" )){
                                     this.next();
                                 }
                                 arms=this.read_match_arms();
-                                if(this.expect("}")){
+                                if(this.expect( "}" )){
                                     this.next();
                                 }
-                                return(node(cond,arms));
+                                return(node( cond , arms ));
                             } ,
                             "read_match_arms" : function read_match_arms(){
                                 var _this2=this;
-                                return(this.read_list(function(){
+                                return(this.read_list( function(){
                                         return(_this2.read_match_arm());
-                                    },",",true));
+                                    } , "," , true ));
                             } ,
                             "read_match_arm" : function read_match_arm(){
                                 if(this.token === "}"){
                                     return;
                                 }
-                                return(this.node("matcharm")(this.read_match_arm_conds(),this.read_expr()));
+                                return(this.node( "matcharm" )( this.read_match_arm_conds() , this.read_expr() ));
                             } ,
                             "read_match_arm_conds" : function read_match_arm_conds(){
                                 var conds=[];
@@ -8367,17 +8371,17 @@
                                     conds=null;
                                     this.next();
                                 }else{
-                                    conds.push(this.read_expr());
+                                    conds.push( this.read_expr() );
                                     while(this.token === ","){
                                         this.next();
                                         if(this.token === this.tok.T_DOUBLE_ARROW){
                                             this.next();
                                             return conds;
                                         }
-                                        conds.push(this.read_expr());
+                                        conds.push( this.read_expr() );
                                     }
                                 }
-                                if(this.expect(this.tok.T_DOUBLE_ARROW)){
+                                if(this.expect( this.tok.T_DOUBLE_ARROW )){
                                     this.next();
                                 }
                                 return conds;
@@ -8389,23 +8393,23 @@
                                 if(this.token === "("){
                                     args=this.read_argument_list();
                                 }
-                                return(this.node("attribute")(name,args));
+                                return(this.node( "attribute" )( name , args ));
                             } ,
                             "read_attr_list" : function read_attr_list(){
                                 var list=[];
                                 if(this.token === this.tok.T_ATTRIBUTE){
                                     do{
-                                        var attrGr=this.node("attrgroup")([]);
+                                        var attrGr=this.node( "attrgroup" )( [] );
                                         this.next();
-                                        attrGr.attrs.push(this.read_attribute());
+                                        attrGr.attrs.push( this.read_attribute() );
                                         while(this.token === ","){
                                             this.next();
                                             if(this.token !== "]"){
-                                                attrGr.attrs.push(this.read_attribute());
+                                                attrGr.attrs.push( this.read_attribute() );
                                             }
                                         }
-                                        list.push(attrGr);
-                                        this.expect("]");
+                                        list.push( attrGr );
+                                        this.expect( "]" );
                                         this.next();
                                     }while(this.token === this.tok.T_ATTRIBUTE);
                                 }
@@ -8418,22 +8422,22 @@
                               * https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L850
                              */
                             "read_new_expr" : function read_new_expr(){
-                                var result=this.node("new");
-                                this.expect(this.tok.T_NEW) && this.next();
+                                var result=this.node( "new" );
+                                this.expect( this.tok.T_NEW ) && this.next();
                                 var args=[];
                                 if(this.token === "("){
                                     this.next();
                                     var newExp=this.read_expr();
-                                    this.expect(")");
+                                    this.expect( ")" );
                                     this.next();
                                     if(this.token === "("){
                                         args=this.read_argument_list();
                                     }
-                                    return(result(newExp,args));
+                                    return(result( newExp , args ));
                                 }
                                 var attrs=this.read_attr_list();
                                 if(this.token === this.tok.T_CLASS){
-                                    var what=this.node("class");
+                                    var what=this.node( "class" );
                                     /* Annonymous class declaration */
                                     if(this.next().token === "("){
                                         args=this.read_argument_list();
@@ -8441,25 +8445,25 @@
                                     var propExtends=this.read_extends_from();
                                     var propImplements=this.read_implements_list();
                                     var body=null;
-                                    if(this.expect("{")){
-                                        body=this.next().read_class_body(true,false);
+                                    if(this.expect( "{" )){
+                                        body=this.next().read_class_body( true , false );
                                     }
-                                    var whatNode=what(null,propExtends,propImplements,body,[0,0,0]);
+                                    var whatNode=what( null , propExtends , propImplements , body , [0,0,0] );
                                     whatNode.attrGroups=attrs;
-                                    return(result(whatNode,args));
+                                    return(result( whatNode , args ));
                                 }
                                 /* Already existing class */
                                 var name=this.read_new_class_name();
                                 while(this.token === "["){
-                                    var offsetNode=this.node("offsetlookup");
+                                    var offsetNode=this.node( "offsetlookup" );
                                     var offset=this.next().read_encaps_var_offset();
-                                    this.expect("]") && this.next();
-                                    name=offsetNode(name,offset);
+                                    this.expect( "]" ) && this.next();
+                                    name=offsetNode( name , offset );
                                 }
                                 if(this.token === "("){
                                     args=this.read_argument_list();
                                 }
-                                return(result(name,args));
+                                return(result( name , args ));
                             } ,
                              /*
                               * Reads a class name
@@ -8475,26 +8479,26 @@
                                        || this.token === this.tok.T_STRING
                                        || this.token === this.tok.T_NAMESPACE
                                 ){
-                                    var result=this.read_namespace_name(true);
+                                    var result=this.read_namespace_name( true );
                                     if(this.token === this.tok.T_DOUBLE_COLON){
-                                        result=this.read_static_getter(result);
+                                        result=this.read_static_getter( result );
                                     }
                                     return result;
-                                }else if(this.is("VARIABLE")){
-                                    return(this.read_variable(true,false));
+                                }else if(this.is( "VARIABLE" )){
+                                    return(this.read_variable( true , false ));
                                 }else{
-                                    this.expect([this.tok.T_STRING,"VARIABLE"]);
+                                    this.expect( [this.tok.T_STRING,"VARIABLE"] );
                                 }
                             } ,
-                            "handleDereferencable" : function handleDereferencable(expr){
+                            "handleDereferencable" : function handleDereferencable( expr ){
                                 while(this.token !== this.EOF){
                                     if(this.token === this.tok.T_OBJECT_OPERATOR || this.token === this.tok.T_DOUBLE_COLON){
-                                        expr=this.recursive_variable_chain_scan(expr,false,false,true);
+                                        expr=this.recursive_variable_chain_scan( expr , false , false , true );
                                     }else if(this.token === this.tok.T_CURLY_OPEN || this.token === "["){
-                                        expr=this.read_dereferencable(expr);
+                                        expr=this.read_dereferencable( expr );
                                     }else if(this.token === "("){
                                         /* https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1118 */
-                                        expr=this.node("call")(expr,this.read_argument_list());
+                                        expr=this.node( "call" )( expr , this.read_argument_list() );
                                     }else{
                                         return expr;
                                     }
@@ -8506,7 +8510,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "8214" : (module) => {
+                    "8214" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -8539,23 +8543,23 @@
                               * function ::= function_declaration code_block
                               * ```
                              */
-                            "read_function" : function read_function(closure,flag,attrs,locStart){
-                                var result=this.read_function_declaration(closure ? ( 1 ) : ( flag ? ( 2 ) : ( 0 ) ),flag && flag[1] === 1,attrs || [],locStart);
+                            "read_function" : function read_function( closure , flag , attrs , locStart ){
+                                var result=this.read_function_declaration( closure ? ( 1 ) : ( flag ? ( 2 ) : ( 0 ) ) , flag && flag[1] === 1 , attrs || [] , locStart );
                                 if(flag && flag[2] == 1){
                                     /* abstract function : */
-                                    result.parseFlags(flag);
-                                    if(this.expect(";")){
+                                    result.parseFlags( flag );
+                                    if(this.expect( ";" )){
                                         this.next();
                                     }
                                 }else{
-                                    if(this.expect("{")){
-                                        result.body=this.read_code_block(false);
+                                    if(this.expect( "{" )){
+                                        result.body=this.read_code_block( false );
                                         if(result.loc && result.body.loc){
                                             result.loc.end=result.body.loc.end;
                                         }
                                     }
                                     if(!closure && flag){
-                                        result.parseFlags(flag);
+                                        result.parseFlags( flag );
                                     }
                                 }
                                 return result;
@@ -8566,7 +8570,7 @@
                               * function_declaration ::= T_FUNCTION '&'?  T_STRING '(' parameter_list ')'
                               * ```
                              */
-                            "read_function_declaration" : function read_function_declaration(type,isStatic,attrs,locStart){
+                            "read_function_declaration" : function read_function_declaration( type , isStatic , attrs , locStart ){
                                 var _this=this;
                                 var nodeName="function";
                                 if(type === 1){
@@ -8574,8 +8578,8 @@
                                 }else if(type === 2){
                                     nodeName="method";
                                 }
-                                var result=this.node(nodeName);
-                                if(this.expect(this.tok.T_FUNCTION)){
+                                var result=this.node( nodeName );
+                                if(this.expect( this.tok.T_FUNCTION )){
                                     this.next();
                                 }
                                 var isRef=this.is_reference();
@@ -8584,20 +8588,20 @@
                                 var returnType=null;
                                 var nullable=false;
                                 if(type !== 1){
-                                    var nameNode=this.node("identifier");
+                                    var nameNode=this.node( "identifier" );
                                     if(type === 2){
                                         if(this.version >= 700){
-                                            if(this.token === this.tok.T_STRING || this.is("IDENTIFIER")){
+                                            if(this.token === this.tok.T_STRING || this.is( "IDENTIFIER" )){
                                                 name=this.text();
                                                 this.next();
                                             }else if(this.version < 704){
-                                                this.error("IDENTIFIER");
+                                                this.error( "IDENTIFIER" );
                                             }
                                         }else if(this.token === this.tok.T_STRING){
                                             name=this.text();
                                             this.next();
                                         }else{
-                                            this.error("IDENTIFIER");
+                                            this.error( "IDENTIFIER" );
                                         }
                                     }else{
                                         if(this.version >= 700){
@@ -8605,27 +8609,27 @@
                                                 name=this.text();
                                                 this.next();
                                             }else if(this.version >= 704){
-                                                if(!this.expect("(")){
+                                                if(!this.expect( "(" )){
                                                     this.next();
                                                 }
                                             }else{
-                                                this.error(this.tok.T_STRING);
+                                                this.error( this.tok.T_STRING );
                                                 this.next();
                                             }
                                         }else{
-                                            if(this.expect(this.tok.T_STRING)){
+                                            if(this.expect( this.tok.T_STRING )){
                                                 name=this.text();
                                             }
                                             this.next();
                                         }
                                     }
-                                    name=nameNode(name);
+                                    name=nameNode( name );
                                 }
-                                if(this.expect("(")){
+                                if(this.expect( "(" )){
                                     this.next();
                                 }
-                                var params=this.read_parameter_list(name.name === "__construct");
-                                if(this.expect(")")){
+                                var params=this.read_parameter_list( name.name === "__construct" );
+                                if(this.expect( ")" )){
                                     this.next();
                                 }
                                 if(type === 1){
@@ -8638,36 +8642,36 @@
                                     }
                                     returnType=this.read_types();
                                 }
-                                var apply_attrgroup_location=function apply_attrgroup_location(node){
+                                var apply_attrgroup_location=function apply_attrgroup_location( node ){
                                     node.attrGroups=attrs || [];
                                     if(locStart && node.loc){
                                         node.loc.start=locStart;
                                         if(node.loc.source){
-                                            node.loc.source=_this.lexer._input.substr(node.loc.start.offset,node.loc.end.offset - node.loc.start.offset);
+                                            node.loc.source=_this.lexer._input.substr( node.loc.start.offset , node.loc.end.offset - node.loc.start.offset );
                                         }
                                     }
                                     return node;
                                 };
                                 if(type === 1){
                                     /* closure */
-                                    return(apply_attrgroup_location(result(params,isRef,use,returnType,nullable,isStatic)));
+                                    return(apply_attrgroup_location( result( params , isRef , use , returnType , nullable , isStatic ) ));
                                 }
-                                return(apply_attrgroup_location(result(name,params,isRef,returnType,nullable)));
+                                return(apply_attrgroup_location( result( name , params , isRef , returnType , nullable ) ));
                             } ,
                             "read_lexical_vars" : function read_lexical_vars(){
                                 var result=[];
                                 if(this.token === this.tok.T_USE){
                                     this.next();
-                                    this.expect("(") && this.next();
+                                    this.expect( "(" ) && this.next();
                                     result=this.read_lexical_var_list();
-                                    this.expect(")") && this.next();
+                                    this.expect( ")" ) && this.next();
                                 }
                                 return result;
                             } ,
-                            "read_list_with_dangling_comma" : function read_list_with_dangling_comma(item){
+                            "read_list_with_dangling_comma" : function read_list_with_dangling_comma( item ){
                                 var result=[];
                                 while(this.token != this.EOF){
-                                    result.push(item());
+                                    result.push( item() );
                                     if(this.token == ","){
                                         this.next();
                                         if(this.version >= 800 && this.token === ")"){
@@ -8676,14 +8680,14 @@
                                     }else if(this.token == ")"){
                                         break;
                                     }else{
-                                        this.error([",",")"]);
+                                        this.error( [",",")"] );
                                         break;
                                     }
                                 }
                                 return result;
                             } ,
                             "read_lexical_var_list" : function read_lexical_var_list(){
-                                return(this.read_list_with_dangling_comma(this.read_lexical_var.bind(this)));
+                                return(this.read_list_with_dangling_comma( this.read_lexical_var.bind( this ) ));
                             } ,
                              /*
                               * ```ebnf
@@ -8692,13 +8696,13 @@
                              */
                             "read_lexical_var" : function read_lexical_var(){
                                 if(this.token === "&"){
-                                    return(this.read_byref(this.read_lexical_var.bind(this)));
+                                    return(this.read_byref( this.read_lexical_var.bind( this ) ));
                                 }
-                                var result=this.node("variable");
-                                this.expect(this.tok.T_VARIABLE);
-                                var name=this.text().substring(1);
+                                var result=this.node( "variable" );
+                                this.expect( this.tok.T_VARIABLE );
+                                var name=this.text().substring( 1 );
                                 this.next();
-                                return(result(name,false));
+                                return(result( name , false ));
                             } ,
                              /*
                               * reads a list of parameters
@@ -8706,22 +8710,22 @@
                               *  parameter_list ::= (parameter ',')* parameter?
                               * ```
                              */
-                            "read_parameter_list" : function read_parameter_list(is_class_constructor){
+                            "read_parameter_list" : function read_parameter_list( is_class_constructor ){
                                 if(this.token !== ")"){
                                     var wasVariadic=false;
-                                    return(this.read_list_with_dangling_comma(function(){
-                                            var parameter=this.read_parameter(is_class_constructor);
+                                    return(this.read_list_with_dangling_comma( function(){
+                                            var parameter=this.read_parameter( is_class_constructor );
                                             if(parameter){
                                                 /* variadic parameters can only be defined at the end of the parameter list */
                                                 if(wasVariadic){
-                                                    this.raiseError("Unexpected parameter after a variadic parameter");
+                                                    this.raiseError( "Unexpected parameter after a variadic parameter" );
                                                 }
                                                 if(parameter.variadic){
                                                     wasVariadic=true;
                                                 }
                                             }
                                             return parameter;
-                                        }.bind(this),","));
+                                        }.bind( this ) , "," ));
                                 }
                                 return [];
                             } ,
@@ -8731,8 +8735,8 @@
                               * ```
                               * @see https://github.com/php/php-src/blob/493524454d66adde84e00d249d607ecd540de99f/Zend/zend_language_parser.y#L640
                              */
-                            "read_parameter" : function read_parameter(is_class_constructor){
-                                var node=this.node("parameter");
+                            "read_parameter" : function read_parameter( is_class_constructor ){
+                                var node=this.node( "parameter" );
                                 var parameterName=null;
                                 var value=null;
                                 var types=null;
@@ -8747,7 +8751,7 @@
                                         this.next();
                                         readonly=true;
                                     }else{
-                                        this.raiseError("readonly properties can be used only on class constructor");
+                                        this.raiseError( "readonly properties can be used only on class constructor" );
                                     }
                                 }
                                 var flags=this.read_promoted();
@@ -8756,7 +8760,7 @@
                                         this.next();
                                         readonly=true;
                                     }else{
-                                        this.raiseError("readonly properties can be used only on class constructor");
+                                        this.raiseError( "readonly properties can be used only on class constructor" );
                                     }
                                 }
                                 if(this.token === "?"){
@@ -8765,20 +8769,20 @@
                                 }
                                 types=this.read_types();
                                 if(nullable && !types){
-                                    this.raiseError("Expecting a type definition combined with nullable operator");
+                                    this.raiseError( "Expecting a type definition combined with nullable operator" );
                                 }
                                 var isRef=this.is_reference();
                                 var isVariadic=this.is_variadic();
-                                if(this.expect(this.tok.T_VARIABLE)){
-                                    parameterName=this.node("identifier");
-                                    var name=this.text().substring(1);
+                                if(this.expect( this.tok.T_VARIABLE )){
+                                    parameterName=this.node( "identifier" );
+                                    var name=this.text().substring( 1 );
                                     this.next();
-                                    parameterName=parameterName(name);
+                                    parameterName=parameterName( name );
                                 }
                                 if(this.token == "="){
                                     value=this.next().read_expr();
                                 }
-                                var result=node(parameterName,types,value,isRef,isVariadic,readonly,nullable,flags);
+                                var result=node( parameterName , types , value , isRef , isVariadic , readonly , nullable , flags );
                                 if(attrs){
                                     result.attrGroups=attrs;
                                 }
@@ -8795,7 +8799,7 @@
                                     return null;
                                 }
                                 /* we have matched a single type */
-                                types.push(type);
+                                types.push( type );
                                 /* is the current token a: */
                                 /* - | for union type */
                                 /* - & for intersection type (> php 8.1) */
@@ -8812,16 +8816,16 @@
                                     }else{
                                         /* it is not possible to mix "modes" */
                                         if(mode === MODE_UNION && this.token !== "|" || mode === MODE_INTERSECTION && this.token !== "&"){
-                                            this.raiseError('Unexpect token "' + this.token + '", "|" and "&" can not be mixed');
+                                            this.raiseError( 'Unexpect token "' + this.token + '", "|" and "&" can not be mixed' );
                                         }
                                     }
                                     this.next();
-                                    types.push(this.read_type());
+                                    types.push( this.read_type() );
                                 }
                                 if(types.length === 1){
                                     return types[0];
                                 }else{
-                                    return(mode === MODE_INTERSECTION ? ( this.node("intersectiontype")(types) ) : ( this.node("uniontype")(types) ));
+                                    return(mode === MODE_INTERSECTION ? ( this.node( "intersectiontype" )( types ) ) : ( this.node( "uniontype" )( types ) ));
                                 }
                             } ,
                             "read_promoted" : function read_promoted(){
@@ -8848,14 +8852,14 @@
                              */
                             "read_argument_list" : function read_argument_list(){
                                 var result=[];
-                                this.expect("(") && this.next();
+                                this.expect( "(" ) && this.next();
                                 if(this.version >= 801 && this.token === this.tok.T_ELLIPSIS && this.peek() === ")"){
-                                    result.push(this.node("variadicplaceholder")());
+                                    result.push( this.node( "variadicplaceholder" )() );
                                     this.next();
                                 }else if(this.token !== ")"){
                                     result=this.read_non_empty_argument_list();
                                 }
-                                this.expect(")") && this.next();
+                                this.expect( ")" ) && this.next();
                                 return result;
                             } ,
                              /*
@@ -8863,20 +8867,20 @@
                              */
                             "read_non_empty_argument_list" : function read_non_empty_argument_list(){
                                 var wasVariadic=false;
-                                return(this.read_function_list(function(){
+                                return(this.read_function_list( function(){
                                         var argument=this.read_argument();
                                         if(argument){
                                             var isVariadic=argument.kind === "variadic";
                                             /* variadic arguments can only be followed by other variadic arguments */
                                             if(wasVariadic && !isVariadic){
-                                                this.raiseError("Unexpected non-variadic argument after a variadic argument");
+                                                this.raiseError( "Unexpected non-variadic argument after a variadic argument" );
                                             }
                                             if(isVariadic){
                                                 wasVariadic=true;
                                             }
                                         }
                                         return argument;
-                                    }.bind(this),","));
+                                    }.bind( this ) , "," ));
                             } ,
                              /*
                               * ```ebnf
@@ -8885,15 +8889,15 @@
                              */
                             "read_argument" : function read_argument(){
                                 if(this.token === this.tok.T_ELLIPSIS){
-                                    return(this.node("variadic")(this.next().read_expr()));
+                                    return(this.node( "variadic" )( this.next().read_expr() ));
                                 }
-                                if(this.token === this.tok.T_STRING || Object.values(this.lexer.keywords).includes(this.token)){
+                                if(this.token === this.tok.T_STRING || Object.values( this.lexer.keywords ).includes( this.token )){
                                     var nextToken=this.peek();
                                     if(nextToken === ":"){
                                         if(this.version < 800){
-                                            this.raiseError("PHP 8+ is required to use named arguments");
+                                            this.raiseError( "PHP 8+ is required to use named arguments" );
                                         }
-                                        return(this.node("namedargument")(this.text(),this.next().next().read_expr()));
+                                        return(this.node( "namedargument" )( this.text() , this.next().next().read_expr() ));
                                     }
                                 }
                                 return(this.read_expr());
@@ -8909,7 +8913,7 @@
                                 if(this.token === this.tok.T_ARRAY || this.token === this.tok.T_CALLABLE){
                                     var type=this.text();
                                     this.next();
-                                    return(result("typereference",type.toLowerCase(),type));
+                                    return(result( "typereference" , type.toLowerCase() , type ));
                                 }else if(this.token === this.tok.T_NAME_RELATIVE
                                        || this.token === this.tok.T_NAME_QUALIFIED
                                        || this.token === this.tok.T_NAME_FULLY_QUALIFIED
@@ -8919,11 +8923,11 @@
                                     var _type=this.text();
                                     var backup=[this.token,this.lexer.getState()];
                                     this.next();
-                                    if(this.token !== this.tok.T_NS_SEPARATOR && this.ast.typereference.types.indexOf(_type.toLowerCase()) > -1){
-                                        return(result("typereference",_type.toLowerCase(),_type));
+                                    if(this.token !== this.tok.T_NS_SEPARATOR && this.ast.typereference.types.indexOf( _type.toLowerCase() ) > -1){
+                                        return(result( "typereference" , _type.toLowerCase() , _type ));
                                     }else{
                                         /* rollback a classic namespace */
-                                        this.lexer.tokens.push(backup);
+                                        this.lexer.tokens.push( backup );
                                         this.next();
                                         /* fix : destroy not consumed node (release comments) */
                                         result.destroy();
@@ -8939,7 +8943,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "9461" : (module) => {
+                    "9461" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -8954,7 +8958,7 @@
                               * ```
                              */
                             "read_if" : function read_if(){
-                                var result=this.node("if");
+                                var result=this.node( "if" );
                                 var test=this.next().read_if_expr();
                                 var body=null;
                                 var alternate=null;
@@ -8962,7 +8966,7 @@
                                 if(this.token === ":"){
                                     shortForm=true;
                                     this.next();
-                                    body=this.node("block");
+                                    body=this.node( "block" );
                                     var items=[];
                                     while(this.token !== this.EOF && this.token !== this.tok.T_ENDIF){
                                         if(this.token === this.tok.T_ELSEIF){
@@ -8972,10 +8976,10 @@
                                             alternate=this.read_else_short();
                                             break;
                                         }
-                                        items.push(this.read_inner_statement());
+                                        items.push( this.read_inner_statement() );
                                     }
-                                    body=body(null,items);
-                                    this.expect(this.tok.T_ENDIF) && this.next();
+                                    body=body( null , items );
+                                    this.expect( this.tok.T_ENDIF ) && this.next();
                                     this.expectEndOfStatement();
                                 }else{
                                     body=this.read_statement();
@@ -8985,15 +8989,15 @@
                                         alternate=this.next().read_statement();
                                     }
                                 }
-                                return(result(test,body,alternate,shortForm));
+                                return(result( test , body , alternate , shortForm ));
                             } ,
                              /*
                               * reads an if expression : '(' expr ')'
                              */
                             "read_if_expr" : function read_if_expr(){
-                                this.expect("(") && this.next();
+                                this.expect( "(" ) && this.next();
                                 var result=this.read_expr();
-                                this.expect(")") && this.next();
+                                this.expect( ")" ) && this.next();
                                 return result;
                             } ,
                              /*
@@ -9001,12 +9005,12 @@
                              */
                             "read_elseif_short" : function read_elseif_short(){
                                 var alternate=null;
-                                var result=this.node("if");
+                                var result=this.node( "if" );
                                 var test=this.next().read_if_expr();
-                                if(this.expect(":")){
+                                if(this.expect( ":" )){
                                     this.next();
                                 }
-                                var body=this.node("block");
+                                var body=this.node( "block" );
                                 var items=[];
                                 while(this.token != this.EOF && this.token !== this.tok.T_ENDIF){
                                     if(this.token === this.tok.T_ELSEIF){
@@ -9016,30 +9020,30 @@
                                         alternate=this.read_else_short();
                                         break;
                                     }
-                                    items.push(this.read_inner_statement());
+                                    items.push( this.read_inner_statement() );
                                 }
-                                return(result(test,body(null,items),alternate,true));
+                                return(result( test , body( null , items ) , alternate , true ));
                             } ,
                              /*
                               *
                              */
                             "read_else_short" : function read_else_short(){
-                                if(this.next().expect(":")){
+                                if(this.next().expect( ":" )){
                                     this.next();
                                 }
-                                var body=this.node("block");
+                                var body=this.node( "block" );
                                 var items=[];
                                 while(this.token != this.EOF && this.token !== this.tok.T_ENDIF){
-                                    items.push(this.read_inner_statement());
+                                    items.push( this.read_inner_statement() );
                                 }
-                                return(body(null,items));
+                                return(body( null , items ));
                             }
                         };
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "5931" : (module) => {
+                    "5931" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -9055,25 +9059,25 @@
                               * @return {While}
                              */
                             "read_while" : function read_while(){
-                                var result=this.node("while");
-                                this.expect(this.tok.T_WHILE) && this.next();
+                                var result=this.node( "while" );
+                                this.expect( this.tok.T_WHILE ) && this.next();
                                 var test=null;
                                 var body=null;
                                 var shortForm=false;
-                                if(this.expect("(")){
+                                if(this.expect( "(" )){
                                     this.next();
                                 }
                                 test=this.read_expr();
-                                if(this.expect(")")){
+                                if(this.expect( ")" )){
                                     this.next();
                                 }
                                 if(this.token === ":"){
                                     shortForm=true;
-                                    body=this.read_short_form(this.tok.T_ENDWHILE);
+                                    body=this.read_short_form( this.tok.T_ENDWHILE );
                                 }else{
                                     body=this.read_statement();
                                 }
-                                return(result(test,body,shortForm));
+                                return(result( test , body , shortForm ));
                             } ,
                              /*
                               * Reads a do / while loop
@@ -9084,24 +9088,24 @@
                               * @return {Do}
                              */
                             "read_do" : function read_do(){
-                                var result=this.node("do");
-                                this.expect(this.tok.T_DO) && this.next();
+                                var result=this.node( "do" );
+                                this.expect( this.tok.T_DO ) && this.next();
                                 var test=null;
                                 var body=null;
                                 body=this.read_statement();
-                                if(this.expect(this.tok.T_WHILE)){
-                                    if(this.next().expect("(")){
+                                if(this.expect( this.tok.T_WHILE )){
+                                    if(this.next().expect( "(" )){
                                         this.next();
                                     }
                                     test=this.read_expr();
-                                    if(this.expect(")")){
+                                    if(this.expect( ")" )){
                                         this.next();
                                     }
-                                    if(this.expect(";")){
+                                    if(this.expect( ";" )){
                                         this.next();
                                     }
                                 }
-                                return(result(test,body));
+                                return(result( test , body ));
                             } ,
                              /*
                               * Read a for incremental loop
@@ -9114,35 +9118,35 @@
                               * @return {For}
                              */
                             "read_for" : function read_for(){
-                                var result=this.node("for");
-                                this.expect(this.tok.T_FOR) && this.next();
+                                var result=this.node( "for" );
+                                this.expect( this.tok.T_FOR ) && this.next();
                                 var init=[];
                                 var test=[];
                                 var increment=[];
                                 var body=null;
                                 var shortForm=false;
-                                if(this.expect("(")){
+                                if(this.expect( "(" )){
                                     this.next();
                                 }
                                 if(this.token !== ";"){
-                                    init=this.read_list(this.read_expr,",");
-                                    if(this.expect(";")){
+                                    init=this.read_list( this.read_expr , "," );
+                                    if(this.expect( ";" )){
                                         this.next();
                                     }
                                 }else{
                                     this.next();
                                 }
                                 if(this.token !== ";"){
-                                    test=this.read_list(this.read_expr,",");
-                                    if(this.expect(";")){
+                                    test=this.read_list( this.read_expr , "," );
+                                    if(this.expect( ";" )){
                                         this.next();
                                     }
                                 }else{
                                     this.next();
                                 }
                                 if(this.token !== ")"){
-                                    increment=this.read_list(this.read_expr,",");
-                                    if(this.expect(")")){
+                                    increment=this.read_list( this.read_expr , "," );
+                                    if(this.expect( ")" )){
                                         this.next();
                                     }
                                 }else{
@@ -9150,11 +9154,11 @@
                                 }
                                 if(this.token === ":"){
                                     shortForm=true;
-                                    body=this.read_short_form(this.tok.T_ENDFOR);
+                                    body=this.read_short_form( this.tok.T_ENDFOR );
                                 }else{
                                     body=this.read_statement();
                                 }
-                                return(result(init,test,increment,body,shortForm));
+                                return(result( init , test , increment , body , shortForm ));
                             } ,
                              /*
                               * Reads a foreach loop
@@ -9165,18 +9169,18 @@
                               * @return {Foreach}
                              */
                             "read_foreach" : function read_foreach(){
-                                var result=this.node("foreach");
-                                this.expect(this.tok.T_FOREACH) && this.next();
+                                var result=this.node( "foreach" );
+                                this.expect( this.tok.T_FOREACH ) && this.next();
                                 var source=null;
                                 var key=null;
                                 var value=null;
                                 var body=null;
                                 var shortForm=false;
-                                if(this.expect("(")){
+                                if(this.expect( "(" )){
                                     this.next();
                                 }
                                 source=this.read_expr();
-                                if(this.expect(this.tok.T_AS)){
+                                if(this.expect( this.tok.T_AS )){
                                     this.next();
                                     value=this.read_foreach_variable();
                                     if(this.token === this.tok.T_DOUBLE_ARROW){
@@ -9186,18 +9190,18 @@
                                 }
                                 /* grammatically correct but not supported by PHP */
                                 if(key && key.kind === "list"){
-                                    this.raiseError("Fatal Error : Cannot use list as key element");
+                                    this.raiseError( "Fatal Error : Cannot use list as key element" );
                                 }
-                                if(this.expect(")")){
+                                if(this.expect( ")" )){
                                     this.next();
                                 }
                                 if(this.token === ":"){
                                     shortForm=true;
-                                    body=this.read_short_form(this.tok.T_ENDFOREACH);
+                                    body=this.read_short_form( this.tok.T_ENDFOREACH );
                                 }else{
                                     body=this.read_statement();
                                 }
-                                return(result(source,key,value,body,shortForm));
+                                return(result( source , key , value , body , shortForm ));
                             } ,
                              /*
                               * Reads a foreach variable statement
@@ -9214,18 +9218,18 @@
                             "read_foreach_variable" : function read_foreach_variable(){
                                 if(this.token === this.tok.T_LIST || this.token === "["){
                                     var isShort=this.token === "[";
-                                    var result=this.node("list");
+                                    var result=this.node( "list" );
                                     this.next();
-                                    if(!isShort && this.expect("(")){
+                                    if(!isShort && this.expect( "(" )){
                                         this.next();
                                     }
-                                    var assignList=this.read_array_pair_list(isShort);
-                                    if(this.expect(isShort ? ( "]" ) : ( ")" ))){
+                                    var assignList=this.read_array_pair_list( isShort );
+                                    if(this.expect( isShort ? ( "]" ) : ( ")" ) )){
                                         this.next();
                                     }
-                                    return(result(assignList,isShort));
+                                    return(result( assignList , isShort ));
                                 }else{
-                                    return(this.read_variable(false,false));
+                                    return(this.read_variable( false , false ));
                                 }
                             }
                         };
@@ -9233,7 +9237,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "9147" : (module) => {
+                    "9147" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -9257,7 +9261,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "9219" : (module) => {
+                    "9219" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -9276,9 +9280,9 @@
                               * @return {Namespace}
                              */
                             "read_namespace" : function read_namespace(){
-                                var result=this.node("namespace");
+                                var result=this.node( "namespace" );
                                 var body;
-                                this.expect(this.tok.T_NAMESPACE) && this.next();
+                                this.expect( this.tok.T_NAMESPACE ) && this.next();
                                 var name;
                                 if(this.token === "{"){
                                     name={"name" : [""]};
@@ -9289,23 +9293,23 @@
                                 if(this.token === ";"){
                                     this.currentNamespace=name;
                                     body=this.next().read_top_statements();
-                                    this.expect(this.EOF);
-                                    return(result(name.name,body,false));
+                                    this.expect( this.EOF );
+                                    return(result( name.name , body , false ));
                                 }else if(this.token === "{"){
                                     this.currentNamespace=name;
                                     body=this.next().read_top_statements();
-                                    this.expect("}") && this.next();
+                                    this.expect( "}" ) && this.next();
                                     if(body.length === 0 && this.extractDoc && this._docs.length > this._docIndex){
-                                        body.push(this.node("noop")());
+                                        body.push( this.node( "noop" )() );
                                     }
-                                    return(result(name.name,body,true));
+                                    return(result( name.name , body , true ));
                                 }else{
-                                    this.error(["{",";"]);
+                                    this.error( ["{",";"] );
                                     /* graceful mode : */
                                     this.currentNamespace=name;
                                     body=this.read_top_statements();
-                                    this.expect(this.EOF);
-                                    return(result(name,body,false));
+                                    this.expect( this.EOF );
+                                    return(result( name , body , false ));
                                 }
                             } ,
                              /*
@@ -9316,14 +9320,14 @@
                               * @see http://php.net/manual/en/language.namespaces.rules.php
                               * @return {Reference}
                              */
-                            "read_namespace_name" : function read_namespace_name(resolveReference){
+                            "read_namespace_name" : function read_namespace_name( resolveReference ){
                                 var result=this.node();
                                 var resolution;
                                 var name=this.text();
                                 switch (this.token){
                                     case this.tok.T_NAME_RELATIVE :
                                         resolution=this.ast.name.RELATIVE_NAME;
-                                        name=name.replace(/^namespace\\/,"");
+                                        name=name.replace( /^namespace\\/ , "" );
                                         break;
                                         
                                     case this.tok.T_NAME_QUALIFIED :
@@ -9336,21 +9340,21 @@
                                         
                                     default:
                                         resolution=this.ast.name.UNQUALIFIED_NAME;
-                                        if(!this.expect(this.tok.T_STRING)){
+                                        if(!this.expect( this.tok.T_STRING )){
                                             /* graceful mode */
-                                            return(result("name","",this.ast.name.FULL_QUALIFIED_NAME));
+                                            return(result( "name" , "" , this.ast.name.FULL_QUALIFIED_NAME ));
                                         }
                                         
                                 }
                                 this.next();
                                 if(resolveReference || this.token !== "("){
                                     if(name.toLowerCase() === "parent"){
-                                        return(result("parentreference",name));
+                                        return(result( "parentreference" , name ));
                                     }else if(name.toLowerCase() === "self"){
-                                        return(result("selfreference",name));
+                                        return(result( "selfreference" , name ));
                                     }
                                 }
-                                return(result("name",name,resolution));
+                                return(result( "name" , name , resolution ));
                             } ,
                              /*
                               * Reads a use statement
@@ -9365,21 +9369,21 @@
                               * @return {UseGroup}
                              */
                             "read_use_statement" : function read_use_statement(){
-                                var result=this.node("usegroup");
+                                var result=this.node( "usegroup" );
                                 var items=[];
                                 var name=null;
-                                this.expect(this.tok.T_USE) && this.next();
+                                this.expect( this.tok.T_USE ) && this.next();
                                 var type=this.read_use_type();
-                                items.push(this.read_use_declaration(false));
+                                items.push( this.read_use_declaration( false ) );
                                 if(this.token === ","){
-                                    items=items.concat(this.next().read_use_declarations(false));
+                                    items=items.concat( this.next().read_use_declarations( false ) );
                                 }else if(this.token === "{"){
                                     name=items[0].name;
-                                    items=this.next().read_use_declarations(type === null);
-                                    this.expect("}") && this.next();
+                                    items=this.next().read_use_declarations( type === null );
+                                    this.expect( "}" ) && this.next();
                                 }
-                                result=result(name,type,items);
-                                this.expect(";") && this.next();
+                                result=result( name , type , items );
+                                this.expect( ";" ) && this.next();
                                 return result;
                             } ,
                              /*
@@ -9388,7 +9392,7 @@
                              */
                             "read_class_name_reference" : function read_class_name_reference(){
                                 /* resolved as the same */
-                                return(this.read_variable(true,false));
+                                return(this.read_variable( true , false ));
                             } ,
                              /*
                               * Reads a use declaration
@@ -9398,15 +9402,15 @@
                               * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L380
                               * @return {UseItem}
                              */
-                            "read_use_declaration" : function read_use_declaration(typed){
-                                var result=this.node("useitem");
+                            "read_use_declaration" : function read_use_declaration( typed ){
+                                var result=this.node( "useitem" );
                                 var type=null;
                                 if(typed){
                                     type=this.read_use_type();
                                 }
                                 var name=this.read_namespace_name();
                                 var alias=this.read_use_alias();
-                                return(result(name.name,alias,type));
+                                return(result( name.name , alias , type ));
                             } ,
                              /*
                               * Reads a list of use declarations
@@ -9416,8 +9420,8 @@
                               * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L380
                               * @return {UseItem[]}
                              */
-                            "read_use_declarations" : function read_use_declarations(typed){
-                                var result=[this.read_use_declaration(typed)];
+                            "read_use_declarations" : function read_use_declarations( typed ){
+                                var result=[this.read_use_declaration( typed )];
                                 while(this.token === ","){
                                     this.next();
                                     if(typed){
@@ -9438,7 +9442,7 @@
                                     ){
                                         break;
                                     }
-                                    result.push(this.read_use_declaration(typed));
+                                    result.push( this.read_use_declaration( typed ) );
                                 }
                                 return result;
                             } ,
@@ -9452,11 +9456,11 @@
                             "read_use_alias" : function read_use_alias(){
                                 var result=null;
                                 if(this.token === this.tok.T_AS){
-                                    if(this.next().expect(this.tok.T_STRING)){
-                                        var aliasName=this.node("identifier");
+                                    if(this.next().expect( this.tok.T_STRING )){
+                                        var aliasName=this.node( "identifier" );
                                         var name=this.text();
                                         this.next();
-                                        result=aliasName(name);
+                                        result=aliasName( name );
                                     }
                                 }
                                 return result;
@@ -9484,7 +9488,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "7170" : (module) => {
+                    "7170" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -9496,30 +9500,30 @@
                             "n" : "\n" ,
                             "r" : "\r" ,
                             "t" : "\t" ,
-                            "f" : String.fromCharCode(12) ,
-                            "v" : String.fromCharCode(11) ,
-                            "e" : String.fromCharCode(27)
+                            "f" : String.fromCharCode( 12 ) ,
+                            "v" : String.fromCharCode( 11 ) ,
+                            "e" : String.fromCharCode( 27 )
                         };
                         module.exports={
                              /*
                               * Unescape special chars
                              */
-                            "resolve_special_chars" : function resolve_special_chars(text,doubleQuote){
+                            "resolve_special_chars" : function resolve_special_chars( text , doubleQuote ){
                                 if(!doubleQuote){
                                     /* single quote fix */
-                                    return(text.replace(/\\\\/g,"\\").replace(/\\'/g,"'"));
+                                    return(text.replace( /\\\\/g , "\\" ).replace( /\\'/g , "'" ));
                                 }
-                                return(text.replace(/\\"/,'"').replace(/\\([\\$nrtfve]|[xX][0-9a-fA-F]{1,2}|[0-7]{1,3}|u{([0-9a-fA-F]+)})/g,function($match,p1,p2){
+                                return(text.replace( /\\"/ , '"' ).replace( /\\([\\$nrtfve]|[xX][0-9a-fA-F]{1,2}|[0-7]{1,3}|u{([0-9a-fA-F]+)})/g , function( $match , p1 , p2 ){
                                         if(specialChar[p1]){
                                             return specialChar[p1];
                                         }else if("x" === p1[0] || "X" === p1[0]){
-                                            return(String.fromCodePoint(parseInt(p1.substr(1),16)));
+                                            return(String.fromCodePoint( parseInt( p1.substr( 1 ) , 16 ) ));
                                         }else if("u" === p1[0]){
-                                            return(String.fromCodePoint(parseInt(p2,16)));
+                                            return(String.fromCodePoint( parseInt( p2 , 16 ) ));
                                         }else{
-                                            return(String.fromCodePoint(parseInt(p1,8)));
+                                            return(String.fromCodePoint( parseInt( p1 , 8 ) ));
                                         }
-                                    }));
+                                    } ));
                             } ,
                              /*
                               * Remove all leading spaces each line for heredoc text if there is a indentation
@@ -9528,21 +9532,21 @@
                               * @param {boolean} indentation_uses_spaces
                               * @param {boolean} first_encaps_node if it is behind a variable, the first N spaces should not be removed
                              */
-                            "remove_heredoc_leading_whitespace_chars" : function remove_heredoc_leading_whitespace_chars(text,indentation,indentation_uses_spaces,first_encaps_node){
+                            "remove_heredoc_leading_whitespace_chars" : function remove_heredoc_leading_whitespace_chars( text , indentation , indentation_uses_spaces , first_encaps_node ){
                                 if(indentation === 0){
                                     return text;
                                 }
-                                this.check_heredoc_indentation_level(text,indentation,indentation_uses_spaces,first_encaps_node);
+                                this.check_heredoc_indentation_level( text , indentation , indentation_uses_spaces , first_encaps_node );
                                 var matchedChar=indentation_uses_spaces ? ( " " ) : ( "\t" );
-                                var removementRegExp=new RegExp("\\n".concat(matchedChar,"{").concat(indentation,"}"),"g");
-                                var removementFirstEncapsNodeRegExp=new RegExp("^".concat(matchedChar,"{").concat(indentation,"}"));
+                                var removementRegExp=new RegExp( "\\n".concat( matchedChar , "{" ).concat( indentation , "}" ) , "g" );
+                                var removementFirstEncapsNodeRegExp=new RegExp( "^".concat( matchedChar , "{" ).concat( indentation , "}" ) );
                                 /* Rough replace, need more check */
                                 if(first_encaps_node){
                                     /* Remove text leading whitespace */
-                                    text=text.replace(removementFirstEncapsNodeRegExp,"");
+                                    text=text.replace( removementFirstEncapsNodeRegExp , "" );
                                 }
                                 /* Remove leading whitespace after \n */
-                                return(text.replace(removementRegExp,"\n"));
+                                return(text.replace( removementRegExp , "\n" ));
                             } ,
                              /*
                               * Check indentation level of heredoc in text, if mismatch, raiseError
@@ -9551,7 +9555,7 @@
                               * @param {boolean} indentation_uses_spaces
                               * @param {boolean} first_encaps_node if it is behind a variable, the first N spaces should not be removed
                              */
-                            "check_heredoc_indentation_level" : function check_heredoc_indentation_level(text,indentation,indentation_uses_spaces,first_encaps_node){
+                            "check_heredoc_indentation_level" : function check_heredoc_indentation_level( text , indentation , indentation_uses_spaces , first_encaps_node ){
                                 var textSize=text.length;
                                 var offset=0;
                                 var leadingWhitespaceCharCount=0;
@@ -9564,7 +9568,7 @@
                                 var inCheckState=false;
                                 if(!first_encaps_node){
                                     /* start from first \n */
-                                    offset=text.indexOf("\n");
+                                    offset=text.indexOf( "\n" );
                                     /* if no \n, just return */
                                     if(offset === -1){
                                         return;
@@ -9582,7 +9586,7 @@
                                         inCoutingState=false;
                                     }
                                     if(text[offset] !== "\n" && inCheckState && leadingWhitespaceCharCount < indentation){
-                                        this.raiseError("Invalid body indentation level (expecting an indentation at least ".concat(indentation,")"));
+                                        this.raiseError( "Invalid body indentation level (expecting an indentation at least ".concat( indentation , ")" ) );
                                     }else{
                                         inCheckState=false;
                                     }
@@ -9602,7 +9606,7 @@
                                 switch (this.token){
                                     case this.tok.T_CONSTANT_ENCAPSED_STRING :
                                         {
-                                            var value=this.node("string");
+                                            var value=this.node( "string" );
                                             var text=this.text();
                                             var offset=0;
                                             if(text[0] === "b" || text[0] === "B"){
@@ -9610,11 +9614,11 @@
                                             }
                                             var isDoubleQuote=text[offset] === '"';
                                             this.next();
-                                            var textValue=this.resolve_special_chars(text.substring(offset + 1,text.length - 1),isDoubleQuote);
-                                            value=value(isDoubleQuote,textValue,offset === 1, /*  unicode flag  */ text);
+                                            var textValue=this.resolve_special_chars( text.substring( offset + 1 , text.length - 1 ) , isDoubleQuote );
+                                            value=value( isDoubleQuote , textValue , offset === 1 ,  /* unicode flag */ text );
                                             if(this.token === this.tok.T_DOUBLE_COLON){
                                                 /* https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1151 */
-                                                result=this.read_static_getter(value);
+                                                result=this.read_static_getter( value );
                                             }else{
                                                 /* dirrect string */
                                                 result=value;
@@ -9646,7 +9650,7 @@
                               * ```
                              */
                             "read_scalar" : function read_scalar(){
-                                if(this.is("T_MAGIC_CONST")){
+                                if(this.is( "T_MAGIC_CONST" )){
                                     return(this.get_magic_constant());
                                 }else{
                                     var value;
@@ -9656,49 +9660,49 @@
                                         case this.tok.T_DNUMBER :
                                             {
                                                 /* double */
-                                                var result=this.node("number");
+                                                var result=this.node( "number" );
                                                 value=this.text();
                                                 this.next();
-                                                return(result(value,null));
+                                                return(result( value , null ));
                                             }
                                             
                                         case this.tok.T_START_HEREDOC :
                                             if(this.lexer.curCondition === "ST_NOWDOC"){
                                                 var start=this.lexer.yylloc.first_offset;
-                                                node=this.node("nowdoc");
+                                                node=this.node( "nowdoc" );
                                                 value=this.next().text();
                                                 /* strip the last line return char */
                                                 if(this.lexer.heredoc_label.indentation > 0){
-                                                    value=value.substring(0,value.length - this.lexer.heredoc_label.indentation);
+                                                    value=value.substring( 0 , value.length - this.lexer.heredoc_label.indentation );
                                                 }
                                                 var lastCh=value[value.length - 1];
                                                 if(lastCh === "\n"){
                                                     if(value[value.length - 2] === "\r"){
                                                         /* windows style */
-                                                        value=value.substring(0,value.length - 2);
+                                                        value=value.substring( 0 , value.length - 2 );
                                                     }else{
                                                         /* linux style */
-                                                        value=value.substring(0,value.length - 1);
+                                                        value=value.substring( 0 , value.length - 1 );
                                                     }
                                                 }else if(lastCh === "\r"){
                                                     /* mac style */
-                                                    value=value.substring(0,value.length - 1);
+                                                    value=value.substring( 0 , value.length - 1 );
                                                 }
-                                                this.expect(this.tok.T_ENCAPSED_AND_WHITESPACE) && this.next();
-                                                this.expect(this.tok.T_END_HEREDOC) && this.next();
-                                                var raw=this.lexer._input.substring(start,this.lexer.yylloc.first_offset);
-                                                node=node(this.remove_heredoc_leading_whitespace_chars(value,this.lexer.heredoc_label.indentation,this.lexer.heredoc_label.indentation_uses_spaces,this.lexer.heredoc_label.first_encaps_node),raw,this.lexer.heredoc_label.label);
+                                                this.expect( this.tok.T_ENCAPSED_AND_WHITESPACE ) && this.next();
+                                                this.expect( this.tok.T_END_HEREDOC ) && this.next();
+                                                var raw=this.lexer._input.substring( start , this.lexer.yylloc.first_offset );
+                                                node=node( this.remove_heredoc_leading_whitespace_chars( value , this.lexer.heredoc_label.indentation , this.lexer.heredoc_label.indentation_uses_spaces , this.lexer.heredoc_label.first_encaps_node ) , raw , this.lexer.heredoc_label.label );
                                                 this.lexer.heredoc_label.finished=true;
                                                 return node;
                                             }else{
-                                                return(this.read_encapsed_string(this.tok.T_END_HEREDOC));
+                                                return(this.read_encapsed_string( this.tok.T_END_HEREDOC ));
                                             }
                                             
-                                        case '"' : return(this.read_encapsed_string('"'));
+                                        case '"' : return(this.read_encapsed_string( '"' ));
                                         case 'b"' : 
                                         case 'B"' :
                                             {
-                                                return(this.read_encapsed_string('"',true));
+                                                return(this.read_encapsed_string( '"' , true ));
                                             }
                                             
                                         case this.tok.T_CONSTANT_ENCAPSED_STRING : 
@@ -9709,7 +9713,7 @@
                                             
                                         default:
                                             {
-                                                var err=this.error("SCALAR");
+                                                var err=this.error( "SCALAR" );
                                                 /* graceful mode : ignore token & return error node */
                                                 this.next();
                                                 return err;
@@ -9725,19 +9729,19 @@
                              /*
                               * Handles the dereferencing
                              */
-                            "read_dereferencable" : function read_dereferencable(expr){
+                            "read_dereferencable" : function read_dereferencable( expr ){
                                 var result;
                                 var offset;
-                                var node=this.node("offsetlookup");
+                                var node=this.node( "offsetlookup" );
                                 if(this.token === "["){
                                     offset=this.next().read_expr();
-                                    if(this.expect("]")){
+                                    if(this.expect( "]" )){
                                         this.next();
                                     }
-                                    result=node(expr,offset);
+                                    result=node( expr , offset );
                                 }else if(this.token === this.tok.T_DOLLAR_OPEN_CURLY_BRACES){
-                                    offset=this.read_encapsed_string_item(false);
-                                    result=node(expr,offset);
+                                    offset=this.read_encapsed_string_item( false );
+                                    result=node( expr , offset );
                                 }
                                 return result;
                             } ,
@@ -9756,8 +9760,8 @@
                               * @return {String|Variable|Expr|Lookup}
                               * @see https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1219
                              */
-                            "read_encapsed_string_item" : function read_encapsed_string_item(isDoubleQuote){
-                                var encapsedPart=this.node("encapsedpart");
+                            "read_encapsed_string_item" : function read_encapsed_string_item( isDoubleQuote ){
+                                var encapsedPart=this.node( "encapsedpart" );
                                 var syntax=null;
                                 var curly=false;
                                 var result=this.node();
@@ -9770,12 +9774,12 @@
                                     var text=this.text();
                                     this.next();
                                     /* if this.lexer.heredoc_label.first_encaps_node -> remove first indents */
-                                    result=result("string",false,this.version >= 703 && !this.lexer.heredoc_label.finished ?
+                                    result=result( "string" , false , this.version >= 703 && !this.lexer.heredoc_label.finished ?
                                       ( 
-                                        this.remove_heredoc_leading_whitespace_chars(this.resolve_special_chars(text,isDoubleQuote),this.lexer.heredoc_label.indentation,this.lexer.heredoc_label.indentation_uses_spaces,this.lexer.heredoc_label.first_encaps_node)
+                                        this.remove_heredoc_leading_whitespace_chars( this.resolve_special_chars( text , isDoubleQuote ) , this.lexer.heredoc_label.indentation , this.lexer.heredoc_label.indentation_uses_spaces , this.lexer.heredoc_label.first_encaps_node )
                                       ) : ( 
                                         text
-                                      ),false,text);
+                                      ) , false , text );
                                 }else if(this.token === this.tok.T_DOLLAR_OPEN_CURLY_BRACES){
                                     syntax="simple";
                                     curly=true;
@@ -9783,32 +9787,32 @@
                                     /* https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1239 */
                                     name=null;
                                     if(this.next().token === this.tok.T_STRING_VARNAME){
-                                        name=this.node("variable");
+                                        name=this.node( "variable" );
                                         var varName=this.text();
                                         this.next();
                                         /* check if lookup an offset */
                                         /* https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1243 */
                                         result.destroy();
                                         if(this.token === "["){
-                                            name=name(varName,false);
-                                            node=this.node("offsetlookup");
+                                            name=name( varName , false );
+                                            node=this.node( "offsetlookup" );
                                             offset=this.next().read_expr();
-                                            this.expect("]") && this.next();
-                                            result=node(name,offset);
+                                            this.expect( "]" ) && this.next();
+                                            result=node( name , offset );
                                         }else{
-                                            result=name(varName,false);
+                                            result=name( varName , false );
                                         }
                                     }else{
-                                        result=result("variable",this.read_expr(),false);
+                                        result=result( "variable" , this.read_expr() , false );
                                     }
-                                    this.expect("}") && this.next();
+                                    this.expect( "}" ) && this.next();
                                 }else if(this.token === this.tok.T_CURLY_OPEN){
                                     /* expression */
                                     /* https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1246 */
                                     syntax="complex";
                                     result.destroy();
-                                    result=this.next().read_variable(false,false);
-                                    this.expect("}") && this.next();
+                                    result=this.next().read_variable( false , false );
+                                    this.expect( "}" ) && this.next();
                                 }else if(this.token === this.tok.T_VARIABLE){
                                     syntax="simple";
                                     /* plain variable */
@@ -9817,40 +9821,40 @@
                                     result=this.read_simple_variable();
                                     /* https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1233 */
                                     if(this.token === "["){
-                                        node=this.node("offsetlookup");
+                                        node=this.node( "offsetlookup" );
                                         offset=this.next().read_encaps_var_offset();
-                                        this.expect("]") && this.next();
-                                        result=node(result,offset);
+                                        this.expect( "]" ) && this.next();
+                                        result=node( result , offset );
                                     }
                                     /* https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L1236 */
                                     if(this.token === this.tok.T_OBJECT_OPERATOR){
-                                        node=this.node("propertylookup");
-                                        this.next().expect(this.tok.T_STRING);
-                                        var what=this.node("identifier");
+                                        node=this.node( "propertylookup" );
+                                        this.next().expect( this.tok.T_STRING );
+                                        var what=this.node( "identifier" );
                                         name=this.text();
                                         this.next();
-                                        result=node(result,what(name));
+                                        result=node( result , what( name ) );
                                     }
                                     /* error / fallback */
                                 }else{
-                                    this.expect(this.tok.T_ENCAPSED_AND_WHITESPACE);
+                                    this.expect( this.tok.T_ENCAPSED_AND_WHITESPACE );
                                     var value=this.text();
                                     this.next();
                                     /* consider it as string */
                                     result.destroy();
-                                    result=result("string",false,value,false,value);
+                                    result=result( "string" , false , value , false , value );
                                 }
                                 /* reset first_encaps_node to false after access any node */
                                 this.lexer.heredoc_label.first_encaps_node=false;
-                                return(encapsedPart(result,syntax,curly));
+                                return(encapsedPart( result , syntax , curly ));
                             } ,
                              /*
                               * Reads an encapsed string
                              */
-                            "read_encapsed_string" : function read_encapsed_string(expect){
+                            "read_encapsed_string" : function read_encapsed_string( expect ){
                                 var isBinary=arguments.length > 1 && arguments[1] !== undefined ? ( arguments[1] ) : ( false );
                                 var labelStart=this.lexer.yylloc.first_offset;
-                                var node=this.node("encapsed");
+                                var node=this.node( "encapsed" );
                                 this.next();
                                 var start=this.lexer.yylloc.prev_offset - (isBinary ? ( 1 ) : ( 0 ));
                                 var value=[];
@@ -9864,7 +9868,7 @@
                                 }
                                 /* reading encapsed parts */
                                 while(this.token !== expect && this.token !== this.EOF){
-                                    value.push(this.read_encapsed_string_item(true));
+                                    value.push( this.read_encapsed_string_item( true ) );
                                 }
                                 if(value.length > 0
                                        && value[value.length - 1].kind === "encapsedpart"
@@ -9875,19 +9879,19 @@
                                     if(lastCh === "\n"){
                                         if(_node.value[_node.value.length - 2] === "\r"){
                                             /* windows style */
-                                            _node.value=_node.value.substring(0,_node.value.length - 2);
+                                            _node.value=_node.value.substring( 0 , _node.value.length - 2 );
                                         }else{
                                             /* linux style */
-                                            _node.value=_node.value.substring(0,_node.value.length - 1);
+                                            _node.value=_node.value.substring( 0 , _node.value.length - 1 );
                                         }
                                     }else if(lastCh === "\r"){
                                         /* mac style */
-                                        _node.value=_node.value.substring(0,_node.value.length - 1);
+                                        _node.value=_node.value.substring( 0 , _node.value.length - 1 );
                                     }
                                 }
-                                this.expect(expect) && this.next();
-                                var raw=this.lexer._input.substring(type === "heredoc" ? ( labelStart ) : ( start - 1 ),this.lexer.yylloc.first_offset);
-                                node=node(value,raw,type);
+                                this.expect( expect ) && this.next();
+                                var raw=this.lexer._input.substring( type === "heredoc" ? ( labelStart ) : ( start - 1 ) , this.lexer.yylloc.first_offset );
+                                node=node( value , raw , type );
                                 if(expect === this.tok.T_END_HEREDOC){
                                     node.label=this.lexer.heredoc_label.label;
                                     this.lexer.heredoc_label.finished=true;
@@ -9898,17 +9902,17 @@
                               * Constant token
                              */
                             "get_magic_constant" : function get_magic_constant(){
-                                var result=this.node("magic");
+                                var result=this.node( "magic" );
                                 var name=this.text();
                                 this.next();
-                                return(result(name.toUpperCase(),name));
+                                return(result( name.toUpperCase() , name ));
                             }
                         };
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6261" : (module) => {
+                    "6261" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -9926,10 +9930,10 @@
                                 while(this.token !== this.EOF && this.token !== "}"){
                                     var statement=this.read_top_statement();
                                     if(statement){
-                                        if(Array.isArray(statement)){
-                                            result=result.concat(statement);
+                                        if(Array.isArray( statement )){
+                                            result=result.concat( statement );
                                         }else{
-                                            result.push(statement);
+                                            result.push( statement );
                                         }
                                     }
                                 }
@@ -9951,36 +9955,36 @@
                                     attrs=this.read_attr_list();
                                 }
                                 switch (this.token){
-                                    case this.tok.T_FUNCTION : return(this.read_function(false,false,attrs));
+                                    case this.tok.T_FUNCTION : return(this.read_function( false , false , attrs ));
                                     case this.tok.T_ABSTRACT : 
                                     case this.tok.T_FINAL : 
                                     case this.tok.T_READ_ONLY : 
-                                    case this.tok.T_CLASS : return(this.read_class_declaration_statement(attrs));
-                                    case this.tok.T_INTERFACE : return(this.read_interface_declaration_statement(attrs));
+                                    case this.tok.T_CLASS : return(this.read_class_declaration_statement( attrs ));
+                                    case this.tok.T_INTERFACE : return(this.read_interface_declaration_statement( attrs ));
                                     case this.tok.T_TRAIT : return(this.read_trait_declaration_statement());
-                                    case this.tok.T_ENUM : return(this.read_enum_declaration_statement(attrs));
+                                    case this.tok.T_ENUM : return(this.read_enum_declaration_statement( attrs ));
                                     case this.tok.T_USE : return(this.read_use_statement());
                                     case this.tok.T_CONST :
                                         {
-                                            var result=this.node("constantstatement");
+                                            var result=this.node( "constantstatement" );
                                             var items=this.next().read_const_list();
                                             this.expectEndOfStatement();
-                                            return(result(null,items));
+                                            return(result( null , items ));
                                         }
                                         
                                     case this.tok.T_NAMESPACE : return(this.read_namespace());
                                     case this.tok.T_HALT_COMPILER :
                                         {
-                                            var _result=this.node("halt");
-                                            if(this.next().expect("(")){
+                                            var _result=this.node( "halt" );
+                                            if(this.next().expect( "(" )){
                                                 this.next();
                                             }
-                                            if(this.expect(")")){
+                                            if(this.expect( ")" )){
                                                 this.next();
                                             }
-                                            this.expect(";");
+                                            this.expect( ";" );
                                             this.lexer.done=true;
-                                            return(_result(this.lexer._input.substring(this.lexer.offset)));
+                                            return(_result( this.lexer._input.substring( this.lexer.offset ) ));
                                         }
                                         
                                     default: return(this.read_statement());
@@ -9998,10 +10002,10 @@
                                 while(this.token != this.EOF && this.token !== "}"){
                                     var statement=this.read_inner_statement();
                                     if(statement){
-                                        if(Array.isArray(statement)){
-                                            result=result.concat(statement);
+                                        if(Array.isArray( statement )){
+                                            result=result.concat( statement );
                                         }else{
-                                            result.push(statement);
+                                            result.push( statement );
                                         }
                                     }
                                 }
@@ -10014,20 +10018,20 @@
                               * ```
                              */
                             "read_const_list" : function read_const_list(){
-                                return(this.read_list(function(){
-                                        this.expect(this.tok.T_STRING);
-                                        var result=this.node("constant");
-                                        var constName=this.node("identifier");
+                                return(this.read_list( function(){
+                                        this.expect( this.tok.T_STRING );
+                                        var result=this.node( "constant" );
+                                        var constName=this.node( "identifier" );
                                         var name=this.text();
                                         this.next();
-                                        constName=constName(name);
-                                        if(this.expect("=")){
-                                            return(result(constName,this.next().read_expr()));
+                                        constName=constName( name );
+                                        if(this.expect( "=" )){
+                                            return(result( constName , this.next().read_expr() ));
                                         }else{
                                             /* fallback */
-                                            return(result(constName,null));
+                                            return(result( constName , null ));
                                         }
-                                    },",",false));
+                                    } , "," , false ));
                             } ,
                              /*
                               * Reads a list of constants declaration
@@ -10039,17 +10043,17 @@
                             "read_declare_list" : function read_declare_list(){
                                 var result=[];
                                 while(this.token != this.EOF && this.token !== ")"){
-                                    this.expect(this.tok.T_STRING);
-                                    var directive=this.node("declaredirective");
-                                    var key=this.node("identifier");
+                                    this.expect( this.tok.T_STRING );
+                                    var directive=this.node( "declaredirective" );
+                                    var key=this.node( "identifier" );
                                     var name=this.text();
                                     this.next();
-                                    key=key(name);
+                                    key=key( name );
                                     var value=null;
-                                    if(this.expect("=")){
+                                    if(this.expect( "=" )){
                                         value=this.next().read_expr();
                                     }
-                                    result.push(directive(key,value));
+                                    result.push( directive( key , value ) );
                                     if(this.token !== ","){
                                         break;
                                     }
@@ -10071,7 +10075,7 @@
                                 switch (this.token){
                                     case this.tok.T_FUNCTION :
                                         {
-                                            var result=this.read_function(false,false);
+                                            var result=this.read_function( false , false );
                                             result.attrGroups=attrs;
                                             return result;
                                         }
@@ -10084,13 +10088,13 @@
                                     case this.tok.T_ENUM : return(this.read_enum_declaration_statement());
                                     case this.tok.T_HALT_COMPILER :
                                         {
-                                            this.raiseError("__HALT_COMPILER() can only be used from the outermost scope");
+                                            this.raiseError( "__HALT_COMPILER() can only be used from the outermost scope" );
                                             /* fallback : returns a node but does not stop the parsing */
-                                            var node=this.node("halt");
-                                            this.next().expect("(") && this.next();
-                                            this.expect(")") && this.next();
-                                            node=node(this.lexer._input.substring(this.lexer.offset));
-                                            this.expect(";") && this.next();
+                                            var node=this.node( "halt" );
+                                            this.next().expect( "(" ) && this.next();
+                                            this.expect( ")" ) && this.next();
+                                            node=node( this.lexer._input.substring( this.lexer.offset ) );
+                                            this.expect( ";" ) && this.next();
                                             return node;
                                         }
                                         
@@ -10103,7 +10107,7 @@
                              */
                             "read_statement" : function read_statement(){
                                 switch (this.token){
-                                    case "{" : return(this.read_code_block(false));
+                                    case "{" : return(this.read_code_block( false ));
                                     case this.tok.T_IF : return(this.read_if());
                                     case this.tok.T_SWITCH : return(this.read_switch());
                                     case this.tok.T_FOR : return(this.read_for());
@@ -10114,29 +10118,29 @@
                                     case this.tok.T_DOC_COMMENT : return(this.read_doc_comment());
                                     case this.tok.T_RETURN :
                                         {
-                                            var result=this.node("return");
+                                            var result=this.node( "return" );
                                             this.next();
-                                            var expr=this.read_optional_expr(";");
+                                            var expr=this.read_optional_expr( ";" );
                                             this.expectEndOfStatement();
-                                            return(result(expr));
+                                            return(result( expr ));
                                         }
                                         
                                     case this.tok.T_BREAK : 
                                     case this.tok.T_CONTINUE :
                                         {
-                                            var _result2=this.node(this.token === this.tok.T_CONTINUE ? ( "continue" ) : ( "break" ));
+                                            var _result2=this.node( this.token === this.tok.T_CONTINUE ? ( "continue" ) : ( "break" ) );
                                             this.next();
-                                            var level=this.read_optional_expr(";");
+                                            var level=this.read_optional_expr( ";" );
                                             this.expectEndOfStatement();
-                                            return(_result2(level));
+                                            return(_result2( level ));
                                         }
                                         
                                     case this.tok.T_GLOBAL :
                                         {
-                                            var _result3=this.node("global");
-                                            var items=this.next().read_list(this.read_simple_variable,",");
+                                            var _result3=this.node( "global" );
+                                            var items=this.next().read_list( this.read_simple_variable , "," );
                                             this.expectEndOfStatement();
-                                            return(_result3(items));
+                                            return(_result3( items ));
                                         }
                                         
                                     case this.tok.T_STATIC :
@@ -10145,27 +10149,27 @@
                                             var _result4=this.node();
                                             if(this.next().token === this.tok.T_DOUBLE_COLON){
                                                 /* static keyword for a class */
-                                                this.lexer.tokens.push(current);
+                                                this.lexer.tokens.push( current );
                                                 var _expr=this.next().read_expr();
-                                                this.expectEndOfStatement(_expr);
-                                                return(_result4("expressionstatement",_expr));
+                                                this.expectEndOfStatement( _expr );
+                                                return(_result4( "expressionstatement" , _expr ));
                                             }
                                             if(this.token === this.tok.T_FUNCTION){
-                                                return(this.read_function(true,[0,1,0]));
+                                                return(this.read_function( true , [0,1,0] ));
                                             }
                                             var _items=this.read_variable_declarations();
                                             this.expectEndOfStatement();
-                                            return(_result4("static",_items));
+                                            return(_result4( "static" , _items ));
                                         }
                                         
                                     case this.tok.T_ECHO :
                                         {
-                                            var _result5=this.node("echo");
+                                            var _result5=this.node( "echo" );
                                             var text=this.text();
                                             var shortForm=text === "<?=" || text === "<%=";
-                                            var expressions=this.next().read_function_list(this.read_expr,",");
+                                            var expressions=this.next().read_function_list( this.read_expr , "," );
                                             this.expectEndOfStatement();
-                                            return(_result5(expressions,shortForm));
+                                            return(_result5( expressions , shortForm ));
                                         }
                                         
                                     case this.tok.T_INLINE_HTML :
@@ -10187,66 +10191,66 @@
                                                     prevChar="\r\n";
                                                 }
                                             }
-                                            var _result6=this.node("inline");
+                                            var _result6=this.node( "inline" );
                                             this.next();
-                                            return(_result6(value,fixFirstLine ? ( prevChar + value ) : ( value )));
+                                            return(_result6( value , fixFirstLine ? ( prevChar + value ) : ( value ) ));
                                         }
                                         
                                     case this.tok.T_UNSET :
                                         {
-                                            var _result7=this.node("unset");
-                                            this.next().expect("(") && this.next();
-                                            var variables=this.read_function_list(this.read_variable,",");
-                                            this.expect(")") && this.next();
-                                            this.expect(";") && this.next();
-                                            return(_result7(variables));
+                                            var _result7=this.node( "unset" );
+                                            this.next().expect( "(" ) && this.next();
+                                            var variables=this.read_function_list( this.read_variable , "," );
+                                            this.expect( ")" ) && this.next();
+                                            this.expect( ";" ) && this.next();
+                                            return(_result7( variables ));
                                         }
                                         
                                     case this.tok.T_DECLARE :
                                         {
-                                            var _result8=this.node("declare");
+                                            var _result8=this.node( "declare" );
                                             var body=[];
                                             var mode;
-                                            this.next().expect("(") && this.next();
+                                            this.next().expect( "(" ) && this.next();
                                             var directives=this.read_declare_list();
-                                            this.expect(")") && this.next();
+                                            this.expect( ")" ) && this.next();
                                             if(this.token === ":"){
                                                 this.next();
                                                 while(this.token != this.EOF && this.token !== this.tok.T_ENDDECLARE){
                                                     /* @todo : check declare_statement from php / not valid */
-                                                    body.push(this.read_top_statement());
+                                                    body.push( this.read_top_statement() );
                                                 }
                                                 if(body.length === 0 && this.extractDoc && this._docs.length > this._docIndex){
-                                                    body.push(this.node("noop")());
+                                                    body.push( this.node( "noop" )() );
                                                 }
-                                                this.expect(this.tok.T_ENDDECLARE) && this.next();
+                                                this.expect( this.tok.T_ENDDECLARE ) && this.next();
                                                 this.expectEndOfStatement();
                                                 mode=this.ast.declare.MODE_SHORT;
                                             }else if(this.token === "{"){
                                                 this.next();
                                                 while(this.token != this.EOF && this.token !== "}"){
                                                     /* @todo : check declare_statement from php / not valid */
-                                                    body.push(this.read_top_statement());
+                                                    body.push( this.read_top_statement() );
                                                 }
                                                 if(body.length === 0 && this.extractDoc && this._docs.length > this._docIndex){
-                                                    body.push(this.node("noop")());
+                                                    body.push( this.node( "noop" )() );
                                                 }
-                                                this.expect("}") && this.next();
+                                                this.expect( "}" ) && this.next();
                                                 mode=this.ast.declare.MODE_BLOCK;
                                             }else{
-                                                this.expect(";") && this.next();
+                                                this.expect( ";" ) && this.next();
                                                 mode=this.ast.declare.MODE_NONE;
                                             }
-                                            return(_result8(directives,body,mode));
+                                            return(_result8( directives , body , mode ));
                                         }
                                         
                                     case this.tok.T_TRY : return(this.read_try());
                                     case this.tok.T_THROW :
                                         {
-                                            var _result9=this.node("throw");
+                                            var _result9=this.node( "throw" );
                                             var _expr2=this.next().read_expr();
                                             this.expectEndOfStatement();
-                                            return(_result9(_expr2));
+                                            return(_result9( _expr2 ));
                                         }
                                         
                                     case ";" :
@@ -10260,45 +10264,45 @@
                                             var _result10=this.node();
                                             var _current=[this.token,this.lexer.getState()];
                                             var labelNameText=this.text();
-                                            var labelName=this.node("identifier");
+                                            var labelName=this.node( "identifier" );
                                             /* AST : https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L457 */
                                             if(this.next().token === ":"){
-                                                labelName=labelName(labelNameText);
+                                                labelName=labelName( labelNameText );
                                                 this.next();
-                                                return(_result10("label",labelName));
+                                                return(_result10( "label" , labelName ));
                                             }else{
                                                 labelName.destroy();
                                             }
                                             /* default fallback expr / T_STRING '::' (etc...) */
                                             _result10.destroy();
-                                            this.lexer.tokens.push(_current);
-                                            var statement=this.node("expressionstatement");
+                                            this.lexer.tokens.push( _current );
+                                            var statement=this.node( "expressionstatement" );
                                             var _expr3=this.next().read_expr();
-                                            this.expectEndOfStatement(_expr3);
-                                            return(statement(_expr3));
+                                            this.expectEndOfStatement( _expr3 );
+                                            return(statement( _expr3 ));
                                         }
                                         
                                     case this.tok.T_GOTO :
                                         {
-                                            var _result11=this.node("goto");
+                                            var _result11=this.node( "goto" );
                                             var _labelName=null;
-                                            if(this.next().expect(this.tok.T_STRING)){
-                                                _labelName=this.node("identifier");
+                                            if(this.next().expect( this.tok.T_STRING )){
+                                                _labelName=this.node( "identifier" );
                                                 var name=this.text();
                                                 this.next();
-                                                _labelName=_labelName(name);
+                                                _labelName=_labelName( name );
                                                 this.expectEndOfStatement();
                                             }
-                                            return(_result11(_labelName));
+                                            return(_result11( _labelName ));
                                         }
                                         
                                     default:
                                         {
                                             /* default fallback expr */
-                                            var _statement=this.node("expressionstatement");
+                                            var _statement=this.node( "expressionstatement" );
                                             var _expr4=this.read_expr();
-                                            this.expectEndOfStatement(_expr4);
-                                            return(_statement(_expr4));
+                                            this.expectEndOfStatement( _expr4 );
+                                            return(_statement( _expr4 ));
                                         }
                                         
                                 }
@@ -10310,22 +10314,22 @@
                               *  code_block ::= '{' (inner_statements | top_statements) '}'
                               * ```
                              */
-                            "read_code_block" : function read_code_block(top){
-                                var result=this.node("block");
-                                this.expect("{") && this.next();
+                            "read_code_block" : function read_code_block( top ){
+                                var result=this.node( "block" );
+                                this.expect( "{" ) && this.next();
                                 var body=top ? ( this.read_top_statements() ) : ( this.read_inner_statements() );
                                 if(body.length === 0 && this.extractDoc && this._docs.length > this._docIndex){
-                                    body.push(this.node("noop")());
+                                    body.push( this.node( "noop" )() );
                                 }
-                                this.expect("}") && this.next();
-                                return(result(null,body));
+                                this.expect( "}" ) && this.next();
+                                return(result( null , body ));
                             }
                         };
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "2478" : (module) => {
+                    "2478" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -10341,14 +10345,14 @@
                               * @see http://php.net/manual/en/control-structures.switch.php
                              */
                             "read_switch" : function read_switch(){
-                                var result=this.node("switch");
-                                this.expect(this.tok.T_SWITCH) && this.next();
-                                this.expect("(") && this.next();
+                                var result=this.node( "switch" );
+                                this.expect( this.tok.T_SWITCH ) && this.next();
+                                this.expect( "(" ) && this.next();
                                 var test=this.read_expr();
-                                this.expect(")") && this.next();
+                                this.expect( ")" ) && this.next();
                                 var shortForm=this.token === ":";
                                 var body=this.read_switch_case_list();
-                                return(result(test,body,shortForm));
+                                return(result( test , body , shortForm ));
                             } ,
                              /*
                               * ```ebnf
@@ -10359,14 +10363,14 @@
                             "read_switch_case_list" : function read_switch_case_list(){
                                 /* DETECT SWITCH MODE */
                                 var expect=null;
-                                var result=this.node("block");
+                                var result=this.node( "block" );
                                 var items=[];
                                 if(this.token === "{"){
                                     expect="}";
                                 }else if(this.token === ":"){
                                     expect=this.tok.T_ENDSWITCH;
                                 }else{
-                                    this.expect(["{",":"]);
+                                    this.expect( ["{",":"] );
                                 }
                                 this.next();
                                 /* OPTIONNAL ';' */
@@ -10376,25 +10380,25 @@
                                 }
                                 /* EXTRACTING CASES */
                                 while(this.token !== this.EOF && this.token !== expect){
-                                    items.push(this.read_case_list(expect));
+                                    items.push( this.read_case_list( expect ) );
                                 }
                                 if(items.length === 0 && this.extractDoc && this._docs.length > this._docIndex){
-                                    items.push(this.node("noop")());
+                                    items.push( this.node( "noop" )() );
                                 }
                                 /* CHECK END TOKEN */
-                                this.expect(expect) && this.next();
+                                this.expect( expect ) && this.next();
                                 if(expect === this.tok.T_ENDSWITCH){
                                     this.expectEndOfStatement();
                                 }
-                                return(result(null,items));
+                                return(result( null , items ));
                             } ,
                              /*
                               * ```ebnf
                               *   case_list ::= ((T_CASE expr) | T_DEFAULT) (':' | ';') inner_statement*
                               * ```
                              */
-                            "read_case_list" : function read_case_list(stopToken){
-                                var result=this.node("case");
+                            "read_case_list" : function read_case_list( stopToken ){
+                                var result=this.node( "case" );
                                 var test=null;
                                 if(this.token === this.tok.T_CASE){
                                     test=this.next().read_expr();
@@ -10402,27 +10406,27 @@
                                     /* the default entry - no condition */
                                     this.next();
                                 }else{
-                                    this.expect([this.tok.T_CASE,this.tok.T_DEFAULT]);
+                                    this.expect( [this.tok.T_CASE,this.tok.T_DEFAULT] );
                                 }
                                 /* case_separator */
-                                this.expect([":",";"]) && this.next();
-                                var body=this.node("block");
+                                this.expect( [":",";"] ) && this.next();
+                                var body=this.node( "block" );
                                 var items=[];
                                 while(this.token !== this.EOF
                                        && this.token !== stopToken
                                        && this.token !== this.tok.T_CASE
                                        && this.token !== this.tok.T_DEFAULT
                                 ){
-                                    items.push(this.read_inner_statement());
+                                    items.push( this.read_inner_statement() );
                                 }
-                                return(result(test,body(null,items)));
+                                return(result( test , body( null , items ) ));
                             }
                         };
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "77" : (module) => {
+                    "77" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -10441,34 +10445,34 @@
                               * @return {Try}
                              */
                             "read_try" : function read_try(){
-                                this.expect(this.tok.T_TRY);
-                                var result=this.node("try");
+                                this.expect( this.tok.T_TRY );
+                                var result=this.node( "try" );
                                 var always=null;
                                 var catches=[];
                                 var body=this.next().read_statement();
                                 /* https://github.com/php/php-src/blob/master/Zend/zend_language_parser.y#L455 */
                                 while(this.token === this.tok.T_CATCH){
-                                    var item=this.node("catch");
-                                    this.next().expect("(") && this.next();
-                                    var what=this.read_list(this.read_namespace_name,"|",false);
+                                    var item=this.node( "catch" );
+                                    this.next().expect( "(" ) && this.next();
+                                    var what=this.read_list( this.read_namespace_name , "|" , false );
                                     var variable=null;
                                     if(this.version < 800 || this.token === this.tok.T_VARIABLE){
-                                        variable=this.read_variable(true,false);
+                                        variable=this.read_variable( true , false );
                                     }
-                                    this.expect(")");
-                                    catches.push(item(this.next().read_statement(),what,variable));
+                                    this.expect( ")" );
+                                    catches.push( item( this.next().read_statement() , what , variable ) );
                                 }
                                 if(this.token === this.tok.T_FINALLY){
                                     always=this.next().read_statement();
                                 }
-                                return(result(body,catches,always));
+                                return(result( body , catches , always ));
                             }
                         };
                         /* * */
                     } ,
                      /* * */
                      /* * */
-                    "6077" : (module) => {
+                    "6077" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -10480,39 +10484,39 @@
                               * @param {Number} token - The ending token
                               * @return {Block}
                              */
-                            "read_short_form" : function read_short_form(token){
-                                var body=this.node("block");
+                            "read_short_form" : function read_short_form( token ){
+                                var body=this.node( "block" );
                                 var items=[];
                                 /* istanbul ignore next */
-                                if(this.expect(":")){
+                                if(this.expect( ":" )){
                                     this.next();
                                 }
                                 while(this.token != this.EOF && this.token !== token){
-                                    items.push(this.read_inner_statement());
+                                    items.push( this.read_inner_statement() );
                                 }
                                 if(items.length === 0 && this.extractDoc && this._docs.length > this._docIndex){
-                                    items.push(this.node("noop")());
+                                    items.push( this.node( "noop" )() );
                                 }
                                 /* istanbul ignore next */
-                                if(this.expect(token)){
+                                if(this.expect( token )){
                                     this.next();
                                 }
                                 this.expectEndOfStatement();
-                                return(body(null,items));
+                                return(body( null , items ));
                             } ,
                              /*
                               * https://wiki.php.net/rfc/trailing-comma-function-calls
                               * @param {*} item
                               * @param {*} separator
                              */
-                            "read_function_list" : function read_function_list(item,separator){
+                            "read_function_list" : function read_function_list( item , separator ){
                                 var result=[];
                                 do{
                                     if(this.token == separator && this.version >= 703 && result.length > 0){
-                                        result.push(this.node("noop")());
+                                        result.push( this.node( "noop" )() );
                                         break;
                                     }
-                                    result.push(item.apply(this,[]));
+                                    result.push( item.apply( this , [] ) );
                                     if(this.token != separator){
                                         break;
                                     }
@@ -10528,27 +10532,27 @@
                               * list ::= separator? ( item separator )* item
                               * ```
                              */
-                            "read_list" : function read_list(item,separator,preserveFirstSeparator){
+                            "read_list" : function read_list( item , separator , preserveFirstSeparator ){
                                 var result=[];
                                 if(this.token == separator){
                                     if(preserveFirstSeparator){
-                                        result.push( typeof item === "function" ? ( this.node("noop")() ) : ( null ));
+                                        result.push(  typeof item === "function" ? ( this.node( "noop" )() ) : ( null ) );
                                     }
                                     this.next();
                                 }
                                 if( typeof item === "function"){
                                     do{
-                                        var itemResult=item.apply(this,[]);
+                                        var itemResult=item.apply( this , [] );
                                         if(itemResult){
-                                            result.push(itemResult);
+                                            result.push( itemResult );
                                         }
                                         if(this.token != separator){
                                             break;
                                         }
                                     }while(this.next().token != this.EOF);
                                 }else{
-                                    if(this.expect(item)){
-                                        result.push(this.text());
+                                    if(this.expect( item )){
+                                        result.push( this.text() );
                                     }else{
                                         return [];
                                     }
@@ -10560,7 +10564,7 @@
                                         if(this.next().token != item){
                                             break;
                                         }
-                                        result.push(this.text());
+                                        result.push( this.text() );
                                     }
                                 }
                                 return result;
@@ -10581,19 +10585,19 @@
                               * @return {Reference[]}
                              */
                             "read_name_list" : function read_name_list(){
-                                return(this.read_list(this.read_namespace_name,",",false));
+                                return(this.read_list( this.read_namespace_name , "," , false ));
                             } ,
                              /*
                               * Reads the byref token and assign it to the specified node
                               * @param {*} cb
                              */
-                            "read_byref" : function read_byref(cb){
-                                var byref=this.node("byref");
+                            "read_byref" : function read_byref( cb ){
+                                var byref=this.node( "byref" );
                                 this.next();
-                                byref=byref(null);
+                                byref=byref( null );
                                 var result=cb();
                                 if(result){
-                                    this.ast.swapLocations(result,byref,result,this);
+                                    this.ast.swapLocations( result , byref , result , this );
                                     result.byref=true;
                                 }
                                 return result;
@@ -10614,24 +10618,24 @@
                               * assign values
                              */
                             "read_variable_declarations" : function read_variable_declarations(){
-                                return(this.read_list(function(){
-                                        var node=this.node("staticvariable");
-                                        var variable=this.node("variable");
+                                return(this.read_list( function(){
+                                        var node=this.node( "staticvariable" );
+                                        var variable=this.node( "variable" );
                                         /* plain variable name */
                                         /* istanbul ignore else */
-                                        if(this.expect(this.tok.T_VARIABLE)){
-                                            var name=this.text().substring(1);
+                                        if(this.expect( this.tok.T_VARIABLE )){
+                                            var name=this.text().substring( 1 );
                                             this.next();
-                                            variable=variable(name,false);
+                                            variable=variable( name , false );
                                         }else{
-                                            variable=variable("#ERR",false);
+                                            variable=variable( "#ERR" , false );
                                         }
                                         if(this.token === "="){
-                                            return(node(variable,this.next().read_expr()));
+                                            return(node( variable , this.next().read_expr() ));
                                         }else{
                                             return variable;
                                         }
-                                    },","));
+                                    } , "," ));
                             } ,
                              /*
                               * Reads class extends
@@ -10665,7 +10669,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "1130" : (module) => {
+                    "1130" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -10688,88 +10692,88 @@
                               *  $var->func()->property    // chained calls
                               * ```
                              */
-                            "read_variable" : function read_variable(read_only,encapsed){
+                            "read_variable" : function read_variable( read_only , encapsed ){
                                 var result;
                                 /* check the byref flag */
                                 if(this.token === "&"){
-                                    return(this.read_byref(this.read_variable.bind(this,read_only,encapsed)));
+                                    return(this.read_byref( this.read_variable.bind( this , read_only , encapsed ) ));
                                 }
                                 /* reads the entry point */
-                                if(this.is([this.tok.T_VARIABLE,"$"])){
-                                    result=this.read_reference_variable(encapsed);
-                                }else if(this.is([
+                                if(this.is( [this.tok.T_VARIABLE,"$"] )){
+                                    result=this.read_reference_variable( encapsed );
+                                }else if(this.is( [
                                         this.tok.T_NS_SEPARATOR,
                                         this.tok.T_STRING,
                                         this.tok.T_NAME_RELATIVE,
                                         this.tok.T_NAME_QUALIFIED,
                                         this.tok.T_NAME_FULLY_QUALIFIED,
                                         this.tok.T_NAMESPACE
-                                    ])
+                                    ] )
                                 ){
                                     result=this.node();
                                     var name=this.read_namespace_name();
                                     if(this.token != this.tok.T_DOUBLE_COLON
                                            && this.token != "("
-                                           && ["parentreference","selfreference"].indexOf(name.kind) === -1
+                                           && ["parentreference","selfreference"].indexOf( name.kind ) === -1
                                     ){
                                         /* @see parser.js line 130 : resolves a conflict with scalar */
                                         var literal=name.name.toLowerCase();
                                         if(literal === "true"){
-                                            result=name.destroy(result("boolean",true,name.name));
+                                            result=name.destroy( result( "boolean" , true , name.name ) );
                                         }else if(literal === "false"){
-                                            result=name.destroy(result("boolean",false,name.name));
+                                            result=name.destroy( result( "boolean" , false , name.name ) );
                                         }else if(literal === "null"){
-                                            result=name.destroy(result("nullkeyword",name.name));
+                                            result=name.destroy( result( "nullkeyword" , name.name ) );
                                         }else{
-                                            result.destroy(name);
+                                            result.destroy( name );
                                             result=name;
                                         }
                                     }else{
                                         /* @fixme possible #193 bug */
-                                        result.destroy(name);
+                                        result.destroy( name );
                                         result=name;
                                     }
                                 }else if(this.token === this.tok.T_STATIC){
-                                    result=this.node("staticreference");
+                                    result=this.node( "staticreference" );
                                     var raw=this.text();
                                     this.next();
-                                    result=result(raw);
+                                    result=result( raw );
                                 }else{
-                                    this.expect("VARIABLE");
+                                    this.expect( "VARIABLE" );
                                 }
                                 /* static mode */
                                 if(this.token === this.tok.T_DOUBLE_COLON){
-                                    result=this.read_static_getter(result,encapsed);
+                                    result=this.read_static_getter( result , encapsed );
                                 }
-                                return(this.recursive_variable_chain_scan(result,read_only,encapsed));
+                                return(this.recursive_variable_chain_scan( result , read_only , encapsed ));
                             } ,
                              /* resolves a static call */
-                            "read_static_getter" : function read_static_getter(what,encapsed){
-                                var result=this.node("staticlookup");
+                            "read_static_getter" : function read_static_getter( what , encapsed ){
+                                var result=this.node( "staticlookup" );
                                 var offset;
                                 var name;
-                                if(this.next().is([this.tok.T_VARIABLE,"$"])){
-                                    offset=this.read_reference_variable(encapsed);
-                                }else if(this.token === this.tok.T_STRING || this.token === this.tok.T_CLASS || this.version >= 700 && this.is("IDENTIFIER")){
-                                    offset=this.node("identifier");
+                                if(this.next().is( [this.tok.T_VARIABLE,"$"] )){
+                                    offset=this.read_reference_variable( encapsed );
+                                }else if(this.token === this.tok.T_STRING || this.token === this.tok.T_CLASS || this.version >= 700 && this.is( "IDENTIFIER" )){
+                                    offset=this.node( "identifier" );
                                     name=this.text();
                                     this.next();
-                                    offset=offset(name);
+                                    offset=offset( name );
                                 }else if(this.token === "{"){
-                                    offset=this.node("literal");
+                                    offset=this.node( "literal" );
                                     name=this.next().read_expr();
-                                    this.expect("}") && this.next();
-                                    offset=offset("literal",name,null);
-                                    this.expect("(");
+                                    this.expect( "}" ) && this.next();
+                                    offset=offset( "literal" , name , null );
+                                    this.expect( "(" );
                                 }else{
-                                    this.error([this.tok.T_VARIABLE,this.tok.T_STRING]);
+                                    this.error( [this.tok.T_VARIABLE,this.tok.T_STRING] );
                                     /* graceful mode : set getter as error node and continue */
-                                    offset=this.node("identifier");
+                                    offset=this.node( "identifier" );
                                     name=this.text();
                                     this.next();
-                                    offset=offset(name);
+                                    offset=offset( name );
                                 }
-                                return(result(what,offset));
+                                return(result( what , offset ));
                             } ,
                             "read_what" : function read_what(){
                                 var is_static_lookup=arguments.length > 0 && arguments[0] !== undefined ? ( arguments[0] ) : ( false );
@@ -10777,57 +10781,57 @@
                                 var name=null;
                                 switch (this.next().token){
                                     case this.tok.T_STRING :
-                                        what=this.node("identifier");
+                                        what=this.node( "identifier" );
                                         name=this.text();
                                         this.next();
-                                        what=what(name);
+                                        what=what( name );
                                         if(is_static_lookup && this.token === this.tok.T_OBJECT_OPERATOR){
                                             this.error();
                                         }
                                         break;
                                         
                                     case this.tok.T_VARIABLE :
-                                        what=this.node("variable");
-                                        name=this.text().substring(1);
+                                        what=this.node( "variable" );
+                                        name=this.text().substring( 1 );
                                         this.next();
-                                        what=what(name,false);
+                                        what=what( name , false );
                                         break;
                                         
                                     case "$" :
                                         what=this.node();
-                                        this.next().expect(["$","{",this.tok.T_VARIABLE]);
+                                        this.next().expect( ["$","{",this.tok.T_VARIABLE] );
                                         if(this.token === "{"){
                                             /* $obj->${$varname} */
                                             name=this.next().read_expr();
-                                            this.expect("}") && this.next();
-                                            what=what("variable",name,true);
+                                            this.expect( "}" ) && this.next();
+                                            what=what( "variable" , name , true );
                                         }else{
                                             /* $obj->$$varname */
                                             name=this.read_expr();
-                                            what=what("variable",name,false);
+                                            what=what( "variable" , name , false );
                                         }
                                         break;
                                         
                                     case "{" :
-                                        what=this.node("encapsedpart");
+                                        what=this.node( "encapsedpart" );
                                         name=this.next().read_expr();
-                                        this.expect("}") && this.next();
-                                        what=what(name,"complex",false);
+                                        this.expect( "}" ) && this.next();
+                                        what=what( name , "complex" , false );
                                         break;
                                         
                                     default:
-                                        this.error([this.tok.T_STRING,this.tok.T_VARIABLE,"$","{"]);
+                                        this.error( [this.tok.T_STRING,this.tok.T_VARIABLE,"$","{"] );
                                         /* graceful mode : set what as error mode & continue */
-                                        what=this.node("identifier");
+                                        what=this.node( "identifier" );
                                         name=this.text();
                                         this.next();
-                                        what=what(name);
+                                        what=what( name );
                                         break;
                                         
                                 }
                                 return what;
                             } ,
-                            "recursive_variable_chain_scan" : function recursive_variable_chain_scan(result,read_only,encapsed){
+                            "recursive_variable_chain_scan" : function recursive_variable_chain_scan( result , read_only , encapsed ){
                                 var node;
                                 var offset;
                                 recursive_scan_loop:
@@ -10838,7 +10842,7 @@
                                                     /* @fixme : add more informations & test */
                                                     return result;
                                                 }else{
-                                                    result=this.node("call")(result,this.read_argument_list());
+                                                    result=this.node( "call" )( result , this.read_argument_list() );
                                                 }
                                                 break;
                                                 
@@ -10847,23 +10851,23 @@
                                                 {
                                                     var backet=this.token;
                                                     var isSquareBracket=backet === "[";
-                                                    node=this.node("offsetlookup");
+                                                    node=this.node( "offsetlookup" );
                                                     this.next();
                                                     offset=false;
                                                     if(encapsed){
                                                         offset=this.read_encaps_var_offset();
-                                                        this.expect(isSquareBracket ? ( "]" ) : ( "}" )) && this.next();
+                                                        this.expect( isSquareBracket ? ( "]" ) : ( "}" ) ) && this.next();
                                                     }else{
                                                         var isCallableVariable=isSquareBracket ? ( this.token !== "]" ) : ( this.token !== "}" );
                                                         /* callable_variable : https://github.com/php/php-src/blob/493524454d66adde84e00d249d607ecd540de99f/Zend/zend_language_parser.y#L1122 */
                                                         if(isCallableVariable){
                                                             offset=this.read_expr();
-                                                            this.expect(isSquareBracket ? ( "]" ) : ( "}" )) && this.next();
+                                                            this.expect( isSquareBracket ? ( "]" ) : ( "}" ) ) && this.next();
                                                         }else{
                                                             this.next();
                                                         }
                                                     }
-                                                    result=node(result,offset);
+                                                    result=node( result , offset );
                                                     break;
                                                 }
                                                 
@@ -10872,8 +10876,8 @@
                                                 if(result.kind === "staticlookup" && result.offset.kind === "identifier"){
                                                     this.error();
                                                 }
-                                                node=this.node("staticlookup");
-                                                result=node(result,this.read_what(true));
+                                                node=this.node( "staticlookup" );
+                                                result=node( result , this.read_what( true ) );
                                                 /* fix 185 */
                                                 /* static lookup dereferencables are limited to staticlookup over functions */
                                                 /*
@@ -10885,15 +10889,15 @@
                                                 
                                             case this.tok.T_OBJECT_OPERATOR :
                                                 {
-                                                    node=this.node("propertylookup");
-                                                    result=node(result,this.read_what());
+                                                    node=this.node( "propertylookup" );
+                                                    result=node( result , this.read_what() );
                                                     break;
                                                 }
                                                 
                                             case this.tok.T_NULLSAFE_OBJECT_OPERATOR :
                                                 {
-                                                    node=this.node("nullsafepropertylookup");
-                                                    result=node(result,this.read_what());
+                                                    node=this.node( "nullsafepropertylookup" );
+                                                    result=node( result , this.read_what() );
                                                     break;
                                                 }
                                                 
@@ -10910,26 +10914,26 @@
                                 if(this.token === this.tok.T_STRING){
                                     var text=this.text();
                                     this.next();
-                                    offset=offset("identifier",text);
+                                    offset=offset( "identifier" , text );
                                 }else if(this.token === this.tok.T_NUM_STRING){
                                     var num=this.text();
                                     this.next();
-                                    offset=offset("number",num,null);
+                                    offset=offset( "number" , num , null );
                                 }else if(this.token === "-"){
                                     this.next();
                                     var _num=-1 * this.text();
-                                    this.expect(this.tok.T_NUM_STRING) && this.next();
-                                    offset=offset("number",_num,null);
+                                    this.expect( this.tok.T_NUM_STRING ) && this.next();
+                                    offset=offset( "number" , _num , null );
                                 }else if(this.token === this.tok.T_VARIABLE){
-                                    var name=this.text().substring(1);
+                                    var name=this.text().substring( 1 );
                                     this.next();
-                                    offset=offset("variable",name,false);
+                                    offset=offset( "variable" , name , false );
                                 }else{
-                                    this.expect([this.tok.T_STRING,this.tok.T_NUM_STRING,"-",this.tok.T_VARIABLE]);
+                                    this.expect( [this.tok.T_STRING,this.tok.T_NUM_STRING,"-",this.tok.T_VARIABLE] );
                                     /* fallback : consider as identifier */
                                     var _text=this.text();
                                     this.next();
-                                    offset=offset("identifier",_text);
+                                    offset=offset( "identifier" , _text );
                                 }
                                 return offset;
                             } ,
@@ -10944,7 +10948,7 @@
                               *  $foo[123]{1};   // gets the 2nd char from the 123 array entry
                               * </code>
                              */
-                            "read_reference_variable" : function read_reference_variable(encapsed){
+                            "read_reference_variable" : function read_reference_variable( encapsed ){
                                 var result=this.read_simple_variable();
                                 var offset;
                                 while(this.token != this.EOF){
@@ -10952,8 +10956,8 @@
                                     if(this.token == "{" && !encapsed){
                                         /* @fixme check coverage, not sure thats working */
                                         offset=this.next().read_expr();
-                                        this.expect("}") && this.next();
-                                        result=node("offsetlookup",result,offset);
+                                        this.expect( "}" ) && this.next();
+                                        result=node( "offsetlookup" , result , offset );
                                     }else{
                                         node.destroy();
                                         break;
@@ -10967,13 +10971,13 @@
                               * ```
                              */
                             "read_simple_variable" : function read_simple_variable(){
-                                var result=this.node("variable");
+                                var result=this.node( "variable" );
                                 var name;
-                                if(this.expect([this.tok.T_VARIABLE,"$"]) && this.token === this.tok.T_VARIABLE){
+                                if(this.expect( [this.tok.T_VARIABLE,"$"] ) && this.token === this.tok.T_VARIABLE){
                                     /* plain variable name */
-                                    name=this.text().substring(1);
+                                    name=this.text().substring( 1 );
                                     this.next();
-                                    result=result(name,false);
+                                    result=result( name , false );
                                 }else{
                                     if(this.token === "$"){
                                         this.next();
@@ -10983,32 +10987,32 @@
                                         case "{" :
                                             {
                                                 var expr=this.next().read_expr();
-                                                this.expect("}") && this.next();
-                                                result=result(expr,true);
+                                                this.expect( "}" ) && this.next();
+                                                result=result( expr , true );
                                                 break;
                                             }
                                             
                                         case "$" :
                                             /* $$$var */
-                                            result=result(this.read_simple_variable(),false);
+                                            result=result( this.read_simple_variable() , false );
                                             break;
                                             
                                         case this.tok.T_VARIABLE :
                                             {
                                                 /* $$var */
-                                                name=this.text().substring(1);
-                                                var node=this.node("variable");
+                                                name=this.text().substring( 1 );
+                                                var node=this.node( "variable" );
                                                 this.next();
-                                                result=result(node(name,false),false);
+                                                result=result( node( name , false ) , false );
                                                 break;
                                             }
                                             
                                         default:
-                                            this.error(["{","$",this.tok.T_VARIABLE]);
+                                            this.error( ["{","$",this.tok.T_VARIABLE] );
                                             /* graceful mode */
                                             name=this.text();
                                             this.next();
-                                            result=result(name,false);
+                                            result=result( name , false );
                                             
                                     }
                                 }
@@ -11019,7 +11023,7 @@
                     } ,
                      /* * */
                      /* * */
-                    "1906" : (module) => {
+                    "1906" : ( module ) => {
                         /*#
                           * Copyright (C) 2018 Glayzzle (BSD3 License)
                           * @authors https://github.com/glayzzle/php-parser/graphs/contributors
@@ -11032,108 +11036,108 @@
                           * @enum {number}
                           *
                         */
-                        function _typeof(o){
+                        function _typeof( o ){
                             "@babel/helpers - typeof";
                             return(_typeof="function" ==  typeof Symbol && "symbol" ==  typeof Symbol.iterator ?
                                   ( 
-                                    function(o){
+                                    function( o ){
                                             return( typeof o);
                                         }
                                   ) : ( 
-                                    function(o){
+                                    function( o ){
                                             return(o && "function" ==  typeof Symbol && o.constructor === Symbol && o !== Symbol.prototype ? ( "symbol" ) : (  typeof o ));
                                         }
                                   ),
-                            _typeof(o));
+                            _typeof( o ));
                         }
-                        function ownKeys(e,r){
-                            var t=Object.keys(e);
+                        function ownKeys( e , r ){
+                            var t=Object.keys( e );
                             if(Object.getOwnPropertySymbols){
-                                var o=Object.getOwnPropertySymbols(e);
-                                r && (o=o.filter(function(r){
-                                            return(Object.getOwnPropertyDescriptor(e,r).enumerable);
-                                        })),
-                                t.push.apply(t,o);
+                                var o=Object.getOwnPropertySymbols( e );
+                                r && (o=o.filter( function( r ){
+                                            return(Object.getOwnPropertyDescriptor( e , r ).enumerable);
+                                        } )),
+                                t.push.apply( t , o );
                             }
                             return t;
                         }
-                        function _objectSpread(e){
+                        function _objectSpread( e ){
                             for( var r=1 ; r < arguments.length ; r++ ){
                                 var t=null != arguments[r] ? ( arguments[r] ) : ( {} );
                                 r% 2 ?
                                   ( 
-                                    ownKeys(Object(t),!0).forEach(function(r){
-                                            _defineProperty(e,r,t[r]);
-                                        })
+                                    ownKeys( Object( t ) , !0 ).forEach( function( r ){
+                                            _defineProperty( e , r , t[r] );
+                                        } )
                                   ) : ( 
                                     Object.getOwnPropertyDescriptors ?
                                       ( 
-                                        Object.defineProperties(e,Object.getOwnPropertyDescriptors(t))
+                                        Object.defineProperties( e , Object.getOwnPropertyDescriptors( t ) )
                                       ) : ( 
-                                        ownKeys(Object(t)).forEach(function(r){
-                                                Object.defineProperty(e,r,Object.getOwnPropertyDescriptor(t,r));
-                                            })
+                                        ownKeys( Object( t ) ).forEach( function( r ){
+                                                Object.defineProperty( e , r , Object.getOwnPropertyDescriptor( t , r ) );
+                                            } )
                                       )
                                   );
                             }
                             return e;
                         }
-                        function _defineProperty(e,r,t){
-                            return((r=_toPropertyKey(r)) in e ?
+                        function _defineProperty( e , r , t ){
+                            return((r=_toPropertyKey( r )) in e ?
                                   ( 
-                                    Object.defineProperty(e,r,{"value" : t ,"enumerable" : !0 ,"configurable" : !0 ,"writable" : !0})
+                                    Object.defineProperty( e , r , {"value" : t ,"enumerable" : !0 ,"configurable" : !0 ,"writable" : !0} )
                                   ) : ( 
                                     e[r]=t
                                   ),
                             e);
                         }
-                        function _toPropertyKey(t){
-                            var i=_toPrimitive(t,"string");
-                            return("symbol" == _typeof(i) ? ( i ) : ( i + "" ));
+                        function _toPropertyKey( t ){
+                            var i=_toPrimitive( t , "string" );
+                            return("symbol" == _typeof( i ) ? ( i ) : ( i + "" ));
                         }
-                        function _toPrimitive(t,r){
-                            if("object" != _typeof(t) || !t){
+                        function _toPrimitive( t , r ){
+                            if("object" != _typeof( t ) || !t){
                                 return t;
                             }
                             var e=t[Symbol.toPrimitive];
-                            if(void(0) !== e){
-                                var i=e.call(t,r || "default");
-                                if("object" != _typeof(i)){
+                            if(void( 0 ) !== e){
+                                var i=e.call( t , r || "default" );
+                                if("object" != _typeof( i )){
                                     return i;
                                 }
-                                throw new TypeError("@@toPrimitive must return a primitive value.");
+                                throw new TypeError( "@@toPrimitive must return a primitive value." );
                             }
-                            return(("string" === r ? ( String ) : ( Number ))(t));
+                            return(("string" === r ? ( String ) : ( Number ))( t ));
                         }
-                        function _slicedToArray(r,e){
-                            return(_arrayWithHoles(r) || _iterableToArrayLimit(r,e) || _unsupportedIterableToArray(r,e) || _nonIterableRest());
+                        function _slicedToArray( r , e ){
+                            return(_arrayWithHoles( r ) || _iterableToArrayLimit( r , e ) || _unsupportedIterableToArray( r , e ) || _nonIterableRest());
                         }
                         function _nonIterableRest(){
-                            throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+                            throw new TypeError( "Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method." );
                         }
-                        function _unsupportedIterableToArray(r,a){
+                        function _unsupportedIterableToArray( r , a ){
                             if(r){
                                 if("string" ==  typeof r){
-                                    return(_arrayLikeToArray(r,a));
+                                    return(_arrayLikeToArray( r , a ));
                                 }
-                                var t={}.toString.call(r).slice(8,-1);
+                                var t={}.toString.call( r ).slice( 8 , -1 );
                                 return("Object" === t && r.constructor && (t=r.constructor.name),
                                 "Map" === t || "Set" === t ?
                                       ( 
-                                        Array.from(r)
+                                        Array.from( r )
                                       ) : ( 
-                                        "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? ( _arrayLikeToArray(r,a) ) : ( void(0) )
+                                        "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test( t ) ? ( _arrayLikeToArray( r , a ) ) : ( void( 0 ) )
                                       ));
                             }
                         }
-                        function _arrayLikeToArray(r,a){
+                        function _arrayLikeToArray( r , a ){
                             (null == a || a > r.length) && (a=r.length);
-                            for( var e=0,n=Array(a) ; e < a ; e++ ){
+                            for( var e=0,n=Array( a ) ; e < a ; e++ ){
                                 n[e]=r[e];
                             }
                             return n;
                         }
-                        function _iterableToArrayLimit(r,l){
+                        function _iterableToArrayLimit( r , l ){
                             var t=null == r ?
                               ( 
                                 null
@@ -11149,13 +11153,13 @@
                                 var f=!0;
                                 var o=!1;
                                 try{
-                                    if((i=(t=t.call(r)).next,0 === l)){
-                                        if(Object(t) !== t){
+                                    if((i=(t=t.call( r )).next,0 === l)){
+                                        if(Object( t ) !== t){
                                             return;
                                         }
                                         f=!1;
-                                    }else if(!(f=(e=i.call(t)).done) && (a.push(e.value),a.length !== l)){
-                                        for(  ; !(f=(e=i.call(t)).done) && (a.push(undefined),undefined !== l) ; f=!0 ){
+                                    }else if(!(f=(e=i.call( t )).done) && (a.push( e.value ),a.length !== l)){
+                                        for(  ; !(f=(e=i.call( t )).done) && (a.push( undefined ),undefined !== l) ; f=!0 ){
                                             
                                         }
                                     }
@@ -11163,7 +11167,7 @@
                                     o=!0,n=r;
                                 }finally{
                                     try{
-                                        if(!f && null != t["return"] && (u=t["return"](),Object(u) !== u)){
+                                        if(!f && null != t["return"] && (u=t["return"](),Object( u ) !== u)){
                                             return;
                                         }
                                     }
@@ -11176,8 +11180,8 @@
                                 return a;
                             }
                         }
-                        function _arrayWithHoles(r){
-                            if(Array.isArray(r)){
+                        function _arrayWithHoles( r ){
+                            if(Array.isArray( r )){
                                 return r;
                             }
                         }
@@ -11336,15 +11340,15 @@
                           * @property {TokenNames} names
                         */
                         var tokens={
-                            "values" : Object.entries(TokenNames).reduce(function(result,_ref){
-                                var _ref2=_slicedToArray(_ref,2);
+                            "values" : Object.entries( TokenNames ).reduce( function( result , _ref ){
+                                var _ref2=_slicedToArray( _ref , 2 );
                                 var key=_ref2[0];
                                 var value=_ref2[1];
-                                return(_objectSpread(_objectSpread({},result),{},_defineProperty({},value,key)));
-                            },{}) ,
+                                return(_objectSpread( _objectSpread( {} , result ) , {} , _defineProperty( {} , value , key ) ));
+                            } , {} ) ,
                             "names" : TokenNames
                         };
-                        module.exports=Object.freeze(tokens);
+                        module.exports=Object.freeze( tokens );
                         /* * */
                     } ,
                      /* **** */
@@ -11358,7 +11362,7 @@
                 /* **** */
                 /* The require function */
                 /* **** */
-                function __webpack_require__(moduleId){
+                function __webpack_require__( moduleId ){
                     /* **** */
                     /* Check if module is in cache */
                     /* **** */
@@ -11385,7 +11389,7 @@
                     /* **** */
                     /* Execute the module function */
                     /* **** */
-                    __webpack_modules__[moduleId](module,module.exports,__webpack_require__);
+                    __webpack_modules__[moduleId]( module , module.exports , __webpack_require__ );
                     /* **** */
                     /* **** */
                     /* Return the exports of the module */
@@ -11403,7 +11407,7 @@
                 /* **** */
                 /* This entry module is referenced by other modules so it can't be inlined */
                 /* **** */
-                var __webpack_exports__=__webpack_require__(5362);
+                var __webpack_exports__=__webpack_require__( 5362 );
                 /* **** */
                 __webpack_exports__=__webpack_exports__["default"];
                 /* **** */
@@ -11411,4 +11415,4 @@
                 return __webpack_exports__;
                 /* **** */
             })());
-    });
+    } );

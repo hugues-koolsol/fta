@@ -7,73 +7,71 @@ class c_rev1{
     #nom_de_la_variable='';
     #NBESPACESSOURCEPRODUIT=4;
     #NBESPACESREV=3;
-    /*__m_rev1.globale_messages*/
+    /* __m_rev1.globale_messages */
     globale_messages={
         "erreurs" : [] ,
         "avertissements" : [] ,
         "infos" : [] ,
         "lignes" : [] ,
         "ids" : [] ,
-        "plages" : [] ,
+        "plages" : []
     };
     /* function constructor */
-    constructor(nom_de_la_variable){
+    constructor( nom_de_la_variable ){
         this.#nom_de_la_variable=nom_de_la_variable;
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
       met les valeurs dans la variable globale_messages ( l og erreu r ) logerreur __m_rev1.empiler_erreur
-      =====================================================================================================================
+      =============================================================================================================
     */
-    empiler_erreur(o){
+    empiler_erreur( o ){
         var a_retourner={
-            "__xst" : o.hasOwnProperty('__xst') ? ( o.__xst ) : ( false ) ,
-            "__xva" : o.hasOwnProperty('__xva') ? ( o.__xva ) : ( null ) ,
-            "masquee" : o.hasOwnProperty('masquee') ? ( o.masquee ) : ( false ) ,
-            "plage" : o.hasOwnProperty('plage') ? ( o.plage ) : ( null ) ,
-            "ligne" : o.hasOwnProperty('ligne') ? ( o.ligne ) : ( null )
+            "__xst" : o.hasOwnProperty( '__xst' ) ? ( o.__xst ) : ( false ) ,
+            "__xva" : o.hasOwnProperty( '__xva' ) ? ( o.__xva ) : ( null ) ,
+            "masquee" : o.hasOwnProperty( 'masquee' ) ? ( o.masquee ) : ( false ) ,
+            "plage" : o.hasOwnProperty( 'plage' ) ? ( o.plage ) : ( null ) ,
+            "ligne" : o.hasOwnProperty( 'ligne' ) ? ( o.ligne ) : ( null )
         };
-        if(o.hasOwnProperty('__xme')){
+        if(o.hasOwnProperty( '__xme' )){
             a_retourner[__xme]=o.__xme;
         }
-        if(o.hasOwnProperty('__xav')){
+        if(o.hasOwnProperty( '__xav' )){
             a_retourner['__xav']=o.__xav;
         }
-        if(o.hasOwnProperty('__xms')){
+        if(o.hasOwnProperty( '__xms' )){
             for(var i in o.__xms){
                 a_retourner.__xme=o.__xms[i];
-                this.globale_messages['erreurs'].push(a_retourner);
+                this.globale_messages['erreurs'].push( a_retourner );
             }
         }else{
-            if(a_retourner.hasOwnProperty('__xav')){
-                this.globale_messages['avertissements'].push(a_retourner);
+            if(a_retourner.hasOwnProperty( '__xav' )){
+                this.globale_messages['avertissements'].push( a_retourner );
             }
             if(a_retourner.__xst === false){
-                this.globale_messages['erreurs'].push(a_retourner);
+                this.globale_messages['erreurs'].push( a_retourner );
             }else{
-                this.globale_messages['infos'].push(a_retourner);
+                this.globale_messages['infos'].push( a_retourner );
             }
         }
         return a_retourner;
     }
-    
     /*
       =============================================================================================================
       fonction respr (__m_rev1.#respr) PRIVÉE : retour chariot + nouvelle ligne + n espaces dans les rev produits
       =============================================================================================================
     */
-    #respr(n){
+    #respr( n ){
         var t='\r\n';
         if(n > 0){
-            t+=' '.repeat(this.#NBESPACESREV * n);
+            t+=' '.repeat( this.#NBESPACESREV * n );
         }
         return t;
     }
     /*
       =============================================================================================================
     */
-    ma_constante(eltTab){
+    ma_constante( eltTab ){
         var t='';
         switch (eltTab[4]){
             case 1 : /* entre simples apostrophes */
@@ -82,7 +80,7 @@ class c_rev1{
             case 2 :
                 /* apostrophes inversées / accent grave */
                 t='`' + eltTab[1] + '`';
-                t=t.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                t=t.replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\r' );
                 break;
                 
             case 3 : /* guillemets */
@@ -109,10 +107,10 @@ class c_rev1{
       fonction resps (__m_rev1.resps) : retour chariot + nouvelle ligne + n espaces dans les sources produits
       =============================================================================================================
     */
-    resps(n){
+    resps( n ){
         var t='\r\n';
         if(n > 0){
-            t+=' '.repeat(this.#NBESPACESSOURCEPRODUIT * n);
+            t+=' '.repeat( this.#NBESPACESSOURCEPRODUIT * n );
         }
         return t;
     }
@@ -121,11 +119,11 @@ class c_rev1{
       fonction est_num (__m_rev1.est_num) : est numérique ?
       =============================================================================================================
     */
-    est_num(mot){
+    est_num( mot ){
         if( typeof mot !== 'string'){
             return false;
         }
-        var le_test=!isNaN(mot) && !isNaN(parseFloat(mot));
+        var le_test=!isNaN( mot ) && !isNaN( parseFloat( mot ) );
         return le_test;
     }
     /*
@@ -133,15 +131,15 @@ class c_rev1{
       fonction entitees_html (__m_rev1.entitees_html)  transforme un texte pour qu'il  soit visible en html, par exemple &nbsp; ou bien <
       =============================================================================================================
     */
-    entitees_html(s){
-        return(s.replace(/&/g,'&amp;').replace('<','&lt;').replace('>','&gt;'));
+    entitees_html( s ){
+        return(s.replace( /&/g , '&amp;' ).replace( '<' , '&lt;' ).replace( '>' , '&gt;' ));
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
       numéro de ligne courant du js (__m_rev1.nl2)( n l 1 )
-      =====================================================================================================================
+      =============================================================================================================
     */
-    nl2(e_originale){
+    nl2( e_originale ){
         var e=null;
         if(e_originale !== undefined){
             e=e_originale;
@@ -161,7 +159,7 @@ class c_rev1{
         }
         var nom_fonction='';
         if(e_originale !== undefined){
-            var stack=e.stack.toString().split(/\r\n|\n/);
+            var stack=e.stack.toString().split( /\r\n|\n/ );
             /* We want our caller's frame. It's index into |stack| depends on the */
             /* browser and browser version, so we need to search for the second frame: */
             var modele_champ_erreur=/:(\d+):(?:\d+)[^\d]*$/;
@@ -169,8 +167,8 @@ class c_rev1{
             var continuer=50;
             do{
                 var ligne_erreur=stack.shift();
-                if(ligne_erreur.indexOf(' at ')){
-                    if(modele_champ_erreur2.exec(ligne_erreur) !== null){
+                if(ligne_erreur.indexOf( ' at ' )){
+                    if(modele_champ_erreur2.exec( ligne_erreur ) !== null){
                         continuer=-1;
                     }
                 }
@@ -180,83 +178,82 @@ class c_rev1{
                 /* at nom_fonction (http://localhost/a/b/c/js/fichier.js:25:15) */
                 /* var texte_erreur=stack.shift(); */
                 var texte_erreur=ligne_erreur;
-                var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
+                var nom_fichier=texte_erreur.match( /\/([^\/:]+):/ )[1];
                 nom_fonction='';
-                if(texte_erreur.match(/ at ([^\.]+) \(/) === null){
-                    if(texte_erreur.match(/ at ([^]+) \(/) === null){
-                        if(texte_erreur.match(/([^]+)\/([^]+)/)[2] !== null){
-                            nom_fonction='erreur javascript ' + texte_erreur.match(/([^]+)\/([^]+)/)[2];
+                if(texte_erreur.match( / at ([^\.]+) \(/ ) === null){
+                    if(texte_erreur.match( / at ([^]+) \(/ ) === null){
+                        if(texte_erreur.match( /([^]+)\/([^]+)/ )[2] !== null){
+                            nom_fonction='erreur javascript ' + texte_erreur.match( /([^]+)\/([^]+)/ )[2];
                         }
                     }else{
-                        nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
+                        nom_fonction=texte_erreur.match( / at ([^]+) \(/ )[1];
                     }
                 }else{
-                    nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
+                    nom_fonction=texte_erreur.match( / at ([^\.]+) \(/ )[1];
                 }
-                var numero_de_ligne=modele_champ_erreur.exec(texte_erreur)[1];
+                var numero_de_ligne=modele_champ_erreur.exec( texte_erreur )[1];
                 return('^G ' + numero_de_ligne + ' ' + nom_fichier + ' ' + nom_fonction + ' ' + ' ');
             }else{
-                console.error(e_originale);
+                console.error( e_originale );
                 return 'Erreur non traçable';
             }
         }else{
-            var stack=e.stack.toString().split(/\r\n|\n/);
+            var stack=e.stack.toString().split( /\r\n|\n/ );
             /* We want our caller's frame. It's index into |stack| depends on the */
             /* browser and browser version, so we need to search for the second frame: */
             var modele_champ_erreur=/:(\d+):(?:\d+)[^\d]*$/;
             do{
                 var ligne_erreur=stack.shift();
-            }while(!modele_champ_erreur.exec(ligne_erreur) && stack.length);
+            }while(!modele_champ_erreur.exec( ligne_erreur ) && stack.length);
             /* at nom_fonction (http://localhost/a/b/c/js/fichier.js:25:15) */
             var texte_erreur=stack.shift();
-            var nom_fichier=texte_erreur.match(/\/([^\/:]+):/)[1];
-            if(texte_erreur.match(/ at ([^\.]+) \(/) === null){
-                if(texte_erreur.match(/ at ([^]+) \(/) === null){
+            var nom_fichier=texte_erreur.match( /\/([^\/:]+):/ )[1];
+            if(texte_erreur.match( / at ([^\.]+) \(/ ) === null){
+                if(texte_erreur.match( / at ([^]+) \(/ ) === null){
                     /*
                       dans firefox, il n'y a pas de " at ":
                       #traite_inline@http://www.exemple.fr/toto.js:290:31
                     */
-                    if(texte_erreur.match(/([^]+)@/)){
-                        nom_fonction=texte_erreur.match(/([^]+)@/)[1];
+                    if(texte_erreur.match( /([^]+)@/ )){
+                        nom_fonction=texte_erreur.match( /([^]+)@/ )[1];
                     }
                 }else{
-                    nom_fonction=texte_erreur.match(/ at ([^]+) \(/)[1];
+                    nom_fonction=texte_erreur.match( / at ([^]+) \(/ )[1];
                 }
             }else{
-                nom_fonction=texte_erreur.match(/ at ([^\.]+) \(/)[1];
+                nom_fonction=texte_erreur.match( / at ([^\.]+) \(/ )[1];
             }
-            var numero_de_ligne=modele_champ_erreur.exec(texte_erreur)[1];
+            var numero_de_ligne=modele_champ_erreur.exec( texte_erreur )[1];
             return('^G ' + nom_fichier + ' ' + nom_fonction + ' ' + numero_de_ligne + ' ');
         }
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
       fonction transforme un commentaire pour un fichier rev
-      =====================================================================================================================
+      =============================================================================================================
     */
-    tr_commentaire_rev1(texte,niveau,ind){
+    tr_commentaire_rev1( texte , niveau , ind ){
         var s='';
-        s=this.#traiteCommentaireSourceEtGenere1(texte,niveau,ind,this.#NBESPACESREV,true);
+        s=this.#traiteCommentaireSourceEtGenere1( texte , niveau , ind , this.#NBESPACESREV , true );
         return s;
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
       fonction tr_co_src : (__m_rev1.tr_co_src) transforme un commentaire pour un fichier js/php/sql ... traiteCommentaire2
     */
-    tr_co_src(texte,niveau,ind){
+    tr_co_src( texte , niveau , ind ){
         var s='';
-        s=this.#traiteCommentaireSourceEtGenere1(texte,niveau,ind,this.#NBESPACESSOURCEPRODUIT,false);
+        s=this.#traiteCommentaireSourceEtGenere1( texte , niveau , ind , this.#NBESPACESSOURCEPRODUIT , false );
         return s;
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
       fonction transforme un commentaire 
-      =====================================================================================================================
+      =============================================================================================================
     */
-    #traiteCommentaireSourceEtGenere1(texte,niveau,ind,nbEspacesSrc1,fichierRev0){
+    #traiteCommentaireSourceEtGenere1( texte , niveau , ind , nbEspacesSrc1 , fichierRev0 ){
         /* Si c'est un commentaire monoligne, on le retourne sans aucune transformation */
-        i=texte.indexOf('\n');
+        i=texte.indexOf( '\n' );
         if(i < 0){
             return texte;
         }
@@ -275,12 +272,12 @@ class c_rev1{
         var ne_contient_que_des_egals=false;
         var double_commentaire=false;
         /*  */
-        unBloc=' '.repeat(nbEspacesSrc1 * niveau);
-        tab=texte.replace(/\r/g,'').split('\n');
+        unBloc=' '.repeat( nbEspacesSrc1 * niveau );
+        tab=texte.replace( /\r/g , '' ).split( '\n' );
         l01=tab.length;
         /*  */
-        if(texte.length > 1 && (texte.substr(0,1) === '#' || texte.substr(0,1) === '*')){
-            if(texte.length > 2 && texte.substr(1,1) === '#'){
+        if(texte.length > 1 && (texte.substr( 0 , 1 ) === '#' || texte.substr( 0 , 1 ) === '*')){
+            if(texte.length > 2 && texte.substr( 1 , 1 ) === '#'){
                 /*
                   un commentaire qui commence par ## sera décalé à gauche
                 */
@@ -301,7 +298,7 @@ class c_rev1{
                       on balaye toutes les lignes pour détecter 
                       le nombre d'espaces minimal à gauche
                     */
-                    temps=ligne.substr(j,1);
+                    temps=ligne.substr( j , 1 );
                     if(temps !== ' '){
                         if(j < min){
                             /* on réajuste le minimum d'espaces au début de chaque ligne */
@@ -315,7 +312,7 @@ class c_rev1{
             if(min > 2){
                 /* tout décaler à gauche */
                 for( i=1 ; i < l01 ; i++ ){
-                    tab[i]=tab[i].substr(min - 2);
+                    tab[i]=tab[i].substr( min - 2 );
                 }
             }
             /* si c'est un fichierRev0, on doit avoir la dernière ligne vide */
@@ -325,36 +322,36 @@ class c_rev1{
                 */
                 for( i=tab.length - 1 ; i >= 1 ; i-- ){
                     if(tab[i].trim() === ''){
-                        tab.splice(i,1);
+                        tab.splice( i , 1 );
                     }else{
                         break;
                     }
                 }
                 l01=tab.length;
                 if(double_commentaire === false){
-                    t=' '.repeat(nbEspacesSrc1 * niveau);
+                    t=' '.repeat( nbEspacesSrc1 * niveau );
                     for( i=1 ; i < l01 ; i++ ){
                         tab[i]=t + tab[i];
                     }
                 }
-                texte=tab.join(CRLF) + CRLF + ' '.repeat(niveau * nbEspacesSrc1);
+                texte=tab.join( CRLF ) + CRLF + ' '.repeat( niveau * nbEspacesSrc1 );
             }else{
                 /* on retire les lignes vierges de la fin */
                 for( i=tab.length - 1 ; i >= 1 ; i-- ){
                     if(tab[i].trim() === ''){
-                        tab.splice(i,1);
+                        tab.splice( i , 1 );
                     }else{
                         break;
                     }
                 }
                 l01=tab.length;
                 if(double_commentaire === false){
-                    t=' '.repeat(nbEspacesSrc1 * niveau);
+                    t=' '.repeat( nbEspacesSrc1 * niveau );
                     for( i=1 ; i < l01 ; i++ ){
                         tab[i]=t + tab[i];
                     }
                 }
-                texte=tab.join(CRLF) + CRLF + ' '.repeat(niveau * nbEspacesSrc1);
+                texte=tab.join( CRLF ) + CRLF + ' '.repeat( niveau * nbEspacesSrc1 );
             }
             return texte;
         }
@@ -363,18 +360,18 @@ class c_rev1{
           qu'il faut formatter en alignant à gauche les textes 
           d'un nombre d'espaces correspondant au niveau
         */
-        unBlocPlus1=' '.repeat(nbEspacesSrc1 * niveau + 2);
+        unBlocPlus1=' '.repeat( nbEspacesSrc1 * niveau + 2 );
         var s1='';
         var s2='';
         for( i=0 ; i < l01 ; i++ ){
             t='';
             /* les CR (les zimac) ne sont pas faits pour écrire des vrais programmes ! */
-            tab[i]=tab[i].replace(/\r/g,'');
+            tab[i]=tab[i].replace( /\r/g , '' );
             /* on enlève les espaces au début */
             for( j=0 ; j < tab[i].length ; j++ ){
-                temps=tab[i].substr(j,1);
+                temps=tab[i].substr( j , 1 );
                 if(temps !== ' '){
-                    t+=tab[i].substr(j);
+                    t+=tab[i].substr( j );
                     break;
                 }
             }
@@ -383,27 +380,27 @@ class c_rev1{
             if(i === l01 - 1){
                 /* la dernière ligne du commentaire de bloc doit être vide */
                 if(t === ''){
-                    newTab.push(unBloc);
+                    newTab.push( unBloc );
                 }else{
                     /* on met la ligne et on ajoute une ligne vide */
-                    newTab.push(s2);
-                    newTab.push(unBloc);
+                    newTab.push( s2 );
+                    newTab.push( unBloc );
                 }
             }else if(i === 0){
                 /* la première ligne du commentaire de bloc doit être vide */
                 if(t === ''){
-                    newTab.push(t);
+                    newTab.push( t );
                 }else{
                     /*
                       on ajoute une ligne vide en début de tableau
                       on fait un unshift ici mais on aurait pu faire
                       un push car on est à i=0
                     */
-                    newTab.unshift('');
-                    newTab.push(s2);
+                    newTab.unshift( '' );
+                    newTab.push( s2 );
                 }
             }else{
-                newTab.push(s2);
+                newTab.push( s2 );
             }
         }
         l01=newTab.length;
@@ -411,11 +408,11 @@ class c_rev1{
         var calcul=0;
         for( i=0 ; i < l01 ; i++ ){
             ligne=newTab[i];
-            if(ligne.indexOf('====') >= 0){
+            if(ligne.indexOf( '====' ) >= 0){
                 ne_contient_que_des_egals=true;
                 l02=ligne.length;
                 for( j=0 ; j < l02 ; j++ ){
-                    if(!(ligne.substr(j,1) === '=' || ligne.substr(j,1) === ' ')){
+                    if(!(ligne.substr( j , 1 ) === '=' || ligne.substr( j , 1 ) === ' ')){
                         ne_contient_que_des_egals=false;
                         break;
                     }
@@ -423,29 +420,26 @@ class c_rev1{
                 if(ne_contient_que_des_egals === true){
                     calcul=117 - 2 * niveau * nbEspacesSrc1;
                     if(calcul > 0){
-                        newTab[i]='  ' + ' '.repeat(niveau * nbEspacesSrc1) + '='.repeat(calcul);
+                        newTab[i]='  ' + ' '.repeat( niveau * nbEspacesSrc1 ) + '='.repeat( calcul );
                     }
                 }
             }
         }
-        t=newTab.join(CRLF);
+        t=newTab.join( CRLF );
         return t;
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
       construit des espaces pour l'indentation des sources rev
-      =====================================================================================================================
+      =============================================================================================================
     */
-    espacesnrev(i){
+    espacesnrev( i ){
         var t='\r\n';
         if(i > 0){
-            t+=' '.repeat(NBESPACESREV * i);
+            t+=' '.repeat( NBESPACESREV * i );
         }
         return t;
     }
-    
-    
     /*#
       =====================================================================================================================
       fonction matrice_vers_source_rev1 (__m_rev1.matrice_vers_source_rev1)
@@ -464,7 +458,7 @@ class c_rev1{
            en 10 + 10 sur chaque ligne. Ceci permet de concentrer les gros tableaux de données
       =====================================================================================================================
     */
-    matrice_vers_source_rev1(tab,parentId,retourLigne,debut,profondeur_parent=0,tab_retour_ligne=[],contient_un_defTab_tbel=null,ne_prendre_qu_un_element=false){
+    matrice_vers_source_rev1( tab , parentId , retourLigne , debut , profondeur_parent=0 , tab_retour_ligne=[] , contient_un_defTab_tbel=null , ne_prendre_qu_un_element=false ){
         /*
           le parent id=0 et début=1
         */
@@ -488,13 +482,13 @@ class c_rev1{
         var obj={};
         var contient_en_commentaire_tbel=false;
         if(tab[debut][3] > 0){
-            var les_espaces=this.espacesnrev(tab[debut][3]);
+            var les_espaces=this.espacesnrev( tab[debut][3] );
         }else{
             var les_espaces='';
         }
         var avant=contient_un_defTab_tbel;
         var indice_tab=tab_retour_ligne.length;
-        tab_retour_ligne.push([retourLigne,retourLigne,false]);
+        tab_retour_ligne.push( [retourLigne,retourLigne,false] );
         /*
           if(tab[debut][1]==='f1' || tab[debut][1]==='f2'){
           debugger;
@@ -518,7 +512,7 @@ class c_rev1{
                 if(tab[i][8] >= nombreEnfantsLimite){
                     for( var j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
                         if(tab[j][7] === i){
-                            if(tab[j][1] === '#' && tab[j][2] === 'f' && tab[j][13].indexOf('tbel') >= 0){
+                            if(tab[j][1] === '#' && tab[j][2] === 'f' && tab[j][13].indexOf( 'tbel' ) >= 0){
                                 contient_un_defTab_tbel=true;
                                 break;
                             }
@@ -581,19 +575,19 @@ class c_rev1{
                     switch (tab[i][4]){
                         case 1 :
                             /* simple quote */
-                            chaine=tab[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                            chaine=tab[i][1].replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\r' );
                             t+='\'' + chaine + '\'';
                             break;
                             
                         case 2 :
                             /* modele apostrophes inversées ` */
-                            chaine=tab[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                            chaine=tab[i][1].replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\r' );
                             t+='`' + chaine + '`';
                             break;
                             
                         case 3 :
                             /* double quote */
-                            chaine=tab[i][1].replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
+                            chaine=tab[i][1].replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\r' );
                             t+='"' + chaine + '"';
                             break;
                             
@@ -619,7 +613,7 @@ class c_rev1{
                       on est dans un commentaire
                       =============================================================================
                     */
-                    commentaire=this.tr_commentaire_rev1(tab[i][13],tab[i][3],i);
+                    commentaire=this.tr_commentaire_rev1( tab[i][13] , tab[i][3] , i );
                     t+=tab[i][1] + '(' + commentaire + ')';
                     count++;
                     if(contient_un_defTab_tbel === true && count% 10 === 0){
@@ -675,7 +669,7 @@ class c_rev1{
                       debugger;
                       }
                     */
-                    obj=this.matrice_vers_source_rev1(tab,i,retourLigne,i + 1,tab[i][10],tab_retour_ligne,contient_un_defTab_tbel);
+                    obj=this.matrice_vers_source_rev1( tab , i , retourLigne , i + 1 , tab[i][10] , tab_retour_ligne , contient_un_defTab_tbel );
                     if(obj.__xst === true){
                         var retour_ligne_stocke=tab_retour_ligne.pop();
                         /*
@@ -707,7 +701,7 @@ class c_rev1{
                                     t+=les_espaces;
                                 }else if(tab[i][9] === tab[tab[i][7]][8]){
                                     /* si c'est le dernier enfant */
-                                    t+=this.espacesnrev(tab[debut][3]);
+                                    t+=this.espacesnrev( tab[debut][3] );
                                 }
                             }
                         }
@@ -728,16 +722,16 @@ class c_rev1{
         return({"__xst" : true ,"__xva" : t ,"retour_ligne_parent" : retourLigne});
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
       fonction qui se base sur la colonne 3[niveau] d'une matrice pour recalculer 
       - le parent[7], 
       - le nombre d'enfants[8], 
       - le numéro d'enfant[9]
       - la profondeur[10]
       __m_rev1.indicer_le_tableau reIndicerLeTableau
-      =====================================================================================================================
+      =============================================================================================================
     */
-    indicer_le_tableau(tab){
+    indicer_le_tableau( tab ){
         const l01=tab.length;
         var i=0;
         var j=0;
@@ -745,18 +739,18 @@ class c_rev1{
         var l=0;
         var niveau=0;
         /*
-          =============================================================================================================
+          =====================================================================================================
           indice et nombre d'enfants mis à zéro
-          =============================================================================================================
+          =====================================================================================================
         */
         for( i=1 ; i < l01 ; i++ ){
             tab[i][0]=i;
             tab[i][8]=0;
         }
         /*
-          =============================================================================================================
+          =====================================================================================================
           parent et nombre d'enfants
-          =============================================================================================================
+          =====================================================================================================
         */
         for( i=l01 - 1 ; i > 0 ; i-- ){
             niveau=tab[i][3];
@@ -769,9 +763,9 @@ class c_rev1{
             }
         }
         /*
-          =============================================================================================================
+          =====================================================================================================
           numéro d'enfant + bidouille performances car on boucle souvent sur les enfants
-          =============================================================================================================
+          =====================================================================================================
         */
         var indice_enfant_precedent=0;
         for( i=0 ; i < l01 ; i++ ){
@@ -792,9 +786,9 @@ class c_rev1{
             }
         }
         /*
-          =============================================================================================================
+          =====================================================================================================
           profondeur
-          =============================================================================================================
+          =====================================================================================================
         */
         var niveau=0;
         var id_parent=0;
@@ -819,14 +813,13 @@ class c_rev1{
         }
         return tab;
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
       fonction qui supprime un élément dans la matrice et descend les enfants de cet élément d'un niveau
       concat(concat(a,b),c) => concat(a,b,c) baisserNiveauEtSupprimer __m_rev1.baisser_le_niveau_et_supprimer
-      =====================================================================================================================
+      =============================================================================================================
     */
-    baisser_le_niveau_et_supprimer(tab,id,niveau){
+    baisser_le_niveau_et_supprimer( tab , id , niveau ){
         var i=0;
         for( i=id + 1 ; i < tab.length ; i++ ){
             if(tab[i][7] === id){
@@ -835,7 +828,7 @@ class c_rev1{
                     /*
                       appel récursif pour baisser le niveau des enfants des enfants des enfants ....
                     */
-                    this.baisser_le_niveau_et_supprimer(tab,i,niveau+1);
+                    this.baisser_le_niveau_et_supprimer( tab , i , niveau + 1 );
                 }
             }
         }
@@ -843,20 +836,19 @@ class c_rev1{
             /*
               à la fin, on supprime l'élément et on recalcul les indices
             */
-            tab.splice(id,1);
-            tab=this.indicer_le_tableau(tab);
+            tab.splice( id , 1 );
+            tab=this.indicer_le_tableau( tab );
             return tab;
         }
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
       fonction qui supprime un élément et ses enfants dans la matrice
       on supprime c de "a(b,c(d))" => a(b)
       __m_rev1.supprimer_un_element_de_la_matrice
-      =====================================================================================================================
+      =============================================================================================================
     */
-    supprimer_un_element_de_la_matrice(tab,id,niveau,a_supprimer){
+    supprimer_un_element_de_la_matrice( tab , id , niveau , a_supprimer ){
         var i=0;
         if(niveau === 0){
             var a_supprimer=[];
@@ -866,7 +858,7 @@ class c_rev1{
               si c'est une constante ou une fonction vide  on l'efface directement
               son parent à un élément en moins
             */
-            a_supprimer.push(id);
+            a_supprimer.push( id );
         }else{
             /*#
               sinon, on efface recursivement tous ses enfants avant de l'effacer 
@@ -875,64 +867,62 @@ class c_rev1{
             */
             for( i=1 ; i < tab.length ; i++ ){
                 if(tab[i][7] === id){
-                    this.supprimer_un_element_de_la_matrice(tab,tab[i][0],niveau + 1,a_supprimer);
+                    this.supprimer_un_element_de_la_matrice( tab , tab[i][0] , niveau + 1 , a_supprimer );
                 }
             }
-            a_supprimer.push(id);
+            a_supprimer.push( id );
         }
         if(niveau === 0){
             /*
               à la fin on efface effectivement les lignes en partant du bas 
               et on recalcul les indices
             */
-            a_supprimer.sort(function(a,b){
+            a_supprimer.sort( function( a , b ){
                     return(b - a);
-                });
+                } );
             for( i=0 ; i < a_supprimer.length ; i++ ){
-                tab.splice(a_supprimer[i],1);
+                tab.splice( a_supprimer[i] , 1 );
             }
-            tab=this.indicer_le_tableau(tab);
+            tab=this.indicer_le_tableau( tab );
             return tab;
         }
     }
-    
     /*
-      =====================================================================================================================
+      =============================================================================================================
       Des fonctions raccourcies __m_rev1.rev_tm ( texte au format rev vers matrice sans constante dans la racine ) 
-      =====================================================================================================================
+      =============================================================================================================
     */
-    rev_tm(texte_rev){
-        var tableau1=this.txt_en_tableau(texte_rev);
-        var matrice_fonction=this.tb_vers_matrice( tableau1.__xva , /*niv*/true , /*cst_dlr*/false , /*par*/'');
+    rev_tm( texte_rev ){
+        var tableau1=this.txt_en_tableau( texte_rev );
+        var matrice_fonction=this.tb_vers_matrice( tableau1.__xva ,  /* niv */ true ,  /* cst_dlr */ false ,  /* par */ '' );
         return matrice_fonction;
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
       Des fonctions raccourcies __m_rev1.rev_tcm ( texte au format rev vers matrice avec constante dans la racine ) 
-      =====================================================================================================================
+      =============================================================================================================
     */
-    rev_tcm(texte_rev){
-        var tableau1=this.txt_en_tableau(texte_rev);
-        var matrice_fonction=this.tb_vers_matrice(tableau1.__xva,/*niv*/true,/*cst_dlr*/true,/*par*/'');
+    rev_tcm( texte_rev ){
+        var tableau1=this.txt_en_tableau( texte_rev );
+        var matrice_fonction=this.tb_vers_matrice( tableau1.__xva ,  /* niv */ true ,  /* cst_dlr */ true ,  /* par */ '' );
         return matrice_fonction;
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
       Des fonctions raccourcies __m_rev1.rev_parenthe1 ( recherche de parenthèses )
-      =====================================================================================================================
+      =============================================================================================================
     */
-    rev_parenthe1(texte_rev,/* ouvrante ou fermante */parenthese){
-        var tableau1=this.txt_en_tableau(texte_rev);
-        var matrice_fonction=this.tb_vers_matrice(tableau1.__xva,/*niv*/false,/*cst_dlr*/false,parenthese);
+    rev_parenthe1( texte_rev , /* ouvrante ou fermante */ parenthese ){
+        var tableau1=this.txt_en_tableau( texte_rev );
+        var matrice_fonction=this.tb_vers_matrice( tableau1.__xva ,  /* niv */ false ,  /* cst_dlr */ false , parenthese );
         return matrice_fonction;
     }
-    
     /*
       =============================================================================================================
       fonction txt_en_tableau (__m_rev1.txt_en_tableau) : transforme un texte en tableau, 
       =============================================================================================================
     */
-    txt_en_tableau(str){
+    txt_en_tableau( str ){
         const l01=str.length;
         var tab=[];
         var i=0;
@@ -942,7 +932,7 @@ class c_rev1{
         var temp=0;
         var indiceTab=0;
         for( i=0 ; i < l01 ; i++ ){
-            codeCaractere=str.charCodeAt(i);
+            codeCaractere=str.charCodeAt( i );
             /*
               on ne traite pas les zero width space , vertical tab
               8203 = 0x200B
@@ -954,13 +944,13 @@ class c_rev1{
                 */
                 temp=codeCaractere & 0xF800;
                 if(temp === 55296){
-                    tab[indiceTab]=[str.substr(i,2),2,i,numLigne];
+                    tab[indiceTab]=[str.substr( i , 2 ),2,i,numLigne];
                     indiceTab++;
                     i++;
                 }else{
-                    tab[indiceTab]=[str.substr(i,1),1,i,numLigne];
+                    tab[indiceTab]=[str.substr( i , 1 ),1,i,numLigne];
                     indiceTab++;
-                    /*10 = x0A = \n */
+                    /* 10 = x0A = \n */
                     if(codeCaractere === 10){
                         numLigne++;
                     }
@@ -969,15 +959,14 @@ class c_rev1{
                 exceptions=exceptions + 1;
             }
         }
-        
         return({"__xva" : tab ,"numLigne" : numLigne ,"exceptions" : exceptions});
     }
     /*
-      =====================================================================================================================
+      =============================================================================================================
       function formatter_une_erreur_rev __m_rev1 formatter uns erreur dans le rev pour la rendre plus facilement détectable
-      =====================================================================================================================
+      =============================================================================================================
     */
-    formatter_une_erreur_rev(obj){
+    formatter_une_erreur_rev( obj ){
         /*# 
           exemple de donnée en entrée
           {
@@ -1001,19 +990,19 @@ class c_rev1{
         var ligne=0;
         var message_ajoute='';
         var position=0;
-        if(obj.hasOwnProperty('erreur_conversion_chaineTableau_en_json') && obj.erreur_conversion_chaineTableau_en_json === true){
+        if(obj.hasOwnProperty( 'erreur_conversion_chaineTableau_en_json' ) && obj.erreur_conversion_chaineTableau_en_json === true){
             /*
               si il y a un problème avec le JSON.parse:
             */
-            if(obj.ejson.message.indexOf('at position ') >= 0){
-                position=obj.ejson.message.substr(obj.ejson.message.indexOf('at position ') + 12);
-                if(obj.ejson.message.indexOf(' ') >= 0){
-                    position=parseInt(position.substr(0,obj.ejson.message.indexOf(' ')),10);
+            if(obj.ejson.message.indexOf( 'at position ' ) >= 0){
+                position=obj.ejson.message.substr( obj.ejson.message.indexOf( 'at position ' ) + 12 );
+                if(obj.ejson.message.indexOf( ' ' ) >= 0){
+                    position=parseInt( position.substr( 0 , obj.ejson.message.indexOf( ' ' ) ) , 10 );
                     for( i=position ; i >= 0 && message_ajoute === '' ; i-- ){
-                        if(obj.chaine_tableau.substr(i,1) === '['){
+                        if(obj.chaine_tableau.substr( i , 1 ) === '['){
                             for( j=i ; j < obj.chaine_tableau.length && message_ajoute === '' ; j++ ){
-                                if(obj.chaine_tableau.substr(j,1) === ']'){
-                                    message_ajoute='près de `' + obj.chaine_tableau.substr(i,(j - i) + 1) + '`';
+                                if(obj.chaine_tableau.substr( j , 1 ) === ']'){
+                                    message_ajoute='près de `' + obj.chaine_tableau.substr( i , (j - i) + 1 ) + '`';
                                     break;
                                 }
                             }
@@ -1024,14 +1013,14 @@ class c_rev1{
             return({"__xst" : obj.__xst ,"__xva" : '' ,"id" : obj.ind ,"__xme" : obj.__xme + ' ' + message_ajoute});
         }
         var chaine_tableau='[' + obj.chaine_tableau + ']';
-        if(obj.hasOwnProperty('tableauEntree')){
-            if(obj.hasOwnProperty('ind')){
+        if(obj.hasOwnProperty( 'tableauEntree' )){
+            if(obj.hasOwnProperty( 'ind' )){
                 if(obj.ind > 50){
                     for( i=obj.ind - 50 ; i <= obj.ind + 50 && i < obj.tableauEntree.length ; i++ ){
                         if(i === obj.ind - 5){
                             presDe+='<b>';
                         }
-                        presDe+=this.entitees_html(obj.tableauEntree[i][0]);
+                        presDe+=this.entitees_html( obj.tableauEntree[i][0] );
                         if(i === obj.ind + 5){
                             presDe+='</b>';
                             finGrasFait=true;
@@ -1043,7 +1032,7 @@ class c_rev1{
                 }else{
                     presDe='<b>';
                     for( i=0 ; i <= obj.ind + 50 && i < obj.tableauEntree.length ; i++ ){
-                        presDe+=this.entitees_html(obj.tableauEntree[i][0]);
+                        presDe+=this.entitees_html( obj.tableauEntree[i][0] );
                         if(i === obj.ind + 5){
                             presDe+='</b>';
                             finGrasFait=true;
@@ -1063,11 +1052,9 @@ class c_rev1{
                 }
             }
         }
-        var T=JSON.parse(chaine_tableau);
-        return({"__xst" : obj.__xst ,"__xva" : T ,"id" : obj.ind ,"__xme" : obj.__xme + message_ajoute ,"ligne" : ligne+1});
-    }    
-    
-    
+        var T=JSON.parse( chaine_tableau );
+        return({"__xst" : obj.__xst ,"__xva" : T ,"id" : obj.ind ,"__xme" : obj.__xme + message_ajoute ,"ligne" : ligne + 1});
+    }
     /*#
       =====================================================================================================================
       =====================================================================================================================
@@ -1096,15 +1083,15 @@ class c_rev1{
       =====================================================================================================================
       =====================================================================================================================
     */
-    tb_vers_matrice(tableauEntree,quitterSiErreurNiveau,autoriserCstDansRacine,rechercheParentheseCorrespondante){
+    tb_vers_matrice( tableauEntree , quitterSiErreurNiveau , autoriserCstDansRacine , rechercheParentheseCorrespondante ){
         /*
           // pour la mesure des performances, voir à la fin de cette fonction pour l'utilisation
           var startMicro = performance.now();
           
           
-          =============================================================================================================
+          =====================================================================================================
           les chaines de caractères
-          =============================================================================================================
+          =====================================================================================================
         */
         var texte='';
         var texte_precedent='';
@@ -1122,9 +1109,9 @@ class c_rev1{
         var chCR='¶' + 'CR' + '¶';
         var chLF='¶' + 'LF' + '¶';
         /*
-          =============================================================================================================
+          =====================================================================================================
           les entiers
-          =============================================================================================================
+          =====================================================================================================
         */
         var i=0;
         var j=0;
@@ -1141,9 +1128,9 @@ class c_rev1{
         var indiceTabCommentaire=0;
         var niveauPrecedent=0;
         /*
-          =============================================================================================================
+          =====================================================================================================
           les booléens
-          =============================================================================================================
+          =====================================================================================================
         */
         var dansCstSimple=false;
         var dansCstDouble=false;
@@ -1157,29 +1144,29 @@ class c_rev1{
         /* quand on fait une recherche de parenthèses correspondantes, on se sert de ce tableau */
         var tab_pour_recherche_parentheses=[];
         /*
-          =============================================================================================================
+          =====================================================================================================
           Le tableau en sortie si tout va bien
-          =============================================================================================================
+          =====================================================================================================
         */
         var tabCommentaireEtFinParentheses=[];
         var chaine_tableau_commentaires='';
         var T=[];
         /*
-          =============================================================================================================
+          =====================================================================================================
           initialisation du tableau contenant le source structuré en arborescence
-          =============================================================================================================
+          =====================================================================================================
           0id    1val  2typ  3niv  4coQ
           5pre   6der  7pId  8nbE  9numEnfant  
           10pro 11OPa 12FPa 13comm
           
           
-          =============================================================================================================
+          =====================================================================================================
           Les performances sur chrome sont très mauvaises en utilisant des push
           c'est pourquoi on construit cette variable texte : "chaine_tableau" 
           qui sera traitée avec un JSON.parse() plus bas.
           Sur un tableau de 25000 éléments, on multiplie la vitesse d'exécution 
           par un facteur compris entre 30 et 60
-          =============================================================================================================
+          =====================================================================================================
           
           
           la première version avec push était :
@@ -1190,13 +1177,13 @@ class c_rev1{
         niveauPrecedent=niveau;
         var l01=tableauEntree.length;
         /*
-          =============================================================================================================
-          =============================================================================================================
+          =====================================================================================================
+          =====================================================================================================
           boucle principale sur tous les caractères du tableau passé en argument,
           on commence par analyser les cas ou on est dans  des commentaires ou des chaines, 
           puis on analyse les caractères
-          =============================================================================================================
-          =============================================================================================================
+          =====================================================================================================
+          =====================================================================================================
         */
         for( i=0 ; i < l01 ; i++ ){
             c=tableauEntree[i][0];
@@ -1205,9 +1192,9 @@ class c_rev1{
                   
                   
                   
-                  =============================================================================================
+                  =====================================================================================
                   Si on est dans un commentaire
-                  =============================================================================================
+                  =====================================================================================
                 */
                 if(c === ')'){
                     if(niveau === niveauDebutCommentaire + 1 && niveauDansCommentaire === 0){
@@ -1217,7 +1204,7 @@ class c_rev1{
                           après avoir rempli la fonction, on met les commentaires dans un tableau et on remplira 
                           le tableau principal "T" à la fin
                         */
-                        chaine_tableau_commentaires+=',[' + indice + ',"' + commentaire.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t') + '"]';
+                        chaine_tableau_commentaires+=',[' + indice + ',"' + commentaire.replace( /\\/g , '\\\\' ).replace( /"/g , '\\"' ).replace( /\n/g , chLF ).replace( /\r/g , chCR ).replace( /\t/g , '\\t' ) + '"]';
                         indiceTabCommentaire++;
                         pos_fer_par=0;
                         /*
@@ -1230,11 +1217,11 @@ class c_rev1{
                         if(drapeauParenthese){
                             if(i === l01 - 1){
                                 /*
-                                  =============================================================
+                                  =====================================================
                                   si on est en recherche de parenthèse correspondante 
                                   et que c'est le dernier caractère du tableau en entrée
                                   alors c'est une recherche de parenthèse ouvrante correspondante
-                                  =============================================================
+                                  =====================================================
                                 */
                                 return({"__xst" : true ,"pos_ouv_par" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length - 1]][2]});
                             }
@@ -1254,15 +1241,15 @@ class c_rev1{
                     commentaire+=c;
                     niveauDansCommentaire=niveauDansCommentaire + 1;
                     if(drapeauParenthese){
-                        tab_pour_recherche_parentheses.push(i);
+                        tab_pour_recherche_parentheses.push( i );
                     }
                 }else{
                     commentaire+=c;
                 }
                 /*
-                  =============================================================================================
+                  =====================================================================================
                   FIN de Si on est dans un commentaire
-                  =============================================================================================
+                  =====================================================================================
                   
                   
                   
@@ -1272,9 +1259,9 @@ class c_rev1{
                   
                   
                   
-                  =============================================================================================
+                  =====================================================================================
                   Si on est dans une constante double
-                  =============================================================================================
+                  =====================================================================================
                 */
                 if(c === '"'){
                     if(autoriserCstDansRacine !== true){
@@ -1283,10 +1270,10 @@ class c_rev1{
                               cas : directive["use strict"
                             */
                             if(niveau > 0){
-                                return(this.empiler_erreur(this.formatter_une_erreur_rev({ 
+                                return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                         "__xst" : false ,
                                         "ind" : i ,
-                                        "__xme" : this.nl2()+'les parenthèses ne se finissent pas à la fin du rev' ,
+                                        "__xme" : this.nl2() + 'les parenthèses ne se finissent pas à la fin du rev' ,
                                         "type" : 'rev' ,
                                         "texte" : texte ,
                                         "chaine_tableau" : chaine_tableau ,
@@ -1294,12 +1281,12 @@ class c_rev1{
                                         "tableauEntree" : tableauEntree ,
                                         "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                         "autoriserCstDansRacine" : autoriserCstDansRacine
-                                    })));
+                                    } ) ));
                             }else{
-                                return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                                return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                         "__xst" : false ,
                                         "ind" : i ,
-                                        "__xme" : this.nl2()+'le niveau ' ,
+                                        "__xme" : this.nl2() + 'le niveau ' ,
                                         "type" : 'rev' ,
                                         "texte" : texte ,
                                         "chaine_tableau" : chaine_tableau ,
@@ -1307,7 +1294,7 @@ class c_rev1{
                                         "tableauEntree" : tableauEntree ,
                                         "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                         "autoriserCstDansRacine" : autoriserCstDansRacine
-                                    })));
+                                    } ) ));
                             }
                         }
                     }
@@ -1324,10 +1311,10 @@ class c_rev1{
                             dernier=i - 1;
                         }else{
                             /* cas d'erreur = f(""") */
-                            return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                            return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                     "__xst" : false ,
                                     "ind" : i ,
-                                    "__xme" : this.nl2()+'une constante encadrée par des guillemets est incorrecte ' ,
+                                    "__xme" : this.nl2() + 'une constante encadrée par des guillemets est incorrecte ' ,
                                     "type" : 'rev' ,
                                     "texte" : texte ,
                                     "chaine_tableau" : chaine_tableau ,
@@ -1335,14 +1322,14 @@ class c_rev1{
                                     "tableauEntree" : tableauEntree ,
                                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                     "autoriserCstDansRacine" : autoriserCstDansRacine
-                                })));
+                                } ) ));
                         }
                     }else{
                         if(autoriserCstDansRacine === false){
-                            return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                            return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                     "__xst" : false ,
                                     "ind" : i ,
-                                    "__xme" : this.nl2()+'la racine ne peut pas contenir des constantess ' ,
+                                    "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantess ' ,
                                     "type" : 'rev' ,
                                     "texte" : texte ,
                                     "chaine_tableau" : chaine_tableau ,
@@ -1350,16 +1337,16 @@ class c_rev1{
                                     "tableauEntree" : tableauEntree ,
                                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                     "autoriserCstDansRacine" : autoriserCstDansRacine
-                                })));
+                                } ) ));
                         }
                     }
                     dansCstDouble=false;
                     if(autoriserCstDansRacine === false && niveau === 0){
                         /* cas d'erreur = "" */
-                        return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                        return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                 "__xst" : false ,
                                 "ind" : i ,
-                                "__xme" : this.nl2()+'la racine ne peut pas contenir des constantes ' ,
+                                "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes ' ,
                                 "type" : 'rev' ,
                                 "texte" : texte ,
                                 "chaine_tableau" : chaine_tableau ,
@@ -1367,13 +1354,13 @@ class c_rev1{
                                 "tableauEntree" : tableauEntree ,
                                 "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                 "autoriserCstDansRacine" : autoriserCstDansRacine
-                            })));
+                            } ) ));
                     }
                     constanteQuotee=3;
                     constanteQuoteePrecedente=3;
                     /* methode3" */
-                    texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
-                    texte=texte.replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t');
+                    texte=texte.replace( /\\/g , '\\\\' ).replace( /"/g , '\\"' );
+                    texte=texte.replace( /\n/g , chLF ).replace( /\r/g , chCR ).replace( /\t/g , '\\t' );
                     indice++;
                     chaine_tableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + pos_ouv_par + ',0,""]';
                     /*
@@ -1387,7 +1374,7 @@ class c_rev1{
                     constanteQuotee=0;
                 }else if(c === '\\'){
                     if(i === l01 - 1){
-                        return(this.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2()+'un antislash ne doit pas terminer une constante en i=' + i}));
+                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash ne doit pas terminer une constante en i=' + i} ));
                     }
                     /*  */
                     c1=tableauEntree[i + 1][0];
@@ -1417,10 +1404,10 @@ class c_rev1{
                         texte+=texte + '"';
                         i++;
                     }else{
-                        return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                        return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                 "__xst" : false ,
                                 "ind" : i ,
-                                "__xme" : this.nl2()+'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ' ,
+                                "__xme" : this.nl2() + 'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ' ,
                                 "type" : 'rev' ,
                                 "texte" : texte ,
                                 "chaine_tableau" : chaine_tableau ,
@@ -1428,7 +1415,7 @@ class c_rev1{
                                 "tableauEntree" : tableauEntree ,
                                 "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                 "autoriserCstDansRacine" : autoriserCstDansRacine
-                            })));
+                            } ) ));
                     }
                 }else{
                     if(texte === ''){
@@ -1437,20 +1424,20 @@ class c_rev1{
                     texte+=c;
                 }
                 /*
-                  =============================================================================================
+                  =====================================================================================
                   Fin de Si on est dans une constante double
-                  =============================================================================================
+                  =====================================================================================
                 */
             }else if(dansCstRegex === true){
                 /*
-                  =============================================================================================
+                  =====================================================================================
                   Si on est dans une regex
-                  =============================================================================================
+                  =====================================================================================
                 */
                 if(c === '/'){
                     if(autoriserCstDansRacine !== true){
                         if(i === l01 - 1){
-                            return(this.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2()+'la racine ne peut pas contenir des constantes'}));
+                            return(this.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                         }
                     }
                     if(i + 1 < l01){
@@ -1498,7 +1485,7 @@ class c_rev1{
                         }
                     }else{
                         if(!(autoriserCstDansRacine === true)){
-                            return(this.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2()+'la racine ne peut pas contenir des constantes'}));
+                            return(this.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                         }
                     }
                     dansCstRegex=false;
@@ -1506,16 +1493,16 @@ class c_rev1{
                     constanteQuoteePrecedente=4;
                     if(autoriserCstDansRacine !== true){
                         if(niveau === 0){
-                            return(this.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2()+'la racine ne peut pas contenir des constantes'}));
+                            return(this.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                         }
                     }
                     /* methode3regex */
-                    texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"');
-                    if(texte.indexOf('\n') > 0 || texte.indexOf('\r') >= 0 || texte.indexOf('\t') > 0){
-                        return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                    texte=texte.replace( /\\/g , '\\\\' ).replace( /"/g , '\\"' );
+                    if(texte.indexOf( '\n' ) > 0 || texte.indexOf( '\r' ) >= 0 || texte.indexOf( '\t' ) > 0){
+                        return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                 "__xst" : false ,
                                 "ind" : premier ,
-                                "__xme" : this.nl2()+'il ne peut pas y avoir des retours à la ligne ou des tabulations dans une chaine de type regex ' ,
+                                "__xme" : this.nl2() + 'il ne peut pas y avoir des retours à la ligne ou des tabulations dans une chaine de type regex ' ,
                                 "type" : 'rev' ,
                                 "texte" : texte ,
                                 "chaine_tableau" : chaine_tableau ,
@@ -1523,7 +1510,7 @@ class c_rev1{
                                 "tableauEntree" : tableauEntree ,
                                 "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                 "autoriserCstDansRacine" : autoriserCstDansRacine
-                            })));
+                            } ) ));
                     }
                     indice++;
                     chaine_tableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + pos_ouv_par + ',0,""]';
@@ -1534,7 +1521,7 @@ class c_rev1{
                       
                       pour une regex, on met les drapeaux ( g,...) dans la zone commentaire [13]
                     */
-                    chaine_tableau_commentaires+=',[' + indice + ',"' + drapeau_regex.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t') + '"]';
+                    chaine_tableau_commentaires+=',[' + indice + ',"' + drapeau_regex.replace( /\\/g , '\\\\' ).replace( /"/g , '\\"' ).replace( /\n/g , chLF ).replace( /\r/g , chCR ).replace( /\t/g , '\\t' ) + '"]';
                     indiceTabCommentaire++;
                     type_precedent='c';
                     niveauPrecedent=niveau;
@@ -1543,7 +1530,7 @@ class c_rev1{
                     constanteQuotee=0;
                 }else if(c === '\\'){
                     if(i === l01 - 1){
-                        return(this.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2()+'un antislash ne doit pas terminer une fonction'}));
+                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash ne doit pas terminer une fonction'} ));
                     }
                     /*  */
                     c1=tableauEntree[i + 1][0];
@@ -1553,10 +1540,10 @@ class c_rev1{
                     texte+='\\' + c1;
                     i++;
                 }else if(c === '\n' || c === '\r'){
-                    return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                    return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                             "__xst" : false ,
                             "ind" : premier ,
-                            "__xme" : this.nl2()+'il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ' ,
+                            "__xme" : this.nl2() + 'il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ' ,
                             "type" : 'rev' ,
                             "texte" : texte ,
                             "chaine_tableau" : chaine_tableau ,
@@ -1564,7 +1551,7 @@ class c_rev1{
                             "tableauEntree" : tableauEntree ,
                             "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                             "autoriserCstDansRacine" : autoriserCstDansRacine
-                        })));
+                        } ) ));
                 }else{
                     if(texte === ''){
                         premier=i;
@@ -1572,9 +1559,9 @@ class c_rev1{
                     texte+=c;
                 }
                 /*
-                  =============================================================================================
+                  =====================================================================================
                   Fin de Si on est dans une regex
-                  =============================================================================================
+                  =====================================================================================
                   
                   
                   
@@ -1585,14 +1572,14 @@ class c_rev1{
                   
                   
                   
-                  =============================================================================================
+                  =====================================================================================
                   Si on est dans une constante modèle
-                  =============================================================================================
+                  =====================================================================================
                 */
                 if(c === '`'){
                     if(autoriserCstDansRacine !== true){
                         if(i === l01 - 1){
-                            return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                            return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                     "__xst" : false ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes' ,
@@ -1603,7 +1590,7 @@ class c_rev1{
                                     "tableauEntree" : tableauEntree ,
                                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                     "autoriserCstDansRacine" : autoriserCstDansRacine
-                                })));
+                                } ) ));
                         }
                     }
                     if(i + 1 < l01){
@@ -1618,7 +1605,7 @@ class c_rev1{
                         ){
                             dernier=i - 1;
                         }else{
-                            return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                            return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                     "__xst" : false ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'apres une constante, il doit y avoir un caractère d\'echappement' ,
@@ -1629,11 +1616,11 @@ class c_rev1{
                                     "tableauEntree" : tableauEntree ,
                                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                     "autoriserCstDansRacine" : autoriserCstDansRacine
-                                })));
+                                } ) ));
                         }
                     }else{
                         if(!(autoriserCstDansRacine === true)){
-                            return(this.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2()+'la racine ne peut pas contenir des constantes'}));
+                            return(this.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                         }
                     }
                     dansCstModele=false;
@@ -1641,11 +1628,11 @@ class c_rev1{
                     constanteQuoteePrecedente=2;
                     if(autoriserCstDansRacine !== true){
                         if(niveau === 0){
-                            return(this.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2()+'la racine ne peut pas contenir des constantes'}));
+                            return(this.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                         }
                     }
                     /* methode3m */
-                    texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t');
+                    texte=texte.replace( /\\/g , '\\\\' ).replace( /"/g , '\\"' ).replace( /\n/g , chLF ).replace( /\r/g , chCR ).replace( /\t/g , '\\t' );
                     indice++;
                     chaine_tableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + pos_ouv_par + ',0,""]';
                     /*
@@ -1659,7 +1646,7 @@ class c_rev1{
                     constanteQuotee=0;
                 }else if(c === '\\'){
                     if(i === l01 - 1){
-                        return(this.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2()+'un antislash ne doit pas terminer une fonction'}));
+                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash ne doit pas terminer une fonction'} ));
                     }
                     /*  */
                     c1=tableauEntree[i + 1][0];
@@ -1675,9 +1662,9 @@ class c_rev1{
                     texte+=c;
                 }
                 /*
-                  =============================================================================================
+                  =====================================================================================
                   Fin de Si on est dans une constante modèle
-                  =============================================================================================
+                  =====================================================================================
                   
                   
                   
@@ -1687,14 +1674,14 @@ class c_rev1{
                   
                   
                   
-                  =============================================================================================
+                  =====================================================================================
                   Si on est dans une constante simple
-                  =============================================================================================
+                  =====================================================================================
                 */
                 if(c === '\''){
                     if(autoriserCstDansRacine !== true){
                         if(i === l01 - 1){
-                            return(this.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2()+'la racine ne peut pas contenir des constantes'}));
+                            return(this.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                         }
                     }
                     if(i + 1 < l01){
@@ -1709,7 +1696,7 @@ class c_rev1{
                         ){
                             dernier=i - 1;
                         }else{
-                            return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                            return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                     "__xst" : false ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'il doit y avoir un caractère d\'echappement apres une constante encadrée par des apostrophes' ,
@@ -1720,11 +1707,11 @@ class c_rev1{
                                     "tableauEntree" : tableauEntree ,
                                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                     "autoriserCstDansRacine" : autoriserCstDansRacine
-                                })));
+                                } ) ));
                         }
                     }else{
                         if(!(autoriserCstDansRacine === true)){
-                            return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                            return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                     "__xst" : false ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes' ,
@@ -1735,12 +1722,12 @@ class c_rev1{
                                     "tableauEntree" : tableauEntree ,
                                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                     "autoriserCstDansRacine" : autoriserCstDansRacine
-                                })));
+                                } ) ));
                         }
                     }
                     if(autoriserCstDansRacine !== true){
                         if(niveau === 0){
-                            return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                            return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                     "__xst" : false ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes' ,
@@ -1751,14 +1738,14 @@ class c_rev1{
                                     "tableauEntree" : tableauEntree ,
                                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                     "autoriserCstDansRacine" : autoriserCstDansRacine
-                                })));
+                                } ) ));
                         }
                     }
                     dansCstSimple=false;
                     constanteQuotee=1;
                     constanteQuoteePrecedente=1;
                     /* methode3' */
-                    texte=texte.replace(/\\/g,'\\\\').replace(/"/g,'\\"').replace(/\n/g,chLF).replace(/\r/g,chCR).replace(/\t/g,'\\t');
+                    texte=texte.replace( /\\/g , '\\\\' ).replace( /"/g , '\\"' ).replace( /\n/g , chLF ).replace( /\r/g , chCR ).replace( /\t/g , '\\t' );
                     indice++;
                     chaine_tableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + pos_ouv_par + ',0,""]';
                     /*
@@ -1772,7 +1759,7 @@ class c_rev1{
                     constanteQuotee=0;
                 }else if(c === '\\'){
                     if(i === l01 - 1){
-                        return(this.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2()+'un antislash ne doit pas terminer une fonction'}));
+                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash ne doit pas terminer une fonction'} ));
                     }
                     /*  */
                     c1=tableauEntree[i + 1][0];
@@ -1803,10 +1790,10 @@ class c_rev1{
                         texte+='\\' + c1;
                         i++;
                     }else{
-                        return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                        return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                 "__xst" : false ,
                                 "ind" : i ,
-                                "__xme" : this.nl2()+'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u' ,
+                                "__xme" : this.nl2() + 'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u' ,
                                 "type" : 'rev' ,
                                 "texte" : texte ,
                                 "chaine_tableau" : chaine_tableau ,
@@ -1814,7 +1801,7 @@ class c_rev1{
                                 "tableauEntree" : tableauEntree ,
                                 "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                 "autoriserCstDansRacine" : autoriserCstDansRacine
-                            })));
+                            } ) ));
                     }
                 }else{
                     if(texte === ''){
@@ -1823,9 +1810,9 @@ class c_rev1{
                     texte+=c;
                 }
                 /*
-                  =============================================================================================
+                  =====================================================================================
                   Fin de Si on est dans une constante simple
-                  =============================================================================================
+                  =====================================================================================
                   
                   
                   
@@ -1835,16 +1822,16 @@ class c_rev1{
                   
                   
                   
-                  =============================================================================================
+                  =====================================================================================
                   on n'est pas dans un commentaire ou une constante,  
                   donc c'est un nouveau type qu'il faut détecter
-                  =============================================================================================
+                  =====================================================================================
                 */
                 if(c === '('){
                     /*
-                      =====================================================================================
+                      =============================================================================
                       Parenthèse ouvrante
-                      =====================================================================================
+                      =============================================================================
                       
                       
                     */
@@ -1858,7 +1845,7 @@ class c_rev1{
                         niveauDebutCommentaire=niveau;
                     }
                     if(drapeauParenthese){
-                        tab_pour_recherche_parentheses.push(i);
+                        tab_pour_recherche_parentheses.push( i );
                     }
                     /*
                       le nom d'une fonction peut être vide , par exemple dans le cas html, on écrit a[[href,'exemple']]
@@ -1878,9 +1865,9 @@ class c_rev1{
                     dansCstModele=false;
                     dansCstRegex=false;
                     /*
-                      =====================================================================================
+                      =============================================================================
                       FIN DE Parenthèse ouvrante
-                      =====================================================================================
+                      =============================================================================
                       
                       
                     */
@@ -1888,24 +1875,24 @@ class c_rev1{
                     /*
                       
                       
-                      =====================================================================================
+                      =============================================================================
                       Parenthèse fermante
-                      =====================================================================================
+                      =============================================================================
                     */
                     pos_fer_par=i;
                     if(texte !== ''){
                         if(niveau === 0){
-                            return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                            return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                     "__xst" : false ,
                                     "ind" : i ,
-                                    "__xme" : this.nl2()+'une fermeture de parenthése ne doit pas être au niveau 0' ,
+                                    "__xme" : this.nl2() + 'une fermeture de parenthése ne doit pas être au niveau 0' ,
                                     "type" : 'rev' ,
                                     "chaine_tableau" : chaine_tableau ,
                                     "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                                     "tableauEntree" : tableauEntree ,
                                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                     "autoriserCstDansRacine" : autoriserCstDansRacine
-                                })));
+                                } ) ));
                         }
                         indice++;
                         chaine_tableau+=',[' + indice + ',"' + texte + '",' + '"c"' + ',' + niveau + ',' + constanteQuotee + ',' + premier + ',' + dernier + ',0,0,0,0,' + pos_ouv_par + ',0,""]';
@@ -1932,21 +1919,21 @@ class c_rev1{
                             */
                             chaine_tableau='[' + chaine_tableau + ']';
                             try{
-                                T=JSON.parse(chaine_tableau);
+                                T=JSON.parse( chaine_tableau );
                             }catch(ejson){
-                                console.log('ejson=',ejson);
-                                return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                                console.log( 'ejson=' , ejson );
+                                return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                         "erreur_conversion_chaine_tableau_en_json" : true ,
                                         "__xst" : false ,
                                         "ind" : i ,
-                                        "__xme" : this.nl2()+'erreur de conversion de tableau' ,
+                                        "__xme" : this.nl2() + 'erreur de conversion de tableau' ,
                                         "type" : 'rev' ,
                                         "chaine_tableau" : chaine_tableau ,
                                         "chaine_tableau_commentaires" : chaine_tableau_commentaires ,
                                         "tableauEntree" : tableauEntree ,
                                         "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                         "autoriserCstDansRacine" : autoriserCstDansRacine
-                                    })));
+                                    } ) ));
                             }
                             if(rechercheParentheseCorrespondante === '('){
                                 return({"__xst" : true ,"pos_fer_par" : tableauEntree[i][2]});
@@ -1974,9 +1961,9 @@ class c_rev1{
                     dansCstModele=false;
                     dansCstRegex=false;
                     /*
-                      =====================================================================================
+                      =============================================================================
                       FIN de Parenthèse fermante
-                      =====================================================================================
+                      =============================================================================
                       
                       
                     */
@@ -1984,26 +1971,26 @@ class c_rev1{
                     /*
                       
                       
-                      =====================================================================================
+                      =============================================================================
                       anti slash 
-                      =====================================================================================
+                      =============================================================================
                     */
                     if(!dansCstSimple){
-                        return(this.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2()+'un antislash doit être dans une constante en i=' + i}));
+                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash doit être dans une constante en i=' + i} ));
                     }
                     if(!dansCstDouble){
-                        return(this.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2()+'un antislash doit être dans une constante en i=' + i}));
+                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash doit être dans une constante en i=' + i} ));
                     }
                     if(!dansCstModele){
-                        return(this.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2()+'un antislash doit être dans une constante en i=' + i}));
+                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash doit être dans une constante en i=' + i} ));
                     }
                     if(!dansCstRegex){
-                        return(this.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2()+'un antislash doit être dans une constante en i=' + i}));
+                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash doit être dans une constante en i=' + i} ));
                     }
                     /*
-                      =====================================================================================
+                      =============================================================================
                       Fin d'un anti slash
-                      =====================================================================================
+                      =============================================================================
                       
                       
                     */
@@ -2011,9 +1998,9 @@ class c_rev1{
                     /*
                       
                       
-                      =====================================================================================
+                      =============================================================================
                       apostrophe '
-                      =====================================================================================
+                      =============================================================================
                     */
                     premier=i;
                     if(dansCstSimple === true){
@@ -2033,17 +2020,17 @@ class c_rev1{
                         dansCstSimple=true;
                     }
                     /*
-                      =====================================================================================
+                      =============================================================================
                       FIN apostrophe
-                      =====================================================================================
+                      =============================================================================
                       
                       
                     */
                 }else if(c === '/'){
                     /*
-                      =====================================================================================
+                      =============================================================================
                       regex /
-                      =====================================================================================
+                      =============================================================================
                     */
                     premier=i;
                     if(dansCstRegex === true){
@@ -2063,17 +2050,17 @@ class c_rev1{
                         dansCstRegex=true;
                     }
                     /*
-                      =====================================================================================
+                      =============================================================================
                       FIN regex /
-                      =====================================================================================
+                      =============================================================================
                     */
                 }else if(c === '`'){
                     /*
                       
                       
-                      =====================================================================================
+                      =============================================================================
                       modele `
-                      =====================================================================================
+                      =============================================================================
                     */
                     premier=i;
                     if(dansCstModele === true){
@@ -2093,9 +2080,9 @@ class c_rev1{
                         dansCstModele=true;
                     }
                     /*
-                      =====================================================================================
+                      =============================================================================
                       FIN modele `
-                      =====================================================================================
+                      =============================================================================
                       
                       
                     */
@@ -2103,9 +2090,9 @@ class c_rev1{
                     /*
                       
                       
-                      =====================================================================================
+                      =============================================================================
                       double quote "
-                      =====================================================================================
+                      =============================================================================
                     */
                     premier=i;
                     if(dansCstDouble === true){
@@ -2125,9 +2112,9 @@ class c_rev1{
                         dansCstDouble=true;
                     }
                     /*
-                      =====================================================================================
+                      =============================================================================
                       FIN double quote "
-                      =====================================================================================
+                      =============================================================================
                       
                       
                     */
@@ -2136,14 +2123,14 @@ class c_rev1{
                       
                       
                       
-                      =====================================================================================
+                      =============================================================================
                       virgule donc séparateur
-                      =====================================================================================
+                      =============================================================================
                     */
                     if(texte !== ''){
                         if(autoriserCstDansRacine !== true){
                             if(niveau === 0){
-                                return(this.empiler_erreur({"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2()+'la racine ne peut pas contenir des constantes'}));
+                                return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                             }
                         }
                         indice++;
@@ -2166,10 +2153,10 @@ class c_rev1{
                                 constanteQuoteePrecedente=0;
                             }else{
                                 if(niveauPrecedent < niveau){
-                                    return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                                    return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                             "__xst" : false ,
                                             "ind" : premier ,
-                                            "__xme" : this.nl2()+'une virgule ne doit pas être précédée d\'un vide' ,
+                                            "__xme" : this.nl2() + 'une virgule ne doit pas être précédée d\'un vide' ,
                                             "type" : 'rev' ,
                                             "texte" : texte ,
                                             "chaine_tableau" : chaine_tableau ,
@@ -2177,15 +2164,15 @@ class c_rev1{
                                             "tableauEntree" : tableauEntree ,
                                             "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                             "autoriserCstDansRacine" : autoriserCstDansRacine
-                                        })));
+                                        } ) ));
                                 }
                             }
                         }else{
                             if(niveauPrecedent < niveau){
-                                return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                                return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                         "__xst" : false ,
                                         "ind" : premier ,
-                                        "__xme" : this.nl2()+'une virgule ne doit pas être précédée d\'un vide' ,
+                                        "__xme" : this.nl2() + 'une virgule ne doit pas être précédée d\'un vide' ,
                                         "type" : 'rev' ,
                                         "texte" : texte ,
                                         "chaine_tableau" : chaine_tableau ,
@@ -2193,12 +2180,12 @@ class c_rev1{
                                         "tableauEntree" : tableauEntree ,
                                         "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                         "autoriserCstDansRacine" : autoriserCstDansRacine
-                                    })));
+                                    } ) ));
                             }else if(niveauPrecedent === niveau && texte_precedent === '' && constanteQuoteePrecedente === 0){
-                                return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                                return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                         "__xst" : false ,
                                         "ind" : premier ,
-                                        "__xme" : this.nl2()+'une virgule ne doit pas être précédée d\'un vide ' ,
+                                        "__xme" : this.nl2() + 'une virgule ne doit pas être précédée d\'un vide ' ,
                                         "type" : 'rev' ,
                                         "texte" : texte ,
                                         "chaine_tableau" : chaine_tableau ,
@@ -2206,7 +2193,7 @@ class c_rev1{
                                         "tableauEntree" : tableauEntree ,
                                         "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                         "autoriserCstDansRacine" : autoriserCstDansRacine
-                                    })));
+                                    } ) ));
                             }
                         }
                     }
@@ -2215,9 +2202,9 @@ class c_rev1{
                     dansCstModele=false;
                     dansCstRegex=false;
                     /*
-                      =====================================================================================
+                      =============================================================================
                       FIN virgule donc séparateur
-                      =====================================================================================
+                      =============================================================================
                       
                       
                       
@@ -2227,17 +2214,17 @@ class c_rev1{
                       
                       
                       
-                      =====================================================================================
+                      =============================================================================
                       caractères séparateurs de mot
-                      =====================================================================================
+                      =============================================================================
                     */
                     if(texte !== ''){
                         if(autoriserCstDansRacine !== true){
                             if(niveau === 0){
-                                return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                                return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                         "__xst" : false ,
                                         "ind" : premier ,
-                                        "__xme" : this.nl2()+'la racine ne peut pas contenir des constantes' ,
+                                        "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes' ,
                                         "type" : 'rev' ,
                                         "texte" : texte ,
                                         "chaine_tableau" : chaine_tableau ,
@@ -2245,7 +2232,7 @@ class c_rev1{
                                         "tableauEntree" : tableauEntree ,
                                         "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                                         "autoriserCstDansRacine" : autoriserCstDansRacine
-                                    })));
+                                    } ) ));
                             }
                         }
                         indice++;
@@ -2263,9 +2250,9 @@ class c_rev1{
                         dansCstRegex=false;
                     }
                     /*
-                      =====================================================================================
+                      =============================================================================
                       FIN de caractères séparateurs de mot
-                      =====================================================================================
+                      =============================================================================
                       
                       
                     */
@@ -2279,15 +2266,15 @@ class c_rev1{
             }
         }
         /*
-          =============================================================================================================
+          =====================================================================================================
           on est en dehors de la boucle principale
-          =============================================================================================================
+          =====================================================================================================
         */
         if(niveau !== 0 && quitterSiErreurNiveau){
-            return(this.empiler_erreur(this.formatter_une_erreur_rev({
+            return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                     "__xst" : false ,
                     "ind" : l01 - 1 ,
-                    "__xme" : this.nl2()+'💥 des parenthèses ne correspondent pas, (' + (niveau > 0 ? ( 'il en manque :' ) : ( 'il y en a trop : ' )) + 'niveau=' + niveau + ') ' ,
+                    "__xme" : this.nl2() + '💥 des parenthèses ne correspondent pas, (' + (niveau > 0 ? ( 'il en manque :' ) : ( 'il y en a trop : ' )) + 'niveau=' + niveau + ') ' ,
                     "type" : 'rev' ,
                     "texte" : texte ,
                     "chaine_tableau" : chaine_tableau ,
@@ -2295,7 +2282,7 @@ class c_rev1{
                     "tableauEntree" : tableauEntree ,
                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                     "autoriserCstDansRacine" : autoriserCstDansRacine
-                })));
+                } ) ));
         }
         /*
           Si on autorise les constantes à la racine, il reste peut être du texte à traiter
@@ -2304,10 +2291,10 @@ class c_rev1{
             indice=indice + 1;
             if(autoriserCstDansRacine !== true){
                 if(niveau === 0){
-                    return(this.empiler_erreur(this.formatter_une_erreur_rev({
+                    return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                             "__xst" : false ,
                             "ind" : l01 - 1 ,
-                            "__xme" : this.nl2()+'la racine ne peut pas contenir des constantes ' ,
+                            "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes ' ,
                             "type" : 'rev' ,
                             "texte" : texte ,
                             "chaine_tableau" : chaine_tableau ,
@@ -2315,7 +2302,7 @@ class c_rev1{
                             "tableauEntree" : tableauEntree ,
                             "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                             "autoriserCstDansRacine" : autoriserCstDansRacine
-                        })));
+                        } ) ));
                 }
             }
             /*
@@ -2326,25 +2313,25 @@ class c_rev1{
             niveauPrecedent=niveau;
         }
         /*
-          =============================================================================================================
+          =====================================================================================================
           On reconstruit chaine_tableau ici
-          =============================================================================================================
+          =====================================================================================================
         */
         chaine_tableau='[' + chaine_tableau + ']';
         try{
-            T=JSON.parse(chaine_tableau);
+            T=JSON.parse( chaine_tableau );
         }catch(ejson){
-            return(this.empiler_erreur(this.formatter_une_erreur_rev({
+            return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                     "ejson" : ejson ,
                     "erreur_conversion_chaine_tableau_en_json" : true ,
                     "__xst" : false ,
-                    "__xme" : this.nl2()+'erreur de conversion de tableau' ,
+                    "__xme" : this.nl2() + 'erreur de conversion de tableau' ,
                     "type" : 'rev' ,
                     "chaine_tableau" : chaine_tableau ,
                     "tableauEntree" : tableauEntree ,
                     "quitterSiErreurNiveau" : quitterSiErreurNiveau ,
                     "autoriserCstDansRacine" : autoriserCstDansRacine
-                })));
+                } ) ));
         }
         if(drapeauParenthese){
             l01=T.length;
@@ -2359,9 +2346,9 @@ class c_rev1{
             return({"__xst" : false ,"__xme" : 'pas de correspondance trouvée'});
         }
         if(chaine_tableau_commentaires !== ''){
-            chaine_tableau_commentaires='[' + chaine_tableau_commentaires.substr(1) + ']';
+            chaine_tableau_commentaires='[' + chaine_tableau_commentaires.substr( 1 ) + ']';
             try{
-                tabCommentaireEtFinParentheses=JSON.parse(chaine_tableau_commentaires);
+                tabCommentaireEtFinParentheses=JSON.parse( chaine_tableau_commentaires );
             }catch(e){
                 debugger;
             }
@@ -2370,17 +2357,17 @@ class c_rev1{
               tabCommentaireEtFinParentheses[indiceTabCommentaire]=[indice,commentaire];
               T[indice][13]=commentaire;
             */
-            var rgx1=new RegExp(chLF,"g");
-            var rgx2=new RegExp(chCR,"g");
+            var rgx1=new RegExp( chLF , "g" );
+            var rgx2=new RegExp( chCR , "g" );
             l01=tabCommentaireEtFinParentheses.length;
             for( i=0 ; i < l01 ; i++ ){
-                T[tabCommentaireEtFinParentheses[i][0]][13]=tabCommentaireEtFinParentheses[i][1].replace(rgx1,'\n').replace(rgx2,'\r');
+                T[tabCommentaireEtFinParentheses[i][0]][13]=tabCommentaireEtFinParentheses[i][1].replace( rgx1 , '\n' ).replace( rgx2 , '\r' );
             }
         }
         /*
-          =============================================================================================================
+          =====================================================================================================
           mise à jour de l'id du parent[7] et du nombre d'enfants[8]
-          =============================================================================================================
+          =====================================================================================================
         */
         l01=T.length;
         for( i=l01 - 1 ; i > 0 ; i-- ){
@@ -2394,11 +2381,11 @@ class c_rev1{
             }
         }
         /*
-          =============================================================================================================
+          =====================================================================================================
           numéro d'enfant + bidouille performances car on boucle souvent sur les enfants
           numenfant = k
           en position 12, on met l'indice de l'enfant suivant ou l01 
-          =============================================================================================================
+          =====================================================================================================
         */
         var indice_enfant_precedent=0;
         for( i=0 ; i < l01 ; i++ ){
@@ -2420,11 +2407,11 @@ class c_rev1{
             }
         }
         /*
-          =============================================================================================================
+          =====================================================================================================
           profondeur des fonctions
           k=remonterAuNiveau
           l=idParent
-          =============================================================================================================
+          =====================================================================================================
         */
         var niveau=0;
         var id_parent=0;
@@ -2459,8 +2446,6 @@ class c_rev1{
           }
         */
         return({"__xst" : true ,"__xva" : T});
-    }    
-    
-    
+    }
 }
 export{c_rev1 as c_rev1};

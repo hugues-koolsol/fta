@@ -46,24 +46,24 @@ class interface1{
       =============================================================================================================
       le seul argument est pour l'instant le nom de la variable qui est déclarée
     */
-    constructor(nom_de_la_variable,nom_de_la_div_contenant_les_messages){
+    constructor( nom_de_la_variable , nom_de_la_div_contenant_les_messages ){
         this.#nom_de_la_variable=nom_de_la_variable;
         this.#nom_div_des_messages1=nom_de_la_div_contenant_les_messages;
-        this.global_modale2=document.getElementById('modale1');
-        this.global_modale2_contenu=document.getElementById('__contenu_modale');
-        this.global_modale2_iframe=document.getElementById('iframe_modale_1');
-        this.global_modale2.addEventListener('click',function(e){
+        this.global_modale2=document.getElementById( 'modale1' );
+        this.global_modale2_contenu=document.getElementById( '__contenu_modale' );
+        this.global_modale2_iframe=document.getElementById( 'iframe_modale_1' );
+        this.global_modale2.addEventListener( 'click' , function( e ){
                 var dim=e.target.getBoundingClientRect();
                 if(e.clientX < dim.left || e.clientX > dim.right || e.clientY < dim.top || e.clientY > dim.bottom){
-                    document.getElementById('__message_modale').innerHTML='';
+                    document.getElementById( '__message_modale' ).innerHTML='';
                     e.target.close();
                 }
-            });
-        this.#div_des_positions_du_curseur=document.createElement('div');
+            } );
+        this.#div_des_positions_du_curseur=document.createElement( 'div' );
         this.#div_des_positions_du_curseur.id='div_des_positions_du_curseur';
-        this.#div_des_positions_du_curseur.setAttribute('style','position:absolute;top:60px;left:0px;background:white;display:inline-block;min-height:12px!important;line-height:12px;');
+        this.#div_des_positions_du_curseur.setAttribute( 'style' , 'position:absolute;top:60px;left:0px;background:white;display:inline-block;min-height:12px!important;line-height:12px;' );
         this.#div_des_positions_du_curseur.innerHTML='';
-        document.getElementsByTagName('body')[0].appendChild(this.#div_des_positions_du_curseur);
+        document.getElementsByTagName( 'body' )[0].appendChild( this.#div_des_positions_du_curseur );
     }
     /* function nom_de_la_variable */
     get nom_de_la_variable(){
@@ -77,13 +77,13 @@ class interface1{
       =============================================================================================================
     */
     afficher_les_erreurs_masquees(){
-        var est_masque=parseInt(document.getElementById('bouton_voir_les_messages_masques').getAttribute('data-masque'),10);
-        var div_parent=document.getElementById(this.#nom_div_des_messages1);
-        var lst=div_parent.getElementsByTagName('div');
+        var est_masque=parseInt( document.getElementById( 'bouton_voir_les_messages_masques' ).getAttribute( 'data-masque' ) , 10 );
+        var div_parent=document.getElementById( this.#nom_div_des_messages1 );
+        var lst=div_parent.getElementsByTagName( 'div' );
         for( var i=0 ; i < lst.length ; i++ ){
             if(lst[i].parentElement === div_parent
-                   && lst[i].getAttribute('data-masquable')
-                   && lst[i].getAttribute('data-masquable') === '1'
+                   && lst[i].getAttribute( 'data-masquable' )
+                   && lst[i].getAttribute( 'data-masquable' ) === '1'
             ){
                 if(est_masque === 1){
                     lst[i].style.display='';
@@ -93,13 +93,13 @@ class interface1{
             }
         }
         if(est_masque === 1){
-            document.getElementById('bouton_voir_les_messages_masques').setAttribute('data-masque','0');
-            document.getElementById('bouton_voir_les_messages_masques').innerHTML='masquer';
-            document.getElementById('message_masquer_les_details').innerHTML='le détail des erreurs est visible ';
+            document.getElementById( 'bouton_voir_les_messages_masques' ).setAttribute( 'data-masque' , '0' );
+            document.getElementById( 'bouton_voir_les_messages_masques' ).innerHTML='masquer';
+            document.getElementById( 'message_masquer_les_details' ).innerHTML='le détail des erreurs est visible ';
         }else{
-            document.getElementById('bouton_voir_les_messages_masques').setAttribute('data-masque','1');
-            document.getElementById('bouton_voir_les_messages_masques').innerHTML='voir';
-            document.getElementById('message_masquer_les_details').innerHTML='le détail des erreurs n\'est pas visible ';
+            document.getElementById( 'bouton_voir_les_messages_masques' ).setAttribute( 'data-masque' , '1' );
+            document.getElementById( 'bouton_voir_les_messages_masques' ).innerHTML='voir';
+            document.getElementById( 'message_masquer_les_details' ).innerHTML='le détail des erreurs n\'est pas visible ';
         }
     }
     /*
@@ -110,29 +110,28 @@ class interface1{
     */
     raz_des_messages(){
         try{
-            document.getElementById(this.#nom_div_des_messages1).innerHTML='';
+            document.getElementById( this.#nom_div_des_messages1 ).innerHTML='';
             /* display a pu être mis à "none" ailleurs */
-            document.getElementById(this.#nom_div_des_messages1).style.visibility='hidden';
+            document.getElementById( this.#nom_div_des_messages1 ).style.visibility='hidden';
         }catch(e){}
-        /*__m_rev1*/
+        /* __m_rev1 */
         __m_rev1.globale_messages={
             "erreurs" : [] ,
             "avertissements" : [] ,
             "infos" : [] ,
             "lignes" : [] ,
             "ids" : [] ,
-            "plages" : [] ,
+            "plages" : []
         };
     }
-    
     /*
       =============================================================================================================
       on remplir_et_afficher_les_messages1
     */
-    remplir_et_afficher_les_messages1(nomDeLaTextAreaContenantLeTexteSource){
+    remplir_et_afficher_les_messages1( nomDeLaTextAreaContenantLeTexteSource ){
         var i=0;
         var affichagesPresents=false;
-        var zon=document.getElementById(this.#nom_div_des_messages1);
+        var zon=document.getElementById( this.#nom_div_des_messages1 );
         var temp='';
         var numLignePrecedente=-1;
         var nombre_de_boutons_affiches=0;
@@ -148,8 +147,10 @@ class interface1{
             var le_cas=tab_cas_erreur[cas];
             while(__m_rev1.globale_messages[le_cas.type].length > 0){
                 tt='';
-                if(__m_rev1.globale_messages[le_cas.type][i].hasOwnProperty(le_cas.nom_zone)){
-                    if(__m_rev1.globale_messages[le_cas.type][i].hasOwnProperty('masquee') && __m_rev1.globale_messages[le_cas.type][i].masquee === true){
+                if(__m_rev1.globale_messages[le_cas.type][i].hasOwnProperty( le_cas.nom_zone )){
+                    if(__m_rev1.globale_messages[le_cas.type][i].hasOwnProperty( 'masquee' )
+                           && __m_rev1.globale_messages[le_cas.type][i].masquee === true
+                    ){
                         il_existe_des_messages_masques=true;
                         tt+='<div class="' + le_cas.css_cls + '" style="display:none;" data-masquable="1">';
                     }else{
@@ -167,7 +168,7 @@ class interface1{
                     zon.innerHTML+=tt;
                     affichagesPresents=true;
                 }
-                __m_rev1.globale_messages[le_cas.type].splice(0,1);
+                __m_rev1.globale_messages[le_cas.type].splice( 0 , 1 );
             }
         }
         if(il_existe_des_messages_masques === true){
@@ -182,11 +183,11 @@ class interface1{
       =============================================================================================================
       function recupérer_un_fetch
     */
-    async recupérer_un_fetch(url,donnees){
+    async recupérer_un_fetch( url , donnees ){
         var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 6000 );
-        var masquer_les_messages_du_serveur=donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur') ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
+        var masquer_les_messages_du_serveur=donnees.call.opt && donnees.call.opt.hasOwnProperty( 'masquer_les_messages_du_serveur' ) ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
         var en_entree={
-            "signal" : AbortSignal.timeout(delais_admis) ,
+            "signal" : AbortSignal.timeout( delais_admis ) ,
             "method" : "POST" ,
             "mode" : "cors" ,
             "cache" : "no-cache" ,
@@ -194,50 +195,50 @@ class interface1{
             "headers" : {"Content-Type" : 'application/x-www-form-urlencoded'} ,
             "redirect" : "follow" ,
             "referrerPolicy" : "no-referrer" ,
-            "body" : 'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
+            "body" : 'ajax_param=' + encodeURIComponent( JSON.stringify( donnees ) )
         };
         try{
-            var response=await fetch(url,en_entree).catch((err) => {
+            var response=await fetch( url , en_entree ).catch( ( err ) => {
                 /* console.error('err interface recupérer_un_fetch ',err); */
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' recupérer_un_fetch <br/>' + err});
-            }).finally(() => {
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' recupérer_un_fetch <br/>' + err} );
+            } ).finally( () => {
                 /* vide */
-            });
+            } );
             /* vide */
-            var t=await response.text().catch((err) => {
-                console.error('err text interface recupérer_un_fetch ',err);
-            }).finally(() => {
+            var t=await response.text().catch( ( err ) => {
+                console.error( 'err text interface recupérer_un_fetch ' , err );
+            } ).finally( () => {
                 /* vide */
-            });
+            } );
             /* vide */
             try{
-                var le_json=JSON.parse(t);
-                if(le_json.hasOwnProperty('__xms')){
+                var le_json=JSON.parse( t );
+                if(le_json.hasOwnProperty( '__xms' )){
                     for(var i in le_json.__xms){
-                        __m_rev1.empiler_erreur({"__xst" : le_json.__xst ,"__xme" : le_json.__xms[i] ,"masquee" : masquer_les_messages_du_serveur});
+                        __m_rev1.empiler_erreur( {"__xst" : le_json.__xst ,"__xme" : le_json.__xms[i] ,"masquee" : masquer_les_messages_du_serveur} );
                     }
                 }
                 return le_json;
             }catch(e){
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur sur convertion json, texte non json=' + t ,"masquee" : masquer_les_messages_du_serveur});
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur});
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree) ,"masquee" : masquer_les_messages_du_serveur});
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : JSON.stringify(donnees) ,"masquee" : masquer_les_messages_du_serveur});
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur sur convertion json, texte non json=' + t ,"masquee" : masquer_les_messages_du_serveur} );
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur} );
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : JSON.stringify( en_entree ) ,"masquee" : masquer_les_messages_du_serveur} );
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : JSON.stringify( donnees ) ,"masquee" : masquer_les_messages_du_serveur} );
                 return({
                         "__xst" : false ,
-                        "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t ,
+                        "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t ,
                         "masquee" : masquer_les_messages_du_serveur
                     });
             }
         }catch(e){
-            console.log(e);
+            console.log( e );
             if(e.message === 'signal timed out'){
-                __m_rev1.empiler_erreur({
+                __m_rev1.empiler_erreur( {
                         "__xst" : false ,
-                        "__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt((delais_admis / 1000) * 10,10) / 10) + ' secondes '
-                    });
+                        "__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt( (delais_admis / 1000) * 10 , 10 ) / 10) + ' secondes '
+                    } );
             }else{
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : e.message});
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : e.message} );
             }
             return({"__xst" : false ,"__xme" : e.message});
         }
@@ -247,46 +248,46 @@ class interface1{
       modale
     */
     fermerModale2(){
-        document.getElementById('__message_modale').innerHTML='';
+        document.getElementById( '__message_modale' ).innerHTML='';
         this.global_modale2.close();
     }
     /* function afficherModale2 */
-    afficherModale2(parametres){
-        var jsn1=JSON.parse(parametres);
+    afficherModale2( parametres ){
+        var jsn1=JSON.parse( parametres );
         if(jsn1.__fonction === 'recupérer_un_element_parent_en_bdd'){
             var paramatresModale={"__champs_texte_a_rapatrier" : jsn1['__champs_texte_a_rapatrier'] ,"__nom_champ_dans_parent" : jsn1['__nom_champ_dans_parent']};
-            this.global_modale2_iframe.src=jsn1['__url'] + '?__parametres_choix=' + encodeURIComponent(JSON.stringify(paramatresModale));
+            this.global_modale2_iframe.src=jsn1['__url'] + '?__parametres_choix=' + encodeURIComponent( JSON.stringify( paramatresModale ) );
             this.global_modale2.showModal();
         }
     }
     /* function annuler_champ_modale */
-    annuler_champ_modale(parametres){
-        var jsn1=JSON.parse(parametres);
-        document.getElementById(jsn1['__nom_champ_dans_parent']).value='';
+    annuler_champ_modale( parametres ){
+        var jsn1=JSON.parse( parametres );
+        document.getElementById( jsn1['__nom_champ_dans_parent'] ).value='';
         try{
             if(jsn1.__champs_texte_a_rapatrier){
                 var i={};
                 for(i in jsn1.__champs_texte_a_rapatrier){
-                    window.parent.document.getElementById(i).innerHTML=jsn1.__champs_texte_a_rapatrier[i].__libelle_si_vide;
+                    window.parent.document.getElementById( i ).innerHTML=jsn1.__champs_texte_a_rapatrier[i].__libelle_si_vide;
                 }
             }
         }catch(e){
-            console.log(e);
+            console.log( e );
         }
     }
     /* function choisir_de_iframe2 */
-    choisir_de_iframe2(parametres){
-        var jsn1=JSON.parse(parametres);
-        window.parent.document.getElementById(jsn1['__nom_champ_rapatrie']).value=jsn1['__valeur_champ_id_rapatrie'];
+    choisir_de_iframe2( parametres ){
+        var jsn1=JSON.parse( parametres );
+        window.parent.document.getElementById( jsn1['__nom_champ_rapatrie'] ).value=jsn1['__valeur_champ_id_rapatrie'];
         try{
             if(jsn1.__champs_texte_a_rapatrier){
                 var i={};
                 for(i in jsn1.__champs_texte_a_rapatrier){
-                    window.parent.document.getElementById(i).innerHTML=jsn1.__champs_texte_a_rapatrier[i].__libelle_avant + jsn1.__champs_texte_a_rapatrier[i].__valeur + jsn1.__champs_texte_a_rapatrier[i].__libelle_apres;
+                    window.parent.document.getElementById( i ).innerHTML=jsn1.__champs_texte_a_rapatrier[i].__libelle_avant + jsn1.__champs_texte_a_rapatrier[i].__valeur + jsn1.__champs_texte_a_rapatrier[i].__libelle_apres;
                 }
             }
         }catch(e){
-            console.log(e);
+            console.log( e );
         }
         window.parent[this.#nom_de_la_variable]['fermerModale2']();
     }
@@ -295,21 +296,21 @@ class interface1{
       function supprimer_ce_commentaire_et_recompiler
       =============================================================================================================
     */
-    supprimer_ce_commentaire_et_recompiler(id_source,id_rev,provenance){
-        console.log(id_source + ' ' + id_rev);
+    supprimer_ce_commentaire_et_recompiler( id_source , id_rev , provenance ){
+        console.log( id_source + ' ' + id_rev );
         var param={
             "nom_du_travail_en_arriere_plan" : 'supprimer_un_commentaire1' ,
             "liste_des_taches" : [{"etat" : 'a_faire' ,"id_source" : id_source ,"id_rev" : id_rev ,"provenance" : provenance}]
         };
-        this.lancer_un_travail_en_arriere_plan(JSON.stringify(param));
+        this.lancer_un_travail_en_arriere_plan( JSON.stringify( param ) );
     }
     /*
       =============================================================================================================
       function reduire_la_text_area
       =============================================================================================================
     */
-    reduire_la_text_area(nom_de_la_textarea){
-        var a=document.getElementById(nom_de_la_textarea);
+    reduire_la_text_area( nom_de_la_textarea ){
+        var a=document.getElementById( nom_de_la_textarea );
         var b=a.getBoundingClientRect();
         if(a){
             a.rows=5;
@@ -322,8 +323,8 @@ class interface1{
       function raz_la_text_area
       =============================================================================================================
     */
-    raz_la_text_area(nom_de_la_textarea){
-        var a=document.getElementById(nom_de_la_textarea);
+    raz_la_text_area( nom_de_la_textarea ){
+        var a=document.getElementById( nom_de_la_textarea );
         if(a){
             a.value='';
         }
@@ -333,17 +334,17 @@ class interface1{
       function agrandir_la_text_area
       =============================================================================================================
     */
-    agrandir_la_text_area(nom_de_la_textarea){
-        var a=document.getElementById(nom_de_la_textarea);
+    agrandir_la_text_area( nom_de_la_textarea ){
+        var a=document.getElementById( nom_de_la_textarea );
         if(a){
             var b=a.getBoundingClientRect();
-            var c=a.value.split('\n');
+            var c=a.value.split( '\n' );
             if(c.length < 100){
                 a.rows=c.length + 1;
                 /*
                   le "line-height d'une textarea est fixé à 1.2 
                 */
-                a.style.height=(parseInt((c.length + 1) * 1.2,10) + 1) + 'em';
+                a.style.height=(parseInt( (c.length + 1) * 1.2 , 10 ) + 1) + 'em';
             }else{
                 a.rows=100;
                 a.style.height='100em';
@@ -351,12 +352,12 @@ class interface1{
             /*
               on met la zone en haut
             */
-            var d=parseInt((b.top - 80) + window.pageYOffset,10);
-            var lst=document.getElementsByClassName('menuScroller');
+            var d=parseInt( (b.top - 80) + window.pageYOffset , 10 );
+            var lst=document.getElementsByClassName( 'menuScroller' );
             if(lst.length >= 2){
                 d=d - (lst.length - 1) * CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV;
             }
-            window.scrollTo(0,d);
+            window.scrollTo( 0 , d );
             a.focus();
         }
     }
@@ -365,20 +366,20 @@ class interface1{
       ajuste la taille d'une textarea
       =============================================================================================================
     */
-    agrandir_ou_reduire_la_text_area(nom_de_la_textarea){
+    agrandir_ou_reduire_la_text_area( nom_de_la_textarea ){
         try{
-            var a=document.getElementById(nom_de_la_textarea);
+            var a=document.getElementById( nom_de_la_textarea );
             var b=a.getBoundingClientRect();
-            this.masquer_les_messages1('');
+            this.masquer_les_messages1( '' );
             if(a){
                 if(a.rows <= 10){
-                    var c=a.value.split('\n');
+                    var c=a.value.split( '\n' );
                     if(c.length < 100){
                         a.rows=c.length + 1;
                         /*
                           le "line-height d'une textarea est fixé à 1.2 
                         */
-                        a.style.height=(parseInt((c.length + 1) * 1.2,10) + 1) + 'em';
+                        a.style.height=(parseInt( (c.length + 1) * 1.2 , 10 ) + 1) + 'em';
                     }else{
                         a.rows=100;
                         a.style.height='100em';
@@ -386,14 +387,14 @@ class interface1{
                     /*
                       on met la zone en haut
                     */
-                    var d=parseInt((b.top - 80) + window.pageYOffset,10);
-                    var lst=document.getElementsByClassName('menuScroller');
-                    console.log(lst.length);
-                    console.log('d=',d);
+                    var d=parseInt( (b.top - 80) + window.pageYOffset , 10 );
+                    var lst=document.getElementsByClassName( 'menuScroller' );
+                    console.log( lst.length );
+                    console.log( 'd=' , d );
                     if(lst.length >= 2){
                         d=d - (lst.length - 1) * CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV;
                     }
-                    window.scrollTo(0,d);
+                    window.scrollTo( 0 , d );
                     a.focus();
                 }else{
                     a.rows=5;
@@ -402,27 +403,27 @@ class interface1{
                 }
             }
         }catch(e){
-            console.log('e=',e);
+            console.log( 'e=' , e );
         }
     }
     /*
       =============================================================================================================
       function remplacer_la_selection_par
     */
-    remplacer_la_selection_par(nom_de_la_textarea){
-        var a=document.getElementById(nom_de_la_textarea);
+    remplacer_la_selection_par( nom_de_la_textarea ){
+        var a=document.getElementById( nom_de_la_textarea );
         var x=a.selectionStart;
-        var b=a.value.substr(a.selectionStart,a.selectionEnd - a.selectionStart);
+        var b=a.value.substr( a.selectionStart , a.selectionEnd - a.selectionStart );
         if(b === ''){
-            alert('veuillez sélectionner une chaine à remplacer');
+            alert( 'veuillez sélectionner une chaine à remplacer' );
             return;
         }
-        var remplacer_par=window.prompt('remplacer par','??');
+        var remplacer_par=window.prompt( 'remplacer par' , '??' );
         if(remplacer_par){
-            var r1=new RegExp(b,'g');
-            var c=a.value.replace(r1,remplacer_par);
+            var r1=new RegExp( b , 'g' );
+            var c=a.value.replace( r1 , remplacer_par );
             a.value=c;
-            this.agrandir_la_text_area(nom_de_la_textarea);
+            this.agrandir_la_text_area( nom_de_la_textarea );
             a.focus();
             a.selectionStart=x;
         }
@@ -431,10 +432,10 @@ class interface1{
       =============================================================================================================
       function aller_a_la_position
     */
-    aller_a_la_position(nom_textarea){
-        var resultat=window.prompt('aller à la position',1);
-        if(resultat && __m_rev1.est_num(resultat)){
-            var a=document.getElementById(nom_textarea);
+    aller_a_la_position( nom_textarea ){
+        var resultat=window.prompt( 'aller à la position' , 1 );
+        if(resultat && __m_rev1.est_num( resultat )){
+            var a=document.getElementById( nom_textarea );
             if(a.rows < 10 || a.getBoundingClientRect().height < 160){
                 a.rows="100";
             }
@@ -447,17 +448,17 @@ class interface1{
       =============================================================================================================
       function aller_a_la_ligne
     */
-    aller_a_la_ligne(nom_textarea,ajouter=0){
+    aller_a_la_ligne( nom_textarea , ajouter=0 ){
         var i=0;
         var position_fin=0;
         var position_debut=0;
-        var numero_de_ligne=window.prompt('aller à la ligne n°?',1);
-        if(numero_de_ligne && __m_rev1.est_num(numero_de_ligne)){
-            numero_de_ligne=parseInt(numero_de_ligne,10) + ajouter;
-            var a=document.getElementById(nom_textarea);
-            var lignes=a.value.split('\n');
+        var numero_de_ligne=window.prompt( 'aller à la ligne n°?' , 1 );
+        if(numero_de_ligne && __m_rev1.est_num( numero_de_ligne )){
+            numero_de_ligne=parseInt( numero_de_ligne , 10 ) + ajouter;
+            var a=document.getElementById( nom_textarea );
+            var lignes=a.value.split( '\n' );
             if(lignes.length > numero_de_ligne){
-                lignes.splice(numero_de_ligne - 1,(lignes.length - numero_de_ligne) + 1);
+                lignes.splice( numero_de_ligne - 1 , (lignes.length - numero_de_ligne) + 1 );
                 position_fin=0;
                 for( i=lignes.length - 1 ; i >= 0 ; i-- ){
                     position_fin+=lignes[i].length + 1;
@@ -473,44 +474,44 @@ class interface1{
       =============================================================================================================
       function aller_au_caractere_de_la_textarea
     */
-    aller_au_caractere_de_la_textarea(id_textarea){
-        var valeur=prompt('aller au caractère n° :');
+    aller_au_caractere_de_la_textarea( id_textarea ){
+        var valeur=prompt( 'aller au caractère n° :' );
         if(valeur !== null){
-            var elem=document.getElementById(id_textarea);
+            var elem=document.getElementById( id_textarea );
             elem.focus();
-            elem.selectionStart=parseInt(valeur,10);
-            elem.selectionEnd=parseInt(valeur,10) + 1;
+            elem.selectionStart=parseInt( valeur , 10 );
+            elem.selectionEnd=parseInt( valeur , 10 ) + 1;
         }
     }
     /*
       =============================================================================================================
       function definir_le_nombre_de_lignes_a_afficher_pour_une_liste
     */
-    definir_le_nombre_de_lignes_a_afficher_pour_une_liste(nom_de_la_page,nombre_de_lignes){
+    definir_le_nombre_de_lignes_a_afficher_pour_une_liste( nom_de_la_page , nombre_de_lignes ){
         var ajax_param={
             "call" : {"lib" : 'php' ,"file" : 'session' ,"funct" : 'definir_le_nombre_de_lignes_a_afficher_pour_une_liste'} ,
             "nom_de_la_page" : nom_de_la_page ,
             "nombre_de_lignes" : nombre_de_lignes
         };
-        async function definir_le_nombre_de_lignes_a_afficher_pour_une_liste1(url="",ajax_param){
-            var a=__gi1.recupérer_un_fetch(url,ajax_param);
+        async function definir_le_nombre_de_lignes_a_afficher_pour_une_liste1( url="" , ajax_param ){
+            var a=__gi1.recupérer_un_fetch( url , ajax_param );
             return a;
         }
-        definir_le_nombre_de_lignes_a_afficher_pour_une_liste1('za_ajax.php?definir_le_nombre_de_lignes_a_afficher_pour_une_liste',ajax_param).then((donnees) => {
+        definir_le_nombre_de_lignes_a_afficher_pour_une_liste1( 'za_ajax.php?definir_le_nombre_de_lignes_a_afficher_pour_une_liste' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst === true){
-                    window.location.reload(true);
+                    window.location.reload( true );
                     return;
                 }else{
                     debugger;
                 }
-            });
+            } );
     }
     /*
       =============================================================================================================
       affichage de la modale permettant de fixer_les_parametres_pour_une_liste
       function fixer_les_parametres_pour_une_liste
     */
-    fixer_les_parametres_pour_une_liste(nom_de_la_page){
+    fixer_les_parametres_pour_une_liste( nom_de_la_page ){
         this.global_modale2_iframe.style.visibility='none';
         var t='';
         t+='<h1>fixer les paramètres</h1>';
@@ -528,14 +529,14 @@ class interface1{
       =============================================================================================================
     */
     masquer_les_boutons(){
-        var refBody=document.getElementsByTagName('body')[0];
-        var lsta1=refBody.getElementsByTagName('a');
+        var refBody=document.getElementsByTagName( 'body' )[0];
+        var lsta1=refBody.getElementsByTagName( 'a' );
         for( var i=0 ; i < lsta1.length ; i++ ){
             if(lsta1[i].href){
                 try{
-                    if(lsta1[i].className && lsta1[i].className.indexOf('noHide') >= 0){
+                    if(lsta1[i].className && lsta1[i].className.indexOf( 'noHide' ) >= 0){
                     }else{
-                        lsta1[i].classList.add('yyunset_temporaire');
+                        lsta1[i].classList.add( 'yyunset_temporaire' );
                     }
                 }catch(e){}
             }
@@ -546,41 +547,41 @@ class interface1{
       =============================================================================================================
       on action_quand_click_sur_lien_javascript
     */
-    action_quand_click_sur_lien_javascript(e){
+    action_quand_click_sur_lien_javascript( e ){
         var attendre_message_avant_reactivation=false;
         try{
-            if(e.target.getAttribute('data-attendre_message') && e.target.getAttribute('data-attendre_message') === 'oui'){
+            if(e.target.getAttribute( 'data-attendre_message' ) && e.target.getAttribute( 'data-attendre_message' ) === 'oui'){
                 attendre_message_avant_reactivation=true;
                 __gi1.reference_bouton_attendre=e.target;
                 __gi1.masquer_les_boutons();
             }
-            e.target.classList.add("yyunset_temporaire");
+            e.target.classList.add( "yyunset_temporaire" );
         }catch(e1){}
         if(attendre_message_avant_reactivation === false){
-            setTimeout(function(){
+            setTimeout( function(){
                     /*
                       Normalement, l'affichage des messages supprime les yyunset_temporaire
                       mais on ne sait jamais
                     */
-                    var lstb1=document.getElementsByClassName("yyunset_temporaire");
+                    var lstb1=document.getElementsByClassName( "yyunset_temporaire" );
                     var i=0;
                     for( i=0 ; i < lstb1.length ; i++ ){
-                        lstb1[i].classList.remove('yyunset_temporaire');
+                        lstb1[i].classList.remove( 'yyunset_temporaire' );
                     }
-                },300);
+                } , 300 );
         }
     }
     /*
       =============================================================================================================
       on colorier_le_bouton
     */
-    #colorier_le_bouton(a){
+    #colorier_le_bouton( a ){
         __gi1.class_list_avant=a.className;
         __gi1.element_a_reactiver=a;
         var a_une_erreur=false;
-        var lst=document.getElementById(this.#nom_div_des_messages1).getElementsByTagName('div');
+        var lst=document.getElementById( this.#nom_div_des_messages1 ).getElementsByTagName( 'div' );
         for( var i=0 ; i < lst.length ; i++ ){
-            if(lst[i].className.indexOf('yyerreur') >= 0){
+            if(lst[i].className.indexOf( 'yyerreur' ) >= 0){
                 a_une_erreur=true;
                 break;
             }
@@ -598,21 +599,21 @@ class interface1{
     */
     reactiver_les_boutons1(){
         var i=0;
-        var refBody=document.getElementsByTagName('body')[0];
-        clearTimeout(this.#globale_timeout_reference_timer_serveur_lent);
-        var lstb1=refBody.getElementsByTagName('button');
+        var refBody=document.getElementsByTagName( 'body' )[0];
+        clearTimeout( this.#globale_timeout_reference_timer_serveur_lent );
+        var lstb1=refBody.getElementsByTagName( 'button' );
         for( i=0 ; i < lstb1.length ; i++ ){
             if(!lstb1[i].onclick){
-                if(lstb1[i].hasOwnProperty('className') && lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
+                if(lstb1[i].hasOwnProperty( 'className' ) && lstb1[i].className && lstb1[i].className.indexOf( 'noHide' ) >= 0){
                 }else{
                     lstb1[i].style.visibility="";
                 }
             }
         }
-        var lstb1=refBody.getElementsByTagName('input');
+        var lstb1=refBody.getElementsByTagName( 'input' );
         for( i=0 ; i < lstb1.length ; i++ ){
             if(!lstb1[i].onclick){
-                if(lstb1[i].hasOwnProperty('className') && lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
+                if(lstb1[i].hasOwnProperty( 'className' ) && lstb1[i].className && lstb1[i].className.indexOf( 'noHide' ) >= 0){
                 }else{
                     if(lstb1[i].type === 'submit'){
                         lstb1[i].style.visibility="";
@@ -620,23 +621,23 @@ class interface1{
                 }
             }
         }
-        var lsta1=refBody.getElementsByTagName('a');
+        var lsta1=refBody.getElementsByTagName( 'a' );
         for( i=0 ; i < lsta1.length ; i++ ){
-            if(lsta1[i].hasOwnProperty('className') && lsta1[i].className && lsta1[i].className.indexOf('noHide') >= 0){
+            if(lsta1[i].hasOwnProperty( 'className' ) && lsta1[i].className && lsta1[i].className.indexOf( 'noHide' ) >= 0){
             }else{
-                lsta1[i].classList.remove("yyunset_temporaire");
+                lsta1[i].classList.remove( "yyunset_temporaire" );
                 if(__gi1.reference_bouton_attendre === lsta1[i]){
-                    this.#colorier_le_bouton(lsta1[i]);
+                    this.#colorier_le_bouton( lsta1[i] );
                 }
             }
         }
         try{
-            var elem=document.getElementById('sloserver1');
+            var elem=document.getElementById( 'sloserver1' );
             elem.remove();
         }catch(e){}
-        var lstb1=document.getElementsByClassName("yyunset_temporaire");
+        var lstb1=document.getElementsByClassName( "yyunset_temporaire" );
         for( i=0 ; i < lstb1.length ; i++ ){
-            lstb1[i].classList.remove('yyunset_temporaire');
+            lstb1[i].classList.remove( 'yyunset_temporaire' );
         }
     }
     /*
@@ -645,17 +646,17 @@ class interface1{
     */
     #mise_a_jour_affichage_serveur_lent1(){
         try{
-            var elem=document.getElementById('sloserver1');
+            var elem=document.getElementById( 'sloserver1' );
             if(elem){
-                var opa=parseInt(elem.style.opacity * 100,10);
+                var opa=parseInt( elem.style.opacity * 100 , 10 );
                 if(opa < 100){
                     var newOpa=opa / 100 + 0.1;
                     if(newOpa > 1){
                         newOpa=1;
                     }
-                    document.getElementById('sloserver1').style.opacity=newOpa;
+                    document.getElementById( 'sloserver1' ).style.opacity=newOpa;
                     if(newOpa < 1){
-                        setTimeout(this.#mise_a_jour_affichage_serveur_lent1.bind(this),50);
+                        setTimeout( this.#mise_a_jour_affichage_serveur_lent1.bind( this ) , 50 );
                     }
                 }
             }
@@ -665,7 +666,7 @@ class interface1{
       =============================================================================================================
     */
     #affichage_boite_serveur_lent1(){
-        var divId=document.createElement('div');
+        var divId=document.createElement( 'div' );
         divId.id='sloserver1';
         divId.style.top='55px';
         divId.style.left='0px';
@@ -679,33 +680,33 @@ class interface1{
         divId.className='yyerreur';
         divId.style.opacity=0.0;
         divId.innerHTML='désolé, le serveur et/ou la connexion sont lents<br /> veuillez patienter';
-        document.getElementsByTagName('body')[0].appendChild(divId);
-        setTimeout(this.#mise_a_jour_affichage_serveur_lent1.bind(this),50);
+        document.getElementsByTagName( 'body' )[0].appendChild( divId );
+        setTimeout( this.#mise_a_jour_affichage_serveur_lent1.bind( this ) , 50 );
     }
     /*
       =============================================================================================================
       quand on clique sur un bouton, on affiche la boite 1.5 secondes plus tard
       =============================================================================================================
     */
-    click_sur_bouton1(e){
+    click_sur_bouton1( e ){
         try{
             e.target.style.visibility="hidden";
         }catch(e1){}
-        this.#globale_timeout_reference_timer_serveur_lent=setTimeout(this.#affichage_boite_serveur_lent1.bind(this),this.#globale_timeout_serveur_lent);
+        this.#globale_timeout_reference_timer_serveur_lent=setTimeout( this.#affichage_boite_serveur_lent1.bind( this ) , this.#globale_timeout_serveur_lent );
     }
     /*
       =============================================================================================================
       quand on clique sur un lien, on affiche la boite 1.5 secondes plus tard
       =============================================================================================================
     */
-    click_sur_lien1(e){
+    click_sur_lien1( e ){
         /* console.log('click_sur_lien1'); */
         if(e.target.target && e.target.target.toLowerCase() === '_blank'){
         }else{
             try{
-                e.target.classList.add("yyunset_temporaire");
+                e.target.classList.add( "yyunset_temporaire" );
             }catch(e1){}
-            this.#globale_timeout_reference_timer_serveur_lent=setTimeout(this.#affichage_boite_serveur_lent1.bind(this),this.#globale_timeout_serveur_lent);
+            this.#globale_timeout_reference_timer_serveur_lent=setTimeout( this.#affichage_boite_serveur_lent1.bind( this ) , this.#globale_timeout_serveur_lent );
         }
     }
     /*
@@ -719,51 +720,51 @@ class interface1{
           fixMenu1();
         */
         var i=0;
-        var bod=document.getElementsByTagName('body')[0];
-        var lstb1=bod.getElementsByTagName('button');
+        var bod=document.getElementsByTagName( 'body' )[0];
+        var lstb1=bod.getElementsByTagName( 'button' );
         for( i=0 ; i < lstb1.length ; i++ ){
             if(!lstb1[i].onclick){
-                if(lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
+                if(lstb1[i].className && lstb1[i].className.indexOf( 'noHide' ) >= 0){
                 }else{
-                    lstb1[i].addEventListener("click",this.click_sur_bouton1.bind(this),false);
+                    lstb1[i].addEventListener( "click" , this.click_sur_bouton1.bind( this ) , false );
                 }
             }
         }
-        var lstb1=bod.getElementsByTagName('input');
+        var lstb1=bod.getElementsByTagName( 'input' );
         for( i=0 ; i < lstb1.length ; i++ ){
             if(!lstb1[i].onclick){
-                if(lstb1[i].className && lstb1[i].className.indexOf('noHide') >= 0){
+                if(lstb1[i].className && lstb1[i].className.indexOf( 'noHide' ) >= 0){
                 }else{
                     if(lstb1[i].type === 'submit'){
-                        lstb1[i].addEventListener("click",this.click_sur_bouton1.bind(this),false);
+                        lstb1[i].addEventListener( "click" , this.click_sur_bouton1.bind( this ) , false );
                     }
                 }
             }
         }
-        var lsta1=bod.getElementsByTagName('a');
+        var lsta1=bod.getElementsByTagName( 'a' );
         for( i=0 ; i < lsta1.length ; i++ ){
             if(lsta1[i].href){
                 try{
-                    if(!(lsta1[i].href.indexOf('javascript') >= 0)){
-                        if(lsta1[i].className && lsta1[i].className.indexOf('noHide') >= 0){
+                    if(!(lsta1[i].href.indexOf( 'javascript' ) >= 0)){
+                        if(lsta1[i].className && lsta1[i].className.indexOf( 'noHide' ) >= 0){
                         }else{
-                            lsta1[i].addEventListener("click",this.click_sur_lien1.bind(this),false);
+                            lsta1[i].addEventListener( "click" , this.click_sur_lien1.bind( this ) , false );
                         }
                     }
                 }catch(e){}
                 /* pour les liens dans le svg */
             }
         }
-        var lsta1=bod.getElementsByTagName('a');
+        var lsta1=bod.getElementsByTagName( 'a' );
         for( i=0 ; i < lsta1.length ; i++ ){
             /*
               un try car pour les liens dans le svg, indexOf ne fonctionne pas ! 
             */
             try{
-                if(lsta1[i].href && lsta1[i].href.indexOf('javascript') >= 0){
-                    if(lsta1[i].className && lsta1[i].className.indexOf('noHide') >= 0){
+                if(lsta1[i].href && lsta1[i].href.indexOf( 'javascript' ) >= 0){
+                    if(lsta1[i].className && lsta1[i].className.indexOf( 'noHide' ) >= 0){
                     }else{
-                        lsta1[i].addEventListener("click",this.action_quand_click_sur_lien_javascript,false);
+                        lsta1[i].addEventListener( "click" , this.action_quand_click_sur_lien_javascript , false );
                     }
                 }
             }catch(e){}
@@ -773,7 +774,7 @@ class interface1{
           Mettre le bouton retour à la liste dans la barre des messages si elle est affichée
           =====================================================================================================
         */
-        var ref=document.getElementById(this.#nom_div_des_messages1);
+        var ref=document.getElementById( this.#nom_div_des_messages1 );
         if(ref.style.visibility === 'visible'){
             /* à priori, un message est affiché */
             try{
@@ -781,13 +782,13 @@ class interface1{
                   
                   si il y a un bouton __retour_a_la_liste, on l'ajoute à la zone message
                 */
-                if(document.getElementById('__retour_a_la_liste')){
-                    var a=document.createElement('a');
+                if(document.getElementById( '__retour_a_la_liste' )){
+                    var a=document.createElement( 'a' );
                     a.className="__clone";
                     a.style.float='inline-end';
-                    a.href=document.getElementById('__retour_a_la_liste').href;
+                    a.href=document.getElementById( '__retour_a_la_liste' ).href;
                     a.innerHTML='&nbsp;⬱&nbsp;';
-                    ref.insertBefore(a,ref.firstChild);
+                    ref.insertBefore( a , ref.firstChild );
                 }
             }catch(e){}
         }
@@ -796,35 +797,35 @@ class interface1{
       =============================================================================================================
     */
     calcul_la_largeur_des_ascenseurs(){
-        var body=document.getElementsByTagName('body')[0];
-        var div=document.createElement("div");
+        var body=document.getElementsByTagName( 'body' )[0];
+        var div=document.createElement( "div" );
         div.style.width='100px';
         div.style.height='100px';
         div.style.overflow='auto';
         div.style.opacity=0.01;
-        body.appendChild(div);
-        var bag=document.createElement("div");
+        body.appendChild( div );
+        var bag=document.createElement( "div" );
         var att1='width:101px;height:101px;overflow:auto;';
         bag.style.width='101px';
         bag.style.height='101px';
         bag.style.overflow='auto';
-        div.appendChild(bag);
+        div.appendChild( bag );
         div.scrollTop=100;
         this.#largeur_des_ascenseurs=div.scrollTop - 1;
-        div.removeChild(bag);
-        body.removeChild(div);
+        div.removeChild( bag );
+        body.removeChild( div );
     }
     /*
       =============================================================================================================
     */
-    convertit_source_javascript_en_rev(sourceDuJavascript){
+    convertit_source_javascript_en_rev( sourceDuJavascript ){
         var parseur_javascript=window.acorn.Parser;
         try{
             var tableau_des_commentaires_js=[];
-            var obj=parseur_javascript.parse(sourceDuJavascript,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tableau_des_commentaires_js});
+            var obj=parseur_javascript.parse( sourceDuJavascript , {"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tableau_des_commentaires_js} );
             if(obj === ''){
                 t='';
-            }else if(obj.hasOwnProperty('body') && Array.isArray(obj.body) && obj.body.length === 0){
+            }else if(obj.hasOwnProperty( 'body' ) && Array.isArray( obj.body ) && obj.body.length === 0){
                 t='';
             }else{
                 /*
@@ -835,29 +836,29 @@ class interface1{
                 for( var nn=0 ; nn < commentaires_a_remplacer.length ; nn++ ){
                     for( var indc=tableau_des_commentaires_js.length - 1 ; indc >= 0 ; indc-- ){
                         if(tableau_des_commentaires_js[indc].value.trim() === commentaires_a_remplacer[nn]){
-                            tableau_des_commentaires_js.splice(indc,1);
+                            tableau_des_commentaires_js.splice( indc , 1 );
                         }
                     }
                 }
                 for( var indc=tableau_des_commentaires_js.length - 1 ; indc >= 0 ; indc-- ){
                     if(tableau_des_commentaires_js[indc].value.trim() === '' && tableau_des_commentaires_js[indc].type === 'Line'){
-                        tableau_des_commentaires_js.splice(indc,1);
+                        tableau_des_commentaires_js.splice( indc , 1 );
                     }
                 }
                 /* on transforme le ast du js en rev */
-                var obj1=__m_astjs_vers_rev1.traite_ast(obj.body,tableau_des_commentaires_js,{});
+                var obj1=__m_astjs_vers_rev1.traite_ast( obj.body , tableau_des_commentaires_js , {} );
                 if(obj1.__xst === true){
                     return({"__xst" : true ,"__xva" : obj1.__xva});
                 }else{
-                    __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3433'});
+                    __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3433'} );
                 }
             }
         }catch(e){
-            console.error('e=',e);
+            console.error( 'e=' , e );
             if(e.pos){
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"plage" : [e.pos,e.pos]});
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"plage" : [e.pos,e.pos]} );
             }else{
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2()});
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2()} );
             }
         }
         return({"__xst" : true ,"__xva" : obj1.__xva});
@@ -865,11 +866,11 @@ class interface1{
     /*
       =============================================================================================================
     */
-    bouton_transform_textarea_js_en_rev_avec_acorn3(nom_de_la_text_area_js,nom_de_la_text_area_rev,sauvegarder_en_stockage_local=false){
+    bouton_transform_textarea_js_en_rev_avec_acorn3( nom_de_la_text_area_js , nom_de_la_text_area_rev , sauvegarder_en_stockage_local=false ){
         this.raz_des_messages();
-        var a=document.getElementById(nom_de_la_text_area_js);
+        var a=document.getElementById( nom_de_la_text_area_js );
         if(sauvegarder_en_stockage_local === true){
-            localStorage.setItem('fta_indexhtml_javascript_dernier_fichier_charge',a.value);
+            localStorage.setItem( 'fta_indexhtml_javascript_dernier_fichier_charge' , a.value );
         }
         /*
           https://github.com/acornjs/acorn
@@ -878,104 +879,104 @@ class interface1{
         try{
             var tabComment=[];
             /* on transforme le javascript en ast */
-            var obj=parseur_javascript.parse(a.value,{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment});
+            var obj=parseur_javascript.parse( a.value , {"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment} );
             /* on transforme le ast en rev */
-            var obj=__m_astjs_vers_rev1.traite_ast(obj.body,tabComment,{});
+            var obj=__m_astjs_vers_rev1.traite_ast( obj.body , tabComment , {} );
             if(obj.__xst === true){
-                document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;
-                var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
-                var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,true,false,'');
+                document.getElementById( nom_de_la_text_area_rev ).value=obj.__xva;
+                var tableau1=__m_rev1.txt_en_tableau( obj.__xva );
+                var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva , true , false , '' );
                 if(matriceFonction.__xst === true){
                     /*
                       var startMicro = performance.now();
                     */
-                    var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
+                    var obj2=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
                     if(obj2.__xst === true){
-                        document.getElementById(nom_de_la_text_area_rev).value=obj2.__xva;
+                        document.getElementById( nom_de_la_text_area_rev ).value=obj2.__xva;
                     }
                 }else{
-                    __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur rev'});
+                    __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur rev'} );
                 }
             }else{
-                this.remplir_et_afficher_les_messages1(nom_de_la_text_area_js);
+                this.remplir_et_afficher_les_messages1( nom_de_la_text_area_js );
             }
         }catch(e){
             /* console.error('e=',e); */
             debugger;
             if(e.pos){
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2(e) + '"' + e.message + '"' ,"plage" : [e.pos,e.pos]});
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2( e ) + '"' + e.message + '"' ,"plage" : [e.pos,e.pos]} );
             }else{
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2(e) + '"' + e.message + '"'});
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2( e ) + '"' + e.message + '"'} );
             }
         }
-        this.remplir_et_afficher_les_messages1(nom_de_la_text_area_js);
+        this.remplir_et_afficher_les_messages1( nom_de_la_text_area_js );
     }
     /*
       =============================================================================================================
       convertir le contenu d'une textearea rev et le mettre le résultat js dans une textarea
       =============================================================================================================
     */
-    convertir_textearea_rev_vers_textarea_js2(chp_rev_source,chp_genere_source,id_source,id_cible){
+    convertir_textearea_rev_vers_textarea_js2( chp_rev_source , chp_genere_source , id_source , id_cible ){
         this.raz_des_messages();
-        var a=document.getElementById(chp_rev_source);
+        var a=document.getElementById( chp_rev_source );
         var startMicro=performance.now();
-        var obj=__m_rev_vers_js1.c_rev_vers_js(a.value,{});
+        var obj=__m_rev_vers_js1.c_rev_vers_js( a.value , {} );
         var endMicro=performance.now();
         /* console.log('%c\n\n=============\nconvertion de rev en js ='+(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms','background:lightblue;'); */
         if(obj.__xst === true){
-            document.getElementById(chp_genere_source).value=obj.__xva;
+            document.getElementById( chp_genere_source ).value=obj.__xva;
             if(id_source !== null && id_cible !== null){
                 var parametres_sauvegarde={"matrice" : obj.matriceFonction ,"chp_provenance_rev" : 'source' ,"chx_source_rev" : id_source ,"id_cible" : id_cible};
-                sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
+                sauvegarder_format_rev_en_dbb( parametres_sauvegarde );
             }
         }else{
-            document.getElementById(chp_genere_source).value='erreur de conversion';
+            document.getElementById( chp_genere_source ).value='erreur de conversion';
         }
-        this.remplir_et_afficher_les_messages1(chp_rev_source);
+        this.remplir_et_afficher_les_messages1( chp_rev_source );
     }
     /*
       =============================================================================================================
       convertir le contenu d'une textearea rev et le mettre le résultat php dans une textarea
       =============================================================================================================
     */
-    convertir_textearea_rev_vers_textarea_php2(nom_zone_source_rev,nom_zone_genere_php,id_source,id_cible){
+    convertir_textearea_rev_vers_textarea_php2( nom_zone_source_rev , nom_zone_genere_php , id_source , id_cible ){
         this.raz_des_messages();
-        var a=document.getElementById(nom_zone_source_rev);
+        var a=document.getElementById( nom_zone_source_rev );
         var startMicro=performance.now();
-        var obj=__m_rev_vers_php1.c_rev_vers_php(a.value,{});
+        var obj=__m_rev_vers_php1.c_rev_vers_php( a.value , {} );
         var endMicro=performance.now();
-        var tm=parseInt((endMicro - startMicro)*1000,10)/1000;
-        console.log('%c\n\n=============\nconvertion de rev en php en ' + (tm) + ' ms','background:lightblue;');
+        var tm=parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000;
+        console.log( '%c\n\n=============\nconvertion de rev en php en ' + tm + ' ms' , 'background:lightblue;' );
         if(obj.__xst === true){
-            document.getElementById(nom_zone_genere_php).value=obj.__xva;
+            document.getElementById( nom_zone_genere_php ).value=obj.__xva;
             if(id_source !== null && id_cible !== null){
                 var parametres_sauvegarde={"matrice" : obj.matriceFonction ,"chp_provenance_rev" : 'source' ,"chx_source_rev" : id_source ,"id_cible" : id_cible};
-                sauvegarder_format_rev_en_dbb(parametres_sauvegarde);
+                sauvegarder_format_rev_en_dbb( parametres_sauvegarde );
             }
         }else{
-            document.getElementById(nom_zone_genere_php).value='erreur de conversion';
+            document.getElementById( nom_zone_genere_php ).value='erreur de conversion';
         }
-        this.remplir_et_afficher_les_messages1(nom_zone_source_rev);
+        this.remplir_et_afficher_les_messages1( nom_zone_source_rev );
     }
     /*
       =============================================================================================================
       convertir le contenu d'une textearea rev php et le mettre le résultat php dans une textarea
       =============================================================================================================
     */
-    convertir_textearea_rev_vers_textarea_php(nom_zone_source_rev,nom_zone_genere_php,bouton_interface=false){
+    convertir_textearea_rev_vers_textarea_php( nom_zone_source_rev , nom_zone_genere_php , bouton_interface=false ){
         this.raz_des_messages();
-        var a=document.getElementById(nom_zone_source_rev);
+        var a=document.getElementById( nom_zone_source_rev );
         var startMicro=performance.now();
-        var tableau1=__m_rev1.txt_en_tableau(a.value);
+        var tableau1=__m_rev1.txt_en_tableau( a.value );
         var endMicro=performance.now();
         /* console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms'); */
-        var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,true,false,'');
+        var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva , true , false , '' );
         if(matriceFonction.__xst === true){
-            var objPhp=__m_rev_vers_php1.c_tab_vers_php(matriceFonction.__xva,{});
+            var objPhp=__m_rev_vers_php1.c_tab_vers_php( matriceFonction.__xva , {} );
             debugger;
             /* avrif */
             if(objPhp.__xst === true){
-                document.getElementById(nom_zone_genere_php).value=objPhp.__xva;
+                document.getElementById( nom_zone_genere_php ).value=objPhp.__xva;
                 if(bouton_interface === true){
                     /* pour firefox ! */
                     return;
@@ -983,7 +984,7 @@ class interface1{
                 return({"__xst" : true ,"__xva" : matriceFonction.__xva});
             }
         }
-        this.remplir_et_afficher_les_messages1(nom_zone_source_rev);
+        this.remplir_et_afficher_les_messages1( nom_zone_source_rev );
         if(bouton_interface === true){
             /* pour firefox ! */
             return;
@@ -995,45 +996,45 @@ class interface1{
       convertir le contenu d'une textearea php et le mettre le résultat rev dans une textarea
       =============================================================================================================
     */
-    convertir_text_area_php_en_rev_avec_php_parseur_js(nom_de_la_text_area_php,nom_de_la_text_area_rev,options_traitement,sauvegarder_en_stockage_local){
-        var options_traitement=JSON.parse(options_traitement.replace(/\'/g,'"'));
-        document.getElementById(nom_de_la_text_area_rev).value='Veuillez patienter !';
+    convertir_text_area_php_en_rev_avec_php_parseur_js( nom_de_la_text_area_php , nom_de_la_text_area_rev , options_traitement , sauvegarder_en_stockage_local ){
+        var options_traitement=JSON.parse( options_traitement.replace( /\'/g , '"' ) );
+        document.getElementById( nom_de_la_text_area_rev ).value='Veuillez patienter !';
         this.raz_des_messages();
-        var a=document.getElementById(nom_de_la_text_area_php);
+        var a=document.getElementById( nom_de_la_text_area_php );
         if(sauvegarder_en_stockage_local !== false){
-            localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
+            localStorage.setItem( "fta_indexhtml_php_dernier_fichier_charge" , a.value );
         }
-        var lines=a.value.split(/\r|\r\n|\n/);
+        var lines=a.value.split( /\r|\r\n|\n/ );
         var count=lines.length;
         try{
             /* ✍ {parser:{extractDoc: true,php7: true,},ast:{withPositions: true}} */
             /* var startMicro=performance.now(); */
-            var parseur=window.PhpParser.Engine({"parser" : {"extractDoc" : true} ,"ast" : {"withPositions" : true}});
+            var parseur=window.PhpParser.Engine( {"parser" : {"extractDoc" : true} ,"ast" : {"withPositions" : true}} );
             /* on retire les sources compris entre  sql_inclure_deb et sql_inclure_fin */
             let regex=/\/\*sql_inclure_deb[\s\S]*?sql_inclure_fin\*\//g;
-            let php_moins_commentaires_sql=a.value.replace(regex,'');
-            var ast_de_php=parseur.parseCode(php_moins_commentaires_sql);
-            var obj=__m_astphpparseur_vers_rev1.traite_ast(ast_de_php,options_traitement);
+            let php_moins_commentaires_sql=a.value.replace( regex , '' );
+            var ast_de_php=parseur.parseCode( php_moins_commentaires_sql );
+            var obj=__m_astphpparseur_vers_rev1.traite_ast( ast_de_php , options_traitement );
             if(obj.__xst === true){
-                document.getElementById(nom_de_la_text_area_rev).value=obj.__xva;
-                if(obj.__xva.substr(0,4) !== 'php('){
-                    var tableau1=__m_rev1.txt_en_tableau('php(' + obj.__xva + ')');
+                document.getElementById( nom_de_la_text_area_rev ).value=obj.__xva;
+                if(obj.__xva.substr( 0 , 4 ) !== 'php('){
+                    var tableau1=__m_rev1.txt_en_tableau( 'php(' + obj.__xva + ')' );
                 }else{
-                    var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
+                    var tableau1=__m_rev1.txt_en_tableau( obj.__xva );
                 }
-                var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,true,false,'');
+                var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva , true , false , '' );
                 if(matriceFonction.__xst === true){
-                    var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
+                    var obj2=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
                     if(obj2.__xst === true){
-                        document.getElementById(nom_de_la_text_area_rev).value=obj2.__xva;
+                        document.getElementById( nom_de_la_text_area_rev ).value=obj2.__xva;
                     }else{
-                        this.remplir_et_afficher_les_messages1(nom_de_la_text_area_rev);
+                        this.remplir_et_afficher_les_messages1( nom_de_la_text_area_rev );
                     }
                 }else{
-                    this.remplir_et_afficher_les_messages1(nom_de_la_text_area_rev);
+                    this.remplir_et_afficher_les_messages1( nom_de_la_text_area_rev );
                 }
             }else{
-                this.remplir_et_afficher_les_messages1(nom_de_la_text_area_php);
+                this.remplir_et_afficher_les_messages1( nom_de_la_text_area_php );
             }
             /*
               var endMicro=performance.now();
@@ -1043,92 +1044,94 @@ class interface1{
             /* console.error(e); */
             debugger;
             if(e.lineNumber){
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2(e)+'erreur dans le source php : <br />' + e.message ,"ligne" : e.lineNumber});
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2( e ) + 'erreur dans le source php : <br />' + e.message ,"ligne" : e.lineNumber} );
             }else{
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2(e)+'erreur dans le source php : <br />' + e.message});
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2( e ) + 'erreur dans le source php : <br />' + e.message} );
             }
-            this.remplir_et_afficher_les_messages1(nom_de_la_text_area_php);
+            this.remplir_et_afficher_les_messages1( nom_de_la_text_area_php );
         }
-        this.remplir_et_afficher_les_messages1(nom_de_la_text_area_php);
+        this.remplir_et_afficher_les_messages1( nom_de_la_text_area_php );
     }
     /*
       =============================================================================================================
     */
-    convertir_textearea_rev_vers_textarea_html(nom_de_la_textarea_rev,nom_de_la_textarea_html){
+    convertir_textearea_rev_vers_textarea_html( nom_de_la_textarea_rev , nom_de_la_textarea_html ){
         __gi1.raz_des_messages();
-        var a=document.getElementById(nom_de_la_textarea_rev);
-        var tableau1=__m_rev1.txt_en_tableau(a.value);
-        var obj1=__m_rev1.tb_vers_matrice(tableau1.__xva,false,true,'');
+        var a=document.getElementById( nom_de_la_textarea_rev );
+        var tableau1=__m_rev1.txt_en_tableau( a.value );
+        var obj1=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
         if(obj1.__xst === true){
-            var obj2=__module_html1.tabToHtml1(obj1.__xva,0,false,0);
+            var obj2=__module_html1.tabToHtml1( obj1.__xva , 0 , false , 0 );
             if(obj2.__xst === true){
-                document.getElementById(nom_de_la_textarea_html).value=obj2.__xva;
-                __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : 'html produit'});
+                document.getElementById( nom_de_la_textarea_html ).value=obj2.__xva;
+                __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : 'html produit'} );
             }else{
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur de reconstruction du html'});
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur de reconstruction du html'} );
             }
         }else{
-            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour le rev'});
+            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour le rev'} );
         }
-        __gi1.remplir_et_afficher_les_messages1(nom_de_la_textarea_rev);
+        __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
     }
     /*
       =============================================================================================================
     */
-    convertir_text_area_html_en_rev(nom_de_la_textarea,options){
+    convertir_text_area_html_en_rev( nom_de_la_textarea , options ){
         try{
-            var options_json=JSON.parse(options.replace(/\'/g,'"'));
+            var options_json=JSON.parse( options.replace( /\'/g , '"' ) );
             options_json['zone_source']=nom_de_la_textarea;
         }catch(e){
-            console.log(e);
-            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '0050 convertit-html-en-rev.js erreur dans les paramètres option'});
-            __gi1.remplir_et_afficher_les_messages1('txtar2');
+            console.log( e );
+            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '0050 convertit-html-en-rev.js erreur dans les paramètres option'} );
+            __gi1.remplir_et_afficher_les_messages1( 'txtar2' );
             return;
         }
-        if(options_json.hasOwnProperty('zone_html_rev')){
-            document.getElementById(options_json.zone_html_rev).value='';
+        if(options_json.hasOwnProperty( 'zone_html_rev' )){
+            document.getElementById( options_json.zone_html_rev ).value='';
         }
-        if(options_json.hasOwnProperty('zone_html_resultat')){
-            document.getElementById(options_json.zone_html_resultat).value='';
+        if(options_json.hasOwnProperty( 'zone_html_resultat' )){
+            document.getElementById( options_json.zone_html_resultat ).value='';
         }
         __gi1.raz_des_messages();
-        var a=document.getElementById(nom_de_la_textarea);
-        localStorage.setItem('fta_traitehtml_dernier_fichier_charge',a.value);
-        var lines=a.value.split(/\r\n|\r|\n/);
+        var a=document.getElementById( nom_de_la_textarea );
+        localStorage.setItem( 'fta_traitehtml_dernier_fichier_charge' , a.value );
+        var lines=a.value.split( /\r\n|\r|\n/ );
         var count=lines.length;
-        var obj=__module_html1.TransformHtmlEnRev(a.value,0,options_json);
+        var obj=__module_html1.TransformHtmlEnRev( a.value , 0 , options_json );
         if(obj.__xst == true){
-            if(obj.hasOwnProperty('traitements_javascript_integres_en_cours') && obj.traitements_javascript_integres_en_cours === true){
+            if(obj.hasOwnProperty( 'traitements_javascript_integres_en_cours' )
+                   && obj.traitements_javascript_integres_en_cours === true
+            ){
             }else{
-                var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
-                var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,true,false,'');
+                var tableau1=__m_rev1.txt_en_tableau( obj.__xva );
+                var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva , true , false , '' );
                 if(matriceFonction.__xst === true){
-                    var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
+                    var obj2=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
                     if(obj2.__xst === true){
-                        if(options_json.hasOwnProperty('zone_html_rev')){
-                            document.getElementById(options_json.zone_html_rev).value=obj2.__xva;
+                        if(options_json.hasOwnProperty( 'zone_html_rev' )){
+                            document.getElementById( options_json.zone_html_rev ).value=obj2.__xva;
                         }
                     }else{
-                        if(options_json.hasOwnProperty('zone_html_rev')){
-                            document.getElementById(options_json.zone_html_rev).value=obj.__xva;
+                        if(options_json.hasOwnProperty( 'zone_html_rev' )){
+                            document.getElementById( options_json.zone_html_rev ).value=obj.__xva;
                         }
                     }
                 }else{
-                    if(options_json.hasOwnProperty('zone_html_rev')){
-                        document.getElementById(options_json.zone_html_rev).value=obj.__xva;
+                    if(options_json.hasOwnProperty( 'zone_html_rev' )){
+                        document.getElementById( options_json.zone_html_rev ).value=obj.__xva;
                     }
                 }
-                if(options_json.hasOwnProperty('zone_html_rev')){
-                    __gi1.remplir_et_afficher_les_messages1(options_json.zone_html_rev);
+                if(options_json.hasOwnProperty( 'zone_html_rev' )){
+                    __gi1.remplir_et_afficher_les_messages1( options_json.zone_html_rev );
                 }else{
-                    __gi1.remplir_et_afficher_les_messages1(nom_de_la_textarea);
+                    __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea );
                 }
             }
         }else{
-            if(options_json.hasOwnProperty('zone_source')){
-                __gi1.remplir_et_afficher_les_messages1(options_json.zone_source);
+            if(options_json.hasOwnProperty( 'zone_source' )){
+                __gi1.remplir_et_afficher_les_messages1( options_json.zone_source );
             }else{
-                __gi1.remplir_et_afficher_les_messages1(nom_de_la_textarea);
+                __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea );
             }
         }
         return;
@@ -1136,263 +1139,263 @@ class interface1{
     /*
       =============================================================================================================
     */
-    traitement_apres_recuperation_ast_de_php2_ok(par){
+    traitement_apres_recuperation_ast_de_php2_ok( par ){
         /* console.log(par); */
         var options=par.__entree.call.opt;
         var nom_de_la_text_area_rev='';
         var nom_de_la_text_area_php='';
-        if(options.hasOwnProperty('nom_de_la_text_area_rev')){
+        if(options.hasOwnProperty( 'nom_de_la_text_area_rev' )){
             nom_de_la_text_area_rev=options.nom_de_la_text_area_rev;
         }
-        if(options.hasOwnProperty('nom_de_la_text_area_php')){
+        if(options.hasOwnProperty( 'nom_de_la_text_area_php' )){
             nom_de_la_text_area_php=options.nom_de_la_text_area_php;
         }
         try{
-            var json_de_ast=JSON.parse(par.__xva);
-            var obj=__m_astphpnikic_vers_rev1.traite_ast_nikic(json_de_ast,options);
+            var json_de_ast=JSON.parse( par.__xva );
+            var obj=__m_astphpnikic_vers_rev1.traite_ast_nikic( json_de_ast , options );
             if(obj.__xst === true){
                 /* console.log(obj); */
                 if(nom_de_la_text_area_rev !== ''){
-                    document.getElementById(options.nom_de_la_text_area_rev).value=obj.__xva;
-                    if(obj.__xva.substr(0,4) !== 'php('){
-                        var tableau1=__m_rev1.txt_en_tableau('php(' + obj.__xva + ')');
+                    document.getElementById( options.nom_de_la_text_area_rev ).value=obj.__xva;
+                    if(obj.__xva.substr( 0 , 4 ) !== 'php('){
+                        var tableau1=__m_rev1.txt_en_tableau( 'php(' + obj.__xva + ')' );
                     }else{
-                        var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
+                        var tableau1=__m_rev1.txt_en_tableau( obj.__xva );
                     }
-                    var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,true,false,'');
+                    var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva , true , false , '' );
                     if(matriceFonction.__xst === true){
-                        var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
+                        var obj2=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
                         if(obj2.__xst === true){
-                            document.getElementById(options.nom_de_la_text_area_rev).value=obj2.__xva;
+                            document.getElementById( options.nom_de_la_text_area_rev ).value=obj2.__xva;
                         }else{
-                            this.remplir_et_afficher_les_messages1(options.nom_de_la_text_area_rev);
+                            this.remplir_et_afficher_les_messages1( options.nom_de_la_text_area_rev );
                         }
                     }else{
-                        this.remplir_et_afficher_les_messages1(options.nom_de_la_text_area_rev);
+                        this.remplir_et_afficher_les_messages1( options.nom_de_la_text_area_rev );
                     }
                 }
             }else{
                 debugger;
-                console.log(obj);
+                console.log( obj );
             }
         }catch(e){
-            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2(e) + '<br />' + e.message});
+            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2( e ) + '<br />' + e.message} );
         }
-        this.remplir_et_afficher_les_messages1(nom_de_la_text_area_php);
+        this.remplir_et_afficher_les_messages1( nom_de_la_text_area_php );
     }
     /*
       =============================================================================================================
     */
-    traitement_apres_recuperation_ast_de_php2_ko(reponse_ajax,json_de_reponse=null){
+    traitement_apres_recuperation_ast_de_php2_ko( reponse_ajax , json_de_reponse=null ){
         if(json_de_reponse !== null){
-            if(json_de_reponse.hasOwnProperty('__xms')){
+            if(json_de_reponse.hasOwnProperty( '__xms' )){
                 for(var i in json_de_reponse.__xms){
-                    if(json_de_reponse.__xms[i].indexOf(' on line ') >= 0){
-                        var num_ligne=parseInt(json_de_reponse.__xms[i].substr(json_de_reponse.__xms[i].indexOf(' on line ') + 9),10);
-                        __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : json_de_reponse.__xms[i] ,"ligne" : num_ligne});
+                    if(json_de_reponse.__xms[i].indexOf( ' on line ' ) >= 0){
+                        var num_ligne=parseInt( json_de_reponse.__xms[i].substr( json_de_reponse.__xms[i].indexOf( ' on line ' ) + 9 ) , 10 );
+                        __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : json_de_reponse.__xms[i] ,"ligne" : num_ligne} );
                     }else{
-                        __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : json_de_reponse.__xms[i]});
+                        __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : json_de_reponse.__xms[i]} );
                     }
                 }
-                if(json_de_reponse.hasOwnProperty('__entree')
-                       && json_de_reponse.__entree.hasOwnProperty('call')
-                       && json_de_reponse.__entree.call.hasOwnProperty('opt')
+                if(json_de_reponse.hasOwnProperty( '__entree' )
+                       && json_de_reponse.__entree.hasOwnProperty( 'call' )
+                       && json_de_reponse.__entree.call.hasOwnProperty( 'opt' )
                 ){
                     var options=json_de_reponse.__entree.call.opt;
-                    if(options.hasOwnProperty('nom_de_la_text_area_php')){
-                        this.remplir_et_afficher_les_messages1(options.nom_de_la_text_area_php);
+                    if(options.hasOwnProperty( 'nom_de_la_text_area_php' )){
+                        this.remplir_et_afficher_les_messages1( options.nom_de_la_text_area_php );
                     }else{
-                        this.remplir_et_afficher_les_messages1('');
+                        this.remplir_et_afficher_les_messages1( '' );
                     }
                 }else{
-                    this.remplir_et_afficher_les_messages1('');
+                    this.remplir_et_afficher_les_messages1( '' );
                 }
             }else{
                 debugger;
-                this.remplir_et_afficher_les_messages1('');
+                this.remplir_et_afficher_les_messages1( '' );
             }
         }else{
             /* on retire les caractéristiques graphiques sur les messages au standard php */
             if(reponse_ajax !== ''){
-                reponse_ajax=reponse_ajax.replace("<font size='1'>",'<font>');
-                reponse_ajax=reponse_ajax.replace("font-size: x-large;",'');
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : reponse_ajax});
+                reponse_ajax=reponse_ajax.replace( "<font size='1'>" , '<font>' );
+                reponse_ajax=reponse_ajax.replace( "font-size: x-large;" , '' );
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : reponse_ajax} );
             }
-            this.remplir_et_afficher_les_messages1('');
+            this.remplir_et_afficher_les_messages1( '' );
         }
     }
     /*
       =============================================================================================================
     */
-    transform_rev_de_textarea_en_sql2(nom_de_la_textarea_rev,nom_de_la_textarea_sql){
+    transform_rev_de_textarea_en_sql2( nom_de_la_textarea_rev , nom_de_la_textarea_sql ){
         this.raz_des_messages();
-        var tableau1=__m_rev1.txt_en_tableau(document.getElementById(nom_de_la_textarea_rev).value);
-        var obj1=__m_rev1.tb_vers_matrice(tableau1.__xva,false,true,'');
+        var tableau1=__m_rev1.txt_en_tableau( document.getElementById( nom_de_la_textarea_rev ).value );
+        var obj1=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
         if(obj1.__xst === true){
-            var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
+            var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
             if(obj2.__xst === true){
-                obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
-                document.getElementById(nom_de_la_textarea_sql).value=obj2.__xva;
-                __gi1.remplir_et_afficher_les_messages1(nom_de_la_textarea_sql);
+                obj2.__xva=obj2.__xva.replace( /\/\* ==========DEBUT DEFINITION=========== \*\//g , '' );
+                document.getElementById( nom_de_la_textarea_sql ).value=obj2.__xva;
+                __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_sql );
                 return;
             }
         }
-        __gi1.remplir_et_afficher_les_messages1(nom_de_la_textarea_rev);
+        __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
     }
     /*
       =============================================================================================================
     */
-    transform_sql_de_textarea_en_rev2(nom_de_la_textarea_sql,nom_de_la_textarea_rev){
+    transform_sql_de_textarea_en_rev2( nom_de_la_textarea_sql , nom_de_la_textarea_rev ){
         this.raz_des_messages();
-        var texte=document.getElementById(nom_de_la_textarea_sql).value;
-        localStorage.setItem('fta_traiteSql_dernier_fichier_charge',texte);
+        var texte=document.getElementById( nom_de_la_textarea_sql ).value;
+        localStorage.setItem( 'fta_traiteSql_dernier_fichier_charge' , texte );
         try{
-            texte=texte.replace(/\/\*\*\//g,'');
-            var ast=window.sqliteParser(texte,{});
-            var obj=__m_astsqliteparseur_vers_rev1.traite_ast_de_sqliteparseur(ast);
+            texte=texte.replace( /\/\*\*\//g , '' );
+            var ast=window.sqliteParser( texte , {} );
+            var obj=__m_astsqliteparseur_vers_rev1.traite_ast_de_sqliteparseur( ast );
             if(obj.__xst === true){
-                document.getElementById(nom_de_la_textarea_rev).value=obj.__xva;
-                this.remplir_et_afficher_les_messages1(nom_de_la_textarea_rev);
-                var tableau1=__m_rev1.txt_en_tableau(obj.__xva);
-                var obj1=__m_rev1.tb_vers_matrice(tableau1.__xva,false,true,'');
+                document.getElementById( nom_de_la_textarea_rev ).value=obj.__xva;
+                this.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
+                var tableau1=__m_rev1.txt_en_tableau( obj.__xva );
+                var obj1=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
                 if(obj1.__xst === true){
-                    var obj2=__m_rev_vers_sql1.c_tab_vers_js(obj1.__xva,{});
+                    var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
                     if(obj2.__xst === true){
-                        __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : 'sql => rev ok et rev => sql  OK'});
-                        this.remplir_et_afficher_les_messages1('');
-                        obj2.__xva=obj2.__xva.replace(/\/\* ==========DEBUT DEFINITION=========== \*\//g,'');
-                        document.getElementById('txtar3').value=obj2.__xva;
+                        __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : 'sql => rev ok et rev => sql  OK'} );
+                        this.remplir_et_afficher_les_messages1( '' );
+                        obj2.__xva=obj2.__xva.replace( /\/\* ==========DEBUT DEFINITION=========== \*\//g , '' );
+                        document.getElementById( 'txtar3' ).value=obj2.__xva;
                     }else{
-                        __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2()});
-                        this.remplir_et_afficher_les_messages1('');
+                        __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2()} );
+                        this.remplir_et_afficher_les_messages1( '' );
                         return;
                     }
                 }else{
-                    __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2()});
-                    this.remplir_et_afficher_les_messages1(nom_de_la_textarea_rev);
+                    __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2()} );
+                    this.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
                     return;
                 }
             }else{
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2()});
-                this.remplir_et_afficher_les_messages1(nom_de_la_textarea_sql);
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2()} );
+                this.remplir_et_afficher_les_messages1( nom_de_la_textarea_sql );
             }
         }catch(e){
-            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2(e) + 'erreur de reconstruction du sql<br />' + e.message});
-            this.remplir_et_afficher_les_messages1(nom_de_la_textarea_sql);
+            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2( e ) + 'erreur de reconstruction du sql<br />' + e.message} );
+            this.remplir_et_afficher_les_messages1( nom_de_la_textarea_sql );
         }
     }
     /*
       =============================================================================================================
     */
-    bouton_convertir_text_area_php_en_rev_avec_nikic2(nom_de_la_text_area_php,nom_de_la_text_area_rev,options_traitement,mettre_en_local_storage){
-        var options_traitement=JSON.parse(options_traitement.replace(/\'/g,'"'));
+    bouton_convertir_text_area_php_en_rev_avec_nikic2( nom_de_la_text_area_php , nom_de_la_text_area_rev , options_traitement , mettre_en_local_storage ){
+        var options_traitement=JSON.parse( options_traitement.replace( /\'/g , '"' ) );
         options_traitement.nom_de_la_text_area_php=nom_de_la_text_area_php;
         options_traitement.nom_de_la_text_area_rev=nom_de_la_text_area_rev;
-        document.getElementById(nom_de_la_text_area_rev).value='Veuillez patienter !';
+        document.getElementById( nom_de_la_text_area_rev ).value='Veuillez patienter !';
         this.raz_des_messages();
-        var a=document.getElementById(nom_de_la_text_area_php);
+        var a=document.getElementById( nom_de_la_text_area_php );
         if(mettre_en_local_storage){
-            localStorage.setItem("fta_indexhtml_php_dernier_fichier_charge",a.value);
+            localStorage.setItem( "fta_indexhtml_php_dernier_fichier_charge" , a.value );
         }
-        __m_astphpnikic_vers_rev1.recupere_ast_de_php_du_serveur(a.value,options_traitement,this.traitement_apres_recuperation_ast_de_php2_ok.bind(this),this.traitement_apres_recuperation_ast_de_php2_ko.bind(this));
+        __m_astphpnikic_vers_rev1.recupere_ast_de_php_du_serveur( a.value , options_traitement , this.traitement_apres_recuperation_ast_de_php2_ok.bind( this ) , this.traitement_apres_recuperation_ast_de_php2_ko.bind( this ) );
     }
     /*
       =============================================================================================================
     */
-    lire_un_rev_et_le_transformer_en_tableau(nom_de_la_textarea,autoriser_constante_dans_la_racine=false){
+    lire_un_rev_et_le_transformer_en_tableau( nom_de_la_textarea , autoriser_constante_dans_la_racine=false ){
         this.raz_des_messages();
-        console.log('\n=========================\ndébut de transforme');
-        document.getElementById('resultat1').innerHTML='';
-        var a=document.getElementById(nom_de_la_textarea);
-        localStorage.setItem("fta_indexhtml_dernier_fichier_charge",a.value);
-        var lines=a.value.split(/\r|\r\n|\n/);
+        console.log( '\n=========================\ndébut de transforme' );
+        document.getElementById( 'resultat1' ).innerHTML='';
+        var a=document.getElementById( nom_de_la_textarea );
+        localStorage.setItem( "fta_indexhtml_dernier_fichier_charge" , a.value );
+        var lines=a.value.split( /\r|\r\n|\n/ );
         var count=lines.length;
-        a.setAttribute('rows',count + 1);
+        a.setAttribute( 'rows' , count + 1 );
         var beginMicro=performance.now();
         var startMicro=performance.now();
-        var tableau1=__m_rev1.txt_en_tableau(a.value);
+        var tableau1=__m_rev1.txt_en_tableau( a.value );
         var endMicro=performance.now();
-        console.log('mise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
+        console.log( 'mise en tableau endMicro=' , (parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000) + ' ms' );
         /* ✍  console.log(a.value.substr(4,1),a.value.length) */
         var startMicro=performance.now();
-        var matriceFonction1=__m_rev1.tb_vers_matrice(tableau1.__xva,true,autoriser_constante_dans_la_racine,'');
+        var matriceFonction1=__m_rev1.tb_vers_matrice( tableau1.__xva , true , autoriser_constante_dans_la_racine , '' );
         var endMicro=performance.now();
-        console.log('analyse syntaxique endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
-        var tempsTraitement=(parseInt((endMicro - beginMicro) * 1000,10) / 1000) + ' ms';
-        console.log(matriceFonction1);
+        console.log( 'analyse syntaxique endMicro=' , (parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000) + ' ms' );
+        var tempsTraitement=(parseInt( (endMicro - beginMicro) * 1000 , 10 ) / 1000) + ' ms';
+        console.log( matriceFonction1 );
         /* ✍  console.log(JSON.stringify(matriceFonction1.value)); */
-        document.getElementById('resultat1').innerHTML='';
+        document.getElementById( 'resultat1' ).innerHTML='';
         if(matriceFonction1.__xst === true){
-            var parent=document.getElementById('resultat1');
+            var parent=document.getElementById( 'resultat1' );
             var startMicro=performance.now();
-            var fonctionReecriteAvecRetour1=__m_rev1.matrice_vers_source_rev1(matriceFonction1.__xva,0,true,1);
+            var fonctionReecriteAvecRetour1=__m_rev1.matrice_vers_source_rev1( matriceFonction1.__xva , 0 , true , 1 );
             var resultat_compacte_ok='';
-            var diResultatsCompactes=document.createElement('div');
+            var diResultatsCompactes=document.createElement( 'div' );
             if(fonctionReecriteAvecRetour1.__xst === true){
-                var compacteOriginal=__m_rev1.matrice_vers_source_rev1(matriceFonction1.__xva,0,false,1);
-                var tableau2=__m_rev1.txt_en_tableau(fonctionReecriteAvecRetour1.__xva);
-                var matriceDeLaFonctionReecrite=__m_rev1.tb_vers_matrice(tableau2.__xva,true,autoriser_constante_dans_la_racine,'');
-                var compacteReecrit=__m_rev1.matrice_vers_source_rev1(matriceDeLaFonctionReecrite.__xva,0,false,1);
+                var compacteOriginal=__m_rev1.matrice_vers_source_rev1( matriceFonction1.__xva , 0 , false , 1 );
+                var tableau2=__m_rev1.txt_en_tableau( fonctionReecriteAvecRetour1.__xva );
+                var matriceDeLaFonctionReecrite=__m_rev1.tb_vers_matrice( tableau2.__xva , true , autoriser_constante_dans_la_racine , '' );
+                var compacteReecrit=__m_rev1.matrice_vers_source_rev1( matriceDeLaFonctionReecrite.__xva , 0 , false , 1 );
                 if(compacteOriginal.__xst === true && compacteReecrit.__xst === true){
                     if(compacteOriginal.__xva == compacteReecrit.__xva){
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
-                        resultat_compacte_ok=__m_rev1.entitees_html(compacteOriginal.__xva);
-                        __m_rev1.empiler_erreur({"__xst" : true ,"__xme" : '👍 sources compactés Egaux : ' + tempsTraitement});
+                        resultat_compacte_ok=__m_rev1.entitees_html( compacteOriginal.__xva );
+                        __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : '👍 sources compactés Egaux : ' + tempsTraitement} );
                     }else{
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">💥sources compactés différents</b>';
-                        __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '💥sources compactés différents'});
+                        __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '💥sources compactés différents'} );
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />o=' + compacteOriginal.__xva;
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />r=' + compacteReecrit.__xva;
                     }
                 }else{
-                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">compacteOriginal=' + JSON.stringify(compacteOriginal) + '</b>';
-                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br /><b style="color:red;">compacteReecrit=' + JSON.stringify(compacteReecrit) + '</b>';
+                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">compacteOriginal=' + JSON.stringify( compacteOriginal ) + '</b>';
+                    diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br /><b style="color:red;">compacteReecrit=' + JSON.stringify( compacteReecrit ) + '</b>';
                 }
             }
             var endMicro=performance.now();
-            console.log('tests compactes=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms');
-            document.getElementById('resultat1').appendChild(diResultatsCompactes);
+            console.log( 'tests compactes=' , (parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000) + ' ms' );
+            document.getElementById( 'resultat1' ).appendChild( diResultatsCompactes );
             if(resultat_compacte_ok !== ''){
-                var di_texte_compacte=document.createElement('div');
+                var di_texte_compacte=document.createElement( 'div' );
                 di_texte_compacte.className='yyconteneur_de_texte1';
                 di_texte_compacte.innerHTML='<textarea rows="3" cols="30" style="overflow:scroll;" autocorrect="off" autocapitalize="off" spellcheck="false">' + resultat_compacte_ok + '</textarea>';
-                document.getElementById('resultat1').appendChild(di_texte_compacte);
+                document.getElementById( 'resultat1' ).appendChild( di_texte_compacte );
             }
             /*  */
-            var fonctionReecriteAvecEtColoration1=__m_rev1.matrice_vers_source_rev1(matriceFonction1.__xva,0,true,1);
-            var difonctionReecriteAvecRetour1=document.createElement('div');
+            var fonctionReecriteAvecEtColoration1=__m_rev1.matrice_vers_source_rev1( matriceFonction1.__xva , 0 , true , 1 );
+            var difonctionReecriteAvecRetour1=document.createElement( 'div' );
             difonctionReecriteAvecRetour1.className='yyconteneur_de_texte1';
             difonctionReecriteAvecRetour1.style.fontSize='0.9em';
             if(fonctionReecriteAvecEtColoration1.__xst === true){
-                difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + __m_rev1.entitees_html(fonctionReecriteAvecEtColoration1.__xva) + '</textarea>';
+                difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + __m_rev1.entitees_html( fonctionReecriteAvecEtColoration1.__xva ) + '</textarea>';
             }else{
-                difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + __m_rev1.entitees_html(fonctionReecriteAvecRetour1.message) + '</textarea>';
+                difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + __m_rev1.entitees_html( fonctionReecriteAvecRetour1.message ) + '</textarea>';
             }
-            document.getElementById('resultat1').appendChild(difonctionReecriteAvecRetour1);
+            document.getElementById( 'resultat1' ).appendChild( difonctionReecriteAvecRetour1 );
             /*  */
-            var t0=document.createElement('div');
+            var t0=document.createElement( 'div' );
             t0.style.overflowX='scroll';
-            var t1=document.createElement('table');
-            this.construit_tableau_html_de_le_matrice_rev(t1,matriceFonction1);
-            t0.appendChild(t1);
-            document.getElementById('resultat1').appendChild(t0);
-            var t0=document.createElement('div');
+            var t1=document.createElement( 'table' );
+            this.construit_tableau_html_de_le_matrice_rev( t1 , matriceFonction1 );
+            t0.appendChild( t1 );
+            document.getElementById( 'resultat1' ).appendChild( t0 );
+            var t0=document.createElement( 'div' );
             t0.style.overflowX='scroll';
-            var t2=document.createElement('table');
-            this.construit_un_html_du_tableau_des_caracteres(t2,a.value,tableau1);
-            t0.appendChild(t2);
-            document.getElementById('resultat1').appendChild(t0);
+            var t2=document.createElement( 'table' );
+            this.construit_un_html_du_tableau_des_caracteres( t2 , a.value , tableau1 );
+            t0.appendChild( t2 );
+            document.getElementById( 'resultat1' ).appendChild( t0 );
         }else{
-            var t2=document.createElement('table');
-            this.construit_un_html_du_tableau_des_caracteres(t2,a.value,tableau1);
-            document.getElementById('resultat1').appendChild(t2);
+            var t2=document.createElement( 'table' );
+            this.construit_un_html_du_tableau_des_caracteres( t2 , a.value , tableau1 );
+            document.getElementById( 'resultat1' ).appendChild( t2 );
         }
-        this.remplir_et_afficher_les_messages1(nom_de_la_textarea);
+        this.remplir_et_afficher_les_messages1( nom_de_la_textarea );
     }
     /*
       =============================================================================================================
     */
-    remplir_une_textarea_avec_un_source_de_test_html(nom_de_la_textarea){
+    remplir_une_textarea_avec_un_source_de_test_html( nom_de_la_textarea ){
         var t=`<!DOCTYPE html>
 <html lang="fr">
     <head>
@@ -1419,12 +1422,12 @@ monAlerte(0);
 
     </body>
 </html>`;
-        document.getElementById(nom_de_la_textarea).value=t;
+        document.getElementById( nom_de_la_textarea ).value=t;
     }
     /*
       =============================================================================================================
     */
-    remplir_une_textarea_avex_un_source_de_test_js(nom_de_la_text_area_js){
+    remplir_une_textarea_avex_un_source_de_test_js( nom_de_la_text_area_js ){
         var t=`var test=a===2;
 (function toto(){
 })();
@@ -1453,12 +1456,12 @@ function tagada() {
 }
 
 `;
-        document.getElementById(nom_de_la_text_area_js).value=t;
+        document.getElementById( nom_de_la_text_area_js ).value=t;
     }
     /*
       =============================================================================================================
     */
-    remplir_une_textarea_avex_un_source_de_test_php(nom_de_la_text_area_php){
+    remplir_une_textarea_avex_un_source_de_test_php( nom_de_la_text_area_php ){
         var t=`<?php
 $a=realpath(dirname(dirname(dirname(__FILE__))));
 require($a.'/phplib/vendor/autoload.php');
@@ -1509,12 +1512,12 @@ while($i<5){
 //]]>  
 </script>
     `;
-        document.getElementById(nom_de_la_text_area_php).value=t;
+        document.getElementById( nom_de_la_text_area_php ).value=t;
     }
     /*
       =============================================================================================================
     */
-    remplir_une_textarea_avex_un_source_de_test_rev(nom_de_la_text_area_rev){
+    remplir_une_textarea_avex_un_source_de_test_rev( nom_de_la_text_area_rev ){
         /*
           "àà" <- dans l'excellent notepad++ de windows, ces deux a avec un accent grave 
           n'ont pas le même aspect car ils ont un encodage différent.
@@ -1575,15 +1578,15 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
 
 \
 )`;
-        document.getElementById(nom_de_la_text_area_rev).value=t;
-        var lines=t.split(/\r|\r\n|\n/);
+        document.getElementById( nom_de_la_text_area_rev ).value=t;
+        var lines=t.split( /\r|\r\n|\n/ );
         var count=lines.length;
-        document.getElementById(nom_de_la_text_area_rev).setAttribute('rows',count + 1);
+        document.getElementById( nom_de_la_text_area_rev ).setAttribute( 'rows' , count + 1 );
     }
     /*
       =============================================================================================================
     */
-    charger_source_de_test_sql(nom_de_la_textarea){
+    charger_source_de_test_sql( nom_de_la_textarea ){
         var t=`
 delete FROM ma_belle_table where (x = 1 and y=2) or z=3;
 
@@ -1624,20 +1627,20 @@ BEGIN TRANSACTION;
 COMMIT;
 
   `;
-        document.getElementById(nom_de_la_textarea).value=t;
+        document.getElementById( nom_de_la_textarea ).value=t;
     }
     /*
       =============================================================================================================
       function mouseWheelOnMenu
       =============================================================================================================
     */
-    mouseWheelOnMenu(event){
+    mouseWheelOnMenu( event ){
         event.preventDefault();
         var elem=event.target;
         var continuer=true;
         while(continuer){
             if(elem.nodeName === 'DIV'){
-                if(elem.className.indexOf('menuScroller') >= 0){
+                if(elem.className.indexOf( 'menuScroller' ) >= 0){
                     continuer=false;
                     break;
                 }
@@ -1651,11 +1654,11 @@ COMMIT;
         if(elem !== null){
             var scrollDelta=20;
             if(event.deltaY > 0){
-                var current=parseInt(elem.scrollLeft,10);
-                elem.scrollTo(current + scrollDelta,0);
+                var current=parseInt( elem.scrollLeft , 10 );
+                elem.scrollTo( current + scrollDelta , 0 );
             }else{
-                var current=parseInt(elem.scrollLeft,10);
-                elem.scrollTo(current - scrollDelta,0);
+                var current=parseInt( elem.scrollLeft , 10 );
+                elem.scrollTo( current - scrollDelta , 0 );
             }
         }
         return false;
@@ -1663,31 +1666,31 @@ COMMIT;
     /*
       =============================================================================================================
     */
-    ajouter_un_commentaire_vide_et_reformater(nom_de_la_textarea){
-        var a=document.getElementById(nom_de_la_textarea);
+    ajouter_un_commentaire_vide_et_reformater( nom_de_la_textarea ){
+        var a=document.getElementById( nom_de_la_textarea );
         a.focus();
         if(a.selectionStart === a.selectionEnd){
-            var nouveau_source=a.value.substr(0,a.selectionStart) + '#()' + a.value.substr(a.selectionStart);
+            var nouveau_source=a.value.substr( 0 , a.selectionStart ) + '#()' + a.value.substr( a.selectionStart );
             a.value=nouveau_source;
-            this.formatter_le_source_rev(nom_de_la_textarea);
+            this.formatter_le_source_rev( nom_de_la_textarea );
         }
     }
     /*
       =============================================================================================================
     */
-    formatter_le_source_rev(nom_de_la_textarea){
-        var a=document.getElementById(nom_de_la_textarea);
-        //var t0 = performance.now();
-        var tableau1=__m_rev1.txt_en_tableau(a.value);
-        //var t1 = performance.now();
+    formatter_le_source_rev( nom_de_la_textarea ){
+        var a=document.getElementById( nom_de_la_textarea );
+        /* var t0 = performance.now(); */
+        var tableau1=__m_rev1.txt_en_tableau( a.value );
+        /* var t1 = performance.now(); */
         /* console.log( "L'appel de txt_en_tableau a demandé " + (t1 - t0) + " millisecondes."); */
-        /*ici, on ne quitte pas si il y a une erreur de niveau*/
-        var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,/*niv*/false,false,'');
+        /* ici, on ne quitte pas si il y a une erreur de niveau */
+        var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva ,  /* niv */ false , false , '' );
         if(matriceFonction.__xst === true){
             /*
               var startMicro = performance.now();
             */
-            var obj2=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
+            var obj2=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
             if(obj2.__xst === true){
                 a.value=obj2.__xva;
             }
@@ -1697,7 +1700,7 @@ COMMIT;
               console.log(' temps = '+temps +'ms pour matriceFonction.length='+matriceFonction.length);
             */
         }else{
-            this.remplir_et_afficher_les_messages1(nom_de_la_textarea);
+            this.remplir_et_afficher_les_messages1( nom_de_la_textarea );
         }
     }
     /*
@@ -1710,7 +1713,7 @@ COMMIT;
       =============================================================================================================
       =============================================================================================================
     */
-    construit_un_html_du_tableau_des_caracteres(t2,texteSource,objTableau){
+    construit_un_html_du_tableau_des_caracteres( t2 , texteSource , objTableau ){
         var numeroLigne=0;
         var debut=0;
         var i=0;
@@ -1718,11 +1721,11 @@ COMMIT;
         var l01=0;
         var tmps='';
         var out=[];
-        t2.setAttribute('class','tableau2');
+        t2.setAttribute( 'class' , 'tableau2' );
         if(objTableau === null){
             /* On construit le tableau à partir du texte source */
             var outo={};
-            outo=__m_rev1.txt_en_tableau(texteSource);
+            outo=__m_rev1.txt_en_tableau( texteSource );
             out=outo.__xva;
         }else{
             out=objTableau.__xva;
@@ -1732,20 +1735,19 @@ COMMIT;
         */
         var tr1={};
         var td1={};
-        tr1=document.createElement('tr');
-        td1=document.createElement('td');
+        tr1=document.createElement( 'tr' );
+        td1=document.createElement( 'td' );
         td1.innerHTML=numeroLigne;
-        tr1.appendChild(td1);
+        tr1.appendChild( td1 );
         /* boucle principale */
         l01=out.length;
-        
         for( i=0 ; i < l01 ; i++ ){
             var td1={};
-            td1=document.createElement('td');
-            td1.innerHTML=out[i][0].replace('\n','\\n');
-            tmps=out[i][0].codePointAt(0);
+            td1=document.createElement( 'td' );
+            td1.innerHTML=out[i][0].replace( '\n' , '\\n' );
+            tmps=out[i][0].codePointAt( 0 );
             td1.title='&amp;#' + tmps + '; (' + out[i][1] + ')';
-            tr1.appendChild(td1);
+            tr1.appendChild( td1 );
             /*
               =============================================================================================
               Si on a un retour chariot, on écrit les 
@@ -1753,7 +1755,7 @@ COMMIT;
               =============================================================================================
             */
             if(out[i][0] == '\n'){
-                t2.appendChild(tr1);
+                t2.appendChild( tr1 );
                 /*
                   =====================================================================================
                   indice dans tableau = première ligne des chiffres
@@ -1761,21 +1763,21 @@ COMMIT;
                 */
                 var tr1={};
                 var td1={};
-                tr1=document.createElement('tr');
-                td1=document.createElement('td');
-                td1.setAttribute('class','td2');
+                tr1=document.createElement( 'tr' );
+                td1=document.createElement( 'td' );
+                td1.setAttribute( 'class' , 'td2' );
                 td1.innerHTML='&nbsp;';
-                tr1.appendChild(td1);
+                tr1.appendChild( td1 );
                 for( j=debut ; j < i ; j++ ){
                     var td1={};
-                    td1=document.createElement('td');
+                    td1=document.createElement( 'td' );
                     if(out[j][1] == 1){
-                        td1.setAttribute('class','td2');
+                        td1.setAttribute( 'class' , 'td2' );
                     }else{
-                        td1.setAttribute('class','td4');
+                        td1.setAttribute( 'class' , 'td4' );
                     }
                     td1.innerHTML=j;
-                    tr1.appendChild(td1);
+                    tr1.appendChild( td1 );
                 }
                 /*
                   =====================================================================================
@@ -1783,11 +1785,11 @@ COMMIT;
                   =====================================================================================
                 */
                 var td1={};
-                td1=document.createElement('td');
-                td1.setAttribute('class','td2');
+                td1=document.createElement( 'td' );
+                td1.setAttribute( 'class' , 'td2' );
                 td1.innerHTML=j;
-                tr1.appendChild(td1);
-                t2.appendChild(tr1);
+                tr1.appendChild( td1 );
+                t2.appendChild( tr1 );
                 /*
                   =====================================================================================
                   position dans la chaine = deuxième ligne des chiffres
@@ -1796,21 +1798,21 @@ COMMIT;
                 */
                 var tr1={};
                 var td1={};
-                tr1=document.createElement('tr');
-                td1=document.createElement('td');
-                td1.setAttribute('class','td2');
+                tr1=document.createElement( 'tr' );
+                td1=document.createElement( 'td' );
+                td1.setAttribute( 'class' , 'td2' );
                 td1.innerHTML='&nbsp;';
-                tr1.appendChild(td1);
+                tr1.appendChild( td1 );
                 for( j=debut ; j < i ; j++ ){
                     var td1={};
-                    td1=document.createElement('td');
+                    td1=document.createElement( 'td' );
                     if(out[j][1] == 1){
-                        td1.setAttribute('class','td2');
+                        td1.setAttribute( 'class' , 'td2' );
                     }else{
-                        td1.setAttribute('class','td4');
+                        td1.setAttribute( 'class' , 'td4' );
                     }
                     td1.innerHTML=out[j][2];
-                    tr1.appendChild(td1);
+                    tr1.appendChild( td1 );
                 }
                 /*
                   =====================================================================================
@@ -1818,11 +1820,11 @@ COMMIT;
                   =====================================================================================
                 */
                 var td1={};
-                td1=document.createElement('td');
-                td1.setAttribute('class','td2');
+                td1=document.createElement( 'td' );
+                td1.setAttribute( 'class' , 'td2' );
                 td1.innerHTML=out[j][2];
-                tr1.appendChild(td1);
-                t2.appendChild(tr1);
+                tr1.appendChild( td1 );
+                t2.appendChild( tr1 );
                 /*
                   =====================================================================================
                   fin des lignes contenant les positions
@@ -1832,11 +1834,11 @@ COMMIT;
                 numeroLigne=numeroLigne + 1;
                 var tr1={};
                 var td1={};
-                tr1=document.createElement('tr');
-                td1=document.createElement('td');
+                tr1=document.createElement( 'tr' );
+                td1=document.createElement( 'td' );
                 td1.innerHTML=numeroLigne;
-                tr1.appendChild(td1);
-                t2.appendChild(tr1);
+                tr1.appendChild( td1 );
+                t2.appendChild( tr1 );
             }
         }
         /*
@@ -1845,7 +1847,7 @@ COMMIT;
           cases contenant les positions des caractères
           =====================================================================================================
         */
-        t2.appendChild(tr1);
+        t2.appendChild( tr1 );
         /*
           =====================================================================================================
           indice dans tableau = première ligne des chiffres
@@ -1853,24 +1855,24 @@ COMMIT;
         */
         var tr1={};
         var td1={};
-        tr1=document.createElement('tr');
-        td1=document.createElement('td');
-        td1.setAttribute('class','td2');
+        tr1=document.createElement( 'tr' );
+        td1=document.createElement( 'td' );
+        td1.setAttribute( 'class' , 'td2' );
         td1.innerHTML='&nbsp;';
-        tr1.appendChild(td1);
+        tr1.appendChild( td1 );
         for( j=debut ; j < i ; j++ ){
             var td1={};
-            td1=document.createElement('td');
+            td1=document.createElement( 'td' );
             if(out[j][1] == 1){
-                td1.setAttribute('class','td2');
+                td1.setAttribute( 'class' , 'td2' );
             }else{
-                td1.setAttribute('class','td4');
+                td1.setAttribute( 'class' , 'td4' );
             }
             td1.innerHTML=j;
-            tr1.appendChild(td1);
+            tr1.appendChild( td1 );
         }
         /* finchoix suite du source */
-        t2.appendChild(tr1);
+        t2.appendChild( tr1 );
         /*
           =====================================================================================================
           pas de position du backslash
@@ -1884,27 +1886,27 @@ COMMIT;
         */
         var tr1={};
         var td1={};
-        tr1=document.createElement('tr');
-        td1=document.createElement('td');
-        td1.setAttribute('class','td2');
+        tr1=document.createElement( 'tr' );
+        td1=document.createElement( 'td' );
+        td1.setAttribute( 'class' , 'td2' );
         td1.innerHTML='&nbsp;';
-        tr1.appendChild(td1);
+        tr1.appendChild( td1 );
         for( j=debut ; j < i ; j++ ){
             var td1={};
-            td1=document.createElement('td');
+            td1=document.createElement( 'td' );
             if(out[j][1] == 1){
-                td1.setAttribute('class','td2');
+                td1.setAttribute( 'class' , 'td2' );
             }else{
-                td1.setAttribute('class','td4');
+                td1.setAttribute( 'class' , 'td4' );
             }
             td1.innerHTML=out[j][2];
-            tr1.appendChild(td1);
+            tr1.appendChild( td1 );
         }
         /*
           finchoix suite du source 
           et enfin, on ajoute la dernière ligne 
         */
-        t2.appendChild(tr1);
+        t2.appendChild( tr1 );
     }
     /*
       =============================================================================================================
@@ -1916,7 +1918,7 @@ COMMIT;
       =============================================================================================================
       =============================================================================================================
     */
-    construit_tableau_html_de_le_matrice_rev(t1,matriceFonction){
+    construit_tableau_html_de_le_matrice_rev( t1 , matriceFonction ){
         /*  */
         var i=0;
         var j=0;
@@ -1924,17 +1926,17 @@ COMMIT;
         var temp='';
         var tr1={};
         var td1={};
-        var r1=new RegExp(' ','g');
-        var r2=new RegExp('\n','g');
-        var r3=new RegExp('&','g');
-        var r4=new RegExp('<','g');
-        var r5=new RegExp('>','g');
-        var r6=new RegExp("\\\\'",'g');
-        var r7=new RegExp('\r','g');
+        var r1=new RegExp( ' ' , 'g' );
+        var r2=new RegExp( '\n' , 'g' );
+        var r3=new RegExp( '&' , 'g' );
+        var r4=new RegExp( '<' , 'g' );
+        var r5=new RegExp( '>' , 'g' );
+        var r6=new RegExp( "\\\\'" , 'g' );
+        var r7=new RegExp( '\r' , 'g' );
         var largeurTable1EnPx='1000';
         var largeurColonne1EnPx='400';
         t1.className='yytableauMatrice1';
-        tr1=document.createElement('tr');
+        tr1=document.createElement( 'tr' );
         /*
           =====================================================================================================
           entête du tableau
@@ -1943,13 +1945,13 @@ COMMIT;
         l01=this.#global_enteteTableau.length;
         for( i=0 ; i < l01 ; i++ ){
             var td1={};
-            td1=document.createElement('th');
+            td1=document.createElement( 'th' );
             td1.innerHTML=i + this.#global_enteteTableau[i][0];
             /*  */
-            td1.setAttribute('title',this.#global_enteteTableau[i][1] + '(' + i + ')');
-            tr1.appendChild(td1);
+            td1.setAttribute( 'title' , this.#global_enteteTableau[i][1] + '(' + i + ')' );
+            tr1.appendChild( td1 );
         }
-        t1.appendChild(tr1);
+        t1.appendChild( tr1 );
         /*
           =====================================================================================================
           éléments du tableau
@@ -1958,21 +1960,21 @@ COMMIT;
         l01=matriceFonction.__xva.length;
         for( i=0 ; i < l01 ; i++ ){
             var tr1={};
-            tr1=document.createElement('tr');
+            tr1=document.createElement( 'tr' );
             for( j=0 ; j < matriceFonction.__xva[i].length ; j++ ){
                 var td1={};
-                td1=document.createElement('td');
+                td1=document.createElement( 'td' );
                 if(j == 1 || j == 13){
                     /* Pour la valeur ou les commentaires */
-                    temp=String(matriceFonction.__xva[i][j]);
-                    temp=temp.replace(r1,'░');
-                    temp=temp.replace(r2,'¶');
-                    temp=temp.replace(r3,'&amp;');
-                    temp=temp.replace(r4,'&lt;');
-                    temp=temp.replace(r5,'&gt;');
-                    temp=temp.replace(r7,'r');
+                    temp=String( matriceFonction.__xva[i][j] );
+                    temp=temp.replace( r1 , '░' );
+                    temp=temp.replace( r2 , '¶' );
+                    temp=temp.replace( r3 , '&amp;' );
+                    temp=temp.replace( r4 , '&lt;' );
+                    temp=temp.replace( r5 , '&gt;' );
+                    temp=temp.replace( r7 , 'r' );
                     if(matriceFonction.__xva[i][4] === 3){
-                        temp=temp.replace(r6,"'");
+                        temp=temp.replace( r6 , "'" );
                     }
                     td1.innerHTML=temp;
                     td1.style.whiteSpace='pre-wrap';
@@ -1986,19 +1988,19 @@ COMMIT;
                         td1.style.background='lightgrey';
                     }
                 }else{
-                    td1.innerHTML=String(matriceFonction.__xva[i][j]);
+                    td1.innerHTML=String( matriceFonction.__xva[i][j] );
                 }
-                td1.setAttribute('title',this.#global_enteteTableau[j][1] + '(' + j + ')');
-                tr1.appendChild(td1);
+                td1.setAttribute( 'title' , this.#global_enteteTableau[j][1] + '(' + j + ')' );
+                tr1.appendChild( td1 );
             }
-            t1.appendChild(tr1);
+            t1.appendChild( tr1 );
         }
     }
     /*
       =============================================================================================================
     */
-    vers_le_haut_de_la_page(destination,duree){
-        Math.easeInOutQuad=function(t,b,c,d){
+    vers_le_haut_de_la_page( destination , duree ){
+        Math.easeInOutQuad=function( t , b , c , d ){
             t/=d / 2;
             if(t < 1){
                 return((c / 2) * t * t + b);
@@ -2014,10 +2016,10 @@ COMMIT;
         var tempsCourant=0;
         var animerLeDecalage=function(){
             tempsCourant+=increment;
-            var val=Math.easeInOutQuad(tempsCourant,positionDeDepart,change,duree);
-            window.scrollTo(0,val);
+            var val=Math.easeInOutQuad( tempsCourant , positionDeDepart , change , duree );
+            window.scrollTo( 0 , val );
             if(tempsCourant < duree){
-                window.setTimeout(animerLeDecalage,increment);
+                window.setTimeout( animerLeDecalage , increment );
             }
         };
         animerLeDecalage();
@@ -2029,29 +2031,29 @@ COMMIT;
     deplace_la_zone_de_message(){
         var i=0;
         var haut=0;
-        var bod=document.getElementsByTagName('body')[0];
+        var bod=document.getElementsByTagName( 'body' )[0];
         var paddingTopBody=0;
-        var bodyComputed=getComputedStyle(bod);
+        var bodyComputed=getComputedStyle( bod );
         var elem={};
         for(elem in bodyComputed){
             if('paddingTop' === elem){
-                paddingTopBody=parseInt(bodyComputed[elem],10);
+                paddingTopBody=parseInt( bodyComputed[elem] , 10 );
             }
         }
-        var contenuPrincipal=document.getElementById('contenuPrincipal');
-        var lesDivs=contenuPrincipal.getElementsByTagName('div');
+        var contenuPrincipal=document.getElementById( 'contenuPrincipal' );
+        var lesDivs=contenuPrincipal.getElementsByTagName( 'div' );
         for( i=0 ; i < lesDivs.length ; i++ ){
             if(lesDivs[i].className === 'menuScroller'){
-                var menuUtilisateurCalcule=getComputedStyle(lesDivs[i]);
-                var hauteurMenuUtilisateur=parseInt(menuUtilisateurCalcule['height'],10);
+                var menuUtilisateurCalcule=getComputedStyle( lesDivs[i] );
+                var hauteurMenuUtilisateur=parseInt( menuUtilisateurCalcule['height'] , 10 );
                 lesDivs[i].style.top=paddingTopBody + 'px';
                 lesDivs[i].style.position='fixed';
                 lesDivs[i].style.width='100vw';
-                lesDivs[i].addEventListener('wheel',this.mouseWheelOnMenu,false);
+                lesDivs[i].addEventListener( 'wheel' , this.mouseWheelOnMenu , false );
                 paddingTopBody+=hauteurMenuUtilisateur;
             }
         }
-        document.getElementById(this.#nom_div_des_messages1).style.top=(paddingTopBody + 2) + 'px';
+        document.getElementById( this.#nom_div_des_messages1 ).style.top=(paddingTopBody + 2) + 'px';
         bod.style.paddingTop=paddingTopBody + 'px';
         /*
           ajustement de la position gauche des menus du haut, 
@@ -2059,20 +2061,20 @@ COMMIT;
           en haut et qu'on est sur un petit appareil
         */
         var hrefActuel=window.location.href;
-        if(hrefActuel.indexOf('#') >= 1){
-            hrefActuel=hrefActuel.substr(0,hrefActuel.indexOf('#'));
+        if(hrefActuel.indexOf( '#' ) >= 1){
+            hrefActuel=hrefActuel.substr( 0 , hrefActuel.indexOf( '#' ) );
         }
-        if(hrefActuel.lastIndexOf('/') >= 1 && hrefActuel.substr(hrefActuel.lastIndexOf('/') + 1) !== ''){
-            hrefActuel=hrefActuel.substr(hrefActuel.lastIndexOf('/') + 1);
-            if(hrefActuel.indexOf('?') >= 0){
-                hrefActuel=hrefActuel.substr(0,hrefActuel.indexOf('?'));
+        if(hrefActuel.lastIndexOf( '/' ) >= 1 && hrefActuel.substr( hrefActuel.lastIndexOf( '/' ) + 1 ) !== ''){
+            hrefActuel=hrefActuel.substr( hrefActuel.lastIndexOf( '/' ) + 1 );
+            if(hrefActuel.indexOf( '?' ) >= 0){
+                hrefActuel=hrefActuel.substr( 0 , hrefActuel.indexOf( '?' ) );
             }
             var lienActuel=null;
-            var menuPrincipal=document.getElementById('menuPrincipal');
+            var menuPrincipal=document.getElementById( 'menuPrincipal' );
             if(menuPrincipal){
-                var listeMenu=menuPrincipal.getElementsByTagName('a');
+                var listeMenu=menuPrincipal.getElementsByTagName( 'a' );
                 for( i=0 ; i < listeMenu.length ; i++ ){
-                    if(listeMenu[i].href && listeMenu[i].href.indexOf(hrefActuel) >= 0){
+                    if(listeMenu[i].href && listeMenu[i].href.indexOf( hrefActuel ) >= 0){
                         lienActuel=listeMenu[i];
                         break;
                     }
@@ -2080,24 +2082,24 @@ COMMIT;
                 if(lienActuel !== null){
                     for( i=0 ; i < listeMenu.length ; i++ ){
                         if(listeMenu[i] === lienActuel){
-                            listeMenu[i].classList.add('yymenusel1');
+                            listeMenu[i].classList.add( 'yymenusel1' );
                         }else{
-                            listeMenu[i].classList.remove('yymenusel1');
+                            listeMenu[i].classList.remove( 'yymenusel1' );
                         }
                     }
                     var positionDuLien=lienActuel.getBoundingClientRect();
                     var boiteDesLiens=menuPrincipal.getBoundingClientRect();
-                    var positionDroiteDuLienDansLaBoite=parseInt((positionDuLien.left - boiteDesLiens.left) + positionDuLien.width,10);
-                    var largeurBoiteLiens=parseInt(boiteDesLiens.width,10);
+                    var positionDroiteDuLienDansLaBoite=parseInt( (positionDuLien.left - boiteDesLiens.left) + positionDuLien.width , 10 );
+                    var largeurBoiteLiens=parseInt( boiteDesLiens.width , 10 );
                     if(positionDroiteDuLienDansLaBoite > largeurBoiteLiens){
-                        var calcul=parseInt(boiteDesLiens.width - positionDuLien.width - 60,10);
-                        if(parseInt(positionDuLien.x,10) > calcul){
+                        var calcul=parseInt( boiteDesLiens.width - positionDuLien.width - 60 , 10 );
+                        if(parseInt( positionDuLien.x , 10 ) > calcul){
                             var nouveauScroll=positionDuLien.x - boiteDesLiens.width - positionDuLien.width - 60;
                             menuPrincipal.scrollLeft=nouveauScroll;
                         }
                     }
                 }
-                menuPrincipal.addEventListener('wheel',this.mouseWheelOnMenu,false);
+                menuPrincipal.addEventListener( 'wheel' , this.mouseWheelOnMenu , false );
             }
         }
     }
@@ -2105,32 +2107,32 @@ COMMIT;
       =============================================================================================================
       =============================================================================================================
     */
-    parentheses1(nomDeLaTextAreaContenantLeSource){
+    parentheses1( nomDeLaTextAreaContenantLeSource ){
         var i=0;
-        var zoneSource=document.getElementById(nomDeLaTextAreaContenantLeSource);
+        var zoneSource=document.getElementById( nomDeLaTextAreaContenantLeSource );
         var position_debut=zoneSource.selectionStart;
         var position_fin=zoneSource.selectionEnd;
         if(position_debut < 0){
-            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'veuillez sélectionner une parenthèse dans la zone de texte'});
-            this.remplir_et_afficher_les_messages1(nomDeLaTextAreaContenantLeSource);
+            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'veuillez sélectionner une parenthèse dans la zone de texte'} );
+            this.remplir_et_afficher_les_messages1( nomDeLaTextAreaContenantLeSource );
             return;
         }
         var texte=zoneSource.value;
-        if(position_fin === position_debut && texte.substr(position_debut - 1,1) == '('){
+        if(position_fin === position_debut && texte.substr( position_debut - 1 , 1 ) == '('){
             /*
               
               on s'est placé juste après une parenthèse ouvrante
             */
-            if(texte.substr(position_debut,1) == ')'){
+            if(texte.substr( position_debut , 1 ) == ')'){
                 /*
                   
                   on est entre 2 parenthèses ouvrante et fermante consécutives,
                 */
                 if(position_debut - 2 > 0){
                     for( i=position_debut - 2 ; i >= 1 ; i-- ){
-                        if(texte.substr(i,1) === '('){
-                            texte=texte.substr(i);
-                            var arr=__m_rev1.rev_parenthe1(texte,'(');
+                        if(texte.substr( i , 1 ) === '('){
+                            texte=texte.substr( i );
+                            var arr=__m_rev1.rev_parenthe1( texte , '(' );
                             if(arr.__xst === true){
                                 zoneSource.focus();
                                 zoneSource.selectionStart=i + 1;
@@ -2145,9 +2147,9 @@ COMMIT;
                     zoneSource.focus();
                 }
             }else{
-                texte=texte.substr(position_debut - 1);
-                console.log('texte="',texte + '"');
-                var arr=__m_rev1.rev_parenthe1(texte,'(');
+                texte=texte.substr( position_debut - 1 );
+                console.log( 'texte="' , texte + '"' );
+                var arr=__m_rev1.rev_parenthe1( texte , '(' );
                 if(arr.__xst === true){
                     zoneSource.focus();
                     zoneSource.selectionStart=position_debut;
@@ -2155,12 +2157,12 @@ COMMIT;
                     return;
                 }
             }
-        }else if(position_fin === position_debut && texte.substr(position_debut,1) == ')'){
+        }else if(position_fin === position_debut && texte.substr( position_debut , 1 ) == ')'){
             /*
               on s'est placé juste avant une parenthèse fermante
             */
-            texte=texte.substr(0,position_debut + 1);
-            var arr=__m_rev1.rev_parenthe1(texte,')');
+            texte=texte.substr( 0 , position_debut + 1 );
+            var arr=__m_rev1.rev_parenthe1( texte , ')' );
             if(arr.__xst === true){
                 zoneSource.focus();
                 zoneSource.selectionStart=arr.posOuvPar + 1;
@@ -2173,9 +2175,9 @@ COMMIT;
                   on est placé quelquepart, on recherche la parenthèse ouvrante précédente
                 */
                 for( i=position_debut - 2 ; i >= 1 ; i-- ){
-                    if(texte.substr(i,1) === '('){
-                        texte=texte.substr(i);
-                        var arr=__m_rev1.rev_parenthe1(texte,'(');
+                    if(texte.substr( i , 1 ) === '('){
+                        texte=texte.substr( i );
+                        var arr=__m_rev1.rev_parenthe1( texte , '(' );
                         if(arr.__xst === true){
                             zoneSource.focus();
                             zoneSource.selectionStart=i + 1;
@@ -2190,13 +2192,13 @@ COMMIT;
                 /*
                   c'est une sélection de plage entre 2 parenthèses
                 */
-                if(texte.substr(position_debut - 1,1) == '(' && texte.substr(position_fin,1) == ')'){
+                if(texte.substr( position_debut - 1 , 1 ) == '(' && texte.substr( position_fin , 1 ) == ')'){
                     /*
                       la plage est contenue dans 2 parenthèses, on essaie de remonter d'un niveau
                       en allant chercher le parenthèse ouvrante précédente
                     */
-                    var tableau1=__m_rev1.txt_en_tableau(texte);
-                    var matriceFonction=__m_rev1.tb_vers_matrice(tableau1.__xva,false,true,'');
+                    var tableau1=__m_rev1.txt_en_tableau( texte );
+                    var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
                     if(matriceFonction.__xst === true){
                         var l01=matriceFonction.__xva.length;
                         var fait=false;
@@ -2212,8 +2214,8 @@ COMMIT;
                                 if(matriceFonction.__xva[i][11] === repereDansTableau - 1){
                                     if(matriceFonction.__xva[i][7] > 0){
                                         var positionParentheseDuParent=matriceFonction.__xva[matriceFonction.__xva[i][7]][11];
-                                        texte=texte.substr(positionParentheseDuParent);
-                                        var arr=__m_rev1.rev_parenthe1(texte,'(');
+                                        texte=texte.substr( positionParentheseDuParent );
+                                        var arr=__m_rev1.rev_parenthe1( texte , '(' );
                                         if(arr.__xst === true){
                                             zoneSource.focus();
                                             position_debut=tableau1.__xva[positionParentheseDuParent][2] + 1;
@@ -2236,9 +2238,9 @@ COMMIT;
                       on est placé quelquepart, on recherche la parenthèse ouvrante précédente
                     */
                     for( i=position_debut - 2 ; i >= 1 ; i-- ){
-                        if(texte.substr(i,1) === '('){
-                            texte=texte.substr(i);
-                            var arr=__m_rev1.rev_parenthe1(texte,'(');
+                        if(texte.substr( i , 1 ) === '('){
+                            texte=texte.substr( i );
+                            var arr=__m_rev1.rev_parenthe1( texte , '(' );
                             if(arr.__xst === true){
                                 zoneSource.focus();
                                 zoneSource.selectionStart=i + 1;
@@ -2257,7 +2259,7 @@ COMMIT;
       
       =============================================================================================================
     */
-    selectionner_ligne_de_text_area1(tarea,numero_de_ligne_qui_commence_par_1){
+    selectionner_ligne_de_text_area1( tarea , numero_de_ligne_qui_commence_par_1 ){
         var lineNum=numero_de_ligne_qui_commence_par_1 <= 0 ? ( 1 ) : ( numero_de_ligne_qui_commence_par_1 );
         lineNum=lineNum - 1;
         var numeroLigne=0;
@@ -2267,7 +2269,7 @@ COMMIT;
         var l01=contenu.length;
         var i=0;
         for( i=0 ; i < l01 ; i++ ){
-            if(contenu.substr(i,1) === '\n'){
+            if(contenu.substr( i , 1 ) === '\n'){
                 numeroLigne++;
                 if(numeroLigne === lineNum){
                     startPos=i + 1;
@@ -2278,7 +2280,7 @@ COMMIT;
         var endPos=startPos;
         for( i=startPos ; i < l01 ; i++ ){
             endPos=i;
-            if(contenu.substr(i,1) === '\n'){
+            if(contenu.substr( i , 1 ) === '\n'){
                 break;
             }
         }
@@ -2295,16 +2297,16 @@ COMMIT;
             tarea.select();
             tarea.selectionStart=debut;
             tarea.selectionEnd=fin;
-            var texteDebut=contenu.substr(0,debut);
-            var texteFin=contenu.substr(debut);
+            var texteDebut=contenu.substr( 0 , debut );
+            var texteFin=contenu.substr( debut );
             tarea.value=texteDebut;
-            tarea.scrollTo(0,9999999);
+            tarea.scrollTo( 0 , 9999999 );
             var nouveauScroll=tarea.scrollTop;
             tarea.value=texteDebut + texteFin;
             if(nouveauScroll > 50){
-                tarea.scrollTo(0,nouveauScroll + 50);
+                tarea.scrollTo( 0 , nouveauScroll + 50 );
             }else{
-                tarea.scrollTo(0,0);
+                tarea.scrollTo( 0 , 0 );
             }
             tarea.selectionStart=debut;
             tarea.selectionEnd=fin;
@@ -2314,9 +2316,9 @@ COMMIT;
             tarea.focus();
             tarea.select();
             var range=document.selection.createRange();
-            range.collapse(true);
-            range.moveEnd('character',endPos);
-            range.moveStart('character',startPos);
+            range.collapse( true );
+            range.moveEnd( 'character' , endPos );
+            range.moveStart( 'character' , startPos );
             range.select();
             return true;
         }
@@ -2325,9 +2327,9 @@ COMMIT;
     /*
       =============================================================================================================
     */
-    allerAlaLigne(i,nomTextAreaSource){
-        this.masquer_les_messages1('');
-        this.selectionner_ligne_de_text_area1(document.getElementById(nomTextAreaSource),i);
+    allerAlaLigne( i , nomTextAreaSource ){
+        this.masquer_les_messages1( '' );
+        this.selectionner_ligne_de_text_area1( document.getElementById( nomTextAreaSource ) , i );
     }
     /*
       =============================================================================================================
@@ -2335,7 +2337,7 @@ COMMIT;
       fixer les dimentions des éléments de l'interface ( taille des boutons, textes ... )
       =============================================================================================================
     */
-    fixer_les_dimentions(type_d_element){
+    fixer_les_dimentions( type_d_element ){
         /*
           =====================================================================================================
           la première feuille de style [0] contient les éléments :root
@@ -2343,54 +2345,54 @@ COMMIT;
         var ss=document.styleSheets[0];
         var i=ss.cssRules.length - 1;
         for( i=ss.cssRules.length - 1 ; i >= 0 ; i-- ){
-            if(ss.cssRules[i]['selectorText'] && ss.cssRules[i].selectorText.indexOf(':root') >= 0){
-                var a=ss.cssRules[i].cssText.split('{');
+            if(ss.cssRules[i]['selectorText'] && ss.cssRules[i].selectorText.indexOf( ':root' ) >= 0){
+                var a=ss.cssRules[i].cssText.split( '{' );
                 try{
-                    var b=a[1].split('}');
-                    var c=b[0].split(';');
+                    var b=a[1].split( '}' );
+                    var c=b[0].split( ';' );
                     var t={};
                     var j=0;
                     for( j=0 ; j < c.length ; j++ ){
-                        var d=c[j].split(':');
+                        var d=c[j].split( ':' );
                         if(d.length === 2){
                             if('dimension_du_texte' === type_d_element && d[0].trim() === '--yyvtrt'){
-                                if(d[1].trim().indexOf('18') >= 0){
+                                if(d[1].trim().indexOf( '18' ) >= 0){
                                     t[d[0].trim()]='12px';
-                                }else if(d[1].trim().indexOf('12') >= 0){
+                                }else if(d[1].trim().indexOf( '12' ) >= 0){
                                     t[d[0].trim()]='14px';
-                                }else if(d[1].trim().indexOf('14') >= 0){
+                                }else if(d[1].trim().indexOf( '14' ) >= 0){
                                     t[d[0].trim()]='16px';
                                 }else{
                                     t[d[0].trim()]='18px';
                                 }
                             }else if('dimension_du_padding' === type_d_element && d[0].trim() === '--yyvtrp'){
-                                if(d[1].trim().indexOf('2') >= 0){
+                                if(d[1].trim().indexOf( '2' ) >= 0){
                                     t[d[0].trim()]='4px';
-                                }else if(d[1].trim().indexOf('4') >= 0){
+                                }else if(d[1].trim().indexOf( '4' ) >= 0){
                                     t[d[0].trim()]='6px';
                                 }else{
                                     t[d[0].trim()]='2px';
                                 }
                             }else if('dimension_du_border' === type_d_element && d[0].trim() === '--yyvtrb'){
-                                if(d[1].trim().indexOf('1') >= 0){
+                                if(d[1].trim().indexOf( '1' ) >= 0){
                                     t[d[0].trim()]='2px';
-                                }else if(d[1].trim().indexOf('2') >= 0){
+                                }else if(d[1].trim().indexOf( '2' ) >= 0){
                                     t[d[0].trim()]='3px';
-                                }else if(d[1].trim().indexOf('3') >= 0){
+                                }else if(d[1].trim().indexOf( '3' ) >= 0){
                                     t[d[0].trim()]='4px';
-                                }else if(d[1].trim().indexOf('4') >= 0){
+                                }else if(d[1].trim().indexOf( '4' ) >= 0){
                                     t[d[0].trim()]='5px';
                                 }else{
                                     t[d[0].trim()]='1px';
                                 }
                             }else if('dimension_du_margin' === type_d_element && d[0].trim() === '--yyvtrm'){
-                                if(d[1].trim().indexOf('1') >= 0){
+                                if(d[1].trim().indexOf( '1' ) >= 0){
                                     t[d[0].trim()]='2px';
-                                }else if(d[1].trim().indexOf('2') >= 0){
+                                }else if(d[1].trim().indexOf( '2' ) >= 0){
                                     t[d[0].trim()]='3px';
-                                }else if(d[1].trim().indexOf('3') >= 0){
+                                }else if(d[1].trim().indexOf( '3' ) >= 0){
                                     t[d[0].trim()]='4px';
-                                }else if(d[1].trim().indexOf('4') >= 0){
+                                }else if(d[1].trim().indexOf( '4' ) >= 0){
                                     t[d[0].trim()]='5px';
                                 }else{
                                     t[d[0].trim()]='1px';
@@ -2401,19 +2403,19 @@ COMMIT;
                         }
                     }
                     /* cookie avec une date d'expiration de 30 jours */
-                    var date_expiration_cookie=new Date(Date.now() + 86400000 * 30);
+                    var date_expiration_cookie=new Date( Date.now() + 86400000 * 30 );
                     date_expiration_cookie=date_expiration_cookie.toUTCString();
                     /*
                       =============================================================================
                       On met le résultat dans un cookie pour mettre à jour root à chaque chargement de la page
                     */
-                    var cookieString=APP_KEY + '_biscuit' + '=' + encodeURIComponent(JSON.stringify(t)) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict';
+                    var cookieString=APP_KEY + '_biscuit' + '=' + encodeURIComponent( JSON.stringify( t ) ) + '; path=/; secure; expires=' + date_expiration_cookie + '; samesite=strict';
                     document.cookie=cookieString;
                     /* et on recharge la page */
                     window.location=window.location;
                     return;
                 }catch(e){
-                    console.log('raaah',e);
+                    console.log( 'raaah' , e );
                 }
             }
         }
@@ -2425,7 +2427,7 @@ COMMIT;
     */
     masquer_ou_afficher_les_messages1(){
         try{
-            var zon=document.getElementById(this.#nom_div_des_messages1);
+            var zon=document.getElementById( this.#nom_div_des_messages1 );
             if(zon.style.visibility === 'hidden'){
                 zon.style.visibility='visible';
             }else{
@@ -2440,29 +2442,29 @@ COMMIT;
     */
     masquer_les_messages1(){
         try{
-            document.getElementById(this.#nom_div_des_messages1).style.visibility='hidden';
+            document.getElementById( this.#nom_div_des_messages1 ).style.visibility='hidden';
         }catch(e){}
     }
     /*
       
       =============================================================================================================
     */
-    selectionner_une_plage1(debut,fin,nomDeZoneSource){
-        this.masquer_les_messages1('');
-        var zoneSource=document.getElementById(nomDeZoneSource);
+    selectionner_une_plage1( debut , fin , nomDeZoneSource ){
+        this.masquer_les_messages1( '' );
+        var zoneSource=document.getElementById( nomDeZoneSource );
         zoneSource.focus();
         zoneSource.selectionStart=debut;
         zoneSource.selectionEnd=fin;
-        var texteDebut=zoneSource.value.substr(0,debut);
-        var texteFin=zoneSource.value.substr(debut);
+        var texteDebut=zoneSource.value.substr( 0 , debut );
+        var texteFin=zoneSource.value.substr( debut );
         zoneSource.value=texteDebut;
-        zoneSource.scrollTo(0,9999999);
+        zoneSource.scrollTo( 0 , 9999999 );
         var nouveauScroll=zoneSource.scrollTop;
         zoneSource.value=texteDebut + texteFin;
-        zoneSource.scrollTo(0,nouveauScroll);
+        zoneSource.scrollTo( 0 , nouveauScroll );
         zoneSource.selectionStart=debut;
         zoneSource.selectionEnd=fin;
-        if(this.#global_tableau_des_textareas.hasOwnProperty(nomDeZoneSource)){
+        if(this.#global_tableau_des_textareas.hasOwnProperty( nomDeZoneSource )){
             this.#global_tableau_des_textareas[nomDeZoneSource].mon_decallage_haut=nouveauScroll;
         }
     }
@@ -2470,7 +2472,7 @@ COMMIT;
       =============================================================================================================
       vérifie qu'un html est structurellement correct ( pour intégration dans un rev php )
     */
-    isHTML(str){
+    isHTML( str ){
         var i=0;
         var j=0;
         var c0='';
@@ -2492,14 +2494,14 @@ COMMIT;
         var niveau=0;
         var i=0;
         for( i=0 ; i < l01 ; i++ ){
-            c0=str.substr(i,1);
+            c0=str.substr( i , 1 );
             if(i < l01 - 1){
-                cp1=str.substr(i + 1,1);
+                cp1=str.substr( i + 1 , 1 );
             }else{
                 cp1='';
             }
             if(i > 0 && l01 > 0){
-                cm1=str.substr(i - 1,1);
+                cm1=str.substr( i - 1 , 1 );
             }else{
                 cm1='';
             }
@@ -2511,7 +2513,7 @@ COMMIT;
                 */
                 var j=i;
                 for( j=i ; j < l01 ; j++ ){
-                    if(str.substr(j,3) === ']]' + '>'){
+                    if(str.substr( j , 3 ) === ']]' + '>'){
                         i=j + 2;
                         break;
                     }
@@ -2529,7 +2531,7 @@ COMMIT;
                 */
                 var j=i;
                 for( j=i ; j < l01 ; j++ ){
-                    if(str.substr(j,11).toLowerCase() === '</' + 'textarea>'){
+                    if(str.substr( j , 11 ).toLowerCase() === '</' + 'textarea>'){
                         i=j - 1;
                         break;
                     }
@@ -2542,12 +2544,16 @@ COMMIT;
             }else if(dansTag){
                 if(dansNomPropriete){
                     if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
-                        if(i > 50){
-                            presDe=str.substr(i - 50,i + 10);
-                        }else{
-                            presDe=str.substr(0,i + 10);
-                        }
-                        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1785 pres de "' + presDe + '"'});
+                        /* si on a un propriété du type async dans  <script async src="..."></script> */
+                        dansNomPropriete=false;
+                        /*#
+                          if(i > 50){
+                              presDe=str.substr(i - 50,i + 10);
+                          }else{
+                              presDe=str.substr(0,i + 10);
+                          }
+                          return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1785 pres de "' + presDe + '"'});
+                        */
                     }else if(c0 === '='){
                         if(cp1 === "'" || cp1 === '"'){
                             dansValeurPropriete=true;
@@ -2556,11 +2562,11 @@ COMMIT;
                             i++;
                         }else{
                             if(i > 50){
-                                presDe=str.substr(i - 50,i + 10);
+                                presDe=str.substr( i - 50 , i + 10 );
                             }else{
-                                presDe=str.substr(0,i + 10);
+                                presDe=str.substr( 0 , i + 10 );
                             }
-                            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 2864 pres de "' + presDe + '"'});
+                            return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + ' pres de "' + presDe + '"'});
                         }
                     }else{
                     }
@@ -2577,7 +2583,7 @@ COMMIT;
                         if(dansCdata === true){
                             var j=i;
                             for( j=i ; j < l01 ; j++ ){
-                                if(str.substr(j,3) === ']]' + '>'){
+                                if(str.substr( j , 3 ) === ']]' + '>'){
                                     i=j + 2;
                                     break;
                                 }
@@ -2591,7 +2597,7 @@ COMMIT;
                             if(nomTag.toLowerCase() === 'textarea'){
                                 dansTextArea=true;
                             }
-                            tabTags.push(nomTag);
+                            tabTags.push( nomTag );
                             dansNomTag=false;
                         }
                     }else if(c0 === '>'){
@@ -2605,7 +2611,7 @@ COMMIT;
                                 */
                                 tabTags.pop();
                             }else{
-                                return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 2266 les balises html ne sont pas équilibrées'});
+                                return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'les balises html ne sont pas équilibrées'});
                             }
                             nomTag='';
                             dansBaliseFermante=false;
@@ -2613,16 +2619,16 @@ COMMIT;
                         }else{
                             if(nomTag === ''){
                                 if(i > 50){
-                                    presDe=str.substr(i - 50,i + 10);
+                                    presDe=str.substr( i - 50 , i + 10 );
                                 }else{
-                                    presDe=str.substr(0,i + 10);
+                                    presDe=str.substr( 0 , i + 10 );
                                 }
-                                return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1852 pres de "' + presDe + '"'});
+                                return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                             }
                             if(nomTag.toLowerCase() === 'textarea'){
                                 dansTextArea=true;
                             }
-                            tabTags.push(nomTag);
+                            tabTags.push( nomTag );
                             dansNomTag=false;
                             dansInner=true;
                             dansTag=false;
@@ -2630,11 +2636,11 @@ COMMIT;
                         }
                     }else if(c0 === '=' || c0 === '"' || c0 === '\''){
                         if(i > 50){
-                            presDe=str.substr(i - 50,i + 10);
+                            presDe=str.substr( i - 50 , i + 10 );
                         }else{
-                            presDe=str.substr(0,i + 10);
+                            presDe=str.substr( 0 , i + 10 );
                         }
-                        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 2926 pres de "' + presDe + '"'});
+                        return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                     }else{
                         nomTag+=c0;
                         if(nomTag === '![C' + 'DATA['){
@@ -2645,11 +2651,11 @@ COMMIT;
                     if(nomTag === ''){
                         if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
                             if(i > 50){
-                                presDe=str.substr(i - 50,i + 10);
+                                presDe=str.substr( i - 50 , i + 10 );
                             }else{
-                                presDe=str.substr(0,i + 10);
+                                presDe=str.substr( 0 , i + 10 );
                             }
-                            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1865 pres de "' + presDe + '"'});
+                            return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + ' pres de "' + presDe + '"'});
                         }else{
                             dansNomTag=true;
                             nomTag+=c0;
@@ -2665,11 +2671,11 @@ COMMIT;
                                 nomTag='';
                                 if(tabTags.length === 0){
                                     if(i > 50){
-                                        presDe=str.substr(i - 50,i + 10);
+                                        presDe=str.substr( i - 50 , i + 10 );
                                     }else{
-                                        presDe=str.substr(0,i + 10);
+                                        presDe=str.substr( 0 , i + 10 );
                                     }
-                                    return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1902 pres de "' + presDe + '"'});
+                                    return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                                 }
                                 tabTags.pop();
                                 niveau--;
@@ -2680,21 +2686,21 @@ COMMIT;
                         }else if(c0 === '>'){
                             if(nomTag === ''){
                                 if(i > 50){
-                                    presDe=str.substr(i - 50,i + 10);
+                                    presDe=str.substr( i - 50 , i + 10 );
                                 }else{
-                                    presDe=str.substr(0,i + 10);
+                                    presDe=str.substr( 0 , i + 10 );
                                 }
-                                return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1896 pres de "' + presDe + '"'});
+                                return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                             }
                             dansTag=false;
                             dansInner=true;
                             if(tabTags.length === 0){
                                 if(i > 50){
-                                    presDe=str.substr(i - 50,i + 10);
+                                    presDe=str.substr( i - 50 , i + 10 );
                                 }else{
-                                    presDe=str.substr(0,i + 10);
+                                    presDe=str.substr( 0 , i + 10 );
                                 }
-                                return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1929 pres de "' + presDe + '"'});
+                                return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                             }
                             /*
                               pas de pop ici, dans <a b="c">d</a>, on est sur le > avant le d
@@ -2703,11 +2709,11 @@ COMMIT;
                         }else{
                             if(c0 === '=' || c0 === '"' || c0 === '\''){
                                 if(i > 50){
-                                    presDe=str.substr(i - 50,i + 10);
+                                    presDe=str.substr( i - 50 , i + 10 );
                                 }else{
-                                    presDe=str.substr(0,i + 10);
+                                    presDe=str.substr( 0 , i + 10 );
                                 }
-                                return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1910 pres de "' + presDe + '"'});
+                                return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                             }else{
                                 dansNomPropriete=true;
                             }
@@ -2719,24 +2725,24 @@ COMMIT;
                     if(cp1 === '/'){
                         if(tabTags.length === 0){
                             if(i > 50){
-                                presDe=str.substr(i - 50,i + 10);
+                                presDe=str.substr( i - 50 , i + 10 );
                             }else{
-                                presDe=str.substr(0,i + 10);
+                                presDe=str.substr( 0 , i + 10 );
                             }
-                            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1982 pres de "' + presDe + '"'});
+                            return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                         }
                         dansBaliseFermante=true;
                         i++;
                         dansInner=false;
                         dansTag=true;
                     }else{
-                        if(cp1 === '!' && i < l01 - 4 && str.substr(i + 2,1) === '-' && str.substr(i + 3,1) === '-'){
+                        if(cp1 === '!' && i < l01 - 4 && str.substr( i + 2 , 1 ) === '-' && str.substr( i + 3 , 1 ) === '-'){
                             /*
                               on est dans un commentaire
                             */
                             var fin_de_commentaire_trouve=-1;
                             for( j=i + 4 ; j <= l01 - 3 && fin_de_commentaire_trouve === -1 ; j++ ){
-                                if(str.substr(j,3) === '-->'){
+                                if(str.substr( j , 3 ) === '-->'){
                                     fin_de_commentaire_trouve=j;
                                 }
                             }
@@ -2757,9 +2763,9 @@ COMMIT;
                 }else if(c0 === '>'){
                     if(niveau === 0){
                         if(i > 50){
-                            presDe=str.substr(i - 50,i + 10);
+                            presDe=str.substr( i - 50 , i + 10 );
                         }else{
-                            presDe=str.substr(0,i + 10);
+                            presDe=str.substr( 0 , i + 10 );
                         }
                         return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1935 pres de "' + presDe + '"'});
                     }
@@ -2772,9 +2778,9 @@ COMMIT;
                     niveau-=1;
                     if(niveau < 0){
                         if(i > 50){
-                            presDe=str.substr(i - 50,i + 10);
+                            presDe=str.substr( i - 50 , i + 10 );
                         }else{
-                            presDe=str.substr(0,i + 10);
+                            presDe=str.substr( 0 , i + 10 );
                         }
                         return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1952 pres de "' + presDe + '"'});
                     }
@@ -2783,17 +2789,17 @@ COMMIT;
         }
         if(tabTags.length > 0){
             if(i > 50){
-                presDe=str.substr(i - 50,i + 10);
+                presDe=str.substr( i - 50 , i + 10 );
             }else{
-                presDe=str.substr(0,i + 10);
+                presDe=str.substr( 0 , i + 10 );
             }
             return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1964 pres de "' + presDe + '"'});
         }
         if(dansTag){
             if(i > 50){
-                presDe=str.substr(i - 50,i + 10);
+                presDe=str.substr( i - 50 , i + 10 );
             }else{
-                presDe=str.substr(0,i + 10);
+                presDe=str.substr( 0 , i + 10 );
             }
             return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1972 pres de "' + presDe + '"'});
         }
@@ -2802,7 +2808,7 @@ COMMIT;
     /*
       =============================================================================================================
     */
-    #ne_rien_faire1(par){
+    #ne_rien_faire1( par ){
         /*
           on ne fait rien mais on le fait bien ici
           console.log('#ne_rien_faire1 par=',par);
@@ -2812,56 +2818,56 @@ COMMIT;
     /*
       =============================================================================================================
     */
-    #mouse_up_sur_editeur1(e){
-        var zoneSource=document.getElementById(e.target.id);
+    #mouse_up_sur_editeur1( e ){
+        var zoneSource=document.getElementById( e.target.id );
         this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
         var ttt=zoneSource.getBoundingClientRect();
-        this.#div_des_positions_du_curseur.style.top=((parseInt(ttt.bottom,10) + document.documentElement.scrollTop) - 12) + 'px';
-        this.#div_des_positions_du_curseur.style.left=(parseInt(ttt.left,10) + document.documentElement.scrollLeft) + 'px';
+        this.#div_des_positions_du_curseur.style.top=((parseInt( ttt.bottom , 10 ) + document.documentElement.scrollTop) - 12) + 'px';
+        this.#div_des_positions_du_curseur.style.left=(parseInt( ttt.left , 10 ) + document.documentElement.scrollLeft) + 'px';
         /* this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px'; */
         return false;
     }
     /*
       =============================================================================================================
     */
-    #analyse_scroll_editeur1(e){
+    #analyse_scroll_editeur1( e ){
         return false;
     }
     /*
       =============================================================================================================
     */
-    #keydown_sur_editeur1(e){
+    #keydown_sur_editeur1( e ){
         this.#global_tableau_des_textareas[e.target.id].mon_decallage_haut=e.target.scrollTop;
     }
     /*
       =============================================================================================================
     */
-    #analyse_key_up_editeur1(e){
+    #analyse_key_up_editeur1( e ){
         var i=0;
         var j=0;
         var c='';
         var a_inserer='';
         var tabtext=[];
         var elem=this.#global_tableau_des_textareas[e.target.id];
-        var zoneSource=document.getElementById(e.target.id);
+        var zoneSource=document.getElementById( e.target.id );
         this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
         var ttt=zoneSource.getBoundingClientRect();
-        this.#div_des_positions_du_curseur.style.top=((parseInt(ttt.bottom,10) + document.documentElement.scrollTop) - 10) + 'px';
+        this.#div_des_positions_du_curseur.style.top=((parseInt( ttt.bottom , 10 ) + document.documentElement.scrollTop) - 10) + 'px';
         this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px';
         if(e.keyCode === 36){
             /* touche home : on décale le scroll au début et toute la page aussi */
-            zoneSource.scrollTo({"left" : 0});
-            window.scrollTo({"left" : 0});
+            zoneSource.scrollTo( {"left" : 0} );
+            window.scrollTo( {"left" : 0} );
         }else if(e.keyCode == 13){
             /* retour chariot */
             var scroll_initial=zoneSource.scrollTop;
             var startPos=zoneSource.selectionStart;
             var endPos=zoneSource.selectionEnd;
-            var contenu=new String(zoneSource.value);
+            var contenu=new String( zoneSource.value );
             if(startPos > 2){
                 var ligne_precedente='';
                 for( i=startPos - 2 ; i >= 0 ; i-- ){
-                    c=contenu.substr(i,1);
+                    c=contenu.substr( i , 1 );
                     if(c === '\n' || c === '\r'){
                         break;
                     }
@@ -2870,7 +2876,7 @@ COMMIT;
                 j=0;
                 for( i=0 ; i < ligne_precedente.length ; i++ ){
                     j=i;
-                    if(ligne_precedente.substr(i,1) !== ' '){
+                    if(ligne_precedente.substr( i , 1 ) !== ' '){
                         break;
                     }
                     if(i === ligne_precedente.length - 1){
@@ -2878,20 +2884,20 @@ COMMIT;
                     }
                 }
                 if(elem.mode && elem.mode === 'rev'){
-                    if(contenu.substr(startPos - 2,1) === '('){
+                    if(contenu.substr( startPos - 2 , 1 ) === '('){
                         /* 1833 hugues à vérifier */
-                        a_inserer=' '.repeat(j + NBESPACESREV);
+                        a_inserer=' '.repeat( j + NBESPACESREV );
                     }else{
-                        a_inserer=' '.repeat(j);
+                        a_inserer=' '.repeat( j );
                     }
                 }else{
-                    if(contenu.substr(startPos - 2,1) === '{'){
-                        a_inserer=' '.repeat(j + NBESPACESSOURCEPRODUIT);
+                    if(contenu.substr( startPos - 2 , 1 ) === '{'){
+                        a_inserer=' '.repeat( j + NBESPACESSOURCEPRODUIT );
                     }else{
-                        a_inserer=' '.repeat(j);
+                        a_inserer=' '.repeat( j );
                     }
                 }
-                var nouveau_contenu=contenu.substring(0,startPos) + a_inserer + contenu.substring(endPos);
+                var nouveau_contenu=contenu.substring( 0 , startPos ) + a_inserer + contenu.substring( endPos );
                 /* un point virgule est-il en trop ? */
                 zoneSource.value=nouveau_contenu;
                 zoneSource.selectionStart=startPos + a_inserer.length;
@@ -2913,19 +2919,19 @@ COMMIT;
     /*
       =============================================================================================================
     */
-    #initialiser_editeur_pour_une_textarea1(obj){
+    #initialiser_editeur_pour_une_textarea1( obj ){
         var id_de_la_text_area='';
         var mode='';
-        if(obj.hasOwnProperty('nom')){
+        if(obj.hasOwnProperty( 'nom' )){
             id_de_la_text_area=obj.nom;
             mode=obj.mode;
         }else{
             id_de_la_text_area=obj;
         }
         this.#global_tableau_des_textareas[id_de_la_text_area]={"mode" : mode ,"mon_decallage_haut" : 0};
-        document.getElementById(id_de_la_text_area).addEventListener('mouseup',this.#mouse_up_sur_editeur1.bind(this));
-        document.getElementById(id_de_la_text_area).addEventListener('keydown',this.#keydown_sur_editeur1.bind(this));
-        document.getElementById(id_de_la_text_area).addEventListener('keyup',this.#analyse_key_up_editeur1.bind(this));
+        document.getElementById( id_de_la_text_area ).addEventListener( 'mouseup' , this.#mouse_up_sur_editeur1.bind( this ) );
+        document.getElementById( id_de_la_text_area ).addEventListener( 'keydown' , this.#keydown_sur_editeur1.bind( this ) );
+        document.getElementById( id_de_la_text_area ).addEventListener( 'keyup' , this.#analyse_key_up_editeur1.bind( this ) );
         /*
           document.getElementById(id_de_la_text_area).addEventListener("scroll",this.#analyse_scroll_editeur1.bind(this));
         */
@@ -2933,33 +2939,33 @@ COMMIT;
     /*
       =============================================================================================================
     */
-    inserer_source1(nomFonction,id_de_la_textarea){
+    inserer_source1( nomFonction , id_de_la_textarea ){
         var i=0;
         var j=0;
         var k=0;
         var toAdd='';
         var espaces='';
-        var zoneSource=document.getElementById(id_de_la_textarea);
+        var zoneSource=document.getElementById( id_de_la_textarea );
         if(nomFonction === 'choix' || nomFonction === 'boucle' || nomFonction === 'appelf' || nomFonction === 'affecte'){
             if(zoneSource.selectionStart !== zoneSource.selectionEnd){
-                alert('la sélection ne doit pas contenir un caractère');
+                alert( 'la sélection ne doit pas contenir un caractère' );
                 return;
             }
             var position_selection=zoneSource.selectionStart;
-            var texte_debut=zoneSource.value.substr(0,zoneSource.selectionStart);
-            var texte_fin=zoneSource.value.substr(zoneSource.selectionStart);
+            var texte_debut=zoneSource.value.substr( 0 , zoneSource.selectionStart );
+            var texte_fin=zoneSource.value.substr( zoneSource.selectionStart );
             j=0;
             for( i=texte_debut.length - 1 ; i >= 0 ; i-- ){
                 j++;
-                if(texte_debut.substr(i,1) === '\n'){
+                if(texte_debut.substr( i , 1 ) === '\n'){
                     break;
                 }
             }
             j--;
             if(j > 0){
-                espaces=' '.repeat(j);
+                espaces=' '.repeat( j );
             }
-            var de1=' '.repeat(NBESPACESREV);
+            var de1=' '.repeat( NBESPACESREV );
             if(nomFonction === 'choix'){
                 toAdd='choix(';
                 toAdd+='\n' + espaces + de1 + 'si(';
@@ -3021,23 +3027,23 @@ COMMIT;
       function lancer_un_travail_en_arriere_plan
       =============================================================================================================
     */
-    lancer_un_travail_en_arriere_plan(parametre){
+    lancer_un_travail_en_arriere_plan( parametre ){
         if(!window.Worker){
             return;
         }
         if(this.#programme_en_arriere_plan === null){
             try{
-                this.#programme_en_arriere_plan=new Worker("./js/module_travail_en_arriere_plan0.js");
+                this.#programme_en_arriere_plan=new Worker( "./js/module_travail_en_arriere_plan0.js" );
             }catch(e){
-                console.log('e=',e);
+                console.log( 'e=' , e );
                 return;
             }
-            this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
-                console.log("dans le script principal, message_recu_du_worker",message_recu_du_worker);
-                this.traite_message_recupere_du_worker(message_recu_du_worker);
-            }.bind(this);
+            this.#programme_en_arriere_plan.onmessage=function( message_recu_du_worker ){
+                console.log( "dans le script principal, message_recu_du_worker" , message_recu_du_worker );
+                this.traite_message_recupere_du_worker( message_recu_du_worker );
+            }.bind( this );
         }
-        var json_param=JSON.parse(parametre);
+        var json_param=JSON.parse( parametre );
         if("replacer_des_chaines1" === json_param.nom_du_travail_en_arriere_plan){
             var liste_des_id_des_sources='';
             var ob={};
@@ -3045,96 +3051,96 @@ COMMIT;
                 liste_des_id_des_sources+=',' + json_param.liste_des_taches[ob].id_source;
             }
             if(liste_des_id_des_sources != ''){
-                liste_des_id_des_sources=liste_des_id_des_sources.substr(1);
-                var remplacer_par=prompt('remplacer "' + json_param.chaine_a_remplacer + '" dans les sources(' + liste_des_id_des_sources + ') par :',json_param.chaine_a_remplacer);
+                liste_des_id_des_sources=liste_des_id_des_sources.substr( 1 );
+                var remplacer_par=prompt( 'remplacer "' + json_param.chaine_a_remplacer + '" dans les sources(' + liste_des_id_des_sources + ') par :' , json_param.chaine_a_remplacer );
                 if(remplacer_par !== null){
                     json_param.remplacer_par=remplacer_par;
-                    console.log(json_param);
-                    console.log('on envoie le message');
+                    console.log( json_param );
+                    console.log( 'on envoie le message' );
                     try{
-                        this.#programme_en_arriere_plan.postMessage({"type_de_message" : 'déclencher_un_travail' ,"parametres" : json_param});
+                        this.#programme_en_arriere_plan.postMessage( {"type_de_message" : 'déclencher_un_travail' ,"parametres" : json_param} );
                     }catch(e){
-                        console.log('e=',e);
+                        console.log( 'e=' , e );
                     }
-                    console.log('le message est envoyé sans erreur');
+                    console.log( 'le message est envoyé sans erreur' );
                 }
             }
         }else if("supprimer_un_commentaire1" === json_param.nom_du_travail_en_arriere_plan){
-            this.#programme_en_arriere_plan.postMessage({"type_de_message" : 'déclencher_un_travail' ,"parametres" : json_param});
+            this.#programme_en_arriere_plan.postMessage( {"type_de_message" : 'déclencher_un_travail' ,"parametres" : json_param} );
         }else{
-            console.error('%c module_interface1 87 le travail "' + json_param.nom_du_travail_en_arriere_plan + '" n\'est pas dans la liste ','background:yellow;');
+            console.error( '%c module_interface1 87 le travail "' + json_param.nom_du_travail_en_arriere_plan + '" n\'est pas dans la liste ' , 'background:yellow;' );
         }
     }
     /*
       =============================================================================================================
     */
-    traite_message_recupere_du_worker(message_recu_du_worker){
-        if(message_recu_du_worker.data.hasOwnProperty('type_de_message')){
+    traite_message_recupere_du_worker( message_recu_du_worker ){
+        if(message_recu_du_worker.data.hasOwnProperty( 'type_de_message' )){
             if(message_recu_du_worker.data.type_de_message === "recuperer_les_travaux_en_session"){
                 if(message_recu_du_worker.data.tableau_des_travaux.length > 0){
-                    this.#programme_en_arriere_plan.postMessage({"type_de_message" : 'integrer_les_travaux_en_session' ,"tableau_des_travaux" : message_recu_du_worker.data.tableau_des_travaux});
+                    this.#programme_en_arriere_plan.postMessage( {"type_de_message" : 'integrer_les_travaux_en_session' ,"tableau_des_travaux" : message_recu_du_worker.data.tableau_des_travaux} );
                 }else{
-                    console.log('pas de travaux à intégrer');
+                    console.log( 'pas de travaux à intégrer' );
                 }
             }
-        }else if(message_recu_du_worker.data.hasOwnProperty('donnees_recues_du_message')){
-            console.log('%cconfirmation de la réception d\'un message=','background:lightpink;',message_recu_du_worker.data);
+        }else if(message_recu_du_worker.data.hasOwnProperty( 'donnees_recues_du_message' )){
+            console.log( '%cconfirmation de la réception d\'un message=' , 'background:lightpink;' , message_recu_du_worker.data );
         }else{
-            console.log('traitement non prévu');
+            console.log( 'traitement non prévu' );
         }
     }
     /*
       =============================================================================================================
     */
-    #charger_le_module_des_taches_en_arrière_plan(par){
+    #charger_le_module_des_taches_en_arrière_plan( par ){
         if(!window.Worker){
             return;
         }
-        setTimeout(function(){
+        setTimeout( function(){
                 if(this.#programme_en_arriere_plan === null){
                     /* console.log('on charge le worker 1111'); */
-                    this.#programme_en_arriere_plan=new Worker("./js/module_travail_en_arriere_plan0.js");
+                    this.#programme_en_arriere_plan=new Worker( "./js/module_travail_en_arriere_plan0.js" );
                 }
-                this.#programme_en_arriere_plan.onmessage=function(message_recu_du_worker){
-                    console.log("dans le module interface , message_recu_du_worker",message_recu_du_worker.data);
-                    this.traite_message_recupere_du_worker(message_recu_du_worker);
-                }.bind(this);
-                this.#programme_en_arriere_plan.postMessage({"type_de_message" : 'recuperer_les_travaux_en_session' ,"parametres" : {}});
+                this.#programme_en_arriere_plan.onmessage=function( message_recu_du_worker ){
+                    console.log( "dans le module interface , message_recu_du_worker" , message_recu_du_worker.data );
+                    this.traite_message_recupere_du_worker( message_recu_du_worker );
+                }.bind( this );
+                this.#programme_en_arriere_plan.postMessage( {"type_de_message" : 'recuperer_les_travaux_en_session' ,"parametres" : {}} );
                 /* console.log('pas d\'erreur !'); */
-            }.bind(this),1500);
+            }.bind( this ) , 1500 );
     }
     /*
       =============================================================================================================
     */
-    #traite_tableau_de_la_base(par){
-        setTimeout(function(){
-                __m_rev_vers_sql1.traite_le_tableau_de_la_base_sqlite_v3(par);
-            }.bind(this),250);
+    #traite_tableau_de_la_base( par ){
+        setTimeout( function(){
+                __m_rev_vers_sql1.traite_le_tableau_de_la_base_sqlite_v3( par );
+            }.bind( this ) , 250 );
     }
     /*
       =============================================================================================================
     */
-    executerCesActionsPourLaPageLocale2(par){
+    executerCesActionsPourLaPageLocale2( par ){
         for( var i=0 ; i < par.length ; i++ ){
             switch (par[i].nomDeLaFonctionAappeler){
-                case 'initialisation_page_rev' : initialisation_page_rev(par[i].parametre);
+                case 'initialisation_page_rev' : initialisation_page_rev( par[i].parametre );
                     break;
                 case '#charger_le_module_des_taches_en_arrière_plan' :
                     /* if(APP_KEY !== 'fta'){ */
-                    this.#charger_le_module_des_taches_en_arrière_plan(par[i].parametre);
+                    this.#charger_le_module_des_taches_en_arrière_plan( par[i].parametre );
                     /* } */
                     break;
                     
-                case '#ne_rien_faire1' : this.#ne_rien_faire1(par[i].parametre);
+                case '#ne_rien_faire1' : this.#ne_rien_faire1( par[i].parametre );
                     break;
-                case 'initialiserEditeurPourUneTextArea' : this.#initialiser_editeur_pour_une_textarea1(par[i].parametre);
+                case 'initialiserEditeurPourUneTextArea' : this.#initialiser_editeur_pour_une_textarea1( par[i].parametre );
                     break;
-                case 'traite_le_tableau_de_la_base_sqlite_v2' : this.#traite_tableau_de_la_base(par[i].parametre);
+                case 'traite_le_tableau_de_la_base_sqlite_v2' : this.#traite_tableau_de_la_base( par[i].parametre );
                     break;
-                case 'comparer_deux_tableaux_de_bases_sqlite' : comparer_deux_tableaux_de_bases_sqlite(par[i].parametre);
+                case 'comparer_deux_tableaux_de_bases_sqlite' : comparer_deux_tableaux_de_bases_sqlite( par[i].parametre );
                     break;
                 default:
-                    console.log('fonction non prévue dans interface0.js: ' + par[i].nomDeLaFonctionAappeler);
+                    console.log( 'fonction non prévue dans interface0.js: ' + par[i].nomDeLaFonctionAappeler );
                     break;
                     
             }

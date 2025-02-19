@@ -12,23 +12,23 @@ class c_astjs_vers_rev1{
       =============================================================================================================
       le seul argument est pour l'instant le nom de la variable qui est déclarée
     */
-    constructor(nom_de_la_variable){
+    constructor( nom_de_la_variable ){
         this.#nom_de_la_variable=nom_de_la_variable;
     }
     /*
       =============================================================================================================
     */
-    #astjs_le(o){
-        if(o.hasOwnProperty('element') && o.element.hasOwnProperty('end') && o.element.hasOwnProperty('start')){
+    #astjs_le( o ){
+        if(o.hasOwnProperty( 'element' ) && o.element.hasOwnProperty( 'end' ) && o.element.hasOwnProperty( 'start' )){
             o.plage=[o.element.start,o.element.end];
         }
-        __m_rev1.empiler_erreur(o);
+        __m_rev1.empiler_erreur( o );
         return o;
     }
     /*
       =============================================================================================================
     */
-    #traite_FunctionExpression(element,niveau,parent,tab_comm){
+    #traite_FunctionExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let id='';
@@ -40,40 +40,40 @@ class c_astjs_vers_rev1{
             asynchrone='asynchrone(),';
         }
         if(element.expression !== false){
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         if(element.generator !== false){
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         if(element.id){
-            obj=this.#traite_element(element.id,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.id , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 id+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }
-        if(element.params && Array.isArray(element.params)){
+        if(element.params && Array.isArray( element.params )){
             if(element.params.length === 0){
                 les_arguments=',p()';
             }else{
                 for( let i=0 ; i < element.params.length ; i++ ){
-                    le_commentaire=this.#comm_dans_arguments_appel_fonction(element.params[i],niveau,element,tab_comm);
-                    obj=this.#traite_element(element.params[i],niveau + 1,element,tab_comm,false);
+                    le_commentaire=this.#comm_dans_arguments_appel_fonction( element.params[i] , niveau , element , tab_comm );
+                    obj=this.#traite_element( element.params[i] , niveau + 1 , element , tab_comm , false );
                     if(obj.__xst === true){
                         les_arguments+=',p(' + le_commentaire + obj.__xva + ')';
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                     }
                 }
             }
         }
         if(element.body){
-            obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+            obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }
         if(id !== ''){
@@ -86,7 +86,7 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_CallExpression(element,niveau,parent,tab_comm){
+    #traite_CallExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let les_arguments='';
@@ -106,15 +106,15 @@ class c_astjs_vers_rev1{
                     if(les_arguments !== ''){
                         les_arguments+=',';
                     }
-                    le_commentaire=this.#comm_dans_arguments_appel_fonction(element.arguments[i],niveau,element,tab_comm);
+                    le_commentaire=this.#comm_dans_arguments_appel_fonction( element.arguments[i] , niveau , element , tab_comm );
                     /*
                       ici, on a le seul cas où ignorer_commentaires_avant est vrai
                     */
-                    obj=this.#traite_element(element.arguments[i],niveau + 1,element.arguments,tab_comm,true);
+                    obj=this.#traite_element( element.arguments[i] , niveau + 1 , element.arguments , tab_comm , true );
                     if(obj.__xst === true){
                         les_arguments+='p(' + le_commentaire + obj.__xva + ')';
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                     }
                 }
             }else{
@@ -123,32 +123,32 @@ class c_astjs_vers_rev1{
         }
         let type_callee=element.callee.type;
         if(element.callee){
-            obj=this.#traite_element(element.callee,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.callee , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 nom_de_la_fonction+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         if(element.body){
-            obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+            obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
             if(obj.__xst === true){
                 if(obj.__xva !== ''){
                     le_contenu=',contenu(' + contenu + ')';
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'body' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'body' ,"element" : element} ));
             }
         }
         if(element.optional === true){
             t+='chainé(' + nom_de_la_fonction + ' , appelf(' + auto_appelee + 'nomf()' + ',' + les_arguments + le_contenu + '))';
         }else{
             if(type_callee === 'MemberExpression'){
-                if(nom_de_la_fonction.substr(0,8) === 'tableau('){
+                if(nom_de_la_fonction.substr( 0 , 8 ) === 'tableau('){
                     t+='appelf(' + auto_appelee + 'nomf(' + nom_de_la_fonction + '),' + les_arguments + le_contenu + ')';
-                }else if(nom_de_la_fonction.indexOf('nomf') < 0){
+                }else if(nom_de_la_fonction.indexOf( 'nomf' ) < 0){
                     t+='appelf(' + auto_appelee + 'nomf(' + nom_de_la_fonction + '),' + les_arguments + le_contenu + ')';
                 }else{
                     t+='appelf(' + auto_appelee + nom_de_la_fonction + ',' + les_arguments + le_contenu + ')';
@@ -162,7 +162,7 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_ArrowFunctionExpression(element,niveau,parent,tab_comm){
+    #traite_ArrowFunctionExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let contenu='';
@@ -176,44 +176,44 @@ class c_astjs_vers_rev1{
         }
         est_expression=element.expression;
         if(element.generator !== false){
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' generator' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' generator' ,"element" : element} ));
         }
         if(element.id){
-            obj=this.#traite_element(element.id,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.id , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 id+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }
         if(element.body){
             if(element.expression){
-                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm,false);
+                obj=this.#traite_element( element.body , niveau + 2 , element , tab_comm , false );
                 if(obj.__xst === true){
                     contenu+='retourner(' + obj.__xva + ')';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                 }
             }else{
-                obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                 }
             }
         }
-        if(element.params && Array.isArray(element.params)){
+        if(element.params && Array.isArray( element.params )){
             if(element.params.length === 0){
                 les_arguments=',p()';
             }else{
                 for( let i=0 ; i < element.params.length ; i++ ){
-                    le_commentaire=this.#comm_dans_arguments_appel_fonction(element.params[i],niveau,element,tab_comm);
-                    obj=this.#traite_element(element.params[i],niveau + 1,element,tab_comm,false);
+                    le_commentaire=this.#comm_dans_arguments_appel_fonction( element.params[i] , niveau , element , tab_comm );
+                    obj=this.#traite_element( element.params[i] , niveau + 1 , element , tab_comm , false );
                     if(obj.__xst === true){
                         les_arguments+=',p(' + le_commentaire + obj.__xva + ')';
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                     }
                 }
             }
@@ -224,19 +224,19 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_ReturnStatement(element,niveau,parent,tab_comm){
+    #traite_ReturnStatement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let l_argument='';
         if(element.argument){
-            obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.argument , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
-                if(obj.__xva.substr(obj.__xva.length - 1,1) === ';'){
+                if(obj.__xva.substr( obj.__xva.length - 1 , 1 ) === ';'){
                     debugger;
                 }
                 l_argument+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0206 #traite_ReturnStatement' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0206 #traite_ReturnStatement' ,"element" : element} ));
             }
         }
         if(l_argument === ''){
@@ -249,22 +249,22 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_AssignmentExpression(element,niveau,parent,tab_comm){
+    #traite_AssignmentExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let gauche='';
         let droite='';
-        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.left , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             gauche+=obj.__xva;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0134 #traite_AssignmentExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0134 #traite_AssignmentExpression' ,"element" : element} ));
         }
-        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.right , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             droite+=obj.__xva;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0142 #traite_AssignmentExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0142 #traite_AssignmentExpression' ,"element" : element} ));
         }
         if(element.operator === '='){
             t+='affecte(' + gauche + ' , ' + droite + ')';
@@ -276,72 +276,72 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_BinaryExpression(element,niveau,parent,tab_comm){
+    #traite_BinaryExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let gauche='';
         let droite='';
         let nomDuTest='';
         let nouveauTableau=null;
-        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.left , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             gauche+=obj.__xva;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0279 #traite_BinaryExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0279 #traite_BinaryExpression' ,"element" : element} ));
         }
-        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.right , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             droite+=obj.__xva;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0287 #traite_BinaryExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0287 #traite_BinaryExpression' ,"element" : element} ));
         }
-        nomDuTest=this.#recup_nom_operateur(element.operator);
+        nomDuTest=this.#recup_nom_operateur( element.operator );
         if(element.right.type === 'Literal'
-                   && (element.right.raw.substr(0,1) === "'"
-                       || element.right.raw.substr(0,1) === '"')
+                   && (element.right.raw.substr( 0 , 1 ) === "'"
+                       || element.right.raw.substr( 0 , 1 ) === '"')
                    && nomDuTest === 'plus'
                || element.left.type === 'Literal'
-                   && (element.left.raw.substr(0,1) === "'"
-                       || element.left.raw.substr(0,1) === '"')
+                   && (element.left.raw.substr( 0 , 1 ) === "'"
+                       || element.left.raw.substr( 0 , 1 ) === '"')
                    && nomDuTest === 'plus'
         ){
             t+='concat(' + gauche + ',' + droite + ')';
         }else{
             t+=nomDuTest + '(' + gauche + ',' + droite + ')';
         }
-        if(t.substr(0,12) === 'plus(concat('){
-            t='concat(' + t.substr(5);
+        if(t.substr( 0 , 12 ) === 'plus(concat('){
+            t='concat(' + t.substr( 5 );
         }
-        if(t.substr(0,13) === 'plus( concat('){
-            t='concat(' + t.substr(5);
+        if(t.substr( 0 , 13 ) === 'plus( concat('){
+            t='concat(' + t.substr( 5 );
         }
-        if(t.substr(0,14) === 'concat(concat(' || t.substr(0,15) === 'concat( concat('){
-            obj=__m_rev1.rev_tm(t);
+        if(t.substr( 0 , 14 ) === 'concat(concat(' || t.substr( 0 , 15 ) === 'concat( concat('){
+            obj=__m_rev1.rev_tm( t );
             if(obj.__xst === true){
-                nouveauTableau=__m_rev1.baisser_le_niveau_et_supprimer(obj.__xva,2,0);
-                obj=__m_rev1.matrice_vers_source_rev1(nouveauTableau,0,false,1);
+                nouveauTableau=__m_rev1.baisser_le_niveau_et_supprimer( obj.__xva , 2 , 0 );
+                obj=__m_rev1.matrice_vers_source_rev1( nouveauTableau , 0 , false , 1 );
                 if(obj.__xst === true){
                     t=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_BinaryExpression ' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_BinaryExpression ' ,"element" : element} ));
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_BinaryExpression ' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_BinaryExpression ' ,"element" : element} ));
             }
         }
-        if(t.substr(0,10) === 'plus(plus('
-               || t.substr(0,12) === 'moins(moins('
-               || t.substr(0,10) === 'mult(mult('
-               || t.substr(0,10) === 'divi(divi('
-               || t.substr(0,11) === 'plus( plus('
-               || t.substr(0,13) === 'moins( moins('
-               || t.substr(0,11) === 'mult( mult('
-               || t.substr(0,11) === 'divi( divi('
+        if(t.substr( 0 , 10 ) === 'plus(plus('
+               || t.substr( 0 , 12 ) === 'moins(moins('
+               || t.substr( 0 , 10 ) === 'mult(mult('
+               || t.substr( 0 , 10 ) === 'divi(divi('
+               || t.substr( 0 , 11 ) === 'plus( plus('
+               || t.substr( 0 , 13 ) === 'moins( moins('
+               || t.substr( 0 , 11 ) === 'mult( mult('
+               || t.substr( 0 , 11 ) === 'divi( divi('
         ){
-            obj=__m_rev1.rev_tm(t);
+            obj=__m_rev1.rev_tm( t );
             if(obj.__xst === true){
-                nouveauTableau=__m_rev1.baisser_le_niveau_et_supprimer(obj.__xva,2,0);
-                obj=__m_rev1.matrice_vers_source_rev1(nouveauTableau,0,false,1);
+                nouveauTableau=__m_rev1.baisser_le_niveau_et_supprimer( obj.__xva , 2 , 0 );
+                obj=__m_rev1.matrice_vers_source_rev1( nouveauTableau , 0 , false , 1 );
                 if(obj.__xst === true){
                     t=obj.__xva;
                 }
@@ -352,7 +352,7 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_VariableDeclaration(element,niveau,parent,tab_comm){
+    #traite_VariableDeclaration( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let nomVariable='';
@@ -363,14 +363,14 @@ class c_astjs_vers_rev1{
             }
             nomVariable='';
             if(element.declarations[decl].id){
-                obj=this.#traite_element(element.declarations[decl].id,niveau + 1,element,tab_comm,false);
+                obj=this.#traite_element( element.declarations[decl].id , niveau + 1 , element , tab_comm , false );
                 if(obj.__xst === true){
                     nomVariable=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '0684 #traite_VariableDeclaration' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '0684 #traite_VariableDeclaration' ,"element" : element} ));
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0387 #traite_VariableDeclaration' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0387 #traite_VariableDeclaration' ,"element" : element} ));
             }
             debutDeclaration='';
             if(element.kind && element.kind === 'var'){
@@ -383,11 +383,11 @@ class c_astjs_vers_rev1{
                 debutDeclaration='declare(' + nomVariable + ' , ';
             }
             if(element.declarations[decl].init){
-                obj=this.#traite_element(element.declarations[decl].init,niveau + 1,element,tab_comm,false);
+                obj=this.#traite_element( element.declarations[decl].init , niveau + 1 , element , tab_comm , false );
                 if(obj.__xst === true){
                     t+=(debutDeclaration + obj.__xva) + ')';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '0704 #traite_VariableDeclaration' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '0704 #traite_VariableDeclaration' ,"element" : element} ));
                 }
             }else{
                 t+=debutDeclaration + 'null())';
@@ -399,43 +399,43 @@ class c_astjs_vers_rev1{
       =============================================================================================================
       const str_ = i18n.createIcuMessageFn(import.meta.url, UIStrings);
     */
-    #traite_MetaProperty(element,niveau,parent,tab_comm){
+    #traite_MetaProperty( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let meta='';
         let propriete='';
         if(element.meta && element.property){
-            obj=this.#traite_element(element.meta,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.meta , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 meta+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0727 #traite_MetaProperty' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0727 #traite_MetaProperty' ,"element" : element} ));
             }
-            obj=this.#traite_element(element.property,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.property , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 propriete+='.' + obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0727 #traite_MetaProperty' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0727 #traite_MetaProperty' ,"element" : element} ));
             }
             t+=meta + propriete;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0730 #traite_MetaProperty' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0730 #traite_MetaProperty' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_ImportExpression(element,niveau,parent,tab_comm){
+    #traite_ImportExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let source='';
         if(element.source){
-            obj=this.#traite_element(element.source,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.source , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 source+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0726 #traite_ImportExpression' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0726 #traite_ImportExpression' ,"element" : element} ));
             }
         }
         t+='appelf(nomf(import),p(' + source + '))';
@@ -445,41 +445,41 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_ImportNamespaceSpecifier(element,niveau,parent,tab_comm){
+    #traite_ImportNamespaceSpecifier( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         if(element.local){
             if(element.local.type === 'Identifier'){
                 t+='espace_de_noms(' + element.local.name + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0724 #traite_ImportDefaultSpecifier' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0724 #traite_ImportDefaultSpecifier' ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0768 #traite_ImportDefaultSpecifier' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0768 #traite_ImportDefaultSpecifier' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_ImportDefaultSpecifier(element,niveau,parent,tab_comm){
+    #traite_ImportDefaultSpecifier( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         if(element.local){
             if(element.local.type === 'Identifier'){
                 t+='bibliotheque_par_défaut(' + element.local.name + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0742 #traite_ImportDefaultSpecifier' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0742 #traite_ImportDefaultSpecifier' ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0746 #traite_ImportDefaultSpecifier' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0746 #traite_ImportDefaultSpecifier' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_ImportSpecifier(element,niveau,parent,tab_comm){
+    #traite_ImportSpecifier( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         if(element.imported && element.local){
@@ -490,10 +490,10 @@ class c_astjs_vers_rev1{
                     t+='bibliotheque_spécifiée(' + element.imported.name + ',' + element.local.name + ')';
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0722 #traite_ImportSpecifier' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0722 #traite_ImportSpecifier' ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0722 #traite_ImportSpecifier' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0722 #traite_ImportSpecifier' ,"element" : element} ));
         }
         /*
           https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Statements/import
@@ -514,32 +514,32 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_ImportDeclaration(element,niveau,parent,tab_comm){
+    #traite_ImportDeclaration( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let source='';
         let specifiers='';
         if(element.source){
-            obj=this.#traite_element(element.source,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.source , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 source+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         if(element.specifiers){
             for( let i=0 ; i < element.specifiers.length ; i++ ){
-                obj=this.#traite_element(element.specifiers[i],niveau + 1,element.specifiers,tab_comm,false);
+                obj=this.#traite_element( element.specifiers[i] , niveau + 1 , element.specifiers , tab_comm , false );
                 if(obj.__xst === true){
                     specifiers+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                 }
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         t='importer(' + specifiers + (specifiers === '' ? ( '' ) : ( ',' )) + 'provenance(' + source + ')' + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -547,21 +547,21 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_SpreadElement(element,niveau,parent,tab_comm){
+    #traite_SpreadElement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         if(element.argument){
-            obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.argument , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 if(element.argument.type === 'CallExpression'){
                     /*
                       cas a=[...a.f()] => appelf(element(...a),nomf(f)) 
                       cas a=[...f]     => appelf(nomf(...f)) 
                     */
-                    if(obj.__xva.substr(0,6) === 'appelf'){
+                    if(obj.__xva.substr( 0 , 6 ) === 'appelf'){
                         var position_element=-1;
                         var position_nomf=-1;
-                        obj=__m_rev1.rev_tm(obj.__xva);
+                        obj=__m_rev1.rev_tm( obj.__xva );
                         if(obj.__xst === true){
                             for( var i=2 ; i < obj.__xva.length ; i++ ){
                                 if(obj.__xva[i][7] === 1){
@@ -569,13 +569,13 @@ class c_astjs_vers_rev1{
                                         if(obj.__xva[i + 1][2] === 'c' && obj.__xva[i][8] === 1){
                                             position_nomf=i + 1;
                                         }else{
-                                            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                                            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                                         }
                                     }else if(obj.__xva[i][1] === 'element' && obj.__xva[i][2] === 'f'){
                                         if(obj.__xva[i + 1][2] === 'c' && obj.__xva[i][8] === 1){
                                             position_element=i + 1;
                                         }else{
-                                            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                                            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                                         }
                                     }
                                 }
@@ -586,59 +586,59 @@ class c_astjs_vers_rev1{
                                 }else{
                                     obj.__xva[position_element][1]='...' + obj.__xva[position_element][1];
                                 }
-                                var nouvelle_fonction=__m_rev1.matrice_vers_source_rev1(obj.__xva,0,false,1);
+                                var nouvelle_fonction=__m_rev1.matrice_vers_source_rev1( obj.__xva , 0 , false , 1 );
                                 if(nouvelle_fonction.__xst === true){
                                     t+=nouvelle_fonction.__xva;
                                 }else{
-                                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                                 }
                             }else{
-                                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                             }
                         }else{
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                         }
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                     }
                 }else{
                     t+='...' + obj.__xva;
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_RestElement(element,niveau,parent,tab_comm){
+    #traite_RestElement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         if(element.argument){
-            obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.argument , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 t+='...' + obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_ObjectPattern(element,niveau,parent,tab_comm){
+    #traite_ObjectPattern( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         for(let i in element.properties){
             if(element.properties[i].method !== false){
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
             if(element.properties[i].shorthand !== false){
                 /* const {a, b} = c; =>  const {a:a, b:b} = c; */
@@ -648,13 +648,13 @@ class c_astjs_vers_rev1{
             if(t !== ''){
                 t+=',';
             }
-            t+=this.#comm_avant_debut1(element.properties[i],niveau,element,tab_comm);
+            t+=this.#comm_avant_debut1( element.properties[i] , niveau , element , tab_comm );
             var val=element.properties[i];
             if(val.computed === true){
                 if(val.key.type === 'Identifier'){
                     t+='([' + val.key.name + '],';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '0739 #traite_ObjectPattern "' + val.key.type + '"' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '0739 #traite_ObjectPattern "' + val.key.type + '"' ,"element" : element} ));
                 }
             }else{
                 if(val.key.type === 'Identifier'){
@@ -662,14 +662,14 @@ class c_astjs_vers_rev1{
                 }else if(val.key.type === 'Literal'){
                     t+='(' + val.key.raw + ',';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '0739 #traite_ObjectPattern "' + val.key.type + '"' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '0739 #traite_ObjectPattern "' + val.key.type + '"' ,"element" : element} ));
                 }
             }
-            obj=this.#traite_element(val.value,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( val.value , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 t+=obj.__xva + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0745 #traite_ObjectPattern'}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0745 #traite_ObjectPattern'} ));
             }
         }
         t='obj(' + t + ')';
@@ -678,22 +678,22 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_ObjectExpression(element,niveau,parent,tab_comm){
+    #traite_ObjectExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         for(let i in element.properties){
             if(t !== ''){
                 t+=',';
             }
-            t+=this.#comm_avant_debut1(element.properties[i],niveau,element,tab_comm);
+            t+=this.#comm_avant_debut1( element.properties[i] , niveau , element , tab_comm );
             var val=element.properties[i];
             if(val.key === undefined){
                 t+='(';
-                obj=this.#traite_element(val,niveau + 1,element,tab_comm,false);
+                obj=this.#traite_element( val , niveau + 1 , element , tab_comm , false );
                 if(obj.__xst === true){
                     t+=obj.__xva + ')';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                 }
             }else{
                 if(val.key.type === 'Identifier'){
@@ -701,22 +701,22 @@ class c_astjs_vers_rev1{
                 }else if(val.key.type === 'Literal'){
                     t+='(' + val.key.raw + ',';
                 }else{
-                    obj=this.#traite_element(val.key,niveau + 1,element,tab_comm,false);
+                    obj=this.#traite_element( val.key , niveau + 1 , element , tab_comm , false );
                     if(obj.__xst === true){
                         t+='(' + obj.__xva + ',';
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                     }
                 }
-                obj=this.#traite_element(val.value,niveau + 1,element,tab_comm,false);
+                obj=this.#traite_element( val.value , niveau + 1 , element , tab_comm , false );
                 if(obj.__xst === true){
                     t+=obj.__xva + ')';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                 }
             }
         }
-        t+=this.#comm_avant_fin1(element,niveau,element,tab_comm);
+        t+=this.#comm_avant_fin1( element , niveau , element , tab_comm );
         t='obj(' + t + ')';
         return({"__xst" : true ,"__xva" : t});
     }
@@ -724,26 +724,26 @@ class c_astjs_vers_rev1{
       =============================================================================================================
       let k = class extends _ {}
     */
-    #traite_YieldExpression(element,niveau,parent,tab_comm){
+    #traite_YieldExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let delegué=false;
         if(element.delegate !== false){
             delegué=true;
         }
-        if(element.hasOwnProperty('argument')){
-            obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
+        if(element.hasOwnProperty( 'argument' )){
+            obj=this.#traite_element( element.argument , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
-                if(delegué===true){    
-                    t+='céder(délégué(' +  obj.__xva + '))';
+                if(delegué === true){
+                    t+='céder(délégué(' + obj.__xva + '))';
                 }else{
-                    t+='céder(' +  obj.__xva + ')';
+                    t+='céder(' + obj.__xva + ')';
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -751,32 +751,32 @@ class c_astjs_vers_rev1{
       =============================================================================================================
       let k = class extends _ {}
     */
-    #traite_ClassExpression(element,niveau,parent,tab_comm){
+    #traite_ClassExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let contenu='';
         let etend='';
         if(element.superClass){
-            obj=this.#traite_element(element.superClass,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.superClass , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 etend='etend(' + obj.__xva + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         if(element.body){
-            obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+            obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
             if(obj.__xst === true){
                 if(obj.__xva !== ''){
                     contenu+=',contenu(' + obj.__xva + ')';
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0466 #traite_FunctionDeclaration' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0466 #traite_FunctionDeclaration' ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         t='classe(' + etend + contenu + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -785,30 +785,30 @@ class c_astjs_vers_rev1{
       =============================================================================================================
       c`<span class="shadow"></span>`
     */
-    #traite_TaggedTemplateExpression(element,niveau,parent,tab_comm){
+    #traite_TaggedTemplateExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let le_tag='';
         let le_quasi='';
         if(element.tag){
-            obj=this.#traite_element(element.tag,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.tag , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 le_tag=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         if(element.quasi){
-            obj=this.#traite_element(element.quasi,niveau,element,tab_comm,false);
+            obj=this.#traite_element( element.quasi , niveau , element , tab_comm , false );
             if(obj.__xst === true){
                 le_quasi=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1746 #traite_TemplateLiteral' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1746 #traite_TemplateLiteral' ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         t='modèle_annoté(' + le_tag + ',' + le_quasi + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -817,21 +817,21 @@ class c_astjs_vers_rev1{
       =============================================================================================================
       for (const [t,s] of e)
     */
-    #traite_ArrayPattern(element,niveau,parent,tab_comm){
+    #traite_ArrayPattern( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
-        obj=this.#traite_ArrayExpression(element,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_ArrayExpression( element , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2()}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_ArrayExpression(element,niveau,parent,tab_comm){
+    #traite_ArrayExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let ne_contient_que_des_constantes=true;
@@ -841,18 +841,18 @@ class c_astjs_vers_rev1{
         t+='';
         let lesPar='';
         for(let i in element.elements){
-            commentaire=this.#comm_avant_debut1(element.elements[i],niveau,element,tab_comm);
+            commentaire=this.#comm_avant_debut1( element.elements[i] , niveau , element , tab_comm );
             if(commentaire !== ''){
                 lesPar+=',' + commentaire;
             }
             if(element.elements[i] === null){
-                this.#astjs_le({"__xst" : true ,"__xav" : __m_rev1.nl2() + ' ATTENTION, CE N\'EST PAS UNE ERREUR MAIS... élément vide dans un tableau' ,"element" : element});
+                this.#astjs_le( {"__xst" : true ,"__xav" : __m_rev1.nl2() + ' ATTENTION, CE N\'EST PAS UNE ERREUR MAIS... élément vide dans un tableau' ,"element" : element} );
                 lesPar+=',p()';
             }else if(element.elements[i].type === 'Literal'){
                 lesPar+=',p(' + element.elements[i].raw + ')';
-                if(element.elements[i].raw.substr(0,1) === '\''
-                       || element.elements[i].raw.substr(0,1) === '"'
-                       || element.elements[i].raw.substr(0,1) === '/'
+                if(element.elements[i].raw.substr( 0 , 1 ) === '\''
+                       || element.elements[i].raw.substr( 0 , 1 ) === '"'
+                       || element.elements[i].raw.substr( 0 , 1 ) === '/'
                 ){
                     ne_contient_que_des_constantes=false;
                 }
@@ -864,18 +864,18 @@ class c_astjs_vers_rev1{
                 nombre_elements++;
             }else{
                 ne_contient_que_des_constantes=false;
-                obj=this.#traite_element(element.elements[i],niveau + 1,element,tab_comm,false);
+                obj=this.#traite_element( element.elements[i] , niveau + 1 , element , tab_comm , false );
                 if(obj.__xst === true){
                     lesPar+=',p(' + obj.__xva + ')';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '0388 #traite_ArrayExpression' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '0388 #traite_ArrayExpression' ,"element" : element} ));
                 }
             }
         }
         if(lesPar.length >= 0){
-            lesPar=lesPar.substr(1);
+            lesPar=lesPar.substr( 1 );
         }
-        lesPar+=this.#comm_avant_fin1(element,niveau,element,tab_comm);
+        lesPar+=this.#comm_avant_fin1( element , niveau , element , tab_comm );
         t='defTab(' + lesPar + ')';
         if(t === 'appelf(nomf(Array))'){
             t='[]';
@@ -889,7 +889,7 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_FunctionDeclaration(element,niveau,parent,tab_comm){
+    #traite_FunctionDeclaration( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let contenu='';
@@ -901,42 +901,42 @@ class c_astjs_vers_rev1{
             asynchrone='asynchrone(),';
         }
         if(element.expression !== false){
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'expression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'expression' ,"element" : element} ));
         }
         if(element.generator !== false){
             generateur='générateur(),';
         }
         if(element.id){
-            obj=this.#traite_element(element.id,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.id , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 nom_fonction+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'id' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'id' ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'id' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'id' ,"element" : element} ));
         }
-        if(element.params && Array.isArray(element.params)){
+        if(element.params && Array.isArray( element.params )){
             for( let i=0 ; i < element.params.length ; i++ ){
-                obj=this.#traite_element(element.params[i],niveau + 1,element,tab_comm,false);
+                obj=this.#traite_element( element.params[i] , niveau + 1 , element , tab_comm , false );
                 if(obj.__xst === true){
                     les_arguments+=',argument(' + obj.__xva + ')';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                 }
             }
             if(les_arguments !== ''){
-                les_arguments=les_arguments.substr(1);
+                les_arguments=les_arguments.substr( 1 );
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         if(element.body){
-            obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+            obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }
         t+='fonction( definition(' + generateur + asynchrone + 'nom(' + nom_fonction + ') ' + les_arguments + ' )  ,  contenu( ' + contenu + ' ) )';
@@ -945,29 +945,29 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #recupProp(element,niveau,parent,tab_comm){
+    #recupProp( element , niveau , parent , tab_comm ){
         var t='';
         var obj=null;
         if(element.type === 'BinaryExpression'){
-            obj=this.#traite_BinaryExpression(element,niveau,element,tab_comm);
+            obj=this.#traite_BinaryExpression( element , niveau , element , tab_comm );
             if(obj.__xst === true){
                 t+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0555 #recupProp' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0555 #recupProp' ,"element" : element} ));
             }
         }else if(element.type === 'Identifier'){
             t+=element.name;
         }else if(element.type === 'PrivateIdentifier'){
             t+='#' + element.name + '';
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0561 #recupProp "' + element.type + '"' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0561 #recupProp "' + element.type + '"' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_MemberExpression(element,niveau,parent,tab_comm){
+    #traite_MemberExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let objTxt='';
@@ -980,24 +980,24 @@ class c_astjs_vers_rev1{
         let type_propriete=element.property.type;
         if(element.object){
             type_objet=element.object.type;
-            obj=this.#traite_element(element.object,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.object , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 objet=obj.__xva;
                 type_objet=element.object.type;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element} ));
             }
         }else{
             /* cas let  x7 = a ?. [42]; */
             /* cas let x10 = a.b ?. c; */
             type_objet=null;
         }
-        obj=this.#traite_element(element.property,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.property , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             propriete=obj.__xva;
             type_propriete=element.property.type;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element} ));
         }
         if(element.computed === false){
             if(type_parent === 'CallExpression'){
@@ -1005,7 +1005,7 @@ class c_astjs_vers_rev1{
                     if(element.property.type === 'Identifier' && element.object.type === 'Identifier'){
                         t=objet + '.' + propriete;
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element} ));
                     }
                 }else{
                     t='element(' + objet + '),nomf(' + propriete + ')';
@@ -1017,13 +1017,13 @@ class c_astjs_vers_rev1{
                   objet=chainé(a.b,c)
                   on doit retourner chainé(a.b,c.d)
                 */
-                if(objet.substr(0,7) === 'chainé('){
+                if(objet.substr( 0 , 7 ) === 'chainé('){
                     debugger;
                     if(type_propriete === 'Identifier'){
-                        t=objet.substr(0,objet.length - 1) + '.' + propriete + ')';
+                        t=objet.substr( 0 , objet.length - 1 ) + '.' + propriete + ')';
                         return({"__xst" : true ,"__xva" : t});
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element} ));
                     }
                 }else{
                     if(type_objet === null){
@@ -1044,72 +1044,72 @@ class c_astjs_vers_rev1{
             }else{
                 if(type_objet === 'CallExpression'){
                     /* pour traiter le d de "a.b(c).d" */
-                    if(objet.substr(0,7) === 'appelf('){
+                    if(objet.substr( 0 , 7 ) === 'appelf('){
                         /*
                           Cas le plus général : on retire la dernière parenthèse et on ajoute la propriété 
                         */
-                        t=objet.substr(0,objet.length - 1) + 'prop(' + propriete + '))';
+                        t=objet.substr( 0 , objet.length - 1 ) + 'prop(' + propriete + '))';
                     }else{
                         /*
                           cas tordu : il y a un commentaire dans un tableau vu dans htmx
                           a= [(/** /(elt.getRootNode())).host];
                           => affecte(  a, defTab( #() p( appelf( element(elt) , nomf(getRootNode) , p() , prop(host) )) ) ),
                         */
-                        obj=__m_rev1.rev_tm(objet);
+                        obj=__m_rev1.rev_tm( objet );
                         if(obj.__xst === true){
                             /* on retire les commentaires au niveau 1 */
                             var nouveauTableau=obj.__xva;
                             var commentaire='';
                             for( var i=nouveauTableau.length - 1 ; i >= 1 ; i-- ){
                                 if(nouveauTableau[i][2] === 'f' && nouveauTableau[i][1] === '#' && nouveauTableau[i][3] === 0){
-                                    commentaire+=nouveauTableau[i][13].trim().replace(/\(/g,'[').replace(/\)/g,']');
-                                    nouveauTableau=__m_rev1.supprimer_un_element_de_la_matrice(nouveauTableau,i,0);
+                                    commentaire+=nouveauTableau[i][13].trim().replace( /\(/g , '[' ).replace( /\)/g , ']' );
+                                    nouveauTableau=__m_rev1.supprimer_un_element_de_la_matrice( nouveauTableau , i , 0 );
                                 }
                             }
                             if(nouveauTableau.length > 0 && nouveauTableau[1][1] === 'appelf' && nouveauTableau[1][2] === 'f'){
-                                var nouvelle_fonction=__m_rev1.matrice_vers_source_rev1(nouveauTableau,0,false,1);
+                                var nouvelle_fonction=__m_rev1.matrice_vers_source_rev1( nouveauTableau , 0 , false , 1 );
                                 if(nouvelle_fonction.__xst === true){
                                     if(commentaire !== ''){
-                                        t='#(' + commentaire + ')' + nouvelle_fonction.__xva.substr(0,nouvelle_fonction.__xva.length - 1) + 'prop(' + propriete + '))';
+                                        t='#(' + commentaire + ')' + nouvelle_fonction.__xva.substr( 0 , nouvelle_fonction.__xva.length - 1 ) + 'prop(' + propriete + '))';
                                     }else{
-                                        t=nouvelle_fonction.__xva.substr(0,nouvelle_fonction.__xva.length - 1) + 'prop(' + propriete + '))';
+                                        t=nouvelle_fonction.__xva.substr( 0 , nouvelle_fonction.__xva.length - 1 ) + 'prop(' + propriete + '))';
                                     }
                                 }else{
-                                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
+                                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element} ));
                                 }
                             }else{
-                                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
+                                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element} ));
                             }
                         }else{
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element} ));
                         }
                     }
                 }else if(type_objet === 'MemberExpression'){
                     /* pour traiter le d de "a.b(c).d" */
-                    if(objet.substr(0,8) === 'tableau('){
+                    if(objet.substr( 0 , 8 ) === 'tableau('){
                         /* on retire la dernière parenthèse et on ajoute la propriété */
-                        t=objet.substr(0,objet.length - 1) + 'prop(' + propriete + '))';
-                    }else if(objet.substr(0,7) === 'appelf('){
+                        t=objet.substr( 0 , objet.length - 1 ) + 'prop(' + propriete + '))';
+                    }else if(objet.substr( 0 , 7 ) === 'appelf('){
                         /* on retire la dernière parenthèse et on ajoute la propriété */
-                        t=objet.substr(0,objet.length - 1) + 'prop(' + propriete + '))';
-                    }else if(objet.substr(0,7) === 'valeur('){
+                        t=objet.substr( 0 , objet.length - 1 ) + 'prop(' + propriete + '))';
+                    }else if(objet.substr( 0 , 7 ) === 'valeur('){
                         /* on retire la dernière parenthèse et on ajoute la propriété */
-                        t=objet.substr(0,objet.length - 1) + 'prop(' + propriete + '))';
+                        t=objet.substr( 0 , objet.length - 1 ) + 'prop(' + propriete + '))';
                     }else{
                         t=objet + '.' + propriete;
                         element.type='Identifier';
                     }
                 }else if(type_objet === 'ObjectExpression'){
                     /* pour traiter le "{}.d" */
-                    if(objet.substr(0,4) === 'obj('){
+                    if(objet.substr( 0 , 4 ) === 'obj('){
                         /* on retire la dernière parenthèse et on ajoute la propriété */
-                        t=objet.substr(0,objet.length - 1) + 'prop(' + propriete + '))';
+                        t=objet.substr( 0 , objet.length - 1 ) + 'prop(' + propriete + '))';
                     }else{
                         t=objet + '.' + propriete;
                         element.type='Identifier';
                     }
                 }else if(type_objet === 'LogicalExpression' || type_objet === 'AssignmentExpression' || type_objet === 'NewExpression'){
-                    t=objet.substr(0,objet.length - 1) + ',prop(' + propriete + '))';
+                    t=objet.substr( 0 , objet.length - 1 ) + ',prop(' + propriete + '))';
                 }else if(type_objet === 'Literal'){
                     /* cas (rare) a=' '.length  trouvé dans htmx => affecte(a , valeur_constante(' ',prop(length) ) ) */
                     t='valeur_constante(' + objet + ',prop(' + propriete + '))';
@@ -1146,10 +1146,10 @@ class c_astjs_vers_rev1{
                     t=objet + '[' + propriete + ']';
                     return({"__xst" : true ,"__xva" : t});
                 }else{
-                    if(objet.endsWith(']') && __m_rev1.est_num(propriete)){
+                    if(objet.endsWith( ']' ) && __m_rev1.est_num( propriete )){
                         t=objet + '[' + propriete + ']';
                     }else{
-                        if((type_objet === 'Identifier' || type_objet === null) && __m_rev1.est_num(propriete)){
+                        if((type_objet === 'Identifier' || type_objet === null) && __m_rev1.est_num( propriete )){
                             t=objet + '[' + propriete + ']';
                         }else{
                             t='tableau(nomt(' + objet + '),p(' + propriete + '))';
@@ -1159,12 +1159,12 @@ class c_astjs_vers_rev1{
                 }
             }
         }
-        return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element}));
+        return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_MemberExpression' ,"element" : element} ));
     }
     /*
       =============================================================================================================
     */
-    #traiteCondition1(element,niveau,parent,tab_comm){
+    #traiteCondition1( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let i=0;
@@ -1173,11 +1173,11 @@ class c_astjs_vers_rev1{
         let enfantDe2='';
         let enfantDe1='';
         let nouveau_tableau=null;
-        obj=this.#traite_element(element,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0671 #traiteCondition1' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0671 #traiteCondition1' ,"element" : element} ));
         }
         /*
           il faut transformer ceci :
@@ -1185,7 +1185,7 @@ class c_astjs_vers_rev1{
           en ceci
           [ [ egal[d,1] ],ou[ [ egal[e,2] ] ] , ou[ [egal[f,3] ] ] ]
         */
-        obj=__m_rev1.rev_tcm(t);
+        obj=__m_rev1.rev_tcm( t );
         if(obj.__xst === true){
             if(obj.__xva.length > 3
                    && obj.__xva[1][1] === ''
@@ -1247,8 +1247,8 @@ class c_astjs_vers_rev1{
                     /*
                       il faut supprimer l'id 2 et baisser de 1 tous les niveaux supérieurs à 1 de l'id 2
                     */
-                    nouveau_tableau=__m_rev1.baisser_le_niveau_et_supprimer(o.__xva,2,0);
-                    obj=__m_rev1.matrice_vers_source_rev1(nouveau_tableau,0,false,1);
+                    nouveau_tableau=__m_rev1.baisser_le_niveau_et_supprimer( o.__xva , 2 , 0 );
+                    obj=__m_rev1.matrice_vers_source_rev1( nouveau_tableau , 0 , false , 1 );
                     if(obj.__xst === true){
                         t=obj.__xva;
                     }
@@ -1260,21 +1260,21 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_LogicalExpression(element,niveau,parent,tab_comm){
+    #traite_LogicalExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let nouveau_tableau=null;
         let gauche='';
         let droite='';
         if(element.left && element.right){
-            obj=this.#traiteCondition1(element.left,niveau,element,tab_comm);
+            obj=this.#traiteCondition1( element.left , niveau , element , tab_comm );
             if(obj.__xst === false){
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0762 #traite_LogicalExpression ' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0762 #traite_LogicalExpression ' ,"element" : element} ));
             }
             gauche=obj.__xva;
-            obj=this.#traiteCondition1(element.right,niveau,element,tab_comm);
+            obj=this.#traiteCondition1( element.right , niveau , element , tab_comm );
             if(obj.__xst === false){
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1234 #traite_LogicalExpression ' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1234 #traite_LogicalExpression ' ,"element" : element} ));
             }
             droite=obj.__xva;
             if('&&' === element.operator){
@@ -1284,20 +1284,24 @@ class c_astjs_vers_rev1{
             }else if('??' === element.operator){
                 t+='??(' + gauche + ',' + droite + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0775 #traite_LogicalExpression ' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0775 #traite_LogicalExpression ' ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0778 #traite_LogicalExpression ' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0778 #traite_LogicalExpression ' ,"element" : element} ));
         }
-        if(t.substr(0,6) === 'ou(ou(' || t.substr(0,6) === 'et(et(' || t.substr(0,7) === 'ou( ou(' || t.substr(0,7) === 'et( et('){
-            obj=__m_rev1.rev_tm(t);
+        if(t.substr( 0 , 6 ) === 'ou(ou('
+               || t.substr( 0 , 6 ) === 'et(et('
+               || t.substr( 0 , 7 ) === 'ou( ou('
+               || t.substr( 0 , 7 ) === 'et( et('
+        ){
+            obj=__m_rev1.rev_tm( t );
             if(obj.__xst === true){
-                nouveau_tableau=__m_rev1.baisser_le_niveau_et_supprimer(obj.__xva,2,0);
-                obj=__m_rev1.matrice_vers_source_rev1(nouveau_tableau,0,false,1);
+                nouveau_tableau=__m_rev1.baisser_le_niveau_et_supprimer( obj.__xva , 2 , 0 );
+                obj=__m_rev1.matrice_vers_source_rev1( nouveau_tableau , 0 , false , 1 );
                 if(obj.__xst === true){
                     t=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '0788 #traite_LogicalExpression ' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '0788 #traite_LogicalExpression ' ,"element" : element} ));
                 }
             }
         }
@@ -1306,7 +1310,7 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #recup_nom_operateur(s){
+    #recup_nom_operateur( s ){
         switch (s){
             case 'typeof' : return 'Typeof';
             case 'instanceof' : return 'instance_de';
@@ -1340,7 +1344,7 @@ class c_astjs_vers_rev1{
             case 'delete' : return 'supprimer';
             case 'void' : return 'void';
             default:
-                this.#astjs_le({"__xst" : false ,"__xme" : '0834 #recup_nom_operateur "' + s + '"'});
+                this.#astjs_le( {"__xst" : false ,"__xme" : '0834 #recup_nom_operateur "' + s + '"'} );
                 return('TO' + 'DO recupNomOperateur pour "' + s + '"');
                 
         }
@@ -1348,13 +1352,13 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_chaineCallee(element,niveau,parent,tab_comm){
+    #traite_chaineCallee( element , niveau , parent , tab_comm ){
         let obj=null;
         let t='';
         let objet='';
         let optionnel='';
         if(element.object){
-            obj=this.#traite_chaineCallee(element.object,niveau + 1,element,tab_comm);
+            obj=this.#traite_chaineCallee( element.object , niveau + 1 , element , tab_comm );
             if(obj.__xst === true){
                 if(obj.optionnel !== ''){
                     optionnel=obj.optionnel;
@@ -1363,23 +1367,23 @@ class c_astjs_vers_rev1{
                     objet=obj.objet;
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1444 #traite_chaineCallee' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1444 #traite_chaineCallee' ,"element" : element} ));
             }
         }else{
-            obj=this.#traite_element(element,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 objet=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1451 #traite_chaineCallee' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1451 #traite_chaineCallee' ,"element" : element} ));
             }
         }
         if(element.property){
-            obj=this.#traite_element(element.property,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.property , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 if(optionnel !== ''){
                     optionnel+='.' + obj.__xva;
                 }else{
-                    if(element.hasOwnProperty('optional') && element.optional === true){
+                    if(element.hasOwnProperty( 'optional' ) && element.optional === true){
                         optionnel=obj.__xva;
                     }else{
                         if(element.property.type === 'Identifier'){
@@ -1387,12 +1391,12 @@ class c_astjs_vers_rev1{
                         }else if(element.property.type === 'Literal'){
                             objet='tableau(nomt(' + objet + '),p(' + obj.__xva + '))';
                         }else{
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : '1475 #traite_chaineCallee' ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1475 #traite_chaineCallee' ,"element" : element} ));
                         }
                     }
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1480 #traite_chaineCallee' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1480 #traite_chaineCallee' ,"element" : element} ));
             }
         }
         return({"__xst" : true ,"objet" : objet ,"optionnel" : optionnel});
@@ -1400,14 +1404,14 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_chaineObject(element,niveau,parent,tab_comm){
+    #traite_chaineObject( element , niveau , parent , tab_comm ){
         let obj=null;
         let t='';
         let objet='';
         let optionnel='';
         debugger;
         if(element.object){
-            obj=this.#traite_chaineObject(element.object,niveau + 1,element,tab_comm);
+            obj=this.#traite_chaineObject( element.object , niveau + 1 , element , tab_comm );
             if(obj.__xst === true){
                 if(obj.optionnel !== ''){
                     optionnel=obj.optionnel;
@@ -1416,23 +1420,23 @@ class c_astjs_vers_rev1{
                     objet=obj.objet;
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1444 #traite_chaineCallee' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1444 #traite_chaineCallee' ,"element" : element} ));
             }
         }else{
-            obj=this.#traite_element(element,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 objet=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1451 #traite_chaineCallee' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1451 #traite_chaineCallee' ,"element" : element} ));
             }
         }
         if(element.property){
-            obj=this.#traite_element(element.property,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.property , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 if(optionnel !== ''){
                     optionnel+='.' + obj.__xva;
                 }else{
-                    if(element.hasOwnProperty('optional') && element.optional === true){
+                    if(element.hasOwnProperty( 'optional' ) && element.optional === true){
                         optionnel=obj.__xva;
                     }else{
                         if(element.property.type === 'Identifier'){
@@ -1440,12 +1444,12 @@ class c_astjs_vers_rev1{
                         }else if(element.property.type === 'Literal'){
                             objet='tableau(nomt(' + objet + '),p(' + obj.__xva + '))';
                         }else{
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : '1475 #traite_chaineCallee' ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1475 #traite_chaineCallee' ,"element" : element} ));
                         }
                     }
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1480 #traite_chaineCallee' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1480 #traite_chaineCallee' ,"element" : element} ));
             }
         }
         return({"__xst" : true ,"objet" : objet ,"optionnel" : optionnel});
@@ -1453,7 +1457,7 @@ class c_astjs_vers_rev1{
     /*
       =============================================================================================================
     */
-    #traite_ChainExpression(element,niveau,parent,tab_comm){
+    #traite_ChainExpression( element , niveau , parent , tab_comm ){
         /*##
 https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Operators/Optional_chaining
 https://github.com/GoogleChrome/lighthouse/blob/main/core/user-flow.js
@@ -1497,46 +1501,46 @@ let x16=a.b ?. c(a.b);
         let objet="";
         let propriete='';
         if(!element.expression){
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1227 #traite_ChainExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1227 #traite_ChainExpression' ,"element" : element} ));
         }
         if(element.expression.type === 'CallExpression'){
             var les_arguments='';
-            if(element.expression.hasOwnProperty('arguments')){
+            if(element.expression.hasOwnProperty( 'arguments' )){
                 if(element.expression.arguments.length === 0){
                     les_arguments='p()';
                 }else{
                     for( let i=0 ; i < element.expression.arguments.length ; i++ ){
-                        var le_commentaire=this.#comm_dans_arguments_appel_fonction(element.expression.arguments[i],niveau,element,tab_comm);
-                        var obj1=this.#traite_element(element.expression.arguments[i],niveau + 1,element.expression.arguments,tab_comm,false);
+                        var le_commentaire=this.#comm_dans_arguments_appel_fonction( element.expression.arguments[i] , niveau , element , tab_comm );
+                        var obj1=this.#traite_element( element.expression.arguments[i] , niveau + 1 , element.expression.arguments , tab_comm , false );
                         if(obj1.__xst === true){
                             if(les_arguments !== ''){
                                 les_arguments+=',';
                             }
                             les_arguments+='p(' + le_commentaire + obj1.__xva + ')';
                         }else{
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : '0123 #traite_ChainExpression' ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0123 #traite_ChainExpression' ,"element" : element} ));
                         }
                     }
                 }
             }
-            obj=this.#traite_element(element.expression.callee,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.expression.callee , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 gauche=obj.__xva;
-                if(gauche.substr(0,7) === 'chainé('){
-                    obj=__m_rev1.rev_tcm(gauche);
+                if(gauche.substr( 0 , 7 ) === 'chainé('){
+                    obj=__m_rev1.rev_tcm( gauche );
                     if(obj.__xst === true){
                         var nouveauTableau=obj.__xva;
                         /* le nom de l'élément */
-                        var t1=__m_rev1.matrice_vers_source_rev1(nouveauTableau,1,true,2,0,[],null,true);
+                        var t1=__m_rev1.matrice_vers_source_rev1( nouveauTableau , 1 , true , 2 , 0 , [] , null , true );
                         if(t1.__xst === true){
                         }else{
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : '1747 #traite_BinaryExpression ' ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1747 #traite_BinaryExpression ' ,"element" : element} ));
                         }
                         /* le reste */
-                        var t2=__m_rev1.matrice_vers_source_rev1(nouveauTableau,1,true,nouveauTableau[2][12],0,[],null,false);
+                        var t2=__m_rev1.matrice_vers_source_rev1( nouveauTableau , 1 , true , nouveauTableau[2][12] , 0 , [] , null , false );
                         if(t2.__xst === true){
                         }else{
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : '1747 #traite_BinaryExpression ' ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1747 #traite_BinaryExpression ' ,"element" : element} ));
                         }
                         /*
                           ok pour let  x1 = a?. b();
@@ -1548,45 +1552,45 @@ let x16=a.b ?. c(a.b);
                             t+='chainé(' + t1.__xva + ',appelf(nomf(' + t2.__xva + ')' + les_arguments + '))';
                         }
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : '0324 #traite_BinaryExpression ' ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : '0324 #traite_BinaryExpression ' ,"element" : element} ));
                     }
                 }else{
                     t+='chainé(' + gauche + ', appelf( nomf()' + les_arguments + '))';
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1745 #traite_ChainExpression' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1745 #traite_ChainExpression' ,"element" : element} ));
             }
         }else if(element.expression.type === 'MemberExpression'){
             element.expression.optional=false;
-            obj=this.#traite_element(element.expression.object,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.expression.object , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 gauche=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1745 #traite_ChainExpression' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1745 #traite_ChainExpression' ,"element" : element} ));
             }
             element.expression.object=null;
-            obj=this.#traite_element(element.expression,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.expression , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 droite=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1752 #traite_ChainExpression' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1752 #traite_ChainExpression' ,"element" : element} ));
             }
             t+='chainé(' + gauche + ',' + droite + ')';
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1633 #traite_ChainExpression pour "' + element.expression.type + '"' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1633 #traite_ChainExpression pour "' + element.expression.type + '"' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_UnaryExpression(element,niveau,parent,tab_comm){
+    #traite_UnaryExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
-        let nomDuTestUnary=this.#recup_nom_operateur(element.operator);
-        obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
+        let nomDuTestUnary=this.#recup_nom_operateur( element.operator );
+        obj=this.#traite_element( element.argument , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
-            if((nomDuTestUnary === 'moins' || nomDuTestUnary === 'plus') && __m_rev1.est_num(obj.__xva)){
+            if((nomDuTestUnary === 'moins' || nomDuTestUnary === 'plus') && __m_rev1.est_num( obj.__xva )){
                 if(nomDuTestUnary === 'moins'){
                     t+='-' + obj.__xva;
                 }else{
@@ -1600,43 +1604,43 @@ let x16=a.b ?. c(a.b);
                 }
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0860 #traite_UnaryExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0860 #traite_UnaryExpression' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_SwitchStatement(element,niveau,parent,tab_comm){
+    #traite_SwitchStatement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let i=0;
         t+='bascule(';
-        obj=this.#traite_element(element.discriminant,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.discriminant , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             t+='quand(' + obj.__xva + ')';
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1312 #traite_SwitchStatement' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1312 #traite_SwitchStatement' ,"element" : element} ));
         }
         for( i=0 ; i < element.cases.length ; i++ ){
             t+='est(';
             if(element.cases[i].test !== null){
-                obj=this.#traite_element(element.cases[i].test,niveau + 1,false,false,element,false);
+                obj=this.#traite_element( element.cases[i].test , niveau + 1 , false , false , element , false );
                 if(obj.__xst === true){
                     t+='valeur(' + obj.__xva + ')';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1322 #traite_SwitchStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1322 #traite_SwitchStatement' ,"element" : element} ));
                 }
             }else{
                 t+='valeurNonPrevue()';
             }
             t+='faire(';
             if(element.cases[i].consequent && element.cases[i].consequent.length > 0){
-                obj=this.#traite_ast0(element.cases[i].consequent,niveau + 3,element.cases[i],tab_comm);
+                obj=this.#traite_ast0( element.cases[i].consequent , niveau + 3 , element.cases[i] , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1333 #traite_SwitchStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1333 #traite_SwitchStatement' ,"element" : element} ));
                 }
             }
             t+=')';
@@ -1648,38 +1652,38 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_ForOfStatement(element,niveau,parent,tab_comm){
+    #traite_ForOfStatement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let gauche='';
         let droite='';
         let contenu='';
-        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.left , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             gauche+=obj.__xva;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1318 #traite_ForInStatement' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1318 #traite_ForInStatement' ,"element" : element} ));
         }
-        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.right , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             droite+=obj.__xva;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1326 #traite_ForInStatement' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1326 #traite_ForInStatement' ,"element" : element} ));
         }
         if(element.body){
             if(element.expression){
-                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm,false);
+                obj=this.#traite_element( element.body , niveau + 2 , element , tab_comm , false );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1337 #traite_ForInStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1337 #traite_ForInStatement' ,"element" : element} ));
                 }
             }else{
-                obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1344 #traite_ForInStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1344 #traite_ForInStatement' ,"element" : element} ));
                 }
             }
         }
@@ -1692,38 +1696,38 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_ForInStatement(element,niveau,parent,tab_comm){
+    #traite_ForInStatement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let gauche='';
         let droite='';
         let contenu='';
-        obj=this.#traite_element(element.left,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.left , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             gauche+=obj.__xva;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1318 #traite_ForInStatement' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1318 #traite_ForInStatement' ,"element" : element} ));
         }
-        obj=this.#traite_element(element.right,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.right , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             droite+=obj.__xva;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1326 #traite_ForInStatement' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1326 #traite_ForInStatement' ,"element" : element} ));
         }
         if(element.body){
             if(element.expression){
-                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm,false);
+                obj=this.#traite_element( element.body , niveau + 2 , element , tab_comm , false );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1337 #traite_ForInStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1337 #traite_ForInStatement' ,"element" : element} ));
                 }
             }else{
-                obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1344 #traite_ForInStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1344 #traite_ForInStatement' ,"element" : element} ));
                 }
             }
         }
@@ -1736,7 +1740,7 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_DoWhileStatement(element,niveau,parent,tab_comm){
+    #traite_DoWhileStatement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let i=0;
@@ -1744,24 +1748,24 @@ let x16=a.b ?. c(a.b);
         let contenu='';
         if(element.body){
             if(element.expression){
-                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm,false);
+                obj=this.#traite_element( element.body , niveau + 2 , element , tab_comm , false );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '0922 #traite_DoWhileStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '0922 #traite_DoWhileStatement' ,"element" : element} ));
                 }
             }else{
-                obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '0929 #traite_DoWhileStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '0929 #traite_DoWhileStatement' ,"element" : element} ));
                 }
             }
         }
-        obj=this.#traite_element(element.test,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.test , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === false){
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0897 #traite_DoWhileStatement' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0897 #traite_DoWhileStatement' ,"element" : element} ));
         }
         test+=obj.__xva;
         t+='faire_tant_que(';
@@ -1773,31 +1777,31 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_WhileStatement(element,niveau,parent,tab_comm){
+    #traite_WhileStatement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let i=0;
         let test='';
         let contenu='';
-        obj=this.#traite_element(element.test,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.test , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === false){
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0897 #traite_WhileStatement' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0897 #traite_WhileStatement' ,"element" : element} ));
         }
         test+=obj.__xva;
         if(element.body){
             if(element.expression){
-                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm,false);
+                obj=this.#traite_element( element.body , niveau + 2 , element , tab_comm , false );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '0922 #traite_WhileStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '0922 #traite_WhileStatement' ,"element" : element} ));
                 }
             }else{
-                obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '0929 #traite_WhileStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '0929 #traite_WhileStatement' ,"element" : element} ));
                 }
             }
         }
@@ -1810,7 +1814,7 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_ForStatement(element,niveau,parent,tab_comm){
+    #traite_ForStatement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let i=0;
@@ -1821,48 +1825,48 @@ let x16=a.b ?. c(a.b);
         if(element.init === null){
             pourInit='';
         }else{
-            obj=this.#traite_element(element.init,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.init , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 if(pourInit !== ''){
                     pourInit+=',';
                 }
                 pourInit+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0888 #traite_ForStatement' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0888 #traite_ForStatement' ,"element" : element} ));
             }
         }
         if(element.test === null){
             test+='';
         }else{
-            obj=this.#traite_element(element.test,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.test , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === false){
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0897 #traite_ForStatement' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0897 #traite_ForStatement' ,"element" : element} ));
             }
             test+=obj.__xva;
         }
         if(element.update === null){
             valeurIncrement='';
         }else{
-            obj=this.#traite_element(element.update,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.update , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === false){
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0907 #traite_ForStatement' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0907 #traite_ForStatement' ,"element" : element} ));
             }
             valeurIncrement+=obj.__xva;
         }
         if(element.body){
             if(element.expression){
-                obj=this.#traite_element(element.body,niveau + 2,element,tab_comm,false);
+                obj=this.#traite_element( element.body , niveau + 2 , element , tab_comm , false );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '0922 #traite_ForStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '0922 #traite_ForStatement' ,"element" : element} ));
                 }
             }else{
-                obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '0929 #traite_ForStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '0929 #traite_ForStatement' ,"element" : element} ));
                 }
             }
         }
@@ -1877,11 +1881,15 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_UpdateExpression(element,niveau,parent,tab_comm){
+    #traite_UpdateExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let elem='';
-        if(element.argument.type === 'Identifier' && parent.type === "ForStatement" && parent.update && parent.update.type === "UpdateExpression"){
+        if(element.argument.type === 'Identifier'
+               && parent.type === "ForStatement"
+               && parent.update
+               && parent.update.type === "UpdateExpression"
+        ){
             /* cas simples de for(i=0;i<j;i++){} */
             if('++' === element.operator && element.prefix === false){
                 t+=element.argument.name + '++';
@@ -1894,11 +1902,11 @@ let x16=a.b ?. c(a.b);
             }
             return({"__xst" : true ,"__xva" : t});
         }
-        obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.argument , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             elem=obj.__xva;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0972 #traite_UpdateExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0972 #traite_UpdateExpression' ,"element" : element} ));
         }
         if('++' === element.operator && element.prefix === false){
             t+='postinc(' + elem + ')';
@@ -1914,26 +1922,26 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_IfStatement(element,niveau,parent,tab_comm,type){
+    #traite_IfStatement( element , niveau , parent , tab_comm , type ){
         let t='';
         let obj=null;
         if(type === 'if'){
             t+='choix(';
             t+='si(';
-            obj=this.#traite_element(element.test,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.test , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 t+='condition(' + obj.__xva + '),';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1036 #traite_IfStatement' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1036 #traite_IfStatement' ,"element" : element} ));
             }
         }else{
             if(element.test){
                 t+='sinonsi(';
-                obj=this.#traite_element(element.test,niveau + 1,element,tab_comm,false);
+                obj=this.#traite_element( element.test , niveau + 1 , element , tab_comm , false );
                 if(obj.__xst === true){
                     t+='condition(' + obj.__xva + '),';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1036 #traite_IfStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1036 #traite_IfStatement' ,"element" : element} ));
                 }
             }else{
                 t+='sinon(';
@@ -1942,28 +1950,28 @@ let x16=a.b ?. c(a.b);
         t+='alors(';
         var bloc_traitement_dans=null;
         if(element.consequent){
-            obj=this.#traite_ast0(element.consequent,niveau + 2,element.consequent,tab_comm);
+            obj=this.#traite_ast0( element.consequent , niveau + 2 , element.consequent , tab_comm );
             if(obj.__xst === true){
                 t+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1063 #traite_IfStatement' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1063 #traite_IfStatement' ,"element" : element} ));
             }
         }else{
-            obj=this.#traite_ast0(element,niveau + 2,parent,tab_comm);
+            obj=this.#traite_ast0( element , niveau + 2 , parent , tab_comm );
             if(obj.__xst === true){
                 t+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1083 #traite_IfStatement' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1083 #traite_IfStatement' ,"element" : element} ));
             }
         }
         t+=')';
         t+=')';
         if(element.alternate){
-            obj=this.#traite_IfStatement(element.alternate,niveau,element.alternate,tab_comm,'else');
+            obj=this.#traite_IfStatement( element.alternate , niveau , element.alternate , tab_comm , 'else' );
             if(obj.__xst === true){
                 t+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1110 #traite_IfStatement' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1110 #traite_IfStatement' ,"element" : element} ));
             }
         }
         if(type === 'if'){
@@ -1974,7 +1982,7 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_ClassDeclaration(element,niveau,parent,tab_comm){
+    #traite_ClassDeclaration( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let nom_de_la_classe='';
@@ -1985,18 +1993,18 @@ let x16=a.b ?. c(a.b);
             if("Identifier" === element.id.type){
                 nom_de_la_classe=element.id.name;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1102 #traite_ClassDeclaration' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1102 #traite_ClassDeclaration' ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1105 #traite_ClassDeclaration' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1105 #traite_ClassDeclaration' ,"element" : element} ));
         }
         if(element.body){
             if(element.body.type === "ClassBody" && element.body.body && element.body.body.length > 0){
-                obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+                obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
                 if(obj.__xst === true){
                     corps_de_la_classe+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1063 #traite_ClassDeclaration' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1063 #traite_ClassDeclaration' ,"element" : element} ));
                 }
             }else{
                 corps_de_la_classe='#(rien ici)';
@@ -2006,7 +2014,7 @@ let x16=a.b ?. c(a.b);
             if('Identifier' === element.superClass.type){
                 etend=',étend(' + element.superClass.name + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1734 #traite_ClassDeclaration "' + element.superClass.type + '"' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1734 #traite_ClassDeclaration "' + element.superClass.type + '"' ,"element" : element} ));
             }
         }
         t+='definition_de_classe(nom_classe(' + nom_de_la_classe + ')' + etend + ',contenu(' + corps_de_la_classe + '))';
@@ -2015,7 +2023,7 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_PropertyDefinition(element,niveau,parent,tab_comm){
+    #traite_PropertyDefinition( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         if(element.key.type === 'PrivateIdentifier' || element.key.type === 'Identifier'){
@@ -2025,41 +2033,41 @@ let x16=a.b ?. c(a.b);
                 t+='variable_publique(' + element.key.name;
             }
             if(element.value){
-                obj=this.#traite_element(element.value,niveau + 1,element,tab_comm,false);
+                obj=this.#traite_element( element.value , niveau + 1 , element , tab_comm , false );
                 if(obj.__xst === true){
                     t+=',' + obj.__xva + '';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1157 #traite_PropertyDefinition' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1157 #traite_PropertyDefinition' ,"element" : element} ));
                 }
             }
             t+=')';
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1162 #traite_PropertyDefinition' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1162 #traite_PropertyDefinition' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traiteAssignmentPattern(element,niveau,parent,tab_comm){
+    #traiteAssignmentPattern( element , niveau , parent , tab_comm ){
         var t='';
         if(element.left && element.right){
-            var objgauche=this.#traite_element(element.left,niveau + 1,element,tab_comm,false);
-            var objdroite=this.#traite_element(element.right,niveau + 1,element,tab_comm,false);
+            var objgauche=this.#traite_element( element.left , niveau + 1 , element , tab_comm , false );
+            var objdroite=this.#traite_element( element.right , niveau + 1 , element , tab_comm , false );
             if(objgauche.__xst === true && objdroite.__xst){
                 t+=objgauche.__xva + ',defaut(' + objdroite.__xva + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : 'erreur traiteAssignmentPattern 1558 pour ' + element.type ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : 'erreur traiteAssignmentPattern 1558 pour ' + element.type ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : 'erreur traiteAssignmentPattern 1554 pour ' + element.type ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : 'erreur traiteAssignmentPattern 1554 pour ' + element.type ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_MethodDefinition(element,niveau,parent,tab_comm){
+    #traite_MethodDefinition( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let j=0;
@@ -2072,7 +2080,7 @@ let x16=a.b ?. c(a.b);
                && element.value.body
         ){
             var statique='';
-            if(element.hasOwnProperty('static') && element.static === true){
+            if(element.hasOwnProperty( 'static' ) && element.static === true){
                 statique='statique(),';
             }
             t+='méthode(';
@@ -2084,9 +2092,9 @@ let x16=a.b ?. c(a.b);
                 t+='format_tableau(),';
             }
             if(element.key.name === undefined){
-                obj=this.#traite_element(element.key,niveau,element,tab_comm,false);
+                obj=this.#traite_element( element.key , niveau , element , tab_comm , false );
                 if(obj.__xst === false){
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                 }
                 t+=statique + 'nom(' + obj.__xva + '),';
             }else{
@@ -2101,29 +2109,29 @@ let x16=a.b ?. c(a.b);
             if(element.value.params && element.value.params.length > 0){
                 t+=',';
                 for( j=0 ; j < element.value.params.length ; j++ ){
-                    var le_commentaire=this.#comm_dans_arguments_appel_fonction(element.value.params[j],niveau,element,tab_comm);
+                    var le_commentaire=this.#comm_dans_arguments_appel_fonction( element.value.params[j] , niveau , element , tab_comm );
                     if(element.value.params[j].type === "Identifier"){
-                        t+='argument('+le_commentaire + element.value.params[j].name + ')';
+                        t+='argument(' + le_commentaire + element.value.params[j].name + ')';
                     }else if(element.value.params[j].type === "AssignmentPattern"){
-                        obj=this.#traiteAssignmentPattern(element.value.params[j],niveau + 1,element,tab_comm);
+                        obj=this.#traiteAssignmentPattern( element.value.params[j] , niveau + 1 , element , tab_comm );
                         if(obj.__xst === true){
-                            t+='argument('+le_commentaire + obj.__xva + ')';
+                            t+='argument(' + le_commentaire + obj.__xva + ')';
                         }else{
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                         }
                     }else if(element.value.params[j].type === "RestElement"
                            && element.value.params[j].argument
                            && element.value.params[j].argument.type === 'Identifier'
                     ){
-                        t+='argument('+le_commentaire+' ...' + element.value.params[j].argument.name + ')';
+                        t+='argument(' + le_commentaire + ' ...' + element.value.params[j].argument.name + ')';
                     }else if(element.value.params[j].type === "ObjectPattern"){
-                        obj=this.#traite_element(element.value.params[j],niveau,element,tab_comm,false);
+                        obj=this.#traite_element( element.value.params[j] , niveau , element , tab_comm , false );
                         if(obj.__xst === false){
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                         }
-                        t+='argument('+le_commentaire + obj.__xva + ')';
+                        t+='argument(' + le_commentaire + obj.__xva + ')';
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + '"' + element.value.params[j].type + '"' ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + '"' + element.value.params[j].type + '"' ,"element" : element} ));
                     }
                     if(j < element.value.params.length - 1){
                         t+=',';
@@ -2135,11 +2143,11 @@ let x16=a.b ?. c(a.b);
             var prop={};
             for(prop in element.value){
                 if(prop === 'body'){
-                    obj=this.#traite_ast0(element.value[prop],niveau + 2,element,tab_comm);
+                    obj=this.#traite_ast0( element.value[prop] , niveau + 2 , element , tab_comm );
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : '2429 #traite_MethodDefinition' ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : '2429 #traite_MethodDefinition' ,"element" : element} ));
                     }
                 }
             }
@@ -2147,28 +2155,28 @@ let x16=a.b ?. c(a.b);
             t+=')';
         }else{
             debugger;
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1222 #traite_MethodDefinition' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1222 #traite_MethodDefinition' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_ConditionalExpression(element,niveau,parent,tab_comm){
+    #traite_ConditionalExpression( element , niveau , parent , tab_comm ){
         let t='';
-        var objtest1=this.#traite_element(element.test,niveau,element,tab_comm,false);
+        var objtest1=this.#traite_element( element.test , niveau , element , tab_comm , false );
         if(objtest1.__xst === false){
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1733 #traite_ConditionalExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1733 #traite_ConditionalExpression' ,"element" : element} ));
         }
         var objSiVrai={};
-        var objSiVrai=this.#traite_element(element.consequent,niveau,element,tab_comm,false);
+        var objSiVrai=this.#traite_element( element.consequent , niveau , element , tab_comm , false );
         if(objSiVrai.__xst === false){
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1738 #traite_ConditionalExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1738 #traite_ConditionalExpression' ,"element" : element} ));
         }
         var objSiFaux={};
-        var objSiFaux=this.#traite_element(element.alternate,niveau,element,tab_comm,false);
+        var objSiFaux=this.#traite_element( element.alternate , niveau , element , tab_comm , false );
         if(objSiFaux.__xst === false){
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1743 #traite_ConditionalExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1743 #traite_ConditionalExpression' ,"element" : element} ));
         }
         t+='testEnLigne(condition(' + objtest1.__xva + '),siVrai(' + objSiVrai.__xva + '),siFaux(' + objSiFaux.__xva + '))';
         return({"__xst" : true ,"__xva" : t});
@@ -2176,7 +2184,7 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_PrivateIdentifier(element,niveau,parent,tab_comm){
+    #traite_PrivateIdentifier( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         t='#' + element.name;
@@ -2185,25 +2193,25 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_ExportDefaultDeclaration(element,niveau,parent,tab_comm){
+    #traite_ExportDefaultDeclaration( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         if(element.declaration){
-            obj=this.#traite_element(element.declaration,niveau + 1,element,tab_comm,false);
+            obj=this.#traite_element( element.declaration , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === true){
                 t+='exporter_par_defaut(valeur(' + obj.__xva + '))';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_ExportNamedDeclaration(element,niveau,parent,tab_comm){
+    #traite_ExportNamedDeclaration( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let j=0;
@@ -2215,26 +2223,26 @@ let x16=a.b ?. c(a.b);
                     if(specifier.local.type === 'Identifier'){
                         locale='locale(' + specifier.local.name + '),';
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                     }
                 }
                 if(specifier.exported){
                     if(specifier.exported.type === "Identifier"){
                         t+='exporter(' + locale + 'nom_de_classe(' + specifier.exported.name + '))';
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : '1777 #traite_ExportNamedDeclaration' ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : '1777 #traite_ExportNamedDeclaration' ,"element" : element} ));
                     }
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1780 #traite_ExportNamedDeclaration' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1780 #traite_ExportNamedDeclaration' ,"element" : element} ));
                 }
             }
         }
         if(element.declaration){
-            obj=this.#traite_element(element.declaration,niveau,element,tab_comm,false);
+            obj=this.#traite_element( element.declaration , niveau , element , tab_comm , false );
             if(obj.__xst === true){
                 t+='exporter_declaration(' + obj.__xva + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1736 #traite_TemplateLiteral' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1736 #traite_TemplateLiteral' ,"element" : element} ));
             }
         }
         return({"__xst" : true ,"__xva" : t});
@@ -2242,16 +2250,16 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_TemplateElement(element,niveau,parent,tab_comm){
+    #traite_TemplateElement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
-        t+='"' + element.value.raw.replace(/"/g,'\\"') + '"';
+        t+='"' + element.value.raw.replace( /"/g , '\\"' ) + '"';
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_TemplateLiteral(element,niveau,parent,tab_comm){
+    #traite_TemplateLiteral( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let tableau_des_expressions=[];
@@ -2264,27 +2272,27 @@ let x16=a.b ?. c(a.b);
             t='`' + element.quasis[0].value.raw + '`';
         }else{
             for( let i=0 ; i < element.expressions.length ; i++ ){
-                obj=this.#traite_element(element.expressions[i],niveau,element.expressions,tab_comm,false);
+                obj=this.#traite_element( element.expressions[i] , niveau , element.expressions , tab_comm , false );
                 if(obj.__xst === true){
-                    tableau_des_expressions.push(obj.__xva);
+                    tableau_des_expressions.push( obj.__xva );
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1736 #traite_TemplateLiteral' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1736 #traite_TemplateLiteral' ,"element" : element} ));
                 }
             }
             for( let i=0 ; i < element.quasis.length ; i++ ){
                 t+=',';
-                obj=this.#traite_element(element.quasis[i],niveau,element.quasis,tab_comm,false);
+                obj=this.#traite_element( element.quasis[i] , niveau , element.quasis , tab_comm , false );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1746 #traite_TemplateLiteral' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1746 #traite_TemplateLiteral' ,"element" : element} ));
                 }
                 if(i < tableau_des_expressions.length){
                     t+=',' + tableau_des_expressions[i];
                 }
             }
             if(t !== ''){
-                t=t.substr(1);
+                t=t.substr( 1 );
             }
             t='concat(' + t + ')';
         }
@@ -2293,15 +2301,15 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_NewExpression(element,niveau,parent,tab_comm){
+    #traite_NewExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         if(element.callee && element.callee.type === 'MemberExpression' && element.arguments.length === 0){
-            obj=this.#traite_MemberExpression(element.callee,niveau + 1,element,tab_comm);
+            obj=this.#traite_MemberExpression( element.callee , niveau + 1 , element , tab_comm );
             if(obj.__xst === true){
                 t+='new(' + obj.__xva + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1820 #traite_NewExpression' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1820 #traite_NewExpression' ,"element" : element} ));
             }
         }else if(element.callee
                    && element.callee.type === 'Identifier'
@@ -2310,11 +2318,11 @@ let x16=a.b ?. c(a.b);
                    && element.callee.type === 'FunctionExpression'
                    && element.arguments.length === 0
         ){
-            var obj1=this.#traite_CallExpression(element,niveau + 1,element,{});
+            var obj1=this.#traite_CallExpression( element , niveau + 1 , element , {} );
             if(obj1.__xst === true){
                 t+='new(' + obj1.__xva + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_NewExpression' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_NewExpression' ,"element" : element} ));
             }
         }else if(element.callee
                    && element.callee.type === 'MemberExpression'
@@ -2324,30 +2332,30 @@ let x16=a.b ?. c(a.b);
                || element.callee
                    && element.callee.type === 'ThisExpression'
         ){
-            var obj1=this.#traite_CallExpression(element,niveau + 1,element,{});
+            var obj1=this.#traite_CallExpression( element , niveau + 1 , element , {} );
             if(obj1.__xst === true){
                 t+='new(' + obj1.__xva + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_NewExpression' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' #traite_NewExpression' ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + '#traite_NewExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + '#traite_NewExpression' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_TryStatement(element,niveau,parent,tab_comm){
+    #traite_TryStatement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         t+='essayer(';
         t+='faire(';
-        obj=this.#traite_ast0(element.block.body,niveau + 2,element.block,tab_comm);
+        obj=this.#traite_ast0( element.block.body , niveau + 2 , element.block , tab_comm );
         if(obj.__xst === true){
             t+=obj.__xva;
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1854 #traite_TryStatement' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1854 #traite_TryStatement' ,"element" : element} ));
         }
         t+='),';
         t+='sierreur(';
@@ -2356,31 +2364,31 @@ let x16=a.b ?. c(a.b);
                 if(element.handler.param && element.handler.param.type === 'Identifier'){
                     t+=element.handler.param.name + ',';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1863 #traite_TryStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1863 #traite_TryStatement' ,"element" : element} ));
                 }
                 if(element.handler.body && element.handler.body.type === 'BlockStatement'){
-                    obj=this.#traite_ast0(element.handler.body,niveau + 2,element.handler,tab_comm);
+                    obj=this.#traite_ast0( element.handler.body , niveau + 2 , element.handler , tab_comm );
                     if(obj.__xst === true){
                         t+='faire(' + obj.__xva + ')';
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : '1870 #traite_TryStatement' ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : '1870 #traite_TryStatement' ,"element" : element} ));
                     }
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }
         t+=')';
         if(element.finalizer){
             if(element.finalizer.type === "BlockStatement"){
-                obj=this.#traite_ast0(element.finalizer,niveau + 2,element,tab_comm);
+                obj=this.#traite_ast0( element.finalizer , niveau + 2 , element , tab_comm );
                 if(obj.__xst === true){
                     t+='finalement(' + obj.__xva + ')';
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : '1854 #traite_TryStatement' ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : '1854 #traite_TryStatement' ,"element" : element} ));
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }
         t+=')';
@@ -2389,97 +2397,97 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_AssignmentPattern(element,niveau,parent,tab_comm){
+    #traite_AssignmentPattern( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         if(element.left && element.right){
-            var objgauche=this.#traite_element(element.left,niveau + 1,element,tab_comm,false);
-            var objdroite=this.#traite_element(element.right,niveau + 1,element,tab_comm,false);
+            var objgauche=this.#traite_element( element.left , niveau + 1 , element , tab_comm , false );
+            var objdroite=this.#traite_element( element.right , niveau + 1 , element , tab_comm , false );
             if(objgauche.__xst === true && objdroite.__xst){
                 t+=objgauche.__xva + ',defaut(' + objdroite.__xva + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1893 #traite_AssignmentPattern' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1893 #traite_AssignmentPattern' ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1896 #traite_AssignmentPattern' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1896 #traite_AssignmentPattern' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_AwaitExpression(element,niveau,parent,tab_comm){
+    #traite_AwaitExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         if(element.argument){
-            var objass=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
+            var objass=this.#traite_element( element.argument , niveau + 1 , element , tab_comm , false );
             if(objass.__xst === true){
                 t+='await(' + objass.__xva + ')';
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '1924 #traite_AwaitExpression' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1924 #traite_AwaitExpression' ,"element" : element} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1927 #traite_AwaitExpression' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1927 #traite_AwaitExpression' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_ThrowStatement(element,niveau,parent,tab_comm){
+    #traite_ThrowStatement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
-        obj=this.#traite_element(element.argument,niveau + 1,element,tab_comm,false);
+        obj=this.#traite_element( element.argument , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === true){
             t+='throw(' + obj.__xva + ')';
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '1987 #traite_ThrowStatement' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1987 #traite_ThrowStatement' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_LabeledStatement(element,niveau,parent,tab_comm){
+    #traite_LabeledStatement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         let contenu='';
         if(element.body){
-            obj=this.#traite_ast0(element.body,niveau + 2,element,tab_comm);
+            obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '2070 #traite_LabeledStatement' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '2070 #traite_LabeledStatement' ,"element" : element} ));
             }
         }
         if(element.label.type === 'Identifier'){
             t+='etiquette(' + element.label.name + ',contenu(' + contenu + '))';
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '2076 #traite_LabeledStatement' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '2076 #traite_LabeledStatement' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    #traite_SequenceExpression(element,niveau,parent,tab_comm){
+    #traite_SequenceExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
         if(element.expressions.length > 1 && parent.computed && parent.computed === true){
             /*
               tab[1,1] est super dangereux, on le signale mais ça passe
             */
-            this.#astjs_le({"__xst" : true ,"__xav" : '2008 l\'opérateur virgule est dangereux dans un tableau !' ,"element" : element});
+            this.#astjs_le( {"__xst" : true ,"__xav" : '2008 l\'opérateur virgule est dangereux dans un tableau !' ,"element" : element} );
         }
         for( let i=0 ; i < element.expressions.length ; i++ ){
-            obj=this.#traite_element(element.expressions[i],niveau + 2,element,tab_comm,false);
+            obj=this.#traite_element( element.expressions[i] , niveau + 2 , element , tab_comm , false );
             if(obj.__xst === true){
                 if(t !== ''){
                     t+=',';
                 }
                 t+=obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '2018 #traite_SequenceExpression' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '2018 #traite_SequenceExpression' ,"element" : element} ));
             }
         }
         t='virgule(' + t + ')';
@@ -2488,29 +2496,29 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_BlockStatement(element,niveau,parent,tab_comm){
+    #traite_BlockStatement( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
-        if(element.body && Array.isArray(element.body)){
+        if(element.body && Array.isArray( element.body )){
             for( let i=0 ; i < element.body.length ; i++ ){
                 if(element.body[i].type && element.body[i].type === 'ExpressionStatement'){
-                    obj=this.#traite_element(element.body[i].expression,niveau,element,tab_comm,false);
+                    obj=this.#traite_element( element.body[i].expression , niveau , element , tab_comm , false );
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : '2126 #traite_BlockStatement' ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : '2126 #traite_BlockStatement' ,"element" : element} ));
                     }
                 }else{
-                    obj=this.#traite_element(element.body[i],niveau,element,tab_comm,false);
+                    obj=this.#traite_element( element.body[i] , niveau , element , tab_comm , false );
                     if(obj.__xst === true){
                         t+=obj.__xva;
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : '2133 #traite_BlockStatement' ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : '2133 #traite_BlockStatement' ,"element" : element} ));
                     }
                 }
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '2139 #traite_BlockStatement' ,"element" : element}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '2139 #traite_BlockStatement' ,"element" : element} ));
         }
         t='(' + t + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -2518,11 +2526,11 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #traite_element(element,niveau,parent,tab_comm,ignorer_commentaires_avant){
+    #traite_element( element , niveau , parent , tab_comm , ignorer_commentaires_avant ){
         let t='';
         let obj=null;
         if(!(ignorer_commentaires_avant !== undefined && ignorer_commentaires_avant === true)){
-            t+=this.#comm_avant_debut1(element,niveau,parent,tab_comm);
+            t+=this.#comm_avant_debut1( element , niveau , parent , tab_comm );
         }
         switch (element.type){
             case 'Super' : t='Super';
@@ -2542,8 +2550,8 @@ let x16=a.b ?. c(a.b);
                         t+='useStrict()';
                     }else{
                         /* il faut traiter les valeurs entre quotes qui terminent par un \ */
-                        if(element.raw.indexOf('\\\n') >= 0){
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + 'veuillez réécrire ces lignes JS qui terminent par un \\' ,"element" : element}));
+                        if(element.raw.indexOf( '\\\n' ) >= 0){
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'veuillez réécrire ces lignes JS qui terminent par un \\' ,"element" : element} ));
                         }else{
                             valeur=element.raw;
                         }
@@ -2561,7 +2569,7 @@ let x16=a.b ?. c(a.b);
                     if(element.label.type === 'Identifier'){
                         t+='break(' + element.label.name + ')';
                     }else{
-                        return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                        return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                     }
                 }else{
                     t+='break()';
@@ -2577,461 +2585,461 @@ let x16=a.b ?. c(a.b);
             case 'ContinueStatement' : t+='continue()';
                 break;
             case 'LabeledStatement' :
-                obj=this.#traite_LabeledStatement(element,niveau,parent,tab_comm);
+                obj=this.#traite_LabeledStatement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'SequenceExpression' :
-                obj=this.#traite_SequenceExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_SequenceExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ThrowStatement' :
-                obj=this.#traite_ThrowStatement(element,niveau,parent,tab_comm);
+                obj=this.#traite_ThrowStatement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'AwaitExpression' :
-                obj=this.#traite_AwaitExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_AwaitExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'AssignmentPattern' :
-                obj=this.#traite_AssignmentPattern(element,niveau,parent,tab_comm);
+                obj=this.#traite_AssignmentPattern( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'TryStatement' :
-                obj=this.#traite_TryStatement(element,niveau,parent,tab_comm);
+                obj=this.#traite_TryStatement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'NewExpression' :
-                obj=this.#traite_NewExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_NewExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'TemplateLiteral' :
-                obj=this.#traite_TemplateLiteral(element,niveau,parent,tab_comm);
+                obj=this.#traite_TemplateLiteral( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'TemplateElement' :
-                obj=this.#traite_TemplateElement(element,niveau,parent,tab_comm);
+                obj=this.#traite_TemplateElement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ExportNamedDeclaration' :
-                obj=this.#traite_ExportNamedDeclaration(element,niveau,parent,tab_comm);
+                obj=this.#traite_ExportNamedDeclaration( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'SwitchStatement' :
-                obj=this.#traite_SwitchStatement(element,niveau,parent,tab_comm);
+                obj=this.#traite_SwitchStatement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ForInStatement' :
-                obj=this.#traite_ForInStatement(element,niveau,parent,tab_comm);
+                obj=this.#traite_ForInStatement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ForOfStatement' :
-                obj=this.#traite_ForOfStatement(element,niveau,parent,tab_comm);
+                obj=this.#traite_ForOfStatement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'PrivateIdentifier' :
-                obj=this.#traite_PrivateIdentifier(element,niveau,parent,tab_comm);
+                obj=this.#traite_PrivateIdentifier( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ConditionalExpression' :
-                obj=this.#traite_ConditionalExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_ConditionalExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'MethodDefinition' :
-                obj=this.#traite_MethodDefinition(element,niveau,parent,tab_comm);
+                obj=this.#traite_MethodDefinition( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'PropertyDefinition' :
-                obj=this.#traite_PropertyDefinition(element,niveau,parent,tab_comm);
+                obj=this.#traite_PropertyDefinition( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ClassDeclaration' :
-                obj=this.#traite_ClassDeclaration(element,niveau,parent,tab_comm);
+                obj=this.#traite_ClassDeclaration( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'IfStatement' :
-                obj=this.#traite_IfStatement(element,niveau,parent,tab_comm,'if');
+                obj=this.#traite_IfStatement( element , niveau , parent , tab_comm , 'if' );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'UpdateExpression' :
-                obj=this.#traite_UpdateExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_UpdateExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'DoWhileStatement' :
-                obj=this.#traite_DoWhileStatement(element,niveau,parent,tab_comm);
+                obj=this.#traite_DoWhileStatement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'WhileStatement' :
-                obj=this.#traite_WhileStatement(element,niveau,parent,tab_comm);
+                obj=this.#traite_WhileStatement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ForStatement' :
-                obj=this.#traite_ForStatement(element,niveau,parent,tab_comm);
+                obj=this.#traite_ForStatement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'UnaryExpression' :
-                obj=this.#traite_UnaryExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_UnaryExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'LogicalExpression' :
-                obj=this.#traite_LogicalExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_LogicalExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'MemberExpression' :
-                obj=this.#traite_MemberExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_MemberExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'FunctionDeclaration' :
-                obj=this.#traite_FunctionDeclaration(element,niveau,parent,tab_comm);
+                obj=this.#traite_FunctionDeclaration( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ArrayExpression' :
-                obj=this.#traite_ArrayExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_ArrayExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ObjectExpression' :
-                obj=this.#traite_ObjectExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_ObjectExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'VariableDeclaration' :
-                obj=this.#traite_VariableDeclaration(element,niveau,parent,tab_comm);
+                obj=this.#traite_VariableDeclaration( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'BinaryExpression' :
-                obj=this.#traite_BinaryExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_BinaryExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ReturnStatement' :
-                obj=this.#traite_ReturnStatement(element,niveau,parent,tab_comm);
+                obj=this.#traite_ReturnStatement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'AssignmentExpression' :
-                obj=this.#traite_AssignmentExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_AssignmentExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case "ArrowFunctionExpression" :
-                obj=this.#traite_ArrowFunctionExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_ArrowFunctionExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'FunctionExpression' :
-                obj=this.#traite_FunctionExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_FunctionExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'CallExpression' :
-                obj=this.#traite_CallExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_CallExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ChainExpression' :
-                obj=this.#traite_ChainExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_ChainExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ObjectPattern' :
-                obj=this.#traite_ObjectPattern(element,niveau,parent,tab_comm);
+                obj=this.#traite_ObjectPattern( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'RestElement' :
-                obj=this.#traite_RestElement(element,niveau,parent,tab_comm);
+                obj=this.#traite_RestElement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'SpreadElement' :
-                obj=this.#traite_SpreadElement(element,niveau,parent,tab_comm);
+                obj=this.#traite_SpreadElement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ImportDeclaration' :
-                obj=this.#traite_ImportDeclaration(element,niveau,parent,tab_comm);
+                obj=this.#traite_ImportDeclaration( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ImportSpecifier' :
-                obj=this.#traite_ImportSpecifier(element,niveau,parent,tab_comm);
+                obj=this.#traite_ImportSpecifier( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ImportDefaultSpecifier' :
-                obj=this.#traite_ImportDefaultSpecifier(element,niveau,parent,tab_comm);
+                obj=this.#traite_ImportDefaultSpecifier( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ImportNamespaceSpecifier' :
-                obj=this.#traite_ImportNamespaceSpecifier(element,niveau,parent,tab_comm);
+                obj=this.#traite_ImportNamespaceSpecifier( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'ImportExpression' :
-                obj=this.#traite_ImportExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_ImportExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case 'MetaProperty' :
-                obj=this.#traite_MetaProperty(element,niveau,parent,tab_comm);
+                obj=this.#traite_MetaProperty( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case "ExportDefaultDeclaration" :
-                obj=this.#traite_ExportDefaultDeclaration(element,niveau,parent,tab_comm);
+                obj=this.#traite_ExportDefaultDeclaration( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case "ArrayPattern" :
-                obj=this.#traite_ArrayPattern(element,niveau,parent,tab_comm);
+                obj=this.#traite_ArrayPattern( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case "TaggedTemplateExpression" :
-                obj=this.#traite_TaggedTemplateExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_TaggedTemplateExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case "ClassExpression" :
-                obj=this.#traite_ClassExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_ClassExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             case "YieldExpression" :
-                obj=this.#traite_YieldExpression(element,niveau,parent,tab_comm);
+                obj=this.#traite_YieldExpression( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
@@ -3046,17 +3054,17 @@ let x16=a.b ?. c(a.b);
                      break;
                   }
                 */
-                obj=this.#traite_BlockStatement(element,niveau,parent,tab_comm);
+                obj=this.#traite_BlockStatement( element , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element}));
+                    return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + element.type ,"element" : element} ));
                 }
                 break;
                 
             default:
                 debugger;
-                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2() + ' non prévu "' + element.type + '" ' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' non prévu "' + element.type + '" ' ,"element" : element} ));
                 break;
                 
         }
@@ -3067,11 +3075,11 @@ let x16=a.b ?. c(a.b);
       =============================================================================================================
       les arguments d'une fonction auto_appelée ne commencent qu'après le "element.callee.body.end"
     */
-    #comm_dans_arguments_appel_fonction(element,niveau,parent,tab_comm){
+    #comm_dans_arguments_appel_fonction( element , niveau , parent , tab_comm ){
         /* tabComment */
         var t='';
         let tab_com_a_supprimer=[];
-        if(parent.hasOwnProperty('auto_appelee') && parent.auto_appelee === true){
+        if(parent.hasOwnProperty( 'auto_appelee' ) && parent.auto_appelee === true){
             var position_debut_parenthese=parent.callee.body.end + 1;
             var position_fin_parenthese=parent.end;
             for( var i=0 ; i < tab_comm.length ; i++ ){
@@ -3080,45 +3088,45 @@ let x16=a.b ?. c(a.b);
                        && element.start >= tab_comm[i].end
                 ){
                     var txtComment=tab_comm[i].value.trim();
-                    t='#( ' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + ' )' + t;
-                    tab_com_a_supprimer.push(i);
+                    t='#( ' + txtComment.replace( /\(/g , '[' ).replace( /\)/g , ']' ) + ' )' + t;
+                    tab_com_a_supprimer.push( i );
                 }else if(tab_comm[i].start > position_fin_parenthese){
                     break;
                 }
             }
         }else{
-            t=this.#comm_avant_debut1(element,niveau,parent,tab_comm);
+            t=this.#comm_avant_debut1( element , niveau , parent , tab_comm );
         }
         for( var j=0 ; j < tab_com_a_supprimer.length ; j++ ){
-            tab_comm.splice(tab_com_a_supprimer[j],1);
+            tab_comm.splice( tab_com_a_supprimer[j] , 1 );
         }
         return t;
     }
     /*
       =============================================================================================================
     */
-    #derniers_commentaires(tab_comm){
+    #derniers_commentaires( tab_comm ){
         let t='';
         for( let i=0 ; i < tab_comm.length ; i++ ){
             var txtComment=tab_comm[i].value;
-            if(txtComment.indexOf('\n') < 0){
+            if(txtComment.indexOf( '\n' ) < 0){
                 txtComment=txtComment.trim();
                 txtComment=' ' + txtComment + ' ';
             }
             if(tab_comm[i].type === 'Line'){
-                txtComment=txtComment.replace(/\/\*/,'/_*').replace(/\*\//,'*_/');
+                txtComment=txtComment.replace( /\/\*/ , '/_*' ).replace( /\*\// , '*_/' );
             }
-            if(((txtComment.match(/\(/g) || []).length) === ((txtComment.match(/\)/g) || []).length)){
-                if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                    t+='#(#' + txtComment.substr(1) + ')';
+            if(((txtComment.match( /\(/g ) || []).length) === ((txtComment.match( /\)/g ) || []).length)){
+                if(txtComment.substr( 0 , 1 ) === '*' || txtComment.substr( 0 , 1 ) === '#'){
+                    t+='#(#' + txtComment.substr( 1 ) + ')';
                 }else{
                     t+='#(' + txtComment + ')';
                 }
             }else{
-                if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                    t+='#(#' + txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                if(txtComment.substr( 0 , 1 ) === '*' || txtComment.substr( 0 , 1 ) === '#'){
+                    t+='#(#' + txtComment.substr( 1 ).replace( /\(/g , '[' ).replace( /\)/g , ']' ) + ')';
                 }else{
-                    t+='#(' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                    t+='#(' + txtComment.replace( /\(/g , '[' ).replace( /\)/g , ']' ) + ')';
                 }
             }
         }
@@ -3127,7 +3135,7 @@ let x16=a.b ?. c(a.b);
     /*
       =============================================================================================================
     */
-    #comm_avant_fin1(elem,niveau,parent,tab_comm){
+    #comm_avant_fin1( elem , niveau , parent , tab_comm ){
         let t='';
         let txtComment='';
         let position_debut_bloc=0;
@@ -3141,14 +3149,14 @@ let x16=a.b ?. c(a.b);
         if(parent === null){
             return t;
         }
-        if(Array.isArray(parent)){
+        if(Array.isArray( parent )){
             position_debut_bloc=parent[0].start;
             position_fin_bloc=parent[parent.length - 1].end;
         }else{
             position_debut_bloc=parent.start;
             position_fin_bloc=parent.end;
         }
-        if(parent.hasOwnProperty('auto_appelee') && parent.auto_appelee === true){
+        if(parent.hasOwnProperty( 'auto_appelee' ) && parent.auto_appelee === true){
             return t;
         }
         for( i=0 ; i < tab_comm.length && tab_comm[i].start <= position_fin_bloc && tab_comm[i].end <= position_fin_bloc ; i++ ){
@@ -3157,30 +3165,30 @@ let x16=a.b ?. c(a.b);
                 continue;
             }
             txtComment=tab_comm[i].value;
-            if(txtComment.indexOf('\n') < 0){
+            if(txtComment.indexOf( '\n' ) < 0){
                 txtComment=txtComment.trim();
                 txtComment=' ' + txtComment + ' ';
             }
             if(tab_comm[i].type === 'Line'){
-                txtComment=txtComment.replace(/\/\*/,'/_*').replace(/\*\//,'*_/');
+                txtComment=txtComment.replace( /\/\*/ , '/_*' ).replace( /\*\// , '*_/' );
             }
-            if(((txtComment.match(/\(/g) || []).length) === ((txtComment.match(/\)/g) || []).length)){
-                if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                    t+='#(#' + txtComment.substr(1) + ')';
+            if(((txtComment.match( /\(/g ) || []).length) === ((txtComment.match( /\)/g ) || []).length)){
+                if(txtComment.substr( 0 , 1 ) === '*' || txtComment.substr( 0 , 1 ) === '#'){
+                    t+='#(#' + txtComment.substr( 1 ) + ')';
                 }else{
                     t+='#(' + txtComment + ')';
                 }
             }else{
-                if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                    t+='#(#' + txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                if(txtComment.substr( 0 , 1 ) === '*' || txtComment.substr( 0 , 1 ) === '#'){
+                    t+='#(#' + txtComment.substr( 1 ).replace( /\(/g , '[' ).replace( /\)/g , ']' ) + ')';
                 }else{
-                    t+='#(' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                    t+='#(' + txtComment.replace( /\(/g , '[' ).replace( /\)/g , ']' ) + ')';
                 }
             }
-            tab_com_a_supprimer.push(i);
+            tab_com_a_supprimer.push( i );
         }
         for( var j=tab_com_a_supprimer.length - 1 ; j >= 0 ; j-- ){
-            tab_comm.splice(tab_com_a_supprimer[j],1);
+            tab_comm.splice( tab_com_a_supprimer[j] , 1 );
         }
         return t;
     }
@@ -3188,7 +3196,7 @@ let x16=a.b ?. c(a.b);
       =============================================================================================================
       on cherche les commentaires avant elem
     */
-    #comm_avant_debut1(elem,niveau,parent,tab_comm){
+    #comm_avant_debut1( elem , niveau , parent , tab_comm ){
         let t='';
         let i=0;
         let c1=0;
@@ -3203,7 +3211,7 @@ let x16=a.b ?. c(a.b);
         }
         if(elem.start === undefined){
             /* on a probablement un tableau */
-            if(Array.isArray(elem)){
+            if(Array.isArray( elem )){
                 if(elem.length > 0){
                     position_debut_element=elem[0].start;
                 }else{
@@ -3224,7 +3232,7 @@ let x16=a.b ?. c(a.b);
             /* cas initialisation */
             position_debut_bloc=0;
             if(elem.end === undefined){
-                if(Array.isArray(elem)){
+                if(Array.isArray( elem )){
                     if(elem.length > 0){
                         /* il y a au moins une ligne de code */
                         position_fin_bloc=elem[elem.length - 1].end;
@@ -3237,7 +3245,7 @@ let x16=a.b ?. c(a.b);
             }else{
                 position_fin_bloc=elem.end;
             }
-        }else if(Array.isArray(parent)){
+        }else if(Array.isArray( parent )){
             position_debut_bloc=parent[0].start;
             if(elem.start === parent[0].start){
                 position_debut_bloc=0;
@@ -3251,7 +3259,7 @@ let x16=a.b ?. c(a.b);
         }else{
             position_debut_bloc=parent.start;
             position_fin_bloc=parent.end;
-            if(parent.type === "CallExpression" && parent.arguments && Array.isArray(parent.arguments)){
+            if(parent.type === "CallExpression" && parent.arguments && Array.isArray( parent.arguments )){
                 for( var j=0 ; j < parent.arguments.length ; j++ ){
                     if(elem.start === parent.arguments[j].start){
                         position_debut_bloc=parent.callee.end;
@@ -3259,7 +3267,7 @@ let x16=a.b ?. c(a.b);
                 }
             }
         }
-        if(parent && parent.hasOwnProperty('auto_appelee') && parent.auto_appelee === true){
+        if(parent && parent.hasOwnProperty( 'auto_appelee' ) && parent.auto_appelee === true){
             return t;
         }
         /*
@@ -3276,27 +3284,27 @@ let x16=a.b ?. c(a.b);
                 continue;
             }
             txtComment=tab_comm[i].value;
-            if(txtComment.indexOf('\n') < 0){
+            if(txtComment.indexOf( '\n' ) < 0){
                 txtComment=txtComment.trim();
                 txtComment=' ' + txtComment + ' ';
             }
             if(tab_comm[i].type === 'Line'){
-                txtComment=txtComment.replace(/\/\*/,'/_*').replace(/\*\//,'*_/');
+                txtComment=txtComment.replace( /\/\*/ , '/_*' ).replace( /\*\// , '*_/' );
             }
-            if(((txtComment.match(/\(/g) || []).length) === ((txtComment.match(/\)/g) || []).length)){
-                if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                    t+='#(#' + txtComment.substr(1) + ')';
+            if(((txtComment.match( /\(/g ) || []).length) === ((txtComment.match( /\)/g ) || []).length)){
+                if(txtComment.substr( 0 , 1 ) === '*' || txtComment.substr( 0 , 1 ) === '#'){
+                    t+='#(#' + txtComment.substr( 1 ) + ')';
                 }else{
                     t+='#(' + txtComment + ')';
                 }
             }else{
-                if(txtComment.substr(0,1) === '*' || txtComment.substr(0,1) === '#'){
-                    t+='#(#' + txtComment.substr(1).replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                if(txtComment.substr( 0 , 1 ) === '*' || txtComment.substr( 0 , 1 ) === '#'){
+                    t+='#(#' + txtComment.substr( 1 ).replace( /\(/g , '[' ).replace( /\)/g , ']' ) + ')';
                 }else{
-                    t+='#(' + txtComment.replace(/\(/g,'[').replace(/\)/g,']') + ')';
+                    t+='#(' + txtComment.replace( /\(/g , '[' ).replace( /\)/g , ']' ) + ')';
                 }
             }
-            tab_com_a_supprimer.push(i);
+            tab_com_a_supprimer.push( i );
         }
         /*#
           if(t !== ''){
@@ -3304,106 +3312,106 @@ let x16=a.b ?. c(a.b);
           }
         */
         for( var j=tab_com_a_supprimer.length - 1 ; j >= 0 ; j-- ){
-            tab_comm.splice(tab_com_a_supprimer[j],1);
+            tab_comm.splice( tab_com_a_supprimer[j] , 1 );
         }
         return t;
     }
     /*
       =============================================================================================================
     */
-    #traite_ast0(element,niveau,parent,tab_comm){
+    #traite_ast0( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
-        const espaces=CRLF + '   '.repeat(niveau);
-        if(Array.isArray(element)){
+        const espaces=CRLF + '   '.repeat( niveau );
+        if(Array.isArray( element )){
             for( let i=0 ; i < element.length ; i++ ){
                 switch (element[i].type){
                     case 'ExpressionStatement' :
-                        obj=this.#traite_element(element[i].expression,niveau,element,tab_comm,false);
+                        obj=this.#traite_element( element[i].expression , niveau , element , tab_comm , false );
                         if(obj.__xst === true){
                             t+=espaces + obj.__xva;
                         }else{
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element} ));
                         }
                         break;
                         
                     case 'EmptyStatement' :
-                        t+=this.#comm_avant_debut1(element[i],niveau,parent,tab_comm);
+                        t+=this.#comm_avant_debut1( element[i] , niveau , parent , tab_comm );
                         t+='';
                         break;
                         
                     default:
-                        obj=this.#traite_element(element[i],niveau,parent,tab_comm,false);
+                        obj=this.#traite_element( element[i] , niveau , parent , tab_comm , false );
                         if(obj.__xst === true){
                             t+=espaces + obj.__xva;
                         }else{
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element} ));
                         }
                         break;
                         
                 }
             }
         }else if(element.type && element.type === 'BlockStatement' || element.type && element.type === 'ClassBody'){
-            if(element.body && Array.isArray(element.body)){
+            if(element.body && Array.isArray( element.body )){
                 for( let i=0 ; i < element.body.length ; i++ ){
                     if(element.body[i].type && element.body[i].type === 'ExpressionStatement'){
-                        obj=this.#traite_element(element.body[i].expression,niveau,element,tab_comm,false);
+                        obj=this.#traite_element( element.body[i].expression , niveau , element , tab_comm , false );
                         if(obj.__xst === true){
                             t+=espaces + obj.__xva;
                         }else{
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : '0187 #traite_ast0 BlockStatement ' ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0187 #traite_ast0 BlockStatement ' ,"element" : element} ));
                         }
                     }else{
-                        obj=this.#traite_element(element.body[i],niveau,element,tab_comm,false);
+                        obj=this.#traite_element( element.body[i] , niveau , element , tab_comm , false );
                         if(obj.__xst === true){
                             t+=espaces + obj.__xva;
                         }else{
-                            return(this.#astjs_le({"__xst" : false ,"__xme" : '0429 #traite_ast0 BlockStatement ' ,"element" : element}));
+                            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0429 #traite_ast0 BlockStatement ' ,"element" : element} ));
                         }
                     }
                 }
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0191 #traite_ast0 BlockStatement' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0191 #traite_ast0 BlockStatement' ,"element" : element} ));
             }
         }else if(element.type && element.type === 'ExpressionStatement'){
-            obj=this.#traite_element(element.expression,niveau,element,tab_comm,false);
+            obj=this.#traite_element( element.expression , niveau , element , tab_comm , false );
             if(obj.__xst === true){
                 t+=espaces + obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element} ));
             }
         }else{
-            obj=this.#traite_element(element,niveau,element,tab_comm,false);
+            obj=this.#traite_element( element , niveau , element , tab_comm , false );
             if(obj.__xst === true){
                 t+=espaces + obj.__xva;
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0066 #traite_ast0 ExpressionStatement' ,"element" : element} ));
             }
         }
-        t+=this.#comm_avant_fin1(element,niveau,parent,tab_comm,true);
+        t+=this.#comm_avant_fin1( element , niveau , parent , tab_comm , true );
         return({"__xst" : true ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
-    traite_ast(ast_de_js,tab_comm,options_traitement){
+    traite_ast( ast_de_js , tab_comm , options_traitement ){
         let t='';
         let obj=null;
         /* console.log(ast_de_js); */
         if(options_traitement !== undefined){
             this.#options_traitement=options_traitement;
         }
-        if(Array.isArray(ast_de_js)){
+        if(Array.isArray( ast_de_js )){
             let niveau=0;
-            obj=this.#traite_ast0(ast_de_js,niveau,null,tab_comm);
+            obj=this.#traite_ast0( ast_de_js , niveau , null , tab_comm );
             if(obj.__xst === true){
                 t+=obj.__xva;
-                t+=this.#derniers_commentaires(tab_comm);
+                t+=this.#derniers_commentaires( tab_comm );
             }else{
-                return(this.#astjs_le({"__xst" : false ,"__xme" : '0066 traite_ast erreur de convertion'}));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0066 traite_ast erreur de convertion'} ));
             }
         }else{
-            return(this.#astjs_le({"__xst" : false ,"__xme" : '0066 traite_ast le point d\'entrée doit être un tableau'}));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0066 traite_ast le point d\'entrée doit être un tableau'} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }

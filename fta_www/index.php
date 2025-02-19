@@ -28,8 +28,7 @@ ob_flush();
 <p>Vous pouvez insérer un source de programme rev et cliquer sur le bouton vert pour le traiter</p>
 <p>Vous pouvez aussi cliquer sur le bouton "charger le source de test" pour voir un exemple</p>
 <p>
-    <b>Le résultat du traitement</b>
-    sera alors affiché plus bas dans la page
+    <b>Le résultat du traitement</b>sera alors affiché plus bas dans la page
 </p>
 <div class="yyconteneur_de_texte1">
     <a href="javascript:__gi1.parentheses1(&quot;txtar1&quot;);" title="repérer la parenthèse ouvrante ou fermante correspondante">(|.|)</a>

@@ -20,7 +20,7 @@
 class traitements_sur_html{
     #nom_de_la_variable='';
     /* function constructor */
-    constructor(nom_de_la_variable){
+    constructor( nom_de_la_variable ){
         this.#nom_de_la_variable=nom_de_la_variable;
     }
     /* function nom_de_la_variable */
@@ -28,10 +28,10 @@ class traitements_sur_html{
         return this.#nom_de_la_variable;
     }
     /* function tabToHtml1 */
-    tabToHtml1(tab,id,noHead,niveau){
+    tabToHtml1( tab , id , noHead , niveau ){
         var startId=id;
         for( var i=id ; i < tab.length ; i++ ){
-            if(tab[i][1] == 'html' || tab[i][1] == 'html_dans_php'){
+            if(tab[i][1] === 'html' || tab[i][1] === 'html_dans_php'){
                 startId=i;
                 if(tab[i][1] == 'html_dans_php'){
                     niveau-=1;
@@ -39,10 +39,10 @@ class traitements_sur_html{
                 break;
             }
         }
-        var ob=this.tabToHtml0(tab,startId,false,false,false,noHead,false,false,niveau);
+        var ob=this.tabToHtml0( tab , startId , false , false , false , noHead , false , false , niveau );
         if(ob.__xst === true){
-            if(ob.__xva.substr(0,2) === CRLF){
-                ob.__xva=ob.__xva.substr(2);
+            if(ob.__xva.substr( 0 , 2 ) === CRLF){
+                ob.__xva=ob.__xva.substr( 2 );
             }
         }
         return ob;
@@ -50,14 +50,14 @@ class traitements_sur_html{
     /*
       function #construit_cle
     */
-    #construit_cle(length){
+    #construit_cle( length ){
         let resultat='';
         /* on retire I("I" de [i]ncrément ) O("o" de [o]bjet) l("l" de laitue)  0(zéro) 1(un) */
         const lettres='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
         const longueur=lettres.length;
         let counter=0;
         while(counter < length){
-            resultat+=lettres.charAt(Math.floor(Math.random() * longueur));
+            resultat+=lettres.charAt( Math.floor( Math.random() * longueur ) );
             counter++;
         }
         return('_' + resultat);
@@ -79,13 +79,13 @@ class traitements_sur_html{
       pas renseignés
       =======================================================================================  
     */
-    traiteAstDeHtml(jsonDeHtml,niveau,retirerHtmlHeadEtBody,typeParent,tableau_des_javascript_a_convertir){
+    traiteAstDeHtml( jsonDeHtml , niveau , retirerHtmlHeadEtBody , typeParent , tableau_des_javascript_a_convertir ){
         var i=0;
         var j=0;
         var k=0;
         var t='';
-        var esp0=' '.repeat(NBESPACESREV * niveau);
-        var esp1=' '.repeat(NBESPACESREV);
+        var esp0=' '.repeat( NBESPACESREV * niveau );
+        var esp1=' '.repeat( NBESPACESREV );
         var dernierEstTexte=false;
         var attributs='';
         var contenu='';
@@ -102,7 +102,7 @@ class traitements_sur_html{
                             type='ldPlusJsonDansHtml';
                         }else if((jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript'
                                    || jsonDeHtml.attributes.type.toLowerCase() === 'module')
-                               && jsonDeHtml.hasOwnProperty('content')
+                               && jsonDeHtml.hasOwnProperty( 'content' )
                         ){
                             /*
                               si il y a du contenu ( content existe ), 
@@ -111,7 +111,7 @@ class traitements_sur_html{
                             type='javascriptDansHtml';
                         }else if((jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript'
                                    || jsonDeHtml.attributes.type.toLowerCase() === 'module')
-                               && !jsonDeHtml.hasOwnProperty('content')
+                               && !jsonDeHtml.hasOwnProperty( 'content' )
                         ){
                             /*
                               c'est un tag script avec src=""
@@ -123,10 +123,10 @@ class traitements_sur_html{
                             typeScriptNonTraite=true;
                             type='script';
                             t+='\n' + esp0 + 'script(';
-                            __m_rev1.empiler_erreur({
+                            __m_rev1.empiler_erreur( {
                                     "__xst" : false ,
-                                    "__xme" : __m_rev1.nl2()+'attention, seuls "text/javascript" et "application/ld+json" sont traités et il existe un type de script non traité  "' + jsonDeHtml.attributes.type + '"'
-                                });
+                                    "__xme" : __m_rev1.nl2() + 'attention, seuls "text/javascript" et "application/ld+json" sont traités et il existe un type de script non traité  "' + jsonDeHtml.attributes.type + '"'
+                                } );
                         }
                     }else{
                         /*
@@ -152,7 +152,14 @@ class traitements_sur_html{
                     if(attributs !== ''){
                         attributs+=',';
                     }
-                    attributs+='(\'' + attr.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\',"' + jsonDeHtml.attributes[attr].replace(/"/g,'&quot;') + '")';
+                    if(jsonDeHtml.attributes[attr] === null || jsonDeHtml.attributes[attr] === ''){
+                        /*
+                          certains attributs peuvent être vides, voir exceptions defer et async
+                        */
+                        attributs+='(\'' + attr.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' ) + '\',"")';
+                    }else{
+                        attributs+='(\'' + attr.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' ) + '\',"' + jsonDeHtml.attributes[attr].replace( /"/g , '&quot;' ) + '")';
+                    }
                 }
             }
             /*
@@ -161,7 +168,7 @@ class traitements_sur_html{
             t+=attributs;
             if(typeScriptNonTraite && jsonDeHtml.content && jsonDeHtml.content.length > 0){
                 contenu=jsonDeHtml.content[0];
-                contenu=contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'');
+                contenu=contenu.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' );
                 if(attributs !== ''){
                     t+=',';
                 }
@@ -169,20 +176,20 @@ class traitements_sur_html{
                 t+=')';
             }else if(type.toLowerCase() === 'ldplusjsondanshtml' && jsonDeHtml.content && jsonDeHtml.content.length > 0){
                 if(jsonDeHtml.content[0].content){
-                    var chaineJsEquivalente='var a=' + jsonDeHtml.content[0].content.replace(/&quot;/g,'"').replace(/\\\//g,'/') + ';';
+                    var chaineJsEquivalente='var a=' + jsonDeHtml.content[0].content.replace( /&quot;/g , '"' ).replace( /\\\//g , '/' ) + ';';
                 }else{
-                    var chaineJsEquivalente='var a=' + jsonDeHtml.content[0].replace(/&quot;/g,'"').replace(/\\\//g,'/') + ';';
+                    var chaineJsEquivalente='var a=' + jsonDeHtml.content[0].replace( /&quot;/g , '"' ).replace( /\\\//g , '/' ) + ';';
                 }
-                tableau_des_javascript_a_convertir.push({"type" : "ldplusjsondanshtml" ,"__xva" : chaineJsEquivalente ,"cas" : "ldjson"});
-                var obj=__gi1.convertit_source_javascript_en_rev(chaineJsEquivalente);
+                tableau_des_javascript_a_convertir.push( {"type" : "ldplusjsondanshtml" ,"__xva" : chaineJsEquivalente ,"cas" : "ldjson"} );
+                var obj=__gi1.convertit_source_javascript_en_rev( chaineJsEquivalente );
                 if(obj.__xst === true){
                     t+='' + obj.__xva + '';
                 }else{
-                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0142 ' + jsonDeHtml.type}));
+                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0142 ' + jsonDeHtml.type} ));
                 }
                 t+='\n' + esp0 + ')';
             }else if(type.toLowerCase() === 'javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length > 0){
-                if(Array.isArray(jsonDeHtml.content)){
+                if(Array.isArray( jsonDeHtml.content )){
                     for( var i=0 ; i < jsonDeHtml.content.length ; i++ ){
                         if( typeof jsonDeHtml.content[i] === 'string'
                                || jsonDeHtml.content[i].type
@@ -195,57 +202,57 @@ class traitements_sur_html{
                                 var source_js=jsonDeHtml.content[i].content;
                             }
                             if(!(source_js.trim() === '//' || source_js === '\n' || source_js === '')){
-                                var cle=this.#construit_cle(10);
-                                tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js1" ,"cle" : cle});
+                                var cle=this.#construit_cle( 10 );
+                                tableau_des_javascript_a_convertir.push( {"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js1" ,"cle" : cle} );
                                 contenu+='source(#(cle_javascript_a_remplacer,' + cle + '))';
                             }
-                        }else if(!jsonDeHtml.content[i].hasOwnProperty('type')){
+                        }else if(!jsonDeHtml.content[i].hasOwnProperty( 'type' )){
                             /*
                               il n'y a pas la propriété type, on suppose que c'est un text/javascript
                             */
-                            var source_js=jsonDeHtml.content[i].replace(/&amp;/g,'&');
-                            tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js2"});
-                            var obj=__gi1.convertit_source_javascript_en_rev(source_js);
+                            var source_js=jsonDeHtml.content[i].replace( /&amp;/g , '&' );
+                            tableau_des_javascript_a_convertir.push( {"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js2"} );
+                            var obj=__gi1.convertit_source_javascript_en_rev( source_js );
                             if(obj.__xst === true){
                                 debugger;
-                                if(t.indexOf('text/javascript') >= 0){
+                                if(t.indexOf( 'text/javascript' ) >= 0){
                                     contenu+=obj.__xva;
                                 }else{
                                     contenu+='(\'type\' , "text/javascript")' + obj.__xva;
                                 }
                             }else{
-                                return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0187 ' + jsonDeHtml.type}));
+                                return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0187 ' + jsonDeHtml.type} ));
                             }
                         }else{
-                            return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0190 ' + jsonDeHtml.type}));
+                            return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0190 ' + jsonDeHtml.type} ));
                         }
                     }
                 }else{
-                    tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js3"});
-                    var obj=__gi1.convertit_source_javascript_en_rev(jsonDeHtml.content);
+                    tableau_des_javascript_a_convertir.push( {"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js3"} );
+                    var obj=__gi1.convertit_source_javascript_en_rev( jsonDeHtml.content );
                     if(obj.__xst === true){
                         contenu+='<![CDATA[' + obj.__xva + ']]>';
                     }else{
-                        return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0198 ' + jsonDeHtml.type}));
+                        return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0198 ' + jsonDeHtml.type} ));
                     }
                 }
                 t+='\n' + esp0 + contenu + ')';
             }else if(jsonDeHtml.content && jsonDeHtml.content.length > 0){
-                if(Array.isArray(jsonDeHtml.content)){
+                if(Array.isArray( jsonDeHtml.content )){
                     for( var i=0 ; i < jsonDeHtml.content.length ; i++ ){
                         /*
                           =====================================================================
                           entree dans le récursif
                           =====================================================================
                         */
-                        obj=this.traiteAstDeHtml(jsonDeHtml.content[i],niveau + 1,retirerHtmlHeadEtBody,type,tableau_des_javascript_a_convertir);
+                        obj=this.traiteAstDeHtml( jsonDeHtml.content[i] , niveau + 1 , retirerHtmlHeadEtBody , type , tableau_des_javascript_a_convertir );
                         if(obj.__xst === true){
                             if((attributs !== '' || contenu !== '') && obj.__xva !== ''){
                                 contenu+=',';
                             }
                             contenu+=obj.__xva;
                         }else{
-                            return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0.129 ' + jsonDeHtml.type}));
+                            return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0.129 ' + jsonDeHtml.type} ));
                         }
                     }
                 }else{
@@ -254,19 +261,19 @@ class traitements_sur_html{
                 if(type.toLowerCase() === '#text'){
                     if(typeParent === 'style'){
                         if(contenu !== ''){
-                            contenu=contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'');
-                            if(contenu.substr(0,1) !== '\n'){
+                            contenu=contenu.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' );
+                            if(contenu.substr( 0 , 1 ) !== '\n'){
                                 debugger;
                                 contenu='\n' + contenu;
                             }
                             /*
                               on supprime les espace en début de ligne
                             */
-                            var contenuTab=contenu.split('\n');
+                            var contenuTab=contenu.split( '\n' );
                             k=9999;
                             for( i=1 ; i < contenuTab.length ; i++ ){
                                 for( j=0 ; j < contenuTab[i].length ; j++ ){
-                                    if(contenuTab[i].substr(j,1) !== ' '){
+                                    if(contenuTab[i].substr( j , 1 ) !== ' '){
                                         if(j < k){
                                             k=j;
                                         }
@@ -276,21 +283,21 @@ class traitements_sur_html{
                             }
                             if(k < 999 && k > 0){
                                 for( i=1 ; i < contenuTab.length ; i++ ){
-                                    contenuTab[i]=contenuTab[i].substr(k);
+                                    contenuTab[i]=contenuTab[i].substr( k );
                                 }
-                                contenu=contenuTab.join('\n');
+                                contenu=contenuTab.join( '\n' );
                             }
                             t+='\'' + contenu + '\'';
                         }
                     }else if(typeParent === 'textarea' || typeParent === 'pre'){
                         /* on ne remplace pas les LF dans les textarea et les pre */
                         if(contenu !== ''){
-                            t='`' + contenu.replace(/`/g,'\\`') + '`';
+                            t='`' + contenu.replace( /`/g , '\\`' ) + '`';
                         }
                     }else{
-                        contenu=contenu.replace(/\n/g,' ').replace(/\r/g,' ').trim();
+                        contenu=contenu.replace( /\n/g , ' ' ).replace( /\r/g , ' ' ).trim();
                         if(contenu !== ''){
-                            t+='\'' + contenu.replace(/\\/g,'\\\\').replace(/\'/g,'\\\'') + '\'';
+                            t+='\'' + contenu.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' ) + '\'';
                         }
                     }
                 }else{
@@ -321,11 +328,11 @@ class traitements_sur_html{
             }
         }else{
             if(typeParent === '#comment'){
-                if(jsonDeHtml.length >= 2 && jsonDeHtml.substr(0,1) === ' ' && jsonDeHtml.substr(jsonDeHtml.length - 1,1) === ' '){
-                    contenu=jsonDeHtml.substr(1,jsonDeHtml.length - 2);
+                if(jsonDeHtml.length >= 2 && jsonDeHtml.substr( 0 , 1 ) === ' ' && jsonDeHtml.substr( jsonDeHtml.length - 1 , 1 ) === ' '){
+                    contenu=jsonDeHtml.substr( 1 , jsonDeHtml.length - 2 );
                     t+=contenu;
                 }else{
-                    if(jsonDeHtml.length == 1 && jsonDeHtml.substr(0,1) === ' '){
+                    if(jsonDeHtml.length == 1 && jsonDeHtml.substr( 0 , 1 ) === ' '){
                         /*
                           c'est un commentaire vide
                         */
@@ -339,10 +346,10 @@ class traitements_sur_html{
                 contenu=jsonDeHtml;
                 t+=contenu;
             }else if(typeParent === 'script'){
-                tableau_des_javascript_a_convertir.push({"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js4"});
+                tableau_des_javascript_a_convertir.push( {"type" : "javascriptdanshtml" ,"__xva" : source_js ,"cas" : "js4"} );
                 /* avrif */
                 debugger;
-                var obj=__gi1.convertit_source_javascript_en_rev(jsonDeHtml);
+                var obj=__gi1.convertit_source_javascript_en_rev( jsonDeHtml );
                 if(obj.__xst === true){
                     t+='' + obj.__xva + '';
                 }else{
@@ -350,12 +357,12 @@ class traitements_sur_html{
                 }
             }else{
                 try{
-                    if(jsonDeHtml.hasOwnProperty('content')){
+                    if(jsonDeHtml.hasOwnProperty( 'content' )){
                         if( typeof jsonDeHtml.content === 'string'){
                             if(typeParent === 'style'){
                                 contenu=jsonDeHtml.content;
                             }else{
-                                contenu=jsonDeHtml.content.replace(/\r/g,' ').replace(/\n/g,' ').trim();
+                                contenu=jsonDeHtml.content.replace( /\r/g , ' ' ).replace( /\n/g , ' ' ).trim();
                             }
                         }else{
                             debugger;
@@ -366,7 +373,7 @@ class traitements_sur_html{
                         }else if(typeParent === 'textarea' || typeParent === 'pre'){
                             contenu=jsonDeHtml;
                         }else{
-                            contenu=jsonDeHtml.replace(/\r/g,' ').replace(/\n/g,' ').trim();
+                            contenu=jsonDeHtml.replace( /\r/g , ' ' ).replace( /\n/g , ' ' ).trim();
                         }
                     }
                 }catch(e){
@@ -375,10 +382,10 @@ class traitements_sur_html{
                     */
                     contenu='';
                 }
-                if(contenu.indexOf('&') >= 0 || contenu.indexOf('>') >= 0 || contenu.indexOf('<') >= 0 || contenu.indexOf('"') >= 0){
+                if(contenu.indexOf( '&' ) >= 0 || contenu.indexOf( '>' ) >= 0 || contenu.indexOf( '<' ) >= 0 || contenu.indexOf( '"' ) >= 0){
                 }
                 if(contenu !== ''){
-                    contenu='"' + contenu.replace(/"/g,'&quot;') + '"';
+                    contenu='"' + contenu.replace( /"/g , '&quot;' ) + '"';
                 }
                 t+=contenu;
                 if(contenu != ''){
@@ -392,12 +399,10 @@ class traitements_sur_html{
               Si ces balises ne contiennent pas d'éléments, on les retire 
             */
             /*
-            var tableau1=__m_rev1.txt_en_tableau(t);
-            var matriceFonction=functionToArray2(tableau1.__xva,false,true,'');
+              var tableau1=__m_rev1.txt_en_tableau(t);
+              var matriceFonction=functionToArray2(tableau1.__xva,false,true,'');
             */
-            var matriceFonction=__m_rev1.rev_tcm(t);
-            /*afr dans quel cas passe-t-on par ici*/
-            debugger
+            var matriceFonction=__m_rev1.rev_tcm( t );
             if(matriceFonction.__xst === true){
                 if(matriceFonction.__xva[1][1] === 'html' && matriceFonction.__xva[1][8] <= 2){
                     /*
@@ -414,12 +419,12 @@ class traitements_sur_html{
                         }
                     }
                     if(aDesProps === false){
-                        var nouveauTableau1=__m_rev1.baisser_le_niveau_et_supprimer(matriceFonction.__xva,1,0);
+                        var nouveauTableau1=__m_rev1.baisser_le_niveau_et_supprimer( matriceFonction.__xva , 1 , 0 );
                         /*
                           si le head n'a aucun enfant
                         */
                         if(nouveauTableau1.length >= 2 && nouveauTableau1[1][1] === 'head' && nouveauTableau1[1][8] == 0){
-                            var nouveauTableau2=__m_rev1.baisser_le_niveau_et_supprimer(nouveauTableau1,1,0);
+                            var nouveauTableau2=__m_rev1.baisser_le_niveau_et_supprimer( nouveauTableau1 , 1 , 0 );
                             if(nouveauTableau2[1][1] === 'body'){
                                 var aDesProps=false;
                                 for( var i=0 ; i < nouveauTableau2.length && aDesProps === false ; i++ ){
@@ -434,42 +439,42 @@ class traitements_sur_html{
                                     /*
                                       si le body n'a aucune propriété
                                     */
-                                    var nouveauTableau3=__m_rev1.baisser_le_niveau_et_supprimer(nouveauTableau2,1,0);
-                                    var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau3);
+                                    var nouveauTableau3=__m_rev1.baisser_le_niveau_et_supprimer( nouveauTableau2 , 1 , 0 );
+                                    var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml( nouveauTableau3 );
                                     if(nouveauJsonDeHtml.__xst === true){
-                                        var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
+                                        var obj1=this.traiteAstDeHtml( nouveauJsonDeHtml.__xva , 0 , false , '' , [] );
                                         if(obj1.__xst === true){
                                             t=obj1.__xva;
                                         }else{
-                                            return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0314 '}));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0314 '} ));
                                         }
                                     }else{
-                                        return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0317 '}));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0317 '} ));
                                     }
                                 }else{
-                                    var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
+                                    var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml( nouveauTableau2 );
                                     if(nouveauJsonDeHtml.__xst === true){
-                                        var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
+                                        var obj1=this.traiteAstDeHtml( nouveauJsonDeHtml.__xva , 0 , false , '' , [] );
                                         if(obj.__xst === true){
                                             t=obj.__xva;
                                         }else{
-                                            return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0217 '}));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0217 '} ));
                                         }
                                     }else{
-                                        return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0317 '}));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0317 '} ));
                                     }
                                 }
                             }else{
-                                var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau2);
+                                var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml( nouveauTableau2 );
                                 if(nouveauJsonDeHtml === true){
-                                    var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
+                                    var obj1=this.traiteAstDeHtml( nouveauJsonDeHtml.__xva , 0 , false , '' , [] );
                                     if(obj1.__xst === true){
                                         t=obj1.__xva;
                                     }else{
-                                        return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0340 '}));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0340 '} ));
                                     }
                                 }else{
-                                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0343 '}));
+                                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0343 '} ));
                                 }
                             }
                         }else{
@@ -482,20 +487,20 @@ class traitements_sur_html{
                             for( var i=nouveauTableau1.length - 1 ; i >= 0 && body_est_vide === false ; i-- ){
                                 if(nouveauTableau1[i][1].toLowerCase() === 'body' && nouveauTableau1[i][2] === 'f' && nouveauTableau1[i][3] === 0){
                                     body_est_vide=true;
-                                    nouveauTableau1.splice(i,1);
+                                    nouveauTableau1.splice( i , 1 );
                                     t='';
                                     for( var j=0 ; j < nouveauTableau1.length ; j++ ){
                                         if(nouveauTableau1[j][7] === 1){
-                                            var obj=__m_rev1.matrice_vers_source_rev1(nouveauTableau1,1,true,j);
+                                            var obj=__m_rev1.matrice_vers_source_rev1( nouveauTableau1 , 1 , true , j );
                                             if(obj.__xst === true){
                                                 t+=',' + obj.__xva + '\n';
                                             }else{
-                                                return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0217 '}));
+                                                return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0217 '} ));
                                             }
                                         }
                                     }
                                     if(t !== false){
-                                        t=t.substr(1);
+                                        t=t.substr( 1 );
                                     }
                                 }
                             }
@@ -505,12 +510,12 @@ class traitements_sur_html{
                                   on reconstruit le source à partir de matriceFonction.__xva
                                   avec des retours de lignes et sans coloration
                                 */
-                                var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml(nouveauTableau1);
-                                var obj1=this.traiteAstDeHtml(nouveauJsonDeHtml.__xva,0,false,'',[]);
+                                var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml( nouveauTableau1 );
+                                var obj1=this.traiteAstDeHtml( nouveauJsonDeHtml.__xva , 0 , false , '' , [] );
                                 if(obj1.__xst === true){
                                     t=obj1.__xva;
                                 }else{
-                                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0217 '}));
+                                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0217 '} ));
                                 }
                             }
                         }
@@ -525,13 +530,13 @@ class traitements_sur_html{
                     */
                 }
             }else{
-                return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0168 ' + jsonDeHtml.type}));
+                return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0168 ' + jsonDeHtml.type} ));
             }
         }
         /*
           on retourne du html "pur"
         */
-        t=t.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\n');
+        t=t.replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\n' );
         return({"__xst" : true ,"__xva" : t ,"dernierEstTexte" : dernierEstTexte});
     }
     /*
@@ -541,7 +546,7 @@ class traitements_sur_html{
       A partir d'un html, on reconstruit un équivalent "ast" ( abstract syntax tree )
       =============================================================================================================
     */
-    mapDOM(element){
+    mapDOM( element ){
         var treeObject={};
         if( typeof element === 'string'){
             var parser=new DOMParser();
@@ -550,19 +555,19 @@ class traitements_sur_html{
               "image/svg+xml"
               "text/html"
             */
-            var element_a_traiter=element.replace(/&nbsp;/g,'__a_remplacer__&#160;__a_remplacer__');
+            var element_a_traiter=element.replace( /&nbsp;/g , '__a_remplacer__&#160;__a_remplacer__' );
             /*
               j'aime les &nbsp;
             */
-            var docNode=parser.parseFromString('<aaaaa>' + element_a_traiter + '</aaaaa>','application/xml');
+            var docNode=parser.parseFromString( '<aaaaa>' + element_a_traiter + '</aaaaa>' , 'application/xml' );
             var elementNoeud=docNode.firstChild;
-            if(docNode.getElementsByTagName('parsererror').length || element.indexOf('<') < 0){
+            if(docNode.getElementsByTagName( 'parsererror' ).length || element.indexOf( '<' ) < 0){
                 /*
                   ce n'est pas un xml parfait
                 */
-                var docNode=parser.parseFromString(element.replace(/&/g,'&amp;'),'text/html');
+                var docNode=parser.parseFromString( element.replace( /&/g , '&amp;' ) , 'text/html' );
                 elementNoeud=docNode.firstChild;
-                function treeHTML(element,object){
+                function treeHTML( element , object ){
                     object['type']=element.nodeName;
                     var i=0;
                     var nodeList=element.childNodes;
@@ -571,16 +576,16 @@ class traitements_sur_html{
                             object['content']=[];
                             for( i=0 ; i < nodeList.length ; i=i + 1 ){
                                 if(nodeList[i].nodeType == 3){
-                                    object['content'].push(nodeList[i].nodeValue);
+                                    object['content'].push( nodeList[i].nodeValue );
                                 }else{
-                                    object['content'].push({});
-                                    treeHTML(nodeList[i],object["content"][object["content"].length - 1]);
+                                    object['content'].push( {} );
+                                    treeHTML( nodeList[i] , object["content"][object["content"].length - 1] );
                                 }
                             }
                         }else{
                             if(element.nodeValue){
                                 object['content']=[];
-                                object['content'].push(element.nodeValue);
+                                object['content'].push( element.nodeValue );
                             }
                         }
                     }
@@ -594,7 +599,7 @@ class traitements_sur_html{
                                       vraiment bizarre un attribut = '"'
                                       =============================================
                                     */
-                                    console.log('element.attributes[i].nodeName=<' + element.attributes[i].nodeName + '>');
+                                    console.log( 'element.attributes[i].nodeName=<' + element.attributes[i].nodeName + '>' );
                                 }else{
                                     object['attributes'][element.attributes[i].nodeName]=element.attributes[i].nodeValue;
                                 }
@@ -602,14 +607,14 @@ class traitements_sur_html{
                         }
                     }
                 }
-                treeHTML(elementNoeud,treeObject);
+                treeHTML( elementNoeud , treeObject );
                 return({"__xst" : true ,"__xva" : treeObject ,"parfait" : false});
             }else{
                 /*
                   c'est un xml parfait, on retire la racine aaaaa et on le traite
                 */
                 elementNoeud=docNode.firstChild.childNodes;
-                function treeXML(elements,objet,niveau,remplacer_les_nbsp){
+                function treeXML( elements , objet , niveau , remplacer_les_nbsp ){
                     try{
                         var les_contenus=[];
                         for( var i=0 ; i < elements.length ; i++ ){
@@ -623,12 +628,12 @@ class traitements_sur_html{
                                 le_noeud['attributes']=les_attributs;
                             }
                             if(elements[i].childNodes && elements[i].childNodes.length > 0){
-                                treeXML(elements[i].childNodes,le_noeud,niveau + 1,remplacer_les_nbsp);
+                                treeXML( elements[i].childNodes , le_noeud , niveau + 1 , remplacer_les_nbsp );
                             }else{
                                 if(elements[i].data){
                                     if(remplacer_les_nbsp === true){
-                                        le_noeud.content=elements[i].data.replace(/__a_remplacer__\u00A0__a_remplacer__/g,"&nbsp;");
-                                        le_noeud.content=le_noeud.content.replace(/__a_remplacer__&#160;__a_remplacer__/g,"&nbsp;");
+                                        le_noeud.content=elements[i].data.replace( /__a_remplacer__\u00A0__a_remplacer__/g , "&nbsp;" );
+                                        le_noeud.content=le_noeud.content.replace( /__a_remplacer__&#160;__a_remplacer__/g , "&nbsp;" );
                                     }else{
                                         le_noeud.content=elements[i].data;
                                     }
@@ -636,21 +641,21 @@ class traitements_sur_html{
                                     le_noeud.content=null;
                                 }
                             }
-                            les_contenus.push(le_noeud);
+                            les_contenus.push( le_noeud );
                         }
-                        objet.content=JSON.parse(JSON.stringify(les_contenus));
+                        objet.content=JSON.parse( JSON.stringify( les_contenus ) );
                     }catch(e){
                         debugger;
                     }
                 }
                 treeObject['type']='';
-                if(element.indexOf('&nbsp;') >= 0){
+                if(element.indexOf( '&nbsp;' ) >= 0){
                     /*
                       j'aime les &nbsp;
                     */
-                    treeXML(elementNoeud,treeObject,0,true);
+                    treeXML( elementNoeud , treeObject , 0 , true );
                 }else{
-                    treeXML(elementNoeud,treeObject,0,false);
+                    treeXML( elementNoeud , treeObject , 0 , false );
                 }
                 return({"__xst" : true ,"__xva" : treeObject ,"parfait" : true});
             }
@@ -683,8 +688,8 @@ class traitements_sur_html{
       }
       =============================================================================================================
     */
-    mapMatriceVersJsonDeHtml(matrice){
-        function reconstruit(tab,parentId){
+    mapMatriceVersJsonDeHtml( matrice ){
+        function reconstruit( tab , parentId ){
             var l01=tab.length;
             var un_element={};
             var contenu=[];
@@ -711,14 +716,14 @@ class traitements_sur_html{
                             }
                         }
                         if(a_des_attributs === true){
-                            un_element['attributes']=JSON.parse(JSON.stringify(attrib));
+                            un_element['attributes']=JSON.parse( JSON.stringify( attrib ) );
                         }
                         un_element['type']=tab[indice][1];
                         var le_contenu=[];
                         for( var i=indice + 1 ; i < l01 ; i++ ){
                             if(tab[i][7] === indice && tab[i][1] !== ''){
                                 if(tab[i][2] === 'c'){
-                                    le_contenu.push({"content" : tab[i][1]});
+                                    le_contenu.push( {"content" : tab[i][1]} );
                                 }else{
                                     attrib={};
                                     var a_des_attributs=false;
@@ -746,13 +751,13 @@ class traitements_sur_html{
                                                 }
                                             }
                                         }
-                                        var objContenuJs=__m_rev_vers_js1.c_tab_vers_js(tab,{"indice_de_debut" : debut});
+                                        var objContenuJs=__m_rev_vers_js1.c_tab_vers_js( tab , {"indice_de_debut" : debut} );
                                         debugger;
                                         /* avrif */
                                         if(objContenuJs.__xst === true){
-                                            le_contenu.push(JSON.parse(JSON.stringify({"type" : 'javascriptdanshtml' ,"content" : objContenuJs.__xva ,"attributes" : attrib})));
+                                            le_contenu.push( JSON.parse( JSON.stringify( {"type" : 'javascriptdanshtml' ,"content" : objContenuJs.__xva ,"attributes" : attrib} ) ) );
                                         }else{
-                                            return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'module_html erreur 0635 '}));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'module_html erreur 0635 '} ));
                                         }
                                     }else if(tab[parentId][1].toLowerCase() === 'ldplusjsondanshtml'){
                                         var debut=indice + 1;
@@ -765,27 +770,27 @@ class traitements_sur_html{
                                                 }
                                             }
                                         }
-                                        var objContenuJs=__m_rev_vers_js1.c_tab_vers_js(tab,{"indice_de_debut" : debut});
+                                        var objContenuJs=__m_rev_vers_js1.c_tab_vers_js( tab , {"indice_de_debut" : debut} );
                                         /* avrif */
                                         debugger;
                                         if(objContenuJs.__xst === true){
-                                            var contenu=objContenuJs.__xva.substr(objContenuJs.__xva.indexOf('=') + 1);
-                                            if(contenu.substr(contenu.length - 1,1) === ';'){
-                                                contenu=contenu.substr(0,contenu.length - 1);
+                                            var contenu=objContenuJs.__xva.substr( objContenuJs.__xva.indexOf( '=' ) + 1 );
+                                            if(contenu.substr( contenu.length - 1 , 1 ) === ';'){
+                                                contenu=contenu.substr( 0 , contenu.length - 1 );
                                             }
-                                            content.push(contenu);
-                                            le_contenu.push(JSON.parse(JSON.stringify({"type" : 'ldplusjsondanshtml' ,"content" : contenu ,"attributes" : attrib})));
+                                            content.push( contenu );
+                                            le_contenu.push( JSON.parse( JSON.stringify( {"type" : 'ldplusjsondanshtml' ,"content" : contenu ,"attributes" : attrib} ) ) );
                                         }else{
-                                            return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'module_html erreur 0660 '}));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'module_html erreur 0660 '} ));
                                         }
                                     }else{
-                                        var obj=reconstruit(tab,i);
+                                        var obj=reconstruit( tab , i );
                                         if(obj.__xst === true){
                                             if(a_des_attributs === true){
-                                                le_contenu.push(JSON.parse(JSON.stringify({"type" : tab[i][1] ,"content" : obj.content ,"attributes" : attrib})));
+                                                le_contenu.push( JSON.parse( JSON.stringify( {"type" : tab[i][1] ,"content" : obj.content ,"attributes" : attrib} ) ) );
                                                 attrib={};
                                             }else{
-                                                le_contenu.push(JSON.parse(JSON.stringify({"type" : tab[i][1] ,"content" : obj.content})));
+                                                le_contenu.push( JSON.parse( JSON.stringify( {"type" : tab[i][1] ,"content" : obj.content} ) ) );
                                             }
                                         }else{
                                             return({"__xst" : false ,"message" : '0563 '});
@@ -795,13 +800,13 @@ class traitements_sur_html{
                             }
                         }
                         if(le_contenu.length > 0){
-                            un_element['content']=JSON.parse(JSON.stringify(le_contenu));
+                            un_element['content']=JSON.parse( JSON.stringify( le_contenu ) );
                         }
-                        contenu.push(JSON.parse(JSON.stringify(un_element)));
+                        contenu.push( JSON.parse( JSON.stringify( un_element ) ) );
                         un_element={};
                     }else if(tab[indice][2] === 'c'){
                         un_element['content']=tab[indice][1];
-                        contenu.push(JSON.parse(JSON.stringify(un_element)));
+                        contenu.push( JSON.parse( JSON.stringify( un_element ) ) );
                         un_element={};
                     }
                 }
@@ -817,7 +822,7 @@ class traitements_sur_html{
           On définit une fonction dans une fonction car elle sera appelée récursivement
           =====================================================================================================
         */
-        function reconstruit2(tab,parentId){
+        function reconstruit2( tab , parentId ){
             var l01=tab.length;
             var type='';
             var attributes={};
@@ -837,17 +842,17 @@ class traitements_sur_html{
                         }
                     }
                 }
-                var objContenuJs=__m_rev_vers_js1.c_tab_vers_js(tab,{"indice_de_debut" : debut});
+                var objContenuJs=__m_rev_vers_js1.c_tab_vers_js( tab , {"indice_de_debut" : debut} );
                 debugger;
                 /* avrif */
                 if(objContenuJs.__xst === true){
-                    var contenu=objContenuJs.__xva.substr(objContenuJs.__xva.indexOf('=') + 1);
-                    if(contenu.substr(contenu.length - 1,1) === ';'){
-                        contenu=contenu.substr(0,contenu.length - 1);
+                    var contenu=objContenuJs.__xva.substr( objContenuJs.__xva.indexOf( '=' ) + 1 );
+                    if(contenu.substr( contenu.length - 1 , 1 ) === ';'){
+                        contenu=contenu.substr( 0 , contenu.length - 1 );
                     }
-                    content.push(contenu);
+                    content.push( contenu );
                 }else{
-                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'module_html erreur 0477 '}));
+                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'module_html erreur 0477 '} ));
                 }
             }else if(tab[parentId][1].toLowerCase() === 'javascriptdanshtml'){
                 var debut=parentId + 1;
@@ -860,19 +865,19 @@ class traitements_sur_html{
                         }
                     }
                 }
-                var objContenuJs=__m_rev_vers_js1.c_tab_vers_js(tab,{"indice_de_debut" : debut});
+                var objContenuJs=__m_rev_vers_js1.c_tab_vers_js( tab , {"indice_de_debut" : debut} );
                 debugger;
                 /* avrif */
                 if(objContenuJs.__xst === true){
-                    content.push(objContenuJs.__xva);
+                    content.push( objContenuJs.__xva );
                 }else{
-                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'module_html erreur 0503 '}));
+                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'module_html erreur 0503 '} ));
                 }
-                console.log('objContenuJs=',objContenuJs);
+                console.log( 'objContenuJs=' , objContenuJs );
             }else if(tab[parentId][1] === '@'){
                 debugger;
             }else if(tab[parentId][8] === 0 && parentId > 0){
-                content.push('');
+                content.push( '' );
             }else{
                 for( var indice=parentId + 1 ; indice < l01 ; indice++ ){
                     var element={"type" : '' ,"attributes" : null ,"content" : null};
@@ -882,7 +887,7 @@ class traitements_sur_html{
                         if(tab[indice][1] !== ''){
                             if(tab[indice][2] === 'f'){
                                 if('@' === tab[indice][1]){
-                                    content.push(tab[indice][13].replace(/\\\'/g,'\'').replace(/\\\\/g,'\\'));
+                                    content.push( tab[indice][13].replace( /\\\'/g , '\'' ).replace( /\\\\/g , '\\' ) );
                                     var max=l01 - 1;
                                     for( var j=indice + 1 ; j < l01 ; j++ ){
                                         if(tab[j][3] <= tab[indice][3]){
@@ -892,11 +897,11 @@ class traitements_sur_html{
                                     }
                                     indice=max;
                                 }else if('ldplusjsondanshtml' === tab[indice][1].toLowerCase()){
-                                    var obj=reconstruit(tab,indice);
+                                    var obj=reconstruit( tab , indice );
                                     if(obj.__xst === true){
-                                        content.push(obj.__xva);
+                                        content.push( obj.__xva );
                                     }else{
-                                        return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'module_html erreur 0541 '}));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'module_html erreur 0541 '} ));
                                     }
                                     var max=l01 - 1;
                                     for( var j=indice + 1 ; j < l01 ; j++ ){
@@ -907,11 +912,11 @@ class traitements_sur_html{
                                     }
                                     indice=max;
                                 }else if('javascriptdanshtml' === tab[indice][1].toLowerCase()){
-                                    var obj=reconstruit(tab,indice);
+                                    var obj=reconstruit( tab , indice );
                                     if(obj.__xst === true){
-                                        content.push(obj.__xva);
+                                        content.push( obj.__xva );
                                     }else{
-                                        return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'module_html erreur 0559 '}));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'module_html erreur 0559 '} ));
                                     }
                                     var max=l01 - 1;
                                     for( var j=indice + 1 ; j < l01 ; j++ ){
@@ -924,11 +929,11 @@ class traitements_sur_html{
                                     /*
                                     */
                                 }else{
-                                    var obj=reconstruit(tab,indice);
+                                    var obj=reconstruit( tab , indice );
                                     if(obj.__xst === true){
-                                        content.push(obj.__xva);
+                                        content.push( obj.__xva );
                                     }else{
-                                        return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'module_html erreur 0559 '}));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'module_html erreur 0559 '} ));
                                     }
                                     var max=l01 - 1;
                                     for( var j=indice + 1 ; j < l01 ; j++ ){
@@ -940,11 +945,11 @@ class traitements_sur_html{
                                     indice=max;
                                 }
                             }else{
-                                var obj=reconstruit(tab,indice);
+                                var obj=reconstruit( tab , indice );
                                 if(obj.__xst === true){
-                                    content.push(obj.__xva);
+                                    content.push( obj.__xva );
                                 }else{
-                                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'module_html erreur 0559 '}));
+                                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'module_html erreur 0559 '} ));
                                 }
                             }
                         }
@@ -981,22 +986,22 @@ class traitements_sur_html{
           L'appel récursif se fait ici
           =====================================================================================================
         */
-        var obj=reconstruit(matrice,0);
+        var obj=reconstruit( matrice , 0 );
         if(obj.__xst === true){
             return({"__xst" : true ,"__xva" : obj.content});
         }else{
-            return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'module_html erreur 0606 '}));
+            return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'module_html erreur 0606 '} ));
         }
     }
     /*
       =============================================================================================================
       function recupérer_un_fetch
     */
-    async recupere_un_fetch(url,donnees){
+    async recupere_un_fetch( url , donnees ){
         var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 6000 );
-        var masquer_les_messages_du_serveur=donnees.call.opt && donnees.call.opt.hasOwnProperty('masquer_les_messages_du_serveur') ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
+        var masquer_les_messages_du_serveur=donnees.call.opt && donnees.call.opt.hasOwnProperty( 'masquer_les_messages_du_serveur' ) ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
         var en_entree={
-            "signal" : AbortSignal.timeout(delais_admis) ,
+            "signal" : AbortSignal.timeout( delais_admis ) ,
             "method" : "POST" ,
             "mode" : "cors" ,
             "cache" : "no-cache" ,
@@ -1004,47 +1009,47 @@ class traitements_sur_html{
             "headers" : {"Content-Type" : 'application/x-www-form-urlencoded'} ,
             "redirect" : "follow" ,
             "referrerPolicy" : "no-referrer" ,
-            "body" : 'ajax_param=' + encodeURIComponent(JSON.stringify(donnees))
+            "body" : 'ajax_param=' + encodeURIComponent( JSON.stringify( donnees ) )
         };
         try{
-            var response=await fetch(url,en_entree).catch((dataerr) => {
-                console.error('fetch dataerr=',dataerr);
-            }).finally((datafinally) => {
+            var response=await fetch( url , en_entree ).catch( ( dataerr ) => {
+                console.error( 'fetch dataerr=' , dataerr );
+            } ).finally( ( datafinally ) => {
                 /* vide */
-            });
-            var t=await response.text().catch((dataerr) => {
-                console.error('text dataerr=',dataerr);
-            }).finally((datafinally) => {
+            } );
+            var t=await response.text().catch( ( dataerr ) => {
+                console.error( 'text dataerr=' , dataerr );
+            } ).finally( ( datafinally ) => {
                 /* vide */
-            });
+            } );
             try{
-                var le_json=JSON.parse(t);
-                if(le_json.hasOwnProperty('__xms')){
+                var le_json=JSON.parse( t );
+                if(le_json.hasOwnProperty( '__xms' )){
                     for(var i in le_json.__xms){
-                        __m_rev1.empiler_erreur({"__xst" : le_json.__xst ,"__xme" : le_json.__xms[i] ,"masquee" : masquer_les_messages_du_serveur});
+                        __m_rev1.empiler_erreur( {"__xst" : le_json.__xst ,"__xme" : le_json.__xms[i] ,"masquee" : masquer_les_messages_du_serveur} );
                     }
                 }
                 return le_json;
             }catch(e){
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur sur convertion json, texte non json=' + t ,"masquee" : masquer_les_messages_du_serveur});
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur});
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : JSON.stringify(en_entree) ,"masquee" : masquer_les_messages_du_serveur});
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : JSON.stringify(donnees) ,"masquee" : masquer_les_messages_du_serveur});
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur sur convertion json, texte non json=' + t ,"masquee" : masquer_les_messages_du_serveur} );
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur} );
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : JSON.stringify( en_entree ) ,"masquee" : masquer_les_messages_du_serveur} );
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : JSON.stringify( donnees ) ,"masquee" : masquer_les_messages_du_serveur} );
                 return({
                         "__xst" : false ,
-                        "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify(donnees) + ' , t=' + t ,
+                        "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t ,
                         "masquee" : masquer_les_messages_du_serveur
                     });
             }
         }catch(e){
-            console.log(e);
+            console.log( e );
             if(e.message === 'signal timed out'){
-                __m_rev1.empiler_erreur({
+                __m_rev1.empiler_erreur( {
                         "__xst" : false ,
-                        "__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt((delais_admis / 1000) * 10,10) / 10) + ' secondes '
-                    });
+                        "__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt( (delais_admis / 1000) * 10 , 10 ) / 10) + ' secondes '
+                    } );
             }else{
-                __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : e.message});
+                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : e.message} );
             }
             return({"__xst" : false ,"__xme" : e.message});
         }
@@ -1053,46 +1058,85 @@ class traitements_sur_html{
       =============================================================================================================
       function TransformHtmlEnRev
     */
-    TransformHtmlEnRev(texteHtml,niveau,options){
+    TransformHtmlEnRev( texteHtml , niveau , options ){
         var t='';
-        var esp0=' '.repeat(NBESPACESREV * niveau);
-        var esp1=' '.repeat(NBESPACESREV);
+        var esp0=' '.repeat( NBESPACESREV * niveau );
+        var esp1=' '.repeat( NBESPACESREV );
         var supprimer_le_tag_html_et_head=true;
         var doctype='';
         var elementsJson={};
         var i=0;
         var tableau_des_commentaires_js=[];
         try{
-            var position_doctype=texteHtml.toUpperCase().indexOf('<!DOCTYPE');
+            var position_doctype=texteHtml.toUpperCase().indexOf( '<!DOCTYPE' );
             if(position_doctype >= 0){
                 if(position_doctype === 0){
                     for( i=1 ; i < texteHtml.length && doctype == '' ; i++ ){
-                        if(texteHtml.substr(i,1) === '>'){
-                            doctype=texteHtml.substr(0,i + 1);
-                            texteHtml=texteHtml.substr(i + 1);
+                        if(texteHtml.substr( i , 1 ) === '>'){
+                            doctype=texteHtml.substr( 0 , i + 1 );
+                            texteHtml=texteHtml.substr( i + 1 );
                         }
                     }
                 }
             }
-            elementsJson=this.mapDOM(texteHtml,false);
+            elementsJson=this.mapDOM( texteHtml , false );
             if(elementsJson.__xst === true){
                 if(elementsJson.parfait === true){
                     supprimer_le_tag_html_et_head=false;
                 }else{
                     var supprimer_le_tag_html_et_head=true;
-                    if(texteHtml.indexOf('<html') >= 0){
+                    if(texteHtml.toLowerCase().indexOf( '<html' ) >= 0){
                         supprimer_le_tag_html_et_head=false;
+                    }else{
+                        if(texteHtml.toLowerCase().indexOf( '<head' ) < 0 && texteHtml.toLowerCase().indexOf( '<body' ) < 0){
+                            /*
+                              dans le cas ou on a un html partiel 
+                              il faut nettoyer elementJson pour ne prendre que tout ce qui n'est pas html, head body
+                            */
+                            if(elementsJson.__xva.hasOwnProperty( 'type' )
+                                   && elementsJson.__xva.type.toLowerCase() === 'html'
+                                   && elementsJson.__xva.hasOwnProperty( 'content' )
+                                   && elementsJson.__xva.content instanceof Array
+                            ){
+                                var nouveau_element={"type" : 'html' ,"content" : []};
+                                var nouveau_tableau=[];
+                                for(var e01 in elementsJson.__xva.content){
+                                    var tr01=elementsJson.__xva.content[e01];
+                                    if(tr01.hasOwnProperty( 'type' )
+                                           && tr01.type.toLowerCase() === 'head'
+                                           && tr01.hasOwnProperty( 'content' )
+                                           && tr01.content instanceof Array
+                                           && tr01.content.length > 0
+                                    ){
+                                        for(var e02 in tr01.content){
+                                            nouveau_tableau.push( tr01.content[e02] );
+                                        }
+                                    }else if(tr01.hasOwnProperty( 'type' )
+                                           && tr01.type.toLowerCase() === 'body'
+                                           && tr01.hasOwnProperty( 'content' )
+                                           && tr01.content instanceof Array
+                                           && tr01.content.length > 0
+                                    ){
+                                        for(var e02 in tr01.content){
+                                            nouveau_tableau.push( tr01.content[e02] );
+                                        }
+                                    }
+                                }
+                                nouveau_element.content=nouveau_tableau;
+                                elementsJson.__xva=nouveau_element;
+                            }
+                        }
                     }
                 }
                 try{
                     var tableau_de_javascripts_a_convertir=[];
-                    var obj=this.traiteAstDeHtml(elementsJson.__xva,0,supprimer_le_tag_html_et_head,'',tableau_de_javascripts_a_convertir);
+                    var obj=this.traiteAstDeHtml( elementsJson.__xva , 0 , supprimer_le_tag_html_et_head , '' , tableau_de_javascripts_a_convertir );
                     if(obj.__xst === true){
-                        if(obj.__xva.trim().indexOf('html(') == 0){
+                        if(obj.__xva.trim().indexOf( 'html(' ) == 0){
                             if(doctype.toUpperCase() === '<!DOCTYPE HTML>'){
-                                obj.__xva=obj.__xva.replace(/html\(/,'html((doctype)');
+                                obj.__xva=obj.__xva.replace( /html\(/ , 'html((doctype)' );
                             }else{
-                                obj.__xva=obj.__xva.replace(/html\(/,'html(#((doctype)?? doctype pas html , normal="<!DOCTYPE html>" ?? )');
+                                obj.__xva=obj.__xva.replace( /html\(/ , 'html(#((doctype)?? doctype pas html , normal="<!DOCTYPE html>" ?? )' );
                             }
                         }
                         if(tableau_de_javascripts_a_convertir.length > 0){
@@ -1100,13 +1144,17 @@ class traitements_sur_html{
                             for( var indjs=0 ; indjs < tableau_de_javascripts_a_convertir.length ; indjs++ ){
                                 try{
                                     tableau_des_commentaires_js=[];
-                                    var obj0=parseur_javascript.parse(tableau_de_javascripts_a_convertir[indjs].__xva.replace(/&amp;/g,'&'),{"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tableau_des_commentaires_js});
+                                    var obj0=parseur_javascript.parse( tableau_de_javascripts_a_convertir[indjs].__xva.replace( /&amp;/g , '&' ) , {"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tableau_des_commentaires_js} );
                                 }catch(e){
-                                    console.log(tableau_de_javascripts_a_convertir[indjs].__xva.replace(/&amp;/g,'&'));
+                                    console.log( tableau_de_javascripts_a_convertir[indjs].__xva.replace( /&amp;/g , '&' ) );
                                     if(e.pos){
-                                        return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + '<br />erreur dans un source javascript contenu dans un html<br />' + e.message ,"plage" : [e.pos,e.pos]}));
+                                        return(__m_rev1.empiler_erreur( {
+                                                "__xst" : false ,
+                                                "__xme" : __m_rev1.nl2() + '<br />erreur dans un source javascript contenu dans un html<br />' + e.message ,
+                                                "plage" : [e.pos,e.pos]
+                                            } ));
                                     }else{
-                                        return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2() + '<br />erreur dans un source javascript contenu dans un html<br />' + e.message}));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() + '<br />erreur dans un source javascript contenu dans un html<br />' + e.message} ));
                                     }
                                 }
                                 if(tableau_des_commentaires_js.length > 0){
@@ -1118,24 +1166,24 @@ class traitements_sur_html{
                                     for( var nn=0 ; nn < commentaires_a_remplacer.length ; nn++ ){
                                         for( var indc=tableau_des_commentaires_js.length - 1 ; indc >= 0 ; indc-- ){
                                             if(tableau_des_commentaires_js[indc].value.trim() === commentaires_a_remplacer[nn]){
-                                                tableau_des_commentaires_js.splice(indc,1);
+                                                tableau_des_commentaires_js.splice( indc , 1 );
                                             }
                                         }
                                     }
                                     for( var indc=tableau_des_commentaires_js.length - 1 ; indc >= 0 ; indc-- ){
                                         if(tableau_des_commentaires_js[indc].value.trim() === '' && tableau_des_commentaires_js[indc].type === 'Line'){
-                                            tableau_des_commentaires_js.splice(indc,1);
+                                            tableau_des_commentaires_js.splice( indc , 1 );
                                         }
                                     }
                                 }
                                 /* on transforme le ast du js en rev */
-                                var obj1=__m_astjs_vers_rev1.traite_ast(obj0.body,tableau_des_commentaires_js,{});
+                                var obj1=__m_astjs_vers_rev1.traite_ast( obj0.body , tableau_des_commentaires_js , {} );
                                 if(obj1.__xst === true){
                                     /* puis on remplace la chaine source() */
                                     var phrase_a_remplacer='#(cle_javascript_a_remplacer,' + tableau_de_javascripts_a_convertir[indjs].cle + ')';
-                                    obj.__xva=obj.__xva.replace(phrase_a_remplacer,'' + obj1.__xva + '');
+                                    obj.__xva=obj.__xva.replace( phrase_a_remplacer , '' + obj1.__xva + '' );
                                 }else{
-                                    console.error('erreur de conversion de ast vers js e=',e);
+                                    console.error( 'erreur de conversion de ast vers js e=' , e );
                                     return({"__xst" : false ,"__xme" : '1093 il y a un problème dans la transformation de ast js vers rev dans un source javascript'});
                                 }
                             }
@@ -1146,73 +1194,73 @@ class traitements_sur_html{
                               console.log('après transformation, source_rev=',source_rev)
                               =============================================================
                             */
-                            if(options.hasOwnProperty('en_ligne') && options.en_ligne === true){
-                                sauvegarder_html_en_ligne(source_rev,options.donnees);
+                            if(options.hasOwnProperty( 'en_ligne' ) && options.en_ligne === true){
+                                sauvegarder_html_en_ligne( source_rev , options.donnees );
                                 return;
-                            }else if(options.hasOwnProperty('source_php')){
-                                console.log('options=',options,'source_rev=',source_rev);
+                            }else if(options.hasOwnProperty( 'source_php' )){
+                                console.log( 'options=' , options , 'source_rev=' , source_rev );
                                 var chaine_a_remplacer='#(cle_html_dans_php_a_remplacer,' + options.a_convertir.cle + ')';
-                                options.source_php=options.source_php.replace(chaine_a_remplacer,source_rev);
+                                options.source_php=options.source_php.replace( chaine_a_remplacer , source_rev );
                                 var nouveau_source=options.source_php;
-                                console.log('nouveau_source=',nouveau_source);
+                                console.log( 'nouveau_source=' , nouveau_source );
                                 var param={
                                     "nouveau_source" : options.source_php ,
                                     "fonction_a_appeler" : options.fonction_a_appeler ,
                                     "cle_convertie" : options.a_convertir.cle ,
                                     "convertion_php" : true
                                 };
-                                document.getElementById('txtar2').value=nouveau_source;
+                                document.getElementById( 'txtar2' ).value=nouveau_source;
                                 return;
-                            }else{ 
-                                if(options.hasOwnProperty('zone_html_rev')){
+                            }else{
+                                if(options.hasOwnProperty( 'zone_html_rev' )){
                                     try{
-                                        if(document.getElementById(options.zone_html_rev)){
-                                            document.getElementById(options.zone_html_rev).value=source_rev;
+                                        if(document.getElementById( options.zone_html_rev )){
+                                            document.getElementById( options.zone_html_rev ).value=source_rev;
                                         }
-                                        var matriceFonction=__m_rev1.rev_tm(source_rev);
+                                        var matriceFonction=__m_rev1.rev_tm( source_rev );
                                         if(matriceFonction.__xst === false){
-                                            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '1344 erreur module_html conversion en matrice'});
+                                            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '1344 erreur module_html conversion en matrice'} );
                                             return({"__xst" : false ,"__xme" : '1345 erreur module_html conversion en matrice'});
                                         }
-                                        var obj1=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
+                                        var obj1=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
                                         if(obj1.__xst === true){
-                                            document.getElementById(options.zone_html_rev).value=obj1.__xva;
+                                            document.getElementById( options.zone_html_rev ).value=obj1.__xva;
                                         }else{
-                                            __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '1344 erreur module_html nettoyage en matrice'});
+                                            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '1344 erreur module_html nettoyage en matrice'} );
                                             return({"__xst" : false ,"__xme" : '1345 erreur module_html nettoyage en matrice'});
                                         }
                                     }catch(e){
-                                        console.error('la zone "' + options.zone_html_rev + '" indiquée en paramètre n\'existe pas dans le document',e);
+                                        console.error( 'la zone "' + options.zone_html_rev + '" indiquée en paramètre n\'existe pas dans le document' , e );
                                     }
                                 }
                                 return({"__xst" : true ,"__xva" : source_rev});
                             }
                         }else{
-                            if(options.hasOwnProperty('html_dans_php')){
+                            if(options.hasOwnProperty( 'html_dans_php' )){
                                 for( var i=0 ; i < options.tableau_de_html_dans_php_a_convertir.length ; i++ ){
                                     if(options.cle === options.tableau_de_html_dans_php_a_convertir[i].cle){
                                         var a_remplacer='#(cle_html_dans_php_a_remplacer,' + options.cle + ')';
-                                        options.html_dans_php=options.html_dans_php.replace(a_remplacer,obj.__xva);
+                                        options.html_dans_php=options.html_dans_php.replace( a_remplacer , obj.__xva );
                                     }
                                 }
                                 return({"__xst" : true ,"__xva" : options.html_dans_php});
-                            }else if(options.hasOwnProperty('zone_html_rev')){
+                            }else if(options.hasOwnProperty( 'zone_html_rev' )){
                                 try{
-                                    document.getElementById(options.zone_html_rev).value=obj.__xva.replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r').replace(/\\\\¶\\\\LF\\\\¶/g,'\n').replace(/\\\\¶\\\\CR\\\\¶/g,'\r');
-                                    var matriceFonction=__m_rev1.rev_tm(obj.__xva);
+                                    document.getElementById( options.zone_html_rev ).value=obj.__xva.replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\r' ).replace( /\\\\¶\\\\LF\\\\¶/g , '\n' ).replace( /\\\\¶\\\\CR\\\\¶/g , '\r' );
+                                    var matriceFonction=__m_rev1.rev_tm( obj.__xva );
                                     if(matriceFonction.__xst === false){
-                                        __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '1412 erreur module_html conversion en matrice'});
+                                        __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '1412 erreur module_html conversion en matrice'} );
                                         return({"__xst" : false ,"__xme" : '1413 erreur module_html conversion en matrice'});
                                     }
-                                    var obj1=__m_rev1.matrice_vers_source_rev1(matriceFonction.__xva,0,true,1);
+                                    var obj1=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
                                     if(obj1.__xst === true){
-                                        document.getElementById(options.zone_html_rev).value=obj1.__xva;
+                                        document.getElementById( options.zone_html_rev ).value=obj1.__xva;
                                     }else{
-                                        __m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '1419 erreur module_html nettoyage en matrice'});
+                                        __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '1419 erreur module_html nettoyage en matrice'} );
                                         return({"__xst" : false ,"__xme" : '1420 erreur module_html nettoyage en matrice'});
                                     }
                                 }catch(e){
-                                    console.error('e=',e);
+                                    console.error( 'e=' , e );
                                     return({"__xst" : false ,"__xme" : '1424 module_html'});
                                 }
                                 return({"__xst" : true ,"__xva" : obj.__xva});
@@ -1221,28 +1269,28 @@ class traitements_sur_html{
                             }
                         }
                     }else{
-                        return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '1191 erreur module_html'}));
+                        return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '1191 erreur module_html'} ));
                     }
                 }catch(e){
-                    console.error('e=',e);
-                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : '1194 erreur module_html'}));
+                    console.error( 'e=' , e );
+                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '1194 erreur module_html'} ));
                 }
             }else{
-                console.log('elementsJson=',elementsJson);
+                console.log( 'elementsJson=' , elementsJson );
             }
-            console.log('par ici',elementsJson);
+            console.log( 'par ici' , elementsJson );
             return;
         }catch(e){
-            console.log('e=',e);
-            return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur 0098 e=' + e.message + '\ne.stack=' + e.stack}));
+            console.log( 'e=' , e );
+            return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur 0098 e=' + e.message + '\ne.stack=' + e.stack} ));
         }
-        console.log('fin');
+        console.log( 'fin' );
     }
     /*
       =============================================================================================================
       function insere_javascript_dans_html
     */
-    insere_javascript_dans_html(tab,ind,niveau){
+    insere_javascript_dans_html( tab , ind , niveau ){
         var t='';
         var j=0;
         var l01=tab.length;
@@ -1255,7 +1303,15 @@ class traitements_sur_html{
             if(tab[j][7] === ind){
                 if(tab[j][2] === 'f'){
                     if(tab[j][1] === ''){
-                        lesProprietes+=' ' + tab[j + 1][1] + '="' + tab[j + 2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;') + '"';
+                        if((tab[j + 1][1] === 'defer' || tab[j + 1][1] === 'async') && tab[j + 2][1] === '' || tab[j][8] === 1){
+                            lesProprietes+=' ' + tab[j + 1][1];
+                        }else{
+                            try{
+                                lesProprietes+=' ' + tab[j + 1][1] + '="' + tab[j + 2][1].replace( /\"/g , '&quot;' ).replace( /\\/g , '&#92;' ) + '"';
+                            }catch(e){
+                                debugger;
+                            }
+                        }
                     }else{
                         if(indiceDebutJs === -1){
                             indiceDebutJs=j;
@@ -1278,22 +1334,22 @@ class traitements_sur_html{
             /*
               c'est un script dans un html
             */
-            if(tab[indiceDebutJs][8]===0){
-                    /* js vide !*/
-                    t+=CRLF;
-                    t+='<script' + lesProprietes + '>' + CRLF;
-                    t+='//<![CDATA[' + CRLF;
-                    t+='//<source_javascript_rev>' + CRLF;
-                    t+='//</source_javascript_rev>' + CRLF;
-                    t+='//]]>' + CRLF;
-                    t+='</script>' + CRLF;
+            if(tab[indiceDebutJs][8] === 0){
+                /* js vide ! */
+                t+=CRLF;
+                t+='<script' + lesProprietes + '>' + CRLF;
+                t+='//<![CDATA[' + CRLF;
+                t+='//<source_javascript_rev>' + CRLF;
+                t+='//</source_javascript_rev>' + CRLF;
+                t+='//]]>' + CRLF;
+                t+='</script>' + CRLF;
             }else{
-                var ob=__m_rev_vers_js1.c_tab_vers_js(tab,{"indice_de_debut" : indiceDebutJs});
+                var ob=__m_rev_vers_js1.c_tab_vers_js( tab , {"indice_de_debut" : indiceDebutJs} );
                 if(ob.__xst === true){
                     /*
-                      =====================================================================================
+                      =============================================================================
                       ecriture de la valeur dans le cas d'un tag javascriptdanshtml
-                      =====================================================================================
+                      =============================================================================
                     */
                     t+=CRLF;
                     t+='<script' + lesProprietes + '>' + CRLF;
@@ -1304,15 +1360,15 @@ class traitements_sur_html{
                     t+='//]]>' + CRLF;
                     t+='</script>' + CRLF;
                 }else{
-                    debugger
-                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : __m_rev1.nl2()+'javascriptdanshtml'}));
+                    debugger;
+                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'javascriptdanshtml'} ));
                 }
             }
         }
         return({"__xst" : true ,"__xva" : t});
     }
     /* function tabToHtml0 */
-    tabToHtml0(tab,id,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,niveau){
+    tabToHtml0( tab , id , dansHead , dansBody , dansJs , noHead , dansPhp , dansCss , niveau ){
         var t='';
         var i=0;
         var j=0;
@@ -1341,14 +1397,14 @@ class traitements_sur_html{
         if(dansPhp && tab[id][1] === 'source'){
             t+='<?php ';
             /* ob=__m_rev_vers_js1.c_tab_vers_js(tab,{indice_de_debut:id}); */
-            ob=__m_rev_vers_php1.c_tab_vers_php(objMatSrc.__xva,{"indice_de_debut" : id});
+            ob=__m_rev_vers_php1.c_tab_vers_php( objMatSrc.__xva , {"indice_de_debut" : id} );
             /* avrif il n'y a pas de raison de passer par ici */
-            console.log('%cpourquoi passe-t-on par ici ????','background:yellow;color:red;');
+            console.log( '%cpourquoi passe-t-on par ici ????' , 'background:yellow;color:red;' );
             debugger;
             if(ob.__xst === true){
                 t+=ob.__xva;
             }else{
-                return(__m_rev1.empiler_erreur({"__xst" : false ,"__xva" : t ,"__xme" : 'erreur de script dans un html'}));
+                return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xva" : t ,"__xme" : 'erreur de script dans un html'} ));
             }
             t+=' ?>';
             return({
@@ -1361,12 +1417,12 @@ class traitements_sur_html{
                     "dansCss" : dansCss
                 });
         }else if(dansJs && tab[id][1] === 'source'){
-            ob=__m_rev_vers_js1.c_tab_vers_js(tab,{"indice_de_debut" : id + 1});
+            ob=__m_rev_vers_js1.c_tab_vers_js( tab , {"indice_de_debut" : id + 1} );
             if(ob.__xst === true){
                 t+=CRLF;
                 t+='//<![CDATA[' + CRLF;
                 t+='// = = = = <source javascript = = = =' + CRLF;
-                if(ob.__xva.indexOf('use strict') >= 0){
+                if(ob.__xva.indexOf( 'use strict' ) >= 0){
                 }else{
                     t+='"use strict";' + CRLF;
                 }
@@ -1374,7 +1430,7 @@ class traitements_sur_html{
                 t+=CRLF + '// = = = = source javascript> = = = =' + CRLF;
                 t+='//]]>' + CRLF;
             }else{
-                return(__m_rev1.empiler_erreur({"__xst" : false ,"__xva" : t ,"__xme" : 'erreur de script dans un html'}));
+                return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xva" : t ,"__xme" : 'erreur de script dans un html'} ));
             }
             return({
                     "__xst" : true ,
@@ -1389,19 +1445,19 @@ class traitements_sur_html{
             temp='';
             if(id === 0 || tab[id][1] === 'html' || tab[id][1] === 'html_dans_php'){
             }else{
-                t+=__m_rev1.resps(niveau);
+                t+=__m_rev1.resps( niveau );
             }
             if(tab[id][1] === '#' && tab[id][2] === 'f'){
                 if(tab[id][13] === ''){
                     temp+='<!-- -->';
                 }else{
-                    var commentaire=__m_rev1.tr_co_src(tab[id][13],niveau,id);
+                    var commentaire=__m_rev1.tr_co_src( tab[id][13] , niveau , id );
                     if(commentaire !== ''){
                         /* si le commentaire html n'est pas vide, on lui ajoute au besoin un espace avant et après */
-                        if(commentaire.substr(0,1) !== ' '){
+                        if(commentaire.substr( 0 , 1 ) !== ' '){
                             commentaire=' ' + commentaire;
                         }
-                        if(commentaire.substr(commentaire.length - 1,1) !== ' '){
+                        if(commentaire.substr( commentaire.length - 1 , 1 ) !== ' '){
                             commentaire=commentaire + ' ';
                         }
                     }
@@ -1426,7 +1482,7 @@ class traitements_sur_html{
                                   Ecriture de la propriété
                                   =====================================================
                                 */
-                                temp+=' ' + tab[i + 1][1] + '="' + tab[i + 2][1].replace(/\"/g,'&quot;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r') + '"';
+                                temp+=' ' + tab[i + 1][1] + '="' + tab[i + 2][1].replace( /\"/g , '&quot;' ).replace( /\\\'/g , '\'' ).replace( /\\\\/g , '\\' ).replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\r' ) + '"';
                             }else if(tab[i][8] == 1 && tab[i + 1][2] == 'c'){
                                 if(tab[i + 1][1] == 'doctype'){
                                     doctype='<!DOCTYPE html>';
@@ -1434,10 +1490,10 @@ class traitements_sur_html{
                                     temp+=' ' + tab[i + 1][1] + '';
                                 }
                             }else{
-                                return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : t ,"__xme" : '1 les propriété d\'un tag html doivent contenir une ou deux constantes 0596'}));
+                                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : t ,"__xme" : '1 les propriété d\'un tag html doivent contenir une ou deux constantes 0596'} ));
                             }
                         }else{
-                            return(__m_rev1.empiler_erreur({"__xst" : false ,"id" : i ,"__xva" : t ,"__xme" : '2 les propriété d\'un tag html doivent contenir une ou deux constantes 0599'}));
+                            return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : t ,"__xme" : '2 les propriété d\'un tag html doivent contenir une ou deux constantes 0599'} ));
                         }
                     }
                     if(tab[i][2] == 'f' && tab[i][1] != ''){
@@ -1467,150 +1523,153 @@ class traitements_sur_html{
                     }
                 }
                 var contenuNiveauPlus1='';
-                for( i=id + 1 ; i < l01 && tab[i][3] > tab[id][3] ; i++ ){
-                    if(tab[i][7] == id){
-                        if(tab[i][2] == 'f' && tab[i][1] != ''){
-                            if(tab[i][1].toLowerCase() === '@'){
-                                t+=tab[i][13];
-                            }else if(tab[i][1].toLowerCase() === 'ldplusjsondanshtml'){
-                                /*
-                                  dans ce cas, c'est un tag <script avec des propriétés 
-                                */
-                                var lesProprietes='';
-                                var indiceDebutJs=-1;
-                                for( var j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
-                                    if(tab[j][7] === i){
-                                        if(tab[j][2] === 'f'){
-                                            if(tab[j][1] === ''){
-                                                lesProprietes+=' ' + tab[j + 1][1] + '="' + tab[j + 2][1].replace(/\"/g,'&quot;').replace(/\\/g,'&#92;') + '"';
-                                            }else{
-                                                if(indiceDebutJs === -1){
-                                                    indiceDebutJs=j;
-                                                }
-                                            }
+                var ne_contient_que_des_constantes=true;
+                for( i=id + 1 ; i < l01 && tab[i][3] > tab[id][3] ; i=tab[i][12] ){
+                    if(tab[i][2] == 'f' && tab[i][1] != ''){
+                        ne_contient_que_des_constantes=false;
+                        if(tab[i][1].toLowerCase() === '@'){
+                            t+=tab[i][13];
+                        }else if(tab[i][1].toLowerCase() === 'ldplusjsondanshtml'){
+                            /*
+                              dans ce cas, c'est un tag <script avec des propriétés 
+                            */
+                            var lesProprietes='';
+                            var indiceDebutJs=-1;
+                            for( var j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
+                                if(tab[j][7] === i){
+                                    if(tab[j][2] === 'f'){
+                                        if(tab[j][1] === ''){
+                                            lesProprietes+=' ' + tab[j + 1][1] + '="' + tab[j + 2][1].replace( /\"/g , '&quot;' ).replace( /\\/g , '&#92;' ) + '"';
                                         }else{
                                             if(indiceDebutJs === -1){
                                                 indiceDebutJs=j;
                                             }
                                         }
-                                    }
-                                }
-                                if(indiceDebutJs === -1){
-                                    /*
-                                      c'est une balise <script src=""></script>
-                                    */
-                                    t+=CRLF;
-                                    t+='<script' + lesProprietes + '></script>' + CRLF;
-                                }else{
-                                    /*
-                                      c'est un script dans un html
-                                    */
-                                    ob=__m_rev_vers_js1.c_tab_vers_js(tab,{"indice_de_debut" : indiceDebutJs-1});
-                                    if(ob.__xst === true){
-                                        /*
-                                          =====================================
-                                          ecriture de la valeur dans le cas d'un tag ldplusjsondanshtml
-                                          =====================================
-                                        */
-                                        t+=CRLF;
-                                        t+='<script' + lesProprietes + '>';
-                                        var contenu=ob.__xva.substr(ob.__xva.indexOf('=') + 1);
-                                        if(contenu.substr(contenu.length - 1,1) === ';'){
-                                            contenu=contenu.substr(0,contenu.length - 1);
-                                        }
-                                        t+=contenu + '</script>' + CRLF;
                                     }else{
-                                        return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur dans un javascript contenu dans un html par la fonction ldplusjsondanshtml 0783'}));
+                                        if(indiceDebutJs === -1){
+                                            indiceDebutJs=j;
+                                        }
                                     }
                                 }
-                            }else if(tab[i][1].toLowerCase() === 'javascriptdanshtml'){
-                                var obj=this.insere_javascript_dans_html(tab,i,niveau);
-                                if(obj.__xst === true){
-                                    t+=obj.__xva;
-                                }else{
-                                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0943'}));
-                                }
+                            }
+                            if(indiceDebutJs === -1){
+                                /*
+                                  c'est une balise <script src=""></script>
+                                */
+                                t+=CRLF;
+                                t+='<script' + lesProprietes + '></script>' + CRLF;
                             }else{
                                 /*
-                                  =====================================================
-                                  entrée dans le récursif
-                                  =====================================================
+                                  c'est un script dans un html
                                 */
-                                if(tab[i][1] === 'script' || id === 0){
-                                    /*
-                                      dans le cas du script ou de la racine, on le met à la racine
-                                    */
-                                    ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,0);
-                                }else{
-                                    ob=this.tabToHtml0(tab,i,dansHead,dansBody,dansJs,noHead,dansPhp,dansCss,niveau + 1);
-                                }
+                                ob=__m_rev_vers_js1.c_tab_vers_js( tab , {"indice_de_debut" : indiceDebutJs - 1} );
                                 if(ob.__xst === true){
                                     /*
                                       =============================================
-                                      ecriture de la valeur dans le cas d'un tag html normal
+                                      ecriture de la valeur dans le cas d'un tag ldplusjsondanshtml
                                       =============================================
                                     */
-                                    t+=ob.__xva;
-                                    dansBody=ob.dansBody;
-                                    dansHead=ob.dansHead;
-                                    dansJs=ob.dansJs;
+                                    t+=CRLF;
+                                    t+='<script' + lesProprietes + '>';
+                                    var contenu=ob.__xva.substr( ob.__xva.indexOf( '=' ) + 1 );
+                                    if(contenu.substr( contenu.length - 1 , 1 ) === ';'){
+                                        contenu=contenu.substr( 0 , contenu.length - 1 );
+                                    }
+                                    t+=contenu + '</script>' + CRLF;
                                 }else{
-                                    return(__m_rev1.empiler_erreur({"__xst" : false ,"__xme" : 'erreur dans un html 0659'}));
+                                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur dans un javascript contenu dans un html par la fonction ldplusjsondanshtml 0783'} ));
                                 }
+                            }
+                        }else if(tab[i][1].toLowerCase() === 'javascriptdanshtml'){
+                            var obj=this.insere_javascript_dans_html( tab , i , niveau );
+                            if(obj.__xst === true){
+                                t+=obj.__xva;
+                            }else{
+                                return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0943'} ));
                             }
                         }else{
-                            if(tab[i][2] === 'f' && tab[i][1] === ''){
+                            /*
+                              =============================================================
+                              entrée dans le récursif
+                              =============================================================
+                            */
+                            if(tab[i][1] === 'script' || id === 0){
+                                /*
+                                  dans le cas du script ou de la racine, on le met à la racine
+                                */
+                                ob=this.tabToHtml0( tab , i , dansHead , dansBody , dansJs , noHead , dansPhp , dansCss , 0 );
                             }else{
-                                if(tab[i][2] === 'c' && tab[tab[i][7]][8] === 1){
-                                    /* aucune propriété et qu'une constante */
-                                }else{
-                                    if(tab[tab[i][7]][2] === 'f' && (tab[tab[i][7]][1] === 'textarea' || tab[tab[i][7]][1] === 'pre')){
-                                        t+='';
-                                    }else{
-                                        t+=__m_rev1.resps(niveau + 1);
-                                    }
-                                }
+                                ob=this.tabToHtml0( tab , i , dansHead , dansBody , dansJs , noHead , dansPhp , dansCss , niveau + 1 );
+                            }
+                            if(ob.__xst === true){
                                 /*
                                   =====================================================
-                                  ecriture de la valeur dans le cas d'une constante
+                                  ecriture de la valeur dans le cas d'un tag html normal
                                   =====================================================
                                 */
-                                var indcss=0;
-                                if(dansCss === true){
-                                    if(t.substr(t.length-1,1)==='>'){
-                                    }else{
-                                        for( indcss=t.length - 1 ; indcss >= 0 ; indcss-- ){
-                                            if(t.substr(indcss,1) !== ' '){
-                                                t=t.substr(0,indcss);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    /*#
-                                      if(i===62){
-                                          debugger;
-                                      }
-                                    */
-                                    var contenuCss=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r').replace(/&quot;/g,'"');
-                                    /* on supprime les espaces de fin */
-                                    if(contenuCss !== ''){
-                                        for( var indcss=contenuCss.length - 1 ; indcss >= 0 ; indcss-- ){
-                                            if(!(contenuCss.substr(indcss,1) === ' ' || contenuCss.substr(indcss,1) === '\n' || contenuCss.substr(indcss,1) === '\r')){
-                                                contenuCss=contenuCss.substr(0,indcss + 1);
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    t+=contenuCss;
+                                t+=ob.__xva;
+                                dansBody=ob.dansBody;
+                                dansHead=ob.dansHead;
+                                dansJs=ob.dansJs;
+                            }else{
+                                return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur dans un html 0659'} ));
+                            }
+                        }
+                    }else{
+                        if(tab[i][2] === 'f' && tab[i][1] === ''){
+                        }else{
+                            if(tab[i][2] === 'c' && tab[tab[i][7]][8] === 1){
+                                /* aucune propriété et qu'une constante */
+                            }else{
+                                if(tab[tab[i][7]][2] === 'f' && (tab[tab[i][7]][1] === 'textarea' || tab[tab[i][7]][1] === 'pre')){
+                                    t+='';
                                 }else{
-                                    if(tab[tab[i][7]][2] === 'f' && (tab[tab[i][7]][1] === 'textarea' || tab[tab[i][7]][1] === 'pre')){
-                                        t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;').replace(/¶LF¶/g,'\n').replace(/¶CR¶/g,'\r');
-                                    }else{
-                                        t+=tab[i][1].replace(/&amp;gt;/g,'&gt;').replace(/&amp;lt;/g,'&lt;').replace(/&amp;amp;/g,'&amp;').replace(/\\\'/g,'\'').replace(/\\\\/g,'\\').replace(/>/g,'&gt;').replace(/</g,'&lt;');
+                                    /* t+=__m_rev1.resps(niveau + 1); */
+                                }
+                            }
+                            /*
+                              =============================================================
+                              ecriture de la valeur dans le cas d'une constante
+                              =============================================================
+                            */
+                            var indcss=0;
+                            if(dansCss === true){
+                                if(t.substr( t.length - 1 , 1 ) === '>'){
+                                }else{
+                                    for( indcss=t.length - 1 ; indcss >= 0 ; indcss-- ){
+                                        if(t.substr( indcss , 1 ) !== ' '){
+                                            t=t.substr( 0 , indcss );
+                                            break;
+                                        }
                                     }
                                 }
-                                contenuNiveauPlus1=tab[i][1];
+                                /*#
+                                  if(i===62){
+                                      debugger;
+                                  }
+                                */
+                                var contenuCss=tab[i][1].replace( /&amp;gt;/g , '&gt;' ).replace( /&amp;lt;/g , '&lt;' ).replace( /&amp;amp;/g , '&amp;' ).replace( /\\\'/g , '\'' ).replace( /\\\\/g , '\\' ).replace( />/g , '&gt;' ).replace( /</g , '&lt;' ).replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\r' ).replace( /&quot;/g , '"' );
+                                /* on supprime les espaces de fin */
+                                if(contenuCss !== ''){
+                                    for( var indcss=contenuCss.length - 1 ; indcss >= 0 ; indcss-- ){
+                                        if(!(contenuCss.substr( indcss , 1 ) === ' '
+                                                   || contenuCss.substr( indcss , 1 ) === '\n'
+                                                   || contenuCss.substr( indcss , 1 ) === '\r')
+                                        ){
+                                            contenuCss=contenuCss.substr( 0 , indcss + 1 );
+                                            break;
+                                        }
+                                    }
+                                }
+                                t+=contenuCss;
+                            }else{
+                                if(tab[tab[i][7]][2] === 'f' && (tab[tab[i][7]][1] === 'textarea' || tab[tab[i][7]][1] === 'pre')){
+                                    t+=tab[i][1].replace( /&amp;gt;/g , '&gt;' ).replace( /&amp;lt;/g , '&lt;' ).replace( /&amp;amp;/g , '&amp;' ).replace( /\\\'/g , '\'' ).replace( /\\\\/g , '\\' ).replace( />/g , '&gt;' ).replace( /</g , '&lt;' ).replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\r' );
+                                }else{
+                                    t+=tab[i][1].replace( /&amp;gt;/g , '&gt;' ).replace( /&amp;lt;/g , '&lt;' ).replace( /&amp;amp;/g , '&amp;' ).replace( /\\\'/g , '\'' ).replace( /\\\\/g , '\\' ).replace( />/g , '&gt;' ).replace( /</g , '&lt;' );
+                                }
                             }
+                            contenuNiveauPlus1=tab[i][1];
                         }
                     }
                 }
@@ -1623,7 +1682,10 @@ class traitements_sur_html{
                         }else{
                             if(id === 0 || tab[id][2] === 'f' && (tab[id][1] === 'textarea' || tab[id][1] === 'pre')){
                             }else{
-                                t+=__m_rev1.resps(niveau);
+                                if(ne_contient_que_des_constantes === true){
+                                }else{
+                                    t+=__m_rev1.resps( niveau );
+                                }
                             }
                         }
                         if(tab[id][1] === 'php'){
@@ -1638,15 +1700,15 @@ class traitements_sur_html{
                                        || tab[id][1] == 'h2'
                                        || tab[id][1] == 'h3')
                                    && contenuNiveauPlus1 != ''
-                                   && contenuNiveauPlus1.indexOf('<') < 0
+                                   && contenuNiveauPlus1.indexOf( '<' ) < 0
                             ){
                                 var tag=tab[id][1];
-                                const re1=new RegExp("\<" + tag + "(.*)\>\r\n[ \t]+","g");
+                                const re1=new RegExp( "\<" + tag + "(.*)\>\r\n[ \t]+" , "g" );
                                 const rp1='<' + tag + '$1>';
-                                t=t.replace(re1,rp1);
-                                const re2=new RegExp("\r\n[ \t]+\<\/" + tag + "\>","g");
+                                t=t.replace( re1 , rp1 );
+                                const re2=new RegExp( "\r\n[ \t]+\<\/" + tag + "\>" , "g" );
                                 const rp2='</' + tag + '>';
-                                t=t.replace(re2,rp2);
+                                t=t.replace( re2 , rp2 );
                             }
                         }
                     }

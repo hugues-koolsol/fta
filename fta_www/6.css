@@ -101,7 +101,7 @@ a:hover,button:hover{
 
 
 
-.menuScroller {
+.menuScroller{
   white-space: nowrap;
   display:flex;
   overflow-x:scroll;
@@ -111,10 +111,13 @@ a:hover,button:hover{
   z-index: 1;
   background-image: linear-gradient(to bottom, #B0BEC5, #607D8B);
 }
+.menuScroller a{
+  min-width:auto;
+}
 
 
  /* taille bouton grand pour menu haut home/quitter ) */
-.yytbgrand{font-size:1.4rem;min-height:var(--yyvhgb);min-width:var(--yyvhgb);max-width:var(--yyvhgb);}
+.yytbgrand{font-size:1.4rem;min-height:var(--yyvhgb);min-width:var(--yyvhgb);max-width:var(--yyvhgb);max-height:var(--yyvhgb);}
 .txtar1{}
 
 #div_svg1{

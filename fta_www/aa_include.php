@@ -1,6 +1,6 @@
 <?php
 date_default_timezone_set('Europe/Paris');
-define('APP_KEY','fta');
+define('APP_KEY','ftb');
 define('PREFIXE_REPERTOIRES','fta');
 define('RACINE_DU_PROJET',realpath(dirname(__FILE__,2)));
 define('INCLUDE_PATH',RACINE_DU_PROJET . DIRECTORY_SEPARATOR . PREFIXE_REPERTOIRES . '_inc');
@@ -239,10 +239,9 @@ function construction_where_sql_sur_id($nom_du_champ,$critere){
 function nfp1($n){
 
     $t=number_format($n,0,',',' ');
-    return '<div style="display:inline-block;min-width:2em;text-align:right;margin-left:3px;">'.$t.'</div>';
- 
-}
+    return '<div style="display:inline-block;min-width:2em;text-align:right;margin-left:3px;">' . $t . '</div>';
 
+}
 /*
   =====================================================================================================================
 */
@@ -1114,8 +1113,12 @@ EOT;
 
         $o1 .= '  <nav id="navbar" class="yynavbar">' . PHP_EOL;
         $o1 .= '    <div style="min-width:' . ($css_hauteur_grands_boutons * 2 + 4 * $css_taille_reference_margin) . 'px;">' . PHP_EOL;
-        $o1 .= '     <a href="./" id="buttonhome" class="yytbgrand ' . ('index.php' === BNF ? 'yymenusel1' : '') . '" title="page d\'accueil" style="">&#127968;</a>' . PHP_EOL;
-        $o1 .= '     <a class="yytbgrand yyavertissement" style="position: fixed;" title="afficher ou masquer les messages" href="javascript:__gi1.masquer_ou_afficher_les_messages1()">💬</a>' . PHP_EOL;
+        /*
+          code utf8 de la maison &#127968;
+          bouton messages = 💬
+        */
+        $o1 .= '     <a href="./" id="buttonhome" class="yytbgrand ' . ('index.php' === BNF ? 'yymenusel1' : '') . '" title="page d\'accueil" style=""><svg xmlns="http://www.w3.org/2000/svg" viewBox="6 4  49 59"><path d=" M 8 29 L 31 6 L 54 29 V 33 H 51 V 58  H 11 V 33 H 8 V 29" stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:white;stroke-width:0.01;"></path><path d="M 17 57 H 11 c 0 -2 1 -4 2 -2 " stroke="rgb(0, 0, 0)" stroke-width="5" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:lawngreen;fill:transparent;stroke-width:4;"></path><rect x="20" y="27" width="7" height="7" stroke="rgb(0, 0, 0)" stroke-width="0.1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:deepskyblue;stroke-width:0.1;"></rect><rect x="34" y="27" width="7" height="7" stroke="rgb(0, 0, 0)" stroke-width="0.1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:deepskyblue;stroke-width:0.1;"></rect><rect x="34" y="41" width="7" height="7" stroke="rgb(0, 0, 0)" stroke-width="0.1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:deepskyblue;stroke-width:0.1;"></rect><rect x="20" y="41" width="7" height="16" stroke="rgb(0, 0, 0)" stroke-width="0.1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:red;stroke-width:0.1;"></rect><path d=" M 11 30 l 20 -20 l 20 20 " stroke="rgb(0, 0, 0)" stroke-width="3" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:transparent;stroke-width:5;"></path><path d="M 30 57 H 50 c 0 -2 -1 -4 -2 -2 " stroke="rgb(0, 0, 0)" stroke-width="5" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:lawngreen;fill:transparent;stroke-width:4;"></path></svg></a>' . PHP_EOL;
+        $o1 .= '     <a class="yytbgrand yyinfo" style="position: fixed;" title="afficher ou masquer les messages" href="javascript:__gi1.masquer_ou_afficher_les_messages1()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="4 10  75 62"><path stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="miter" stroke-linecap="square" d=" M 14 15 H 67 C 70 15 72 17 72 20 V 51 C 72 54 70 56 67 56 H 30 L 18 69  V 56 H 14 C 11 56 9 54 9 51 V 20 C 9 17 11 15 14 15" style="stroke:red;fill:white;stroke-width:3;"></path><circle cx="56" cy="36" r="3" stroke="rgb(0, 0, 0)" stroke-width="3" fill="transparent" transform="" style="stroke:red;fill:red;stroke-width:3;"></circle><circle cx="41" cy="36" r="3" stroke="rgb(0, 0, 0)" stroke-width="3" fill="transparent" transform="" style="stroke:red;fill:red;stroke-width:3;"></circle><circle cx="26" cy="36" r="3" stroke="rgb(0, 0, 0)" stroke-width="3" fill="transparent" transform="" style="stroke:red;fill:red;stroke-width:3;"></circle></svg></a>' . PHP_EOL;
         $o1 .= '    </div>' . PHP_EOL;
         $o1 .= '    <div id="menuPrincipal" class="menuScroller">' . PHP_EOL;
         $o1 .= '      <div>' . PHP_EOL;
@@ -1197,11 +1200,6 @@ function html_footer1($parametres=array()){
     }
 
     $o1 .= '</div>' . PHP_EOL;
-//    $o1 .= '  <script type="text/javascript" src="js/core6.js"></script>' . PHP_EOL;
-    /*
-      d'un point de vue fonctionnel, ce n'est pas util car les modules sont chargés dynamiquement
-      mais grâce à ces lignes, le module js est mis en cache et les appels suivants sont plus rapides
-    */
     
     if(isset($parametres['module_a_inclure'])){
 

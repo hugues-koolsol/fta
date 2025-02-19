@@ -57,15 +57,15 @@ $o1 .= '<script type="text/javascript">
 <script type="text/javascript">
 //<![CDATA[
 //<source_javascript_rev>
-window.addEventListener('load',function(){
-        setTimeout(function(){
-                var fta_traiteSql_dernier_fichier_charge=localStorage.getItem("fta_traiteSql_dernier_fichier_charge");
+window.addEventListener( 'load' , function(){
+        setTimeout( function(){
+                var fta_traiteSql_dernier_fichier_charge=localStorage.getItem( "fta_traiteSql_dernier_fichier_charge" );
                 if(fta_traiteSql_dernier_fichier_charge !== null){
-                    document.getElementById("txtar1").value=fta_traiteSql_dernier_fichier_charge;
-                    __gi1.transform_sql_de_textarea_en_rev2("txtar1","txtar2");
+                    document.getElementById( "txtar1" ).value=fta_traiteSql_dernier_fichier_charge;
+                    __gi1.transform_sql_de_textarea_en_rev2( "txtar1" , "txtar2" );
                 }
-            },100);
-    });
+            } , 100 );
+    } );
 //</source_javascript_rev>
 //]]>
 </script>
