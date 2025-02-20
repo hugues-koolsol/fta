@@ -2,15 +2,14 @@
 /*
   =====================================================================================================================
 */
-
 function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete){
 
     $repertoire_destination=INCLUDE_PATH . DIRECTORY_SEPARATOR . 'sql';
     $nom_fichier=$repertoire_destination . DIRECTORY_SEPARATOR . 'sql_' . $id_requete . '.php';
-
+    
     if($fd=fopen($nom_fichier,'w')){
 
-
+        
         if(fwrite($fd,'<?' . 'php' . PHP_EOL . $source_php_requete)){
 
             fclose($fd);
@@ -41,7 +40,7 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
     
     $retour_sql=sql_6(array( 'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
     /*      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql , true ) . '</pre>' ; exit(0);*/
-
+    
     if($retour_sql[__xst] === true){
 
         $chaine_js='';
@@ -50,10 +49,10 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
         }
         $nom_bref='aa_js_sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.js';
         $nom_fichier=$repertoire_destination . DIRECTORY_SEPARATOR . $nom_bref;
-
+        
         if($fd=fopen($nom_fichier,'w')){
 
-
+            
             if(fwrite($fd,'//<![CDATA[' . PHP_EOL . '__aa_js_sql={' . PHP_EOL . $chaine_js . PHP_EOL . '};' . PHP_EOL . '//]]>')){
 
                 fclose($fd);
@@ -82,7 +81,6 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
 /*
   =====================================================================================================================
 */
-
 function modifier_la_requete_en_base(&$data){
 
     sql_inclure_reference(9);
@@ -108,7 +106,7 @@ function modifier_la_requete_en_base(&$data){
         'n_cht_commentaire_requete' => $data[__entree]['cht_commentaire_requete']
     );
     $tt=sql_9($a_modifier);
-
+    
     if($tt[__xst] === true){
 
         $data[__xst]=true;
@@ -134,7 +132,6 @@ function modifier_la_requete_en_base(&$data){
 /*
   =====================================================================================================================
 */
-
 function enregistrer_la_requete_en_base(&$data){
 
     sql_inclure_reference(7);
@@ -170,7 +167,7 @@ function enregistrer_la_requete_en_base(&$data){
                 'cht_commentaire_requete' => $data[__entree]['cht_commentaire_requete']
             ));
     $tt=sql_7($a_inserer);
-
+    
     if($tt[__xst] === true){
 
         $data[__xst]=true;
@@ -196,7 +193,7 @@ function enregistrer_la_requete_en_base(&$data){
             'c_chi_id_requete' => $data['nouvel_id'],
             'n_cht_php_requete' => $nouveau_php
         ));
-
+        
         if($tt35[__xst] === true){
 
             ecrire_le_php_de_la_requete_sur_disque($data['nouvel_id'],$nouveau_php);
@@ -223,7 +220,6 @@ function enregistrer_la_requete_en_base(&$data){
 /*
   =====================================================================================================================
 */
-
 function creer_la_base_a_partir_du_shema_sur_disque(&$data){
 
     sql_inclure_reference(26);
@@ -250,7 +246,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
         'T0_chi_id_basedd' => $data[__entree]['id_bdd_de_la_base'],
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
-
+    
     if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
@@ -265,7 +261,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
     $chemin_bdd='..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . $ret0['T2.chp_dossier_cible'] . $ret0['T1.chp_nom_dossier'] . DIRECTORY_SEPARATOR . $ret0['T0.chp_nom_basedd'];
     $repertoire=realpath(dirname($chemin_bdd));
     $chemin_bdd=$repertoire . DIRECTORY_SEPARATOR . $ret0['T0.chp_nom_basedd'];
-
+    
     if(is_file($chemin_bdd)){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque le fichier bdd existe déjà';
@@ -275,7 +271,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
 
     $db1temp=new SQLite3($chemin_bdd);
     $ret1=$db1temp->exec('BEGIN TRANSACTION;');
-
+    
     if($ret1 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque BEGIN transaction KO';
@@ -284,7 +280,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
     }
 
     $ret1=$db1temp->exec($data[__entree]['source_sql_de_la_base']);
-
+    
     if($ret1 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque création base impossible';
@@ -301,7 +297,6 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
 /*
   =====================================================================================================================
 */
-
 function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 
     /*
@@ -331,7 +326,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
         'T0_chi_id_basedd' => $data[__entree]['id_bdd_de_la_base'],
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
-
+    
     if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
@@ -343,7 +338,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     $chemin_bdd='..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . $ret0['T2.chp_dossier_cible'] . $ret0['T1.chp_nom_dossier'] . DIRECTORY_SEPARATOR . $ret0['T0.chp_nom_basedd'];
     $repertoire=realpath(dirname($chemin_bdd));
     $chemin_bdd=$repertoire . DIRECTORY_SEPARATOR . $ret0['T0.chp_nom_basedd'];
-
+    
     if(!is_file($chemin_bdd)){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque fichier de bdd non trouvé';
@@ -354,7 +349,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     $chemin_bdd_base_temporaire=$repertoire . DIRECTORY_SEPARATOR . 'temporaire_' . md5(date('Y-m-d-H-i-s')) . '.db_temporaire';
     $db1temp=new SQLite3($chemin_bdd_base_temporaire);
     $ret1=$db1temp->exec('BEGIN TRANSACTION;');
-
+    
     if($ret1 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque BEGIN transaction KO';
@@ -363,7 +358,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     }
 
     $ret1=$db1temp->exec($data[__entree]['source_sql_de_la_base']);
-
+    
     if($ret1 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque création base temporaire impossible';
@@ -376,7 +371,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     $ret1=$db1temp->exec('COMMIT;');
     $sql2='ATTACH DATABASE \'' . sq0($chemin_bdd) . '\' as \'source\';';
     $ret2=$db1temp->exec($sql2);
-
+    
     if($ret2 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque attach impossible';
@@ -392,7 +387,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
           if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql3='.$sql3 .PHP_EOL.PHP_EOL); fclose($fd);}
         */
         $ret3=$db1temp->exec($sql3);
-
+        
         if($ret3 !== true){
 
             $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque, les donnees de ' . $v1 . ' ne peuvent être copiées';
@@ -407,17 +402,17 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
       il faut supprimer les connexions aux bases;
     */
     $db1temp->close();
-
+    
     if(isset($GLOBALS[BDD][$data[__entree]['id_bdd_de_la_base']])){
 
         $GLOBALS[BDD][$data[__entree]['id_bdd_de_la_base']][LIEN_BDD]->close();
 
     }
 
-
+    
     if(sauvegarder_et_supprimer_fichier($chemin_bdd,false)){
 
-
+        
         if((@rename($chemin_bdd_base_temporaire,$chemin_bdd))){
 
             $data[__xst]=true;
@@ -432,7 +427,6 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
 /*
   =====================================================================================================================
 */
-
 function recuperer_les_bases_de_la_cible_en_cours(&$data){
 
     sql_inclure_reference(27);
@@ -457,7 +451,7 @@ function recuperer_les_bases_de_la_cible_en_cours(&$data){
     $tt=sql_27(array(/**/
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
-
+    
     if($tt[__xst] === false){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' recuperer_les_bases bdd non trouvée';
@@ -472,7 +466,6 @@ function recuperer_les_bases_de_la_cible_en_cours(&$data){
 /*
   =====================================================================================================================
 */
-
 function recuperer_les_tableaux_des_bases(&$data){
 
     /*
@@ -481,7 +474,7 @@ function recuperer_les_tableaux_des_bases(&$data){
     */
     require_once(INCLUDE_PATH . '/phplib/sqlite.php');
     $obj=comparer_une_base_physique_et_une_base_virtuelle($data[__entree]['id_bdd_de_la_base'],$data[__entree]['source_base_sql']);
-
+    
     if($obj[__xst] === true){
 
         $data[__xva]=$obj[__xva];
@@ -498,7 +491,6 @@ function recuperer_les_tableaux_des_bases(&$data){
 /*
   =====================================================================================================================
 */
-
 function supprimer_en_bdd_l_index(&$data){
 
     operation_sur_base($data,'supprimer_en_bdd_l_index');
@@ -507,7 +499,6 @@ function supprimer_en_bdd_l_index(&$data){
 /*
   =====================================================================================================================
 */
-
 function ajouter_en_bdd_l_index(&$data){
 
     operation_sur_base($data,'ajouter_en_bdd_l_index');
@@ -516,7 +507,6 @@ function ajouter_en_bdd_l_index(&$data){
 /*
   =====================================================================================================================
 */
-
 function ajouter_en_bdd_le_champ(&$data){
 
     operation_sur_base($data,'ajouter_en_bdd_le_champ');
@@ -525,7 +515,6 @@ function ajouter_en_bdd_le_champ(&$data){
 /*
   =====================================================================================================================
 */
-
 function supprimer_table_dans_base(&$data){
 
     operation_sur_base($data,'supprimer_table_dans_base');
@@ -534,7 +523,6 @@ function supprimer_table_dans_base(&$data){
 /*
   =====================================================================================================================
 */
-
 function operation_sur_base(&$data,$nom_operation){
 
     /*
@@ -564,7 +552,7 @@ function operation_sur_base(&$data,$nom_operation){
         'T0_chi_id_basedd' => $data[__entree]['id_bdd_de_la_base'],
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
-
+    
     if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
@@ -575,7 +563,7 @@ function operation_sur_base(&$data,$nom_operation){
     $ret0=$tt[__xva][0];
     $chemin_bdd='../../' . $ret0['T2.chp_dossier_cible'] . $ret0['T1.chp_nom_dossier'] . '/' . $ret0['T0.chp_nom_basedd'];
     $chemin_bdd=realpath($chemin_bdd);
-
+    
     if(!is_file($chemin_bdd)){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . $nom_operation . ' fichier de bdd non trouvé';
@@ -585,7 +573,7 @@ function operation_sur_base(&$data,$nom_operation){
 
     $db1=new SQLite3($chemin_bdd);
     $ret0=$db1->exec('BEGIN TRANSACTION;');
-
+    
     if($ret0 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . $nom_operation . ' BEGIN transaction KO';
@@ -596,7 +584,7 @@ function operation_sur_base(&$data,$nom_operation){
     /*error_reporting(0);*/
     /*$db1->enableExceptions(true);*/
     $ret1=$db1->exec($data[__entree]['source_sql']);
-
+    
     if($ret1 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . $nom_operation . ' impossible';
@@ -606,7 +594,7 @@ function operation_sur_base(&$data,$nom_operation){
     }
 
     $retfin=$db1->exec('COMMIT;');
-
+    
     if($retfin !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . $nom_operation . ' COMMIT impossible';
@@ -621,7 +609,6 @@ function operation_sur_base(&$data,$nom_operation){
 /*
   =====================================================================================================================
 */
-
 function creer_table_dans_base(&$data){
 
     /*
@@ -652,7 +639,7 @@ function creer_table_dans_base(&$data){
         'T0_chi_id_basedd' => $data[__entree]['id_bdd_de_la_base'],
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
-
+    
     if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base bdd non trouvée';
@@ -663,7 +650,7 @@ function creer_table_dans_base(&$data){
     $ret0=$tt[__xva][0];
     $chemin_bdd='../../' . $ret0['T2.chp_dossier_cible'] . $ret0['T1.chp_nom_dossier'] . '/' . $ret0['T0.chp_nom_basedd'];
     $chemin_bdd=realpath($chemin_bdd);
-
+    
     if(!is_file($chemin_bdd)){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base fichier de bdd non trouvé';
@@ -673,7 +660,7 @@ function creer_table_dans_base(&$data){
 
     $db1=new SQLite3($chemin_bdd);
     $ret0=$db1->exec('BEGIN TRANSACTION;');
-
+    
     if($ret0 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base BEGIN transaction KO';
@@ -682,7 +669,7 @@ function creer_table_dans_base(&$data){
     }
 
     $ret1=$db1->exec($data[__entree]['source_sql']);
-
+    
     if($ret1 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base création table temporaire impossible';
@@ -692,7 +679,7 @@ function creer_table_dans_base(&$data){
     }
 
     $retfin=$db1->exec('COMMIT;');
-
+    
     if($retfin !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base COMMIT impossible';
@@ -707,7 +694,6 @@ function creer_table_dans_base(&$data){
 /*
   =====================================================================================================================
 */
-
 function ordonner_les_champs_de_table(&$data){
 
     /*
@@ -737,7 +723,7 @@ function ordonner_les_champs_de_table(&$data){
         'T0_chi_id_basedd' => $data[__entree]['id_bdd_de_la_base'],
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
-
+    
     if($tt[__xst] === false || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table bdd non trouvée';
@@ -748,7 +734,7 @@ function ordonner_les_champs_de_table(&$data){
     $ret0=$tt[__xva][0];
     $chemin_bdd='../../' . $ret0['T2.chp_dossier_cible'] . $ret0['T1.chp_nom_dossier'] . '/' . $ret0['T0.chp_nom_basedd'];
     $chemin_bdd=realpath($chemin_bdd);
-
+    
     if(!is_file($chemin_bdd)){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table fichier de bdd non trouvé';
@@ -758,7 +744,7 @@ function ordonner_les_champs_de_table(&$data){
 
     $db1=new SQLite3($chemin_bdd);
     $ret0=$db1->exec('BEGIN TRANSACTION;');
-
+    
     if($ret0 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table BEGIN transaction KO';
@@ -767,7 +753,7 @@ function ordonner_les_champs_de_table(&$data){
     }
 
     $ret1=$db1->exec($data[__entree]['chaine_create_table']);
-
+    
     if($ret1 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table création table temporaire impossible';
@@ -781,7 +767,7 @@ function ordonner_les_champs_de_table(&$data){
       if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$sql2='.$sql2.PHP_EOL.PHP_EOL); fclose($fd);}
     */
     $ret2=$db1->exec($sql2);
-
+    
     if($ret2 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table insertion des données impossible';
@@ -792,7 +778,7 @@ function ordonner_les_champs_de_table(&$data){
 
     $sql3='DROP TABLE ' . $data[__entree]['nom_de_la_table'] . ';';
     $ret3=$db1->exec($sql3);
-
+    
     if($ret3 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table DROP TABLE impossible';
@@ -803,7 +789,7 @@ function ordonner_les_champs_de_table(&$data){
 
     $sql4='ALTER TABLE  ' . $data[__entree]['nom_table_temporaire'] . ' RENAME TO ' . $data[__entree]['nom_de_la_table'] . ' ;';
     $ret4=$db1->exec($sql4);
-
+    
     if($ret4 !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table RENAME impossible';
@@ -814,7 +800,7 @@ function ordonner_les_champs_de_table(&$data){
 
     foreach($data[__entree]['tab_des_index_sql'] as $k1 => $sql5){
         $ret5=$db1->exec($sql5);
-
+        
         if($ret5 !== true){
 
             $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table RENAME impossible';
@@ -825,7 +811,7 @@ function ordonner_les_champs_de_table(&$data){
 
     }
     $retfin=$db1->exec('COMMIT;');
-
+    
     if($retfin !== true){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table COMMIT impossible';
@@ -840,7 +826,6 @@ function ordonner_les_champs_de_table(&$data){
 /*
   =====================================================================================================================
 */
-
 function envoyer_le_rev_de_le_base_en_post(&$data){
 
     /*
@@ -864,7 +849,7 @@ function envoyer_le_rev_de_le_base_en_post(&$data){
         'c_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     );
     $tt=sql_10($a_modifier);
-
+    
     if($tt[__xst] === true){
 
         $data[__xst]=true;
@@ -880,7 +865,6 @@ function envoyer_le_rev_de_le_base_en_post(&$data){
 /*
   =====================================================================================================================
 */
-
 function recuperer_zone_travail_pour_les_bases(&$data){
 
     sql_inclure_reference(11);
@@ -901,7 +885,7 @@ function recuperer_zone_travail_pour_les_bases(&$data){
         'chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     );
     $tt=sql_11($a_selectionner);
-
+    
     if($tt[__xst] === true){
 
         /*
@@ -921,7 +905,6 @@ function recuperer_zone_travail_pour_les_bases(&$data){
 /*
   =====================================================================================================================
 */
-
 function sauvegarder_format_rev_en_dbb(&$data){
 
     /*
@@ -957,7 +940,7 @@ function sauvegarder_format_rev_en_dbb(&$data){
         'chx_source_rev' => $data[__entree]['parametres_sauvegarde']['chx_source_rev']
     );
     $tt=sql_5($a_supprimer);
-
+    
     if($tt[__xst] !== true){
 
         $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' Erreur sur suppression dans la table rev ';
@@ -966,7 +949,8 @@ function sauvegarder_format_rev_en_dbb(&$data){
     }
 
     $a_sauvegarder=array();
-    for($i=0;$i < count($data[__entree]['parametres_sauvegarde']['matrice']);$i++){
+    for( $i=0 ; $i < count($data[__entree]['parametres_sauvegarde']['matrice']) ; $i++ ){
+        
         $tab=$data[__entree]['parametres_sauvegarde']['matrice'][$i];
         /*
           14 champs pour le rev + id_cible + chp_provenance_rev + chx_source_rev
@@ -1038,14 +1022,14 @@ function sauvegarder_format_rev_en_dbb(&$data){
     /*sql_inclure_fin*/
     
     $tt=sql_12($a_sauvegarder);
-
+    
     if($tt[__xst] !== true){
 
         $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' Erreur sur insertion';
 
     }else{
 
-
+        
         if($GLOBALS[__mode_traque]){
 
             $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' la matrice est en bdd';

@@ -60,16 +60,24 @@ $par=array(/* */
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
-$o1 .= '<script type="text/javascript">
-window.addEventListener(\'load\',function(){
-    var fta_traitehtml_dernier_fichier_charge=localStorage.getItem(\'fta_traitehtml_dernier_fichier_charge\');
-    if(fta_traitehtml_dernier_fichier_charge !== null){
-        document.getElementById(\'txtar1\').value=fta_traitehtml_dernier_fichier_charge;
-    }
-
- }
-)
-</script>';
+?>
+<script type="text/javascript">
+//<![CDATA[
+//<source_javascript_rev>
+window.addEventListener( 'load' , function(){
+        var fta_traitehtml_dernier_fichier_charge=localStorage.getItem( 'fta_traitehtml_dernier_fichier_charge' );
+        if(fta_traitehtml_dernier_fichier_charge !== null){
+            document.getElementById( 'txtar1' ).value=fta_traitehtml_dernier_fichier_charge;
+            setTimeout( function(){
+                    __gi1.convertir_text_area_html_en_rev( 'txtar1' , "{'zone_html_rev':'txtar2','zone_html_resultat':'txtar3'}" );
+                } , 16 );
+        }
+    } );
+//</source_javascript_rev>
+//]]>
+</script>
+';
+<?php
 $o1 .= html_footer1($par);
 print($o1);
 $o1='';

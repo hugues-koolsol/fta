@@ -1,6 +1,6 @@
 <?php
 date_default_timezone_set('Europe/Paris');
-define('APP_KEY','ftb');
+define('APP_KEY','fta');
 define('PREFIXE_REPERTOIRES','fta');
 define('RACINE_DU_PROJET',realpath(dirname(__FILE__,2)));
 define('INCLUDE_PATH',RACINE_DU_PROJET . DIRECTORY_SEPARATOR . PREFIXE_REPERTOIRES . '_inc');
@@ -932,49 +932,68 @@ function html_header1($parametres){
       la valeur çi dessous devrait être à false pour ne pas inclure de css dans le html renvoyé      
     */
     
-    if(false){
+    if(true){
+
+        /* dans le cas ou ou on met le css en lien externe */
+        $o1 .= '  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />' . PHP_EOL;
+
+    }else{
 
         /* dans le cas ou on met tout dans le html reçu */
         $o1 .= '<style type="text/css">' . PHP_EOL;
         $o1 .= file_get_contents('6.css');
         $o1 .= '</style>' . PHP_EOL;
-
-    }else{
-
-        /* dans le cas ou ou on met le css en lien externe */
-        $o1 .= '  <link rel="stylesheet" rel="preload" as="style" type="text/css" href="6.css" />' . PHP_EOL;
     }
 
+    $o1 .= '<script type="text/javascript">' . PHP_EOL;
+    /* 
+      attention, __gi1 doit être déclarée en "var" plutôt qu'en "let" sinon lorsqu'on ferme une sous fenêtre,  
+      par l'appel à window.parent[this.#nom_de_la_variable]['fermerModale2']();
+      ça ne fonctionne plus
+    */
+    $o1 .= 'var __gi1=null;' . PHP_EOL;
+    $o1 .= '</script>' . PHP_EOL;
+
+    $o1 .= '<script type="module" src="js/module_interface1.js" onload="initialiser_le_module_apres_chargement(this)"></script>' . PHP_EOL;
     $o1 .= '<script type="module" src="js/mf_rev1.js" onload="initialiser_le_module_apres_chargement(this)"></script>' . PHP_EOL;
-    $o1 .= '<script type="module" src="js/module_interface1.js" onload="demarre_l_interface()"></script>' . PHP_EOL;
+
+/*
+    $o1 .= '<script type="module">' . PHP_EOL;
+    $o1 .= 'import { interface1 } from "./js/module_interface1.js";' . PHP_EOL;
+    $o1 .= '__gi1=new interface1("__gi1","zone_global_messages");' . PHP_EOL;
+    $o1 .= 'console.log("là");' . PHP_EOL;
+    
+    $o1 .= '__gi1.deplace_la_zone_de_message();' . PHP_EOL;
+    $o1 .= 'fonctionDeLaPageAppeleeQuandToutEstCharge();' . PHP_EOL;
+    $o1 .= 'setTimeout(function(){' . PHP_EOL;
+    $o1 .= '   __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();' . PHP_EOL;
+    $o1 .= '},500);' . PHP_EOL;
+    $o1 .= '</script>' . PHP_EOL;
+*/
+
     $o1 .= '<script type="text/javascript">' . PHP_EOL;
     $o1 .= '//<![CDATA[' . PHP_EOL;
     $o1 .= '"use strict";' . PHP_EOL;
     /* les constantes qui sont définies au niveau du serveur */
-    $o1 .= ' const APP_KEY=\'' . APP_KEY . '\';' . PHP_EOL;
-    $o1 .= ' const CSS_TAILLE_REFERENCE_TEXTE=' . $css_taille_reference_textes . ';' . PHP_EOL;
-    $o1 .= ' const CSS_TAILLE_REFERENCE_BORDER=' . $css_taille_reference_border . ';' . PHP_EOL;
-    $o1 .= ' const CSS_TAILLE_REFERENCE_PADDING=' . $css_taille_reference_padding . ';' . PHP_EOL;
-    $o1 .= ' const CSS_TAILLE_REFERENCE_MARGIN=' . $css_taille_reference_margin . ';' . PHP_EOL;
-    $o1 .= ' const CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV=' . $css_hauteur_mini_conteneur . ';' . PHP_EOL;
+    $o1 .= 'const APP_KEY=\'' . APP_KEY . '\';' . PHP_EOL;
+    $o1 .= 'const CSS_TAILLE_REFERENCE_TEXTE=' . $css_taille_reference_textes . ';' . PHP_EOL;
+    $o1 .= 'const CSS_TAILLE_REFERENCE_BORDER=' . $css_taille_reference_border . ';' . PHP_EOL;
+    $o1 .= 'const CSS_TAILLE_REFERENCE_PADDING=' . $css_taille_reference_padding . ';' . PHP_EOL;
+    $o1 .= 'const CSS_TAILLE_REFERENCE_MARGIN=' . $css_taille_reference_margin . ';' . PHP_EOL;
+    $o1 .= 'const CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV=' . $css_hauteur_mini_conteneur . ';' . PHP_EOL;
     $o1 .= <<<EOT
+const DEBUT_EXECUTION=performance.now();
 const CRLF='\\r\\n';
 const CR='\\r';
 const LF='\\n';
 const NBESPACESREV=3;
 const NBESPACESSOURCEPRODUIT=4;
-const __debut_execution=performance.now();
 const __xst='__xst';
 const __xme='__xme';
 const __xms='__xms';
 const __xva='__xva';
 const __entree='__entree';
-/* 
-  attention, __gi1 doit être déclarée en "var" plutôt qu'en "let" sinon lorsqu'on ferme une sous fenêtre,  
-  par l'appel à window.parent[this.#nom_de_la_variable]['fermerModale2']();
-  ça ne fonctionne plus
-*/
-var __gi1=null;
+//var __gi1=null;
 /*
   =====================================================================================================================
 */
@@ -990,10 +1009,15 @@ let __m_rev_vers_sql1=null;
 let __m_astphpnikic_vers_rev1=null;
 let __m_astsqliteparseur_vers_rev1=null;
 
-/*       document.addEventListener("DOMContentLoaded",function(event){});     */
 
 function initialiser_le_module_apres_chargement(element){
-    if(element.src.indexOf("js/mf_rev1.js") >= 0){
+    if(element.src.indexOf("js/module_interface1.js") >= 0){
+        import(element.src).then(function(Module){
+                __gi1=new Module.interface1('__gi1',"zone_global_messages");
+                __gi1.deplace_la_zone_de_message();
+                __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
+            });
+    }else if(element.src.indexOf("js/mf_rev1.js") >= 0){
         import(element.src).then(function(Module){
                 __m_rev1=new Module.c_rev1('__m_rev1');
             });
@@ -1042,63 +1066,6 @@ function initialiser_le_module_apres_chargement(element){
     }
     
  
-}
-/*
-  =====================================================================================================================
-*/
-function demarre_l_interface(){
-     import('./js/module_interface1.js').then(function(Module){
-         __gi1=new Module.interface1('__gi1','zone_global_messages');
-         __gi1.deplace_la_zone_de_message();
-         fonctionDeLaPageAppeleeQuandToutEstCharge();
-         setTimeout(function(){
-         
-             __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();
-         },500);
-         
-/*              
-         let liste_des_scripts = document.getElementsByTagName('script');
-         let i=0;
-         for( i=0 ; i < liste_des_scripts.length ; i++ ){
-             var element=liste_des_scripts[i];
-             if(element.type && element.type === 'module'){
-                 if(element.src && element.src.indexOf("js/module_html.js") >= 0){
-                     import('./js/module_html.js').then(function(Module){
-                         __module_html1=new Module.traitements_sur_html('__module_html1');
-                     });
-                 if(element.src && element.src.indexOf("js/mf_astphpparseur_vers_rev1.js") >= 0){
-                     import('./js/mf_astphpparseur_vers_rev1.js').then(function(Module){
-                         __m_astphpparseur_vers_rev1=new Module.c_astphpparseur_vers_rev1('__m_astphpparseur_vers_rev1');
-                     });
-                 if(element.src && element.src.indexOf("js/mf_astphpnikic_vers_rev1.js") >= 0){
-                     import('./js/mf_astphpnikic_vers_rev1.js').then(function(Module){
-                         __m_astphpnikic_vers_rev1=new Module.c_astphpnikic_vers_rev1('__m_astphpnikic_vers_rev1');
-                     });
-                 if(element.src && element.src.indexOf("js/mf_astsqliteparseur_vers_rev1.js") >= 0){
-                     import('./js/mf_astsqliteparseur_vers_rev1.js').then(function(Module){
-                         __m_astsqliteparseur_vers_rev1=new Module.c_astsqliteparseur_vers_rev1('__m_astsqliteparseur_vers_rev1');
-                     });
-                 if(element.src && element.src.indexOf("js/mf_astjs_vers_rev1.js") >= 0){
-                     import('./js/mf_astjs_vers_rev1.js').then(function(Module){
-                         __m_astjs_vers_rev1=new Module.c_astjs_vers_rev1('__m_astjs_vers_rev1');
-                     });
-                 if(element.src && element.src.indexOf("js/mf_rev_vers_js1.js") >= 0){
-                     import('./js/mf_rev_vers_js1.js').then(function(Module){
-                         __m_rev_vers_js1=new Module.c_rev_vers_js1('__m_rev_vers_js1');
-                     });
-                 if(element.src && element.src.indexOf("js/mf_rev_vers_php1.js") >= 0){
-                     import('./js/mf_rev_vers_php1.js').then(function(Module){
-                         __m_rev_vers_php1=new Module.c_rev_vers_php1('__m_rev_vers_php1');
-                     });
-                 if(element.src && element.src.indexOf("js/mf_rev_vers_sql1.js") >= 0){
-                     import('./js/mf_rev_vers_sql1.js').then(function(Module){
-                         __m_rev_vers_sql1=new Module.c_rev_vers_sql1('__m_rev_vers_sql1');
-                     });
-                 }
-             }
-         }
-*/                     
-     });
 }
 EOT;
     $o1 .= PHP_EOL . '//]]>' . PHP_EOL . '</script>' . PHP_EOL;
@@ -1155,12 +1122,12 @@ EOT;
         if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur']){
 
             $o1 .= '    <div class="">' . PHP_EOL;
-            $o1 .= '      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger">🔑</a>' . PHP_EOL;
+            $o1 .= '      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="19 11  130 142"><path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path><circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle></svg></a>' . PHP_EOL;
             $o1 .= '    </div>' . PHP_EOL;
 
         }else if(BNF !== 'aa_login.php'){
 
-            $o1 .= '    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces">🔑</a></div>' . PHP_EOL;
+            $o1 .= '    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces"><svg xmlns="http://www.w3.org/2000/svg" viewBox="19 11  130 142"><path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path><circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle></svg></a></div>' . PHP_EOL;
         }
 
         $o1 .= '  </nav>' . PHP_EOL;
@@ -1254,13 +1221,22 @@ function html_footer1($parametres=array()){
 
         }
         $o1 .= ' var arrayLocalJs=[' . PHP_EOL . $txt1 . PHP_EOL . ' ];' . PHP_EOL;
-        $o1 .= ' setTimeout(__gi1.executerCesActionsPourLaPageLocale2(arrayLocalJs),100);' . PHP_EOL;
+        $o1 .= ' setTimeout(function(){__gi1.executerCesActionsPourLaPageLocale2(arrayLocalJs);},100);' . PHP_EOL;
         $o1 .= '}' . PHP_EOL;
 
     }else{
 
         $o1 .= 'function fonctionDeLaPageAppeleeQuandToutEstCharge(){ /* on ne fait rien */};' . PHP_EOL;
     }
+//    document.addEventListener("DOMContentLoaded",function(event){});     */
+    $o1.=<<<EOT
+window.addEventListener("load",function(event){
+ /* console.log('tout est chargé'); */
+ fonctionDeLaPageAppeleeQuandToutEstCharge();
+});
+EOT;    
+                    
+
 
     $o1 .= '</script>' . PHP_EOL;
     $o1 .= '</body></html>' . PHP_EOL;
@@ -1276,3 +1252,9 @@ function html_footer1($parametres=array()){
     return $o1;
 
 }
+/*
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-26.3303 -10.7052  56.3303 58.7052">
+ <path stroke-linecap="round" stroke-linejoin="round" d=" M -12 -4 H 12 V 6 H 24 V 12 H -24 V 6 H -12 V -4 M 8 0 H -8 V 7  H 8 V 0" style="fill:white;stroke:red;stroke-width:2;stroke-opacity:1;fill-opacity:1;opacity:1;" transform="translate(-2 -3) rotate(-9 0 0)  "></path>
+ <path d="M -24 14 H 24 V 42 H -24 V 14 M -10 20 H -18 V 38 H -10 V 20 M 4 20 H -4 V 38 H 4 V 20 M 18 20 H 10 V 38 H 18 V 20 " stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="   " style="stroke:red;fill:white;stroke-width:2;"></path>
+</svg>
+*/

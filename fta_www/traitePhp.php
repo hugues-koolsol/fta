@@ -91,13 +91,13 @@ if(isset($_SESSION[APP_KEY]['cible_courante']['chi_id_cible'])){
 //<![CDATA[
 //<source_javascript_rev>
 window.addEventListener( 'load' , function(){
-        setTimeout( function(){
-                var fta_indexhtml_php_dernier_fichier_charge=localStorage.getItem( "fta_indexhtml_php_dernier_fichier_charge" );
-                if(fta_indexhtml_php_dernier_fichier_charge !== null){
-                    document.getElementById( 'txtar1' ).value=fta_indexhtml_php_dernier_fichier_charge;
-                    __gi1.convertir_text_area_php_en_rev_avec_php_parseur_js( "txtar1" , "txtar2" , "{'nettoyer_html':true}" );
-                }
-            } , 100 );
+        var fta_indexhtml_php_dernier_fichier_charge=localStorage.getItem( "fta_indexhtml_php_dernier_fichier_charge" );
+        if(fta_indexhtml_php_dernier_fichier_charge !== null){
+            document.getElementById( 'txtar1' ).value=fta_indexhtml_php_dernier_fichier_charge;
+            setTimeout( function(){
+                        __gi1.convertir_text_area_php_en_rev_avec_php_parseur_js( "txtar1" , "txtar2" , "{'nettoyer_html':true}" );
+                } , 16 );
+        }
     } );
 //</source_javascript_rev>
 //]]>

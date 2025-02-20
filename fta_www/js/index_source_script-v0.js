@@ -483,7 +483,7 @@ function chargerFichierRev( nomFichierSource ){
   =====================================================================================================================
 */
 function initialisation_page_rev( par ){
-    setTimeout( function(){
+//    setTimeout( function(){
             /*
               chargement de la liste des sources
             */
@@ -513,5 +513,5 @@ function initialisation_page_rev( par ){
                         return;
                     }
                 } );
-        } , 100 );
+//        } , 100 );
 }

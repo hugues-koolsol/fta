@@ -3727,7 +3727,9 @@ class c_astphpnikic_vers_rev1{
     }
     /*
       =============================================================================================================
-      cette méthode devrait théoriquement être dans un autre module
+      cette méthode devrait théoriquement être dans un autre module 
+      c'est pour cette raison que "this" est templacé par "__m_astphpnikic_vers_rev1"
+      =============================================================================================================
     */
     recupere_ast_de_php_du_serveur( source_php , opt , fonction_traitement_apres_recuperation_ast_de_php2_ok , fonction_traitement_apres_recuperation_ast_de_php2_ko ){
         opt.masquer_les_messages_du_serveur=false;
@@ -3766,13 +3768,13 @@ class c_astphpnikic_vers_rev1{
                 }else{
                     if(r.status === 404){
                         if(0 === numero_de_message++){
-                            this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + '<br />404 page "' + page + '" non trouvée'} );
+                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + '<br />404 page "' + page + '" non trouvée'} );
                             __gi1.remplir_et_afficher_les_messages1( '' );
                         }
                         return;
                     }else if(r.status >= 500){
                         if(0 === numero_de_message++){
-                            this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + '<br />erreur du serveur, peut-être une limite de temps de traitement atteinte'} );
+                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + '<br />erreur du serveur, peut-être une limite de temps de traitement atteinte'} );
                             __gi1.remplir_et_afficher_les_messages1( '' );
                         }
                         /*
@@ -3794,17 +3796,17 @@ class c_astphpnikic_vers_rev1{
                     var json_retour=JSON.parse( r.responseText );
                     if(json_retour.__xms){
                         for(var i in json_retour.__xms){
-                            this.#astphp_le( {"__xst" : false ,"__xme" : json_retour.__xms[i]} );
+                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : false ,"__xme" : json_retour.__xms[i]} );
                         }
                     }
                     if(json_retour.__xif){
-                        for(var i in json_retour.__xms){
-                            this.#astphp_le( {"__xst" : true ,"__xme" : json_retour.__xif[i]} );
+                        for(var i in json_retour.__xif){
+                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : true ,"__xme" : json_retour.__xif[i]} );
                         }
                     }
                     if(json_retour.__xav){
-                        for(var i in json_retour.__xms){
-                            this.#astphp_le( {"__xst" : false ,"__xav" : json_retour.__xav[i]} );
+                        for(var i in json_retour.__xav){
+                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : false ,"__xav" : json_retour.__xav[i]} );
                         }
                     }
                     if(json_retour.__xst === true){

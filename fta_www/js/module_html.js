@@ -125,7 +125,7 @@ class traitements_sur_html{
                             t+='\n' + esp0 + 'script(';
                             __m_rev1.empiler_erreur( {
                                     "__xst" : false ,
-                                    "__xme" : __m_rev1.nl2() + 'attention, seuls "text/javascript" et "application/ld+json" sont traités et il existe un type de script non traité  "' + jsonDeHtml.attributes.type + '"'
+                                    "__xme" : __m_rev1.nl2() + '<br />attention, seuls "text/javascript", "module" et "application/ld+json" sont traités <br />et il existe un type de script non traité <b>"' + jsonDeHtml.attributes.type + '"</b>'
                                 } );
                         }
                     }else{
@@ -185,7 +185,7 @@ class traitements_sur_html{
                 if(obj.__xst === true){
                     t+='' + obj.__xva + '';
                 }else{
-                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0142 ' + jsonDeHtml.type} ));
+                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'traiteJsonDeHtml' + jsonDeHtml.type} ));
                 }
                 t+='\n' + esp0 + ')';
             }else if(type.toLowerCase() === 'javascriptdanshtml' && jsonDeHtml.content && jsonDeHtml.content.length > 0){
@@ -221,10 +221,11 @@ class traitements_sur_html{
                                     contenu+='(\'type\' , "text/javascript")' + obj.__xva;
                                 }
                             }else{
-                                return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0187 ' + jsonDeHtml.type} ));
+                                return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'traiteJsonDeHtml ' + jsonDeHtml.type} ));
                             }
                         }else{
-                            return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour traiteJsonDeHtml 0190 ' + jsonDeHtml.type} ));
+                            debugger
+                            return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'traiteJsonDeHtml' + jsonDeHtml.type} ));
                         }
                     }
                 }else{

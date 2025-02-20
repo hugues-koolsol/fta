@@ -55,14 +55,15 @@ $par=array(/* */
 //<![CDATA[
 //<source_javascript_rev>
 window.addEventListener( "load" , function(){
-        setTimeout( function(){
-                var fta_indexhtml_javascript_dernier_fichier_charge=localStorage.getItem( 'fta_indexhtml_javascript_dernier_fichier_charge' );
-                if(fta_indexhtml_javascript_dernier_fichier_charge !== null){
-                    document.getElementById( 'txtar1' ).value=fta_indexhtml_javascript_dernier_fichier_charge;
-                    /* on lance la conversion directement, ça devra être mis en paramètres */
-                    /* __gi1.bouton_transform_textarea_js_en_rev_avec_acorn3('txtar1','txtar2',true); */
-                }
-            } , 100 );
+        var fta_indexhtml_javascript_dernier_fichier_charge=localStorage.getItem( 'fta_indexhtml_javascript_dernier_fichier_charge' );
+        if(fta_indexhtml_javascript_dernier_fichier_charge !== null){
+            document.getElementById( 'txtar1' ).value=fta_indexhtml_javascript_dernier_fichier_charge;
+            setTimeout( function(){
+                        /* on lance la conversion directement, ça devra être mis en paramètres */
+                        __gi1.bouton_transform_textarea_js_en_rev_avec_acorn3('txtar1','txtar2',true);
+                } , 16 );
+        
+        }
     } );
 //</source_javascript_rev>
 //]]>
