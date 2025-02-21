@@ -483,35 +483,33 @@ function chargerFichierRev( nomFichierSource ){
   =====================================================================================================================
 */
 function initialisation_page_rev( par ){
-//    setTimeout( function(){
-            /*
-              chargement de la liste des sources
-            */
-            async function charger_la_liste_des_sources1( url="" , ajax_param ){
-                return(__gi1.recupérer_un_fetch( url , ajax_param ));
-            }
-            var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'getRevFiles'}};
-            charger_la_liste_des_sources1( 'za_ajax.php?getRevFiles' , ajax_param ).then( ( donnees ) => {
-                    if(donnees.__xst == true){
-                        var fta_dernier_fichier_charge=localStorage.getItem( 'fta_dernier_fichier_charge' );
-                        var trouve='';
-                        var t='';
-                        var idFile={};
-                        for(idFile in donnees.files){
-                            t+='<button onclick="chargerFichierRev(\'' + donnees.files[idFile] + '\')" title="' + donnees.files[idFile] + '">' + donnees.files[idFile] + '</button>';
-                            if(fta_dernier_fichier_charge && donnees.files[idFile] === fta_dernier_fichier_charge){
-                                trouve=fta_dernier_fichier_charge;
-                            }
-                        }
-                        document.getElementById( 'zoneRevFiles' ).innerHTML=t;
-                        if(trouve !== ''){
-                            chargerFichierRev( fta_dernier_fichier_charge );
-                        }
-                    }else{
-                        console.log( r );
-                        alert( 'BAD job !' );
-                        return;
+    /*
+      chargement de la liste des sources
+    */
+    async function charger_la_liste_des_sources1( url="" , ajax_param ){
+        return(__gi1.recupérer_un_fetch( url , ajax_param ));
+    }
+    var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'getRevFiles'}};
+    charger_la_liste_des_sources1( 'za_ajax.php?getRevFiles' , ajax_param ).then( ( donnees ) => {
+            if(donnees.__xst == true){
+                var fta_dernier_fichier_charge=localStorage.getItem( 'fta_dernier_fichier_charge' );
+                var trouve='';
+                var t='';
+                var idFile={};
+                for(idFile in donnees.files){
+                    t+='<button onclick="chargerFichierRev(\'' + donnees.files[idFile] + '\')" title="' + donnees.files[idFile] + '">' + donnees.files[idFile] + '</button>';
+                    if(fta_dernier_fichier_charge && donnees.files[idFile] === fta_dernier_fichier_charge){
+                        trouve=fta_dernier_fichier_charge;
                     }
-                } );
-//        } , 100 );
+                }
+                document.getElementById( 'zoneRevFiles' ).innerHTML=t;
+                if(trouve !== ''){
+                    chargerFichierRev( fta_dernier_fichier_charge );
+                }
+            }else{
+                console.log( r );
+                alert( 'BAD job !' );
+                return;
+            }
+        } );
 }

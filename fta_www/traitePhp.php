@@ -95,7 +95,7 @@ window.addEventListener( 'load' , function(){
         if(fta_indexhtml_php_dernier_fichier_charge !== null){
             document.getElementById( 'txtar1' ).value=fta_indexhtml_php_dernier_fichier_charge;
             setTimeout( function(){
-                        __gi1.convertir_text_area_php_en_rev_avec_php_parseur_js( "txtar1" , "txtar2" , "{'nettoyer_html':true}" );
+                    __gi1.convertir_text_area_php_en_rev_avec_php_parseur_js( "txtar1" , "txtar2" , "{'nettoyer_html':true}" );
                 } , 16 );
         }
     } );

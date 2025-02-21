@@ -713,16 +713,14 @@ class interface1{
       =============================================================================================================
     */
     ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens(){
-        this.calcul_la_largeur_des_ascenseurs();
         /*
-          
-          equivalent de window.onload = function() {
-          fixMenu1();
+          ça pourra servir un jour !
+          this.calcul_la_largeur_des_ascenseurs();
         */
-        var i=0;
-        var bod=document.getElementsByTagName( 'body' )[0];
-        var lstb1=bod.getElementsByTagName( 'button' );
-        for( i=0 ; i < lstb1.length ; i++ ){
+        let i=0;
+        const bod=document.getElementsByTagName( 'body' )[0];
+        let lstb1=bod.getElementsByTagName( 'button' );
+        for( i=lstb1.length - 1 ; i >= 0 ; i-- ){
             if(!lstb1[i].onclick){
                 if(lstb1[i].className && lstb1[i].className.indexOf( 'noHide' ) >= 0){
                 }else{
@@ -730,8 +728,8 @@ class interface1{
                 }
             }
         }
-        var lstb1=bod.getElementsByTagName( 'input' );
-        for( i=0 ; i < lstb1.length ; i++ ){
+        lstb1=bod.getElementsByTagName( 'input' );
+        for( i=lstb1.length - 1 ; i >= 0 ; i-- ){
             if(!lstb1[i].onclick){
                 if(lstb1[i].className && lstb1[i].className.indexOf( 'noHide' ) >= 0){
                 }else{
@@ -741,41 +739,30 @@ class interface1{
                 }
             }
         }
-        var lsta1=bod.getElementsByTagName( 'a' );
-        for( i=0 ; i < lsta1.length ; i++ ){
-            if(lsta1[i].href){
+        lstb1=bod.getElementsByTagName( 'a' );
+        for( i=lstb1.length - 1 ; i >= 0 ; i-- ){
+            if(lstb1[i].href){
                 try{
-                    if(!(lsta1[i].href.indexOf( 'javascript' ) >= 0)){
-                        if(lsta1[i].className && lsta1[i].className.indexOf( 'noHide' ) >= 0){
+                    if(lstb1[i].className && lstb1[i].className.indexOf( 'noHide' ) >= 0){
+                    }else{
+                        if(lstb1[i].href.indexOf( 'javascript' ) === 0){
+                            lstb1[i].addEventListener( "click" , this.action_quand_click_sur_lien_javascript , false );
                         }else{
-                            lsta1[i].addEventListener( "click" , this.click_sur_lien1.bind( this ) , false );
+                            lstb1[i].addEventListener( "click" , this.click_sur_lien1.bind( this ) , false );
                         }
                     }
-                }catch(e){}
-                /* pour les liens dans le svg */
-            }
-        }
-        var lsta1=bod.getElementsByTagName( 'a' );
-        for( i=0 ; i < lsta1.length ; i++ ){
-            /*
-              un try car pour les liens dans le svg, indexOf ne fonctionne pas ! 
-            */
-            try{
-                if(lsta1[i].href && lsta1[i].href.indexOf( 'javascript' ) >= 0){
-                    if(lsta1[i].className && lsta1[i].className.indexOf( 'noHide' ) >= 0){
-                    }else{
-                        lsta1[i].addEventListener( "click" , this.action_quand_click_sur_lien_javascript , false );
-                    }
+                }catch(e){
+                    /* pour les liens dans le svg */
                 }
-            }catch(e){}
+            }
         }
         /*
           =====================================================================================================
           Mettre le bouton retour à la liste dans la barre des messages si elle est affichée
           =====================================================================================================
         */
-        var ref=document.getElementById( this.#nom_div_des_messages1 );
-        if(ref.style.visibility === 'visible'){
+        lstb1=document.getElementById( this.#nom_div_des_messages1 );
+        if(lstb1.style.visibility === 'visible'){
             /* à priori, un message est affiché */
             try{
                 /*
@@ -788,7 +775,7 @@ class interface1{
                     a.style.float='inline-end';
                     a.href=document.getElementById( '__retour_a_la_liste' ).href;
                     a.innerHTML='&nbsp;⬱&nbsp;';
-                    ref.insertBefore( a , ref.firstChild );
+                    lstb1.insertBefore( a , lstb1.firstChild );
                 }
             }catch(e){}
         }

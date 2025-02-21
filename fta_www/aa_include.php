@@ -946,35 +946,18 @@ function html_header1($parametres){
     }
 
     $o1 .= '<script type="text/javascript">' . PHP_EOL;
-    /* 
+    /*
       attention, __gi1 doit être déclarée en "var" plutôt qu'en "let" sinon lorsqu'on ferme une sous fenêtre,  
       par l'appel à window.parent[this.#nom_de_la_variable]['fermerModale2']();
       ça ne fonctionne plus
     */
     $o1 .= 'var __gi1=null;' . PHP_EOL;
     $o1 .= '</script>' . PHP_EOL;
-
     $o1 .= '<script type="module" src="js/module_interface1.js" onload="initialiser_le_module_apres_chargement(this)"></script>' . PHP_EOL;
     $o1 .= '<script type="module" src="js/mf_rev1.js" onload="initialiser_le_module_apres_chargement(this)"></script>' . PHP_EOL;
-
-/*
-    $o1 .= '<script type="module">' . PHP_EOL;
-    $o1 .= 'import { interface1 } from "./js/module_interface1.js";' . PHP_EOL;
-    $o1 .= '__gi1=new interface1("__gi1","zone_global_messages");' . PHP_EOL;
-    $o1 .= 'console.log("là");' . PHP_EOL;
-    
-    $o1 .= '__gi1.deplace_la_zone_de_message();' . PHP_EOL;
-    $o1 .= 'fonctionDeLaPageAppeleeQuandToutEstCharge();' . PHP_EOL;
-    $o1 .= 'setTimeout(function(){' . PHP_EOL;
-    $o1 .= '   __gi1.ajoute_de_quoi_faire_disparaitre_les_boutons_et_les_liens();' . PHP_EOL;
-    $o1 .= '},500);' . PHP_EOL;
-    $o1 .= '</script>' . PHP_EOL;
-*/
-
     $o1 .= '<script type="text/javascript">' . PHP_EOL;
     $o1 .= '//<![CDATA[' . PHP_EOL;
     $o1 .= '"use strict";' . PHP_EOL;
-    /* les constantes qui sont définies au niveau du serveur */
     $o1 .= 'const APP_KEY=\'' . APP_KEY . '\';' . PHP_EOL;
     $o1 .= 'const CSS_TAILLE_REFERENCE_TEXTE=' . $css_taille_reference_textes . ';' . PHP_EOL;
     $o1 .= 'const CSS_TAILLE_REFERENCE_BORDER=' . $css_taille_reference_border . ';' . PHP_EOL;
@@ -1122,7 +1105,7 @@ EOT;
         if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur']){
 
             $o1 .= '    <div class="">' . PHP_EOL;
-            $o1 .= '      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="19 11  130 142"><path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path><circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle></svg></a>' . PHP_EOL;
+            $o1 .= '      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="19 4  130 142"><path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path><circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle></svg></a>' . PHP_EOL;
             $o1 .= '    </div>' . PHP_EOL;
 
         }else if(BNF !== 'aa_login.php'){
@@ -1228,16 +1211,14 @@ function html_footer1($parametres=array()){
 
         $o1 .= 'function fonctionDeLaPageAppeleeQuandToutEstCharge(){ /* on ne fait rien */};' . PHP_EOL;
     }
-//    document.addEventListener("DOMContentLoaded",function(event){});     */
-    $o1.=<<<EOT
+
+    /* document.addEventListener("DOMContentLoaded",function(event){});     *_/*/
+    $o1 .= <<<EOT
 window.addEventListener("load",function(event){
  /* console.log('tout est chargé'); */
  fonctionDeLaPageAppeleeQuandToutEstCharge();
 });
-EOT;    
-                    
-
-
+EOT;
     $o1 .= '</script>' . PHP_EOL;
     $o1 .= '</body></html>' . PHP_EOL;
     
@@ -1253,8 +1234,8 @@ EOT;
 
 }
 /*
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="-26.3303 -10.7052  56.3303 58.7052">
- <path stroke-linecap="round" stroke-linejoin="round" d=" M -12 -4 H 12 V 6 H 24 V 12 H -24 V 6 H -12 V -4 M 8 0 H -8 V 7  H 8 V 0" style="fill:white;stroke:red;stroke-width:2;stroke-opacity:1;fill-opacity:1;opacity:1;" transform="translate(-2 -3) rotate(-9 0 0)  "></path>
- <path d="M -24 14 H 24 V 42 H -24 V 14 M -10 20 H -18 V 38 H -10 V 20 M 4 20 H -4 V 38 H 4 V 20 M 18 20 H 10 V 38 H 18 V 20 " stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="   " style="stroke:red;fill:white;stroke-width:2;"></path>
-</svg>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="-26.3303 -10.7052  56.3303 58.7052">
+  <path stroke-linecap="round" stroke-linejoin="round" d=" M -12 -4 H 12 V 6 H 24 V 12 H -24 V 6 H -12 V -4 M 8 0 H -8 V 7  H 8 V 0" style="fill:white;stroke:red;stroke-width:2;stroke-opacity:1;fill-opacity:1;opacity:1;" transform="translate(-2 -3) rotate(-9 0 0)  "></path>
+  <path d="M -24 14 H 24 V 42 H -24 V 14 M -10 20 H -18 V 38 H -10 V 20 M 4 20 H -4 V 38 H 4 V 20 M 18 20 H 10 V 38 H 18 V 20 " stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="   " style="stroke:red;fill:white;stroke-width:2;"></path>
+  </svg>
 */

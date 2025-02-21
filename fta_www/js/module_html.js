@@ -224,7 +224,7 @@ class traitements_sur_html{
                                 return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'traiteJsonDeHtml ' + jsonDeHtml.type} ));
                             }
                         }else{
-                            debugger
+                            debugger;
                             return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'traiteJsonDeHtml' + jsonDeHtml.type} ));
                         }
                     }
