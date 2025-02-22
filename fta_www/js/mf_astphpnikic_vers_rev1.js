@@ -1404,7 +1404,7 @@ class c_astphpnikic_vers_rev1{
           var car_a_trouver=tabcarspec[z];
           var chaine_a_trouver='\\\\'+car_a_trouver;
           if(contenu.indexOf(chaine_a_trouver)>=0 ){
-          //        return(this.#astphp_le({"__xst" : false ,"__xme" : '1311 php_traite_chaine_raw TO DO ' ,"element" : element}));
+          //        return(this.#astphp_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
           
           var caractere='';
           if(rv.substr(0,1)==='\''){
@@ -1418,7 +1418,7 @@ class c_astphpnikic_vers_rev1{
           if(tt.__xst===true){
           tableau_a_concatener.push(tt.__xva);
           }else{
-          return(this.#astphp_le({"__xst" : false ,"__xme" : '1433 php_traite_chaine_raw TO DO ' ,"element" : element}));
+          return(this.#astphp_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
           }
           }
           }else{
@@ -1432,7 +1432,7 @@ class c_astphpnikic_vers_rev1{
           tableau_a_concatener.push("'\\\\'");
           tableau_a_concatener.push("'"+car_a_trouver+"'");
           }else{
-          return(this.#astphp_le({"__xst" : false ,"__xme" : '1447 php_traite_chaine_raw' ,"element" : element}));
+          return(this.#astphp_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
           }
           }
           }
@@ -1440,7 +1440,7 @@ class c_astphpnikic_vers_rev1{
           t='concat('+tableau_a_concatener.join(',')+')';
           return({__xst:true , __xva : t});
           }else{
-          return(this.#astphp_le({"__xst" : false ,"__xme" : '1311 php_traite_chaine_raw TO DO ' ,"element" : element}));
+          return(this.#astphp_le({"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element}));
           }
           }
           }
@@ -1548,7 +1548,7 @@ class c_astphpnikic_vers_rev1{
                                     }else{
                                         /*
                                           commenté car $regex='/\'|\\\\(?=[\'\\\\]|$)|(?<=\\\\)\\\/'; ne passait plus 
-                                          return(this.#astphp_le({"__xst" : false ,"__xme" : '0958 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
+                                          return(this.#astphp_le({"__xst" : false ,"__xme" : __m_rev1.nl2()+'après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
                                         */
                                         if(i > 0 && rv.substr( i - 1 , 1 ) !== '\\'){
                                             nouvelle_chaine='\\\\' + nouvelle_chaine;
@@ -2894,7 +2894,7 @@ class c_astphpnikic_vers_rev1{
             }
         }else{
             contenu='';
-            /* return(this.#astphp_le({"__xst" : false ,"__xme" : '1949  dans php_traite_Stmt_Class' ,"element" : element})); */
+
         }
         t+='\n' + esp0 + 'definition_de_classe(';
         t+='\n' + esp0 + esp1 + 'nom_classe(' + nom_de_classe + ')';
@@ -3777,17 +3777,17 @@ class c_astphpnikic_vers_rev1{
                     var json_retour=JSON.parse( r.responseText );
                     if(json_retour.__xms){
                         for(var i in json_retour.__xms){
-                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : false ,"__xme" : json_retour.__xms[i]} );
+                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+json_retour.__xms[i]} );
                         }
                     }
                     if(json_retour.__xif){
                         for(var i in json_retour.__xif){
-                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : true ,"__xme" : json_retour.__xif[i]} );
+                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : true ,"__xme" : __m_rev1.nl2()+json_retour.__xif[i]} );
                         }
                     }
                     if(json_retour.__xav){
                         for(var i in json_retour.__xav){
-                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : false ,"__xav" : json_retour.__xav[i]} );
+                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : false ,"__xav" : __m_rev1.nl2()+json_retour.__xav[i]} );
                         }
                     }
                     if(json_retour.__xst === true){

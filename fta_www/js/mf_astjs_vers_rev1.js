@@ -627,9 +627,7 @@ class c_astjs_vers_rev1{
                 return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
             if(element.properties[i].shorthand !== false){
-                /* const {a, b} = c; =>  const {a:a, b:b} = c; */
-                /* debugger; */
-                /* return(this.#astjs_le({"__xst" : false ,"__xme" : '1207 #traite_ObjectPattern' ,"element" : element})); */
+                return(this.#astjs_le({"__xst" : false ,"__xme" : __m_rev1.nl2()+'shorthand' ,"element" : element}));
             }
             if(t !== ''){
                 t+=',';
@@ -759,7 +757,7 @@ class c_astjs_vers_rev1{
                     contenu+=',contenu(' + obj.__xva + ')';
                 }
             }else{
-                return(this.#astjs_le( {"__xst" : false ,"__xme" : '0466 #traite_FunctionDeclaration' ,"element" : element} ));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
             return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
@@ -791,7 +789,7 @@ class c_astjs_vers_rev1{
             if(obj.__xst === true){
                 le_quasi=obj.__xva;
             }else{
-                return(this.#astjs_le( {"__xst" : false ,"__xme" : '1746 #traite_TemplateLiteral' ,"element" : element} ));
+                return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
             return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
@@ -1459,7 +1457,7 @@ class c_astjs_vers_rev1{
         let objet="";
         let propriete='';
         if(!element.expression){
-            return(this.#astjs_le( {"__xst" : false ,"__xme" : '1227 #traite_ChainExpression' ,"element" : element} ));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         if(element.expression.type === 'CallExpression'){
             var les_arguments='';
@@ -1743,7 +1741,7 @@ class c_astjs_vers_rev1{
         let contenu='';
         obj=this.#traite_element( element.test , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === false){
-            return(this.#astjs_le( {"__xst" : false ,"__xme" : '0897 #traite_WhileStatement' ,"element" : element} ));
+            return(this.#astjs_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         test+=obj.__xva;
         if(element.body){
@@ -2435,7 +2433,7 @@ class c_astjs_vers_rev1{
             /*
               tab[1,1] est super dangereux, on le signale mais ça passe
             */
-            this.#astjs_le( {"__xst" : true ,"__xav" : '2008 l\'opérateur virgule est dangereux dans un tableau !' ,"element" : element} );
+            this.#astjs_le( {"__xst" : true ,"__xav" : __m_rev1.nl2()+'l\'opérateur virgule est dangereux dans un tableau !' ,"element" : element} );
         }
         for( let i=0 ; i < element.expressions.length ; i++ ){
             obj=this.#traite_element( element.expressions[i] , niveau + 2 , element , tab_comm , false );

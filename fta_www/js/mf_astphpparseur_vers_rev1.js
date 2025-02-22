@@ -506,7 +506,7 @@ class c_astphpparseur_vers_rev1{
                         globale_source_php2=globale_source_php2.replace( phrase_a_remplacer , obj0.__xva );
                     }else{
                         globale_tableau_des_js2=[];
-                        return(this.#astphp_le( {"__xst" : true ,"__xme" : '3154 le source a été converti en rev'} ));
+                        return(this.#astphp_le( {"__xst" : true ,"__xme" : 'le source a été converti en rev'} ));
                     }
                 }
             }
@@ -1531,7 +1531,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 cle+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0753 #traite_foreach cle' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'cle' ,"element" : element} ));
             }
         }else{
             cle='';
@@ -1541,20 +1541,20 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 source+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0767 #traite_foreach source' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'source' ,"element" : element} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '0770 #traite_foreach source' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'source' ,"element" : element} ));
         }
         if(element.value){
             obj=this.#traite_element( element.value , niveau , parent , tab_comm );
             if(obj.__xst === true){
                 valeur+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0767 #traite_foreach source' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'value' ,"element" : element} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '0770 #traite_foreach source' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'value' ,"element" : element} ));
         }
         if(element.body){
             if(element.body.kind === 'expressionstatement' || element.body.kind === 'block'){
@@ -1562,14 +1562,14 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0903 #traite_foreach body' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
                 }
             }else{
                 obj=this.#traite_element( element.body , niveau , element , tab_comm );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0911  #traite_foreach' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
                 }
             }
         }else if(element.kind === 'block'){
@@ -1577,10 +1577,10 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0755 #traite_foreach body' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'block' ,"element" : element} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '0758 #traite_foreach ni body ni block' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'ni body ni block' ,"element" : element} ));
         }
         if(cle === ''){
             t='boucleSurTableau(pourChaque( dans( ' + valeur + ' , ' + source + ' )),faire(' + contenu + '))';
@@ -1605,14 +1605,14 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0748 #traite_for body' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
                 }
             }else{
                 obj=this.#traite_element( element.body , niveau , element , tab_comm );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0945  #traite_for' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
                 }
             }
         }else if(element.kind === 'block'){
@@ -1620,10 +1620,10 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0755 #traite_for body'} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'block'} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '0758 #traite_for ni body ni block' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'ni body ni block' ,"element" : element} ));
         }
         if(element.test){
             for( let i=0 ; i < element.test.length ; i++ ){
@@ -1631,7 +1631,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     condition+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0766  #traite_for' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'test' ,"element" : element} ));
                 }
             }
         }else{
@@ -1646,7 +1646,7 @@ class c_astphpparseur_vers_rev1{
                     }
                     increment+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0779  #traite_for' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'increment' ,"element" : element} ));
                 }
             }
         }else{
@@ -1658,7 +1658,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     initialisation+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0843  #traite_for' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'init' ,"element" : element} ));
                 }
             }
         }else{
@@ -1680,7 +1680,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 condition+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1507  #traite_do' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'test' ,"element" : element} ));
             }
         }else{
             debugger;
@@ -1690,17 +1690,17 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1517 #traite_do body' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
             }
         }else if(element.kind === 'block'){
             obj=this.#traite_ast0( element , niveau + 1 , element , tab_comm );
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1524 #traite_do body' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'block' ,"element" : element} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1527 #traite_do ni body ni block'} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'ni body ni block'} ));
         }
         t='faire_tant_que(faire(' + contenu + '),condition( ' + condition + ' ),)';
         return({"__xst" : true ,"__xva" : t});
@@ -1718,7 +1718,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 condition+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0157  #traite_while' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
             debugger;
@@ -1728,17 +1728,17 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1556 #traite_while body' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
             }
         }else if(element.kind === 'block'){
             obj=this.#traite_ast0( element , niveau + 1 , element , tab_comm );
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1564 #traite_while body' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'block' ,"element" : element} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1048 #traite_while ni body ni block'} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'ni body ni block'} ));
         }
         t='tantQue(condition( ' + condition + ' ),faire(' + contenu + '))';
         return({"__xst" : true ,"__xva" : t});
@@ -1755,7 +1755,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 express+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0157  #traite_while' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
             debugger;
@@ -1775,7 +1775,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 level+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0157  #traite_while' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }
         t+='continue(' + level + ')';
@@ -1794,12 +1794,12 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     les_elements+=',p(' + obj.__xva + ')';
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1067  #traite_list' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                 }
             }else if(element.items[i].kind === 'noop'){
                 les_elements+=',p()';
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1070  #traite_list' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }
         if(les_elements !== ''){
@@ -1822,7 +1822,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 valeur+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1056  #traite_case' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }else{
             valeur='';
@@ -1832,17 +1832,17 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1658 #traite_case body' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
             }
         }else if(element.kind === 'block'){
             obj=this.#traite_ast0( element , niveau + 1 , element , tab_comm );
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1665 #traite_case body' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'block' ,"element" : element} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1156 #traite_case ni body ni block' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'ni body ni block' ,"element" : element} ));
         }
         if(valeur === ''){
             t+='est(valeurNonPrevue(),faire(' + contenu + '))';
@@ -1865,11 +1865,11 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     les_cas+=',' + obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1056  #traite_switch' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                 }
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1050  #traite_switch' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         if(element.test){
             /* c'est un if ou un else if */
@@ -1877,7 +1877,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 condition+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1056  #traite_switch' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'test' ,"element" : element} ));
             }
         }else{
             condition='';
@@ -1902,7 +1902,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1728 #traite_if body' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
                 }
             }else{
                 if(element.expression){
@@ -1910,14 +1910,14 @@ class c_astphpparseur_vers_rev1{
                     if(obj.__xst === true){
                         contenu+=obj.__xva;
                     }else{
-                        return(this.#astphp_le( {"__xst" : false ,"__xme" : '1211  #traite_if' ,"element" : element} ));
+                        return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'expression' ,"element" : element} ));
                     }
                 }else{
                     obj=this.#traite_element( element , niveau , element , tab_comm );
                     if(obj.__xst === true){
                         contenu+=obj.__xva;
                     }else{
-                        return(this.#astphp_le( {"__xst" : false ,"__xme" : '1211  #traite_if' ,"element" : element} ));
+                        return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
                     }
                 }
             }
@@ -1927,27 +1927,27 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0064 #traite_if body' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
                 }
             }else if(element.body.kind === 'expressionstatement'){
                 obj=this.#traite_element( element.body.expression , niveau , element , tab_comm );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1211  #traite_if' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'expressionstatement' ,"element" : element} ));
                 }
             }else{
                 obj=this.#traite_commentaires_debut( element.body , niveau , parent , tab_comm );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1725 #traite_if ' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
                 }
                 obj=this.#traite_element( element.body , niveau , element , tab_comm );
                 if(obj.__xst === true){
                     contenu+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1211  #traite_if' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
                 }
             }
         }else{
@@ -1958,7 +1958,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 suite+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0148  #traite_if' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'alternate' ,"element" : element} ));
             }
         }
         if(element.test){
@@ -1967,7 +1967,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 condition+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0157  #traite_if' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'test' ,"element" : element} ));
             }
         }else{
             c_est_un_sinon=true;
@@ -2012,7 +2012,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 les_elements+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1796 #traite_deftab ' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
             if(element.items[i].kind === 'entry'){
                 obj=this.#traite_element( element.items[i].value , niveau , element , tab_comm );
@@ -2022,16 +2022,16 @@ class c_astphpparseur_vers_rev1{
                         if(obj1.__xst === true){
                             les_elements+='(' + obj1.__xva + ',' + obj.__xva + ')';
                         }else{
-                            return(this.#astphp_le( {"__xst" : false ,"__xme" : '0317 #traite_deftab ' ,"element" : element} ));
+                            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                         }
                     }else{
                         les_elements+='(' + obj.__xva + ')';
                     }
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0312 #traite_deftab ' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2(),"element" : element} ));
                 }
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0315 #traite_deftab ' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
             if(i === element.items.length - 1){
                 les_elements+=this.#traite_commentaires_fin_tableau( element , niveau , parent , tab_comm );
@@ -2094,7 +2094,7 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             quoi+=obj.__xva;
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '0080 #traite_tableau quoi' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'what' ,"element" : element} ));
         }
         if(element.offset === false){
             offset='';
@@ -2103,7 +2103,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 offset+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0080 #traite_tableau offset' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'offset' ,"element" : element} ));
             }
         }
         t=this.#simplifie_tableau( 'nomt(' + quoi + ')' , 'p(' + offset + ')' );
@@ -2203,20 +2203,20 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 gauche+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1444 #traite_assignref gauche' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'gauche' ,"element" : element} ));
             }
             obj=this.#traite_element( element.right , niveau , element , tab_comm );
             if(obj.__xst === true){
                 droite+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1450 #traite_assignref droite' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'droite' ,"element" : element} ));
             }
             t+='affecte_reference(' + gauche + ',' + droite + ')';
             if(element.operator !== undefined){
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1455 #traite_assignref opérateur non traité : "' + element.operator + '"' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'opérateur non traité : "' + element.operator + '"' ,"element" : element} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1470 #traite_assignref il manque un gauche ou un droite ' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'il manque un gauche ou un droite ' ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2233,13 +2233,13 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 gauche+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0341 #traite_assign gauche' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'gauche' ,"element" : element} ));
             }
             obj=this.#traite_element( element.right , niveau , element , tab_comm );
             if(obj.__xst === true){
                 droite+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0347 #traite_assign droite' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'droite' ,"element" : element} ));
             }
             if(element.operator === '='){
                 t+='affecte(' + gauche + ',' + droite + ')';
@@ -2247,7 +2247,7 @@ class c_astphpparseur_vers_rev1{
                 t+='affecteop( \'' + element.operator + '\' , ' + gauche + ' , ' + droite + ')';
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1518 #traite_assign il manque un gauche ou un droite' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'il manque un gauche ou un droite' ,"element" : element} ));
         }
         if(parent && parent.kind && parent.kind === 'bin'){
             t='(' + t + ')';
@@ -2266,10 +2266,10 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 what+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0329 #traite_unary what' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'what' ,"element" : element} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1108 #traite_unary what' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'what' ,"element" : element} ));
         }
         switch (element.type){
             case '!' : t+='non(' + what + ')';
@@ -2295,7 +2295,7 @@ class c_astphpparseur_vers_rev1{
                 break;
                 
             default:
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1286 #traite_unary non traité : "' + element.type + '"' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'non traité : "' + element.type + '"' ,"element" : element} ));
                 break;
                 
         }
@@ -2314,10 +2314,10 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 gauche+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0329 #traite_bin gauche' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'gauche' ,"element" : element} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1138 #traite_bin gauche' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'gauche' ,"element" : element} ));
         }
         if(element.right){
             obj=this.#traite_element( element.right , niveau , element , tab_comm );
@@ -2336,10 +2336,10 @@ class c_astphpparseur_vers_rev1{
                     droite+=obj.__xva;
                 }
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0335 #traite_bin droite' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'droite' ,"element" : element} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1148 #traite_bin droite' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'droite' ,"element" : element} ));
         }
         switch (element.type){
             case '&&' : t+='et(' + gauche + ',' + droite + ')';
@@ -2413,7 +2413,7 @@ class c_astphpparseur_vers_rev1{
                 break;
                 
             default:
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0346 #traite_bin non traité : "' + element.type + '"' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'non traité : "' + element.type + '"' ,"element" : element} ));
                 break;
                 
         }
@@ -2506,7 +2506,7 @@ class c_astphpparseur_vers_rev1{
                             i--;
                         }else{
                             /* position du \ en dernier */
-                            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1230  une chaine ne doit pas contenir un simple \\ en dernière position  ' ,"element" : element} ));
+                            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'une chaine ne doit pas contenir un simple \\ en dernière position  ' ,"element" : element} ));
                         }
                     }else{
                         if(i > 1){
@@ -2561,21 +2561,21 @@ class c_astphpparseur_vers_rev1{
                                         }else{
                                             return(this.#astphp_le( {
                                                     "__xst" : false ,
-                                                    "__xme" : '1283 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr( i + 1 , 1 ) + '" ' ,
+                                                    "__xme" : __m_rev1.nl2()+'après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr( i + 1 , 1 ) + '" ' ,
                                                     "element" : element
                                                 } ));
                                         }
                                     }else{
                                         /*
                                           commenté car $regex='/\'|\\\\(?=[\'\\\\]|$)|(?<=\\\\)\\\/'; ne passait plus 
-                                          return(this.#astphp_le({"__xst" : false ,"__xme" : '1456 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
+                                          return(this.#astphp_le({"__xst" : false ,"__xme" : __m_rev1.nl2()+'après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + (rv.substr(i + 1,1)) + '" ' ,"element" : element}));
                                         */
                                         if(i > 0 && rv.substr( i - 1 , 1 ) !== '\\'){
                                             nouvelle_chaine='\\\\' + nouvelle_chaine;
                                         }else{
                                             return(this.#astphp_le( {
                                                     "__xst" : false ,
-                                                    "__xme" : '1283 après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr( i + 1 , 1 ) + '" ' ,
+                                                    "__xme" : __m_rev1.nl2()+'après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr( i + 1 , 1 ) + '" ' ,
                                                     "element" : element
                                                 } ));
                                         }
@@ -2621,7 +2621,7 @@ class c_astphpparseur_vers_rev1{
                                 }else{
                                     return(this.#astphp_le( {
                                             "__xst" : false ,
-                                            "__xme" : '1315 après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' ,
+                                            "__xme" : __m_rev1.nl2()+'après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' ,
                                             "element" : element
                                         } ));
                                 }
@@ -2635,14 +2635,14 @@ class c_astphpparseur_vers_rev1{
                         nouvelle_chaine='\\\'' + nouvelle_chaine;
                         i--;
                     }else{
-                        return(this.#astphp_le( {"__xst" : false ,"__xme" : '1327 il doit y avoir un backslash avant un apostrophe ' ,"element" : element} ));
+                        return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'il doit y avoir un backslash avant un apostrophe ' ,"element" : element} ));
                     }
                 }else if(rv.substr( i , 1 ) === '"' && rv.substr( 0 , 1 ) === '"'){
                     if(i >= 2 && rv.substr( i - 1 , 1 ) === '\\'){
                         nouvelle_chaine='\\"' + nouvelle_chaine;
                         i--;
                     }else{
-                        return(this.#astphp_le( {"__xst" : false ,"__xme" : '1774 il doit y avoir un backslash avant un guillemet ' ,"element" : element} ));
+                        return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'il doit y avoir un backslash avant un guillemet ' ,"element" : element} ));
                     }
                 }else{
                     nouvelle_chaine=rv.substr( i , 1 ) + nouvelle_chaine;
@@ -2681,7 +2681,7 @@ class c_astphpparseur_vers_rev1{
                 t+='p(' + obj.__xva + ')';
                 les_arguments_courts+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1089 #traite_arguments' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'arguments' ,"element" : element} ));
             }
         }
         return({"__xst" : true ,"__xva" : t ,"les_arguments_courts" : les_arguments_courts});
@@ -2705,7 +2705,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     valeur_par_defaut=', valeur_defaut( ' + obj.__xva + ' )';
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1514 #traite_arguments' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'arguments' ,"element" : element} ));
                 }
             }
             /* on traite le variadic dans #traite_element. */
@@ -2716,14 +2716,13 @@ class c_astphpparseur_vers_rev1{
                 nullable='';
                 /* pas encore traité */
                 if(element.arguments[i].hasOwnProperty( 'flags' ) && element.arguments[i].flags !== 0){
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1825 #traite_arguments flag != 0' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'flag != 0' ,"element" : element} ));
                 }
                 if(element.arguments[i].hasOwnProperty( 'nullable' ) && element.arguments[i].nullable !== false){
                     nullable='?';
-                    /* return(this.#astphp_le({"__xst" : false ,"__xme" : '1860 #traite_arguments nullable != false' ,"element" : element})); */
                 }
                 if(element.arguments[i].hasOwnProperty( 'readonly' ) && element.arguments[i].readonly !== false){
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1864 #traite_arguments readonly != false' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'readonly != false' ,"element" : element} ));
                 }
                 if(element.arguments[i].hasOwnProperty( 'type' ) && element.arguments[i].type !== null){
                     if(element.arguments[i].type.kind === 'name'){
@@ -2737,7 +2736,7 @@ class c_astphpparseur_vers_rev1{
                         if(obj.__xst === true){
                             type_argument=',type_argument(' + nullable + obj.__xva + ')';
                         }else{
-                            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1876  #traite_arguments type "' + JSON.stringify( element.arguments[i].type ) + '"' ,"element" : element} ));
+                            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+' "' + JSON.stringify( element.arguments[i].type ) + '"' ,"element" : element} ));
                         }
                     }
                 }
@@ -2747,7 +2746,7 @@ class c_astphpparseur_vers_rev1{
                     t+='argument(' + nom_argument + valeur_par_defaut + type_argument + ')';
                 }
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1089 #traite_arguments' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
         }
         if(t.length > 0){
@@ -2766,17 +2765,17 @@ class c_astphpparseur_vers_rev1{
             nullable='?';
         }
         if(element.readonly){
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1588 #traite_property ' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'readonly' ,"element" : element} ));
         }
         if(element.name){
             obj=this.#traite_element( element.name , niveau , element , tab_comm );
             if(obj.__xst === true){
                 t+=nullable + '$' + obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0135 #traite_function nom' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'name' ,"element" : element} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1588 #traite_property ' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -2800,7 +2799,7 @@ class c_astphpparseur_vers_rev1{
         }else if(element.visibility === 'public'){
             visibility='variable_publique' + statique;
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1624 #traite_propertystatement "' + element.visibility + '"' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'visibility "' + element.visibility + '"' ,"element" : element} ));
         }
         if(element.properties){
             for( let i=0 ; i < element.properties.length ; i++ ){
@@ -2818,17 +2817,7 @@ class c_astphpparseur_vers_rev1{
                             type_variable='type_variable(' + nullable + element.properties[i].type.name + '),';
                         }
                     }else{
-                        debugger;
-                        return(this.#astphp_le( {"__xst" : false ,"__xme" : '2724 #traite_propertystatement "' + element.properties[i].type.kind + '" ' ,"element" : element} ));
-                        /*#
-                          obj=this.#traite_element(element.properties[i].type,niveau,element,tab_comm);
-                          if(obj.__xst === true){
-                           
-                              type_variable='type_variable(' + obj.__xva + '),';
-                          }else{
-                              return(this.#astphp_le({"__xst" : false ,"__xme" : '1977 #traite_propertystatement value' ,"element" : element}));
-                          }
-                        */
+                        return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'propertie "' + element.properties[i].type.kind + '" ' ,"element" : element} ));
                     }
                 }
                 if(element.properties[i].value){
@@ -2836,22 +2825,13 @@ class c_astphpparseur_vers_rev1{
                     if(obj.__xst === true){
                         valeur_defaut=',valeur_defaut(' + obj.__xva + ')';
                     }else{
-                        return(this.#astphp_le( {"__xst" : false ,"__xme" : '1977 #traite_propertystatement value' ,"element" : element} ));
+                        return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'value' ,"element" : element} ));
                     }
                 }
                 if(element.properties[i].name && element.properties[i].name.kind === 'identifier'){
                     t+=visibility + '(' + type_variable + '$' + element.properties[i].name.name + valeur_defaut + ')';
                 }else{
-                    debugger;
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2749 #traite_propertystatement value' ,"element" : element} ));
-                    /*
-                      obj=this.#traite_element(element.properties[i],niveau,element,tab_comm);
-                      if(obj.__xst === true){
-                      t+=visibility + '(' + type_variable + obj.__xva + valeur_defaut + ')';
-                      }else{
-                      return(this.#astphp_le({"__xst" : false ,"__xme" : '0135 #traite_function nom' ,"element" : element}));
-                      }
-                    */
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'identifier' ,"element" : element} ));
                 }
             }
         }
@@ -2872,21 +2852,6 @@ class c_astphpparseur_vers_rev1{
         let abstraite='';
         let nullable='';
         let finale='';
-        /*
-          arguments: []
-          attrGroups: []
-          body: Block {kind: 'block', loc: Location, children: Array(1)}
-          byref: false
-          isAbstract: false
-          isFinal: false
-          isReadonly: false
-          isStatic: false
-          kind: "method"
-          name: Identifier {kind: 'identifier', loc: Location, name: '__construct'}
-          nullable: false
-          type: null
-          visibility: "public"
-        */
         if(element.nullable){
             nullable='?';
         }
@@ -2897,13 +2862,13 @@ class c_astphpparseur_vers_rev1{
             statique=',statique()';
         }
         if(element.isReadonly){
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1885 #traite_method ' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'readonly' ,"element" : element} ));
         }
         if(element.isAbstract){
             abstraite='abstraite()';
         }
         if(element.byref){
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1892 #traite_method ' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'byref' ,"element" : element} ));
         }
         if(element.type){
             if(element.type.kind === 'typereference'){
@@ -2911,14 +2876,14 @@ class c_astphpparseur_vers_rev1{
             }else if(element.type.kind === 'name'){
                 type_retour='type_retour(\'' + nullable + element.type.name.replace( /\\/g , '\\\\' ) + '\')';
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1897 #traite_method ' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'type' ,"element" : element} ));
             }
         }
         obj=this.#traite_arguments( element , niveau , parent , tab_comm , 'argument' );
         if(obj.__xst === true){
             les_arguments+=obj.__xva;
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1198 #traite_method arguments' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'arguments' ,"element" : element} ));
         }
         if(element.body){
             if(element.body.kind === undefined){
@@ -2933,7 +2898,7 @@ class c_astphpparseur_vers_rev1{
                     contenu=',contenu(' + obj.__xva + ')';
                 }
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1606 #traite_method body' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
             }
         }
         if(element.visibility === 'public'){
@@ -2945,13 +2910,13 @@ class c_astphpparseur_vers_rev1{
         }else if(element.visibility === ''){
             visibility+='';
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1587 #traite_method "' + element.visibility + '" ' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'visibility "' + element.visibility + '" ' ,"element" : element} ));
         }
         obj=this.#traite_element( element.name , niveau , element , tab_comm );
         if(obj.__xst === true){
             nom_methode+=obj.__xva;
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1599 #traite_method nom' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'nom' ,"element" : element} ));
         }
         t+='méthode(definition( nomm(' + nom_methode + ') ' + finale + abstraite + statique + les_arguments + visibility + type_retour + ')' + contenu + ')';
         return({"__xst" : true ,"__xva" : t});
@@ -2977,7 +2942,7 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             nom_class+=obj.__xva;
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1599 #traite_class nom' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'name' ,"element" : element} ));
         }
         if(element.body){
             if(element.body.kind === undefined){
@@ -2990,7 +2955,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1606 #traite_class body' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
             }
         }
         if(element.extends){
@@ -2998,7 +2963,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 etend+=',étend(' + obj.__xva + ')';
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1599 #traite_class nom' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'extends' ,"element" : element} ));
             }
         }
         if(element.implements){
@@ -3008,7 +2973,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     implemente=',implemente(' + obj.__xva + ')';
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1977 #traite_propertystatement value' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'implements' ,"element" : element} ));
                 }
             }
         }
@@ -3016,13 +2981,13 @@ class c_astphpparseur_vers_rev1{
             abstraite=',abstraite()';
         }
         if(element.isAnonymous){
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '2792 #traite_class ' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'anonymous' ,"element" : element} ));
         }
         if(element.isFinal){
             finale=',finale()';
         }
         if(element.isReadonly){
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '2798 #traite_class ' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'readonly' ,"element" : element} ));
         }
         t+='definition_de_classe( nom_classe(' + nom_class + ') ' + finale + abstraite + implemente + etend + ', contenu( ' + contenu + ' ))';
         return({"__xst" : true ,"__xva" : t});
@@ -3041,20 +3006,20 @@ class c_astphpparseur_vers_rev1{
         if(obj.__xst === true){
             nom_fonction+=obj.__xva;
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '0135 #traite_function nom' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'nom fonction' ,"element" : element} ));
         }
         obj=this.#traite_arguments( element , niveau , parent , tab_comm , 'argument' );
         if(obj.__xst === true){
             les_arguments+=obj.__xva;
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '1198 #traite_function arguments' ,"element" : element} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'arguments' ,"element" : element} ));
         }
         if(element.body){
             obj=this.#traite_ast0( element.body , niveau + 1 , element , tab_comm );
             if(obj.__xst === true){
                 contenu+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '1098 #traite_function body' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'body' ,"element" : element} ));
             }
         }
         if(element.type){
@@ -3157,11 +3122,11 @@ class c_astphpparseur_vers_rev1{
             if(parent){
                 return({
                         "__xst" : false ,
-                        "__xme" : '2770 #traite_commentaires_debut cas non prévu pour enfant de "' + JSON.stringify( parent ) + '"' ,
+                        "__xme" : __m_rev1.nl2(e)+'cas non prévu pour enfant de "' + JSON.stringify( parent ) + '"' ,
                         "element" : parent
                     });
             }
-            return({"__xst" : false ,"__xme" : '2776 #traite_commentaires_debut cas non prévu'});
+            return({"__xst" : false ,"__xme" : __m_rev1.nl2(e)+' cas non prévu'});
         }
         return({"__xst" : true ,"__xva" : t});
     }
@@ -3210,7 +3175,7 @@ class c_astphpparseur_vers_rev1{
     */
     #traite_element( element , niveau , parent , tab_comm ){
         if(element === undefined){
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '2205 #traite_element element non défini ' ,"element" : parent} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'element non défini ' ,"element" : parent} ));
         }
         let t='';
         let obj=null;
@@ -3221,7 +3186,7 @@ class c_astphpparseur_vers_rev1{
             if(obj.__xst === true){
                 t+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '2831 #traite_element ' ,"element" : parent ? ( null ) : ( parent )} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : parent ? ( null ) : ( parent )} ));
             }
         }
         switch (element.kind){
@@ -3303,7 +3268,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2520 #traite_element string type non prévu "' + JSON.stringify( element ) + '"' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'string type non prévu "' + JSON.stringify( element ) + '"' ,"element" : element} ));
                 }
                 break;
                 
@@ -3312,7 +3277,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0080 #traite_element include' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'offsetlookup' ,"element" : element} ));
                 }
                 break;
                 
@@ -3321,7 +3286,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0178 #traite_element call' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'call' ,"element" : element} ));
                 }
                 break;
                 
@@ -3330,7 +3295,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0080 #traite_element include' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'include' ,"element" : element} ));
                 }
                 break;
                 
@@ -3339,7 +3304,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0132 #traite_element print' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'print' ,"element" : element} ));
                 }
                 break;
                 
@@ -3348,7 +3313,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0907 #traite_element print' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'echo' ,"element" : element} ));
                 }
                 break;
                 
@@ -3357,7 +3322,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0166 #traite_element call' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'call' ,"element" : element} ));
                 }
                 break;
                 
@@ -3366,7 +3331,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0182 #traite_element assign' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'assign' ,"element" : element} ));
                 }
                 break;
                 
@@ -3375,7 +3340,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1791 #traite_element function' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'function' ,"element" : element} ));
                 }
                 break;
                 
@@ -3384,7 +3349,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1800 #traite_element unset' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'unset' ,"element" : element} ));
                 }
                 break;
                 
@@ -3393,7 +3358,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1809 #traite_element isset' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'isset' ,"element" : element} ));
                 }
                 break;
                 
@@ -3402,7 +3367,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1818 #traite_element inline' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'inline' ,"element" : element} ));
                 }
                 break;
                 
@@ -3411,7 +3376,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1827 #traite_element bin' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'bin' ,"element" : element} ));
                 }
                 break;
                 
@@ -3420,7 +3385,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1836 #traite_element unary' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'unary' ,"element" : element} ));
                 }
                 break;
                 
@@ -3429,7 +3394,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1845 #traite_element array' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'array' ,"element" : element} ));
                 }
                 break;
                 
@@ -3438,7 +3403,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1854 #traite_element retif' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'retif' ,"element" : element} ));
                 }
                 break;
                 
@@ -3447,7 +3412,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1863 #traite_element usegroup' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'usegroup' ,"element" : element} ));
                 }
                 break;
                 
@@ -3456,7 +3421,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1872 #traite_element propertylookup' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'propertylookup' ,"element" : element} ));
                 }
                 break;
                 
@@ -3465,7 +3430,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2323 #traite_element pre' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'staticlookup' ,"element" : element} ));
                 }
                 break;
                 
@@ -3474,7 +3439,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1890 #traite_element new' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'new' ,"element" : element} ));
                 }
                 break;
                 
@@ -3483,7 +3448,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1899 #traite_element try' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'try' ,"element" : element} ));
                 }
                 break;
                 
@@ -3492,7 +3457,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1908 #traite_element catch' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'catch' ,"element" : element} ));
                 }
                 break;
                 
@@ -3501,7 +3466,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1917 #traite_element return' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'return' ,"element" : element} ));
                 }
                 break;
                 
@@ -3510,7 +3475,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1926 #traite_element return' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'exit' ,"element" : element} ));
                 }
                 break;
                 
@@ -3519,7 +3484,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1935 #traite_element return' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'silent' ,"element" : element} ));
                 }
                 break;
                 
@@ -3528,7 +3493,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1944 #traite_element while' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'while' ,"element" : element} ));
                 }
                 break;
                 
@@ -3537,7 +3502,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '3132 #traite_element do' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'do' ,"element" : element} ));
                 }
                 break;
                 
@@ -3546,7 +3511,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1953 #traite_element for' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'for' ,"element" : element} ));
                 }
                 break;
                 
@@ -3555,7 +3520,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1962 #traite_element foreach' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'foreach' ,"element" : element} ));
                 }
                 break;
                 
@@ -3564,7 +3529,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1971 #traite_element post' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'post' ,"element" : element} ));
                 }
                 break;
                 
@@ -3573,7 +3538,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1980 #traite_element pre' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'pre' ,"element" : element} ));
                 }
                 break;
                 
@@ -3582,7 +3547,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2807 #traite_element encapsedpart' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'encapsedpart' ,"element" : element} ));
                 }
                 break;
                 
@@ -3591,7 +3556,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1989 #traite_element encapsed' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'encapsed' ,"element" : element} ));
                 }
                 break;
                 
@@ -3600,7 +3565,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '1998 #traite_element cast' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'cast' ,"element" : element} ));
                 }
                 break;
                 
@@ -3610,7 +3575,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2341 #traite_element break' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'break' ,"element" : element} ));
                 }
                 break;
                 break;
@@ -3620,7 +3585,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2010 #traite_element if' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'if' ,"element" : element} ));
                 }
                 break;
                 
@@ -3629,7 +3594,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2276 #traite_element switch' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'switch' ,"element" : element} ));
                 }
                 break;
                 
@@ -3638,7 +3603,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2276 #traite_element case' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'case' ,"element" : element} ));
                 }
                 break;
                 
@@ -3647,7 +3612,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2238 #traite_element class' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'class' ,"element" : element} ));
                 }
                 break;
                 
@@ -3656,7 +3621,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2247 #traite_element propertystatement' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'propertystatement' ,"element" : element} ));
                 }
                 break;
                 
@@ -3665,7 +3630,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2256 #traite_element property' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'property' ,"element" : element} ));
                 }
                 break;
                 
@@ -3674,7 +3639,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2266 #traite_element method' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'method' ,"element" : element} ));
                 }
                 break;
                 
@@ -3683,7 +3648,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2437 #traite_element global' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'global' ,"element" : element} ));
                 }
                 break;
                 
@@ -3692,7 +3657,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2447 #traite_element list' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'list' ,"element" : element} ));
                 }
                 break;
                 
@@ -3701,7 +3666,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2483 #traite_element continue' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'continue' ,"element" : element} ));
                 }
                 break;
                 
@@ -3710,7 +3675,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2527 #traite_element empty' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'empty' ,"element" : element} ));
                 }
                 break;
                 
@@ -3719,7 +3684,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2589 #traite_element assignref' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'assignref' ,"element" : element} ));
                 }
                 break;
                 
@@ -3728,7 +3693,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2694 #traite_element nowdoc' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'nowdoc' ,"element" : element} ));
                 }
                 break;
                 
@@ -3737,7 +3702,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2760 #traite_element declare' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'declare' ,"element" : element} ));
                 }
                 break;
                 
@@ -3746,7 +3711,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2760 #traite_element namespace' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'namespace' ,"element" : element} ));
                 }
                 break;
                 
@@ -3755,7 +3720,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2760 #traite_element interface' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'interface' ,"element" : element} ));
                 }
                 break;
                 
@@ -3764,7 +3729,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2932 #traite_element typereference' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'typereference' ,"element" : element} ));
                 }
                 break;
                 
@@ -3773,7 +3738,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '2962 #traite_element throw' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'throw' ,"element" : element} ));
                 }
                 break;
                 
@@ -3782,7 +3747,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '3046 #traite_element static' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'static' ,"element" : element} ));
                 }
                 break;
                 
@@ -3791,7 +3756,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '3075 #traite_element staticvariable' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'staticvariable' ,"element" : element} ));
                 }
                 break;
                 
@@ -3800,7 +3765,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '3126 #traite_element closure' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'closure' ,"element" : element} ));
                 }
                 break;
                 
@@ -3809,7 +3774,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '3295 #traite_element classconstant' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'classconstant' ,"element" : element} ));
                 }
                 break;
                 
@@ -3818,7 +3783,7 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '3295 #traite_element constant' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'constant' ,"element" : element} ));
                 }
                 break;
                 
@@ -3827,12 +3792,12 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '3769 #traite_element clone' ,"element" : element} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'clone' ,"element" : element} ));
                 }
                 break;
                 
             default:
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0300 💥💥💥 non prévu dans #traite_element pour kind = "' + element.kind + '"' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'💥💥💥 non prévu kind = "' + element.kind + '"' ,"element" : element} ));
                 
         }
         return({"__xst" : true ,"__xva" : t});
@@ -3857,7 +3822,7 @@ class c_astphpparseur_vers_rev1{
                         if(obj.__xst === true){
                             t+=obj.__xva;
                         }else{
-                            return(this.#astphp_le( {"__xst" : false ,"__xme" : '3424 #traite_ast0 ' ,"element" : element} ));
+                            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                         }
                     }
                     switch (element.children[i].kind){
@@ -3866,7 +3831,7 @@ class c_astphpparseur_vers_rev1{
                             if(obj.__xst === true){
                                 t+=espaces + obj.__xva;
                             }else{
-                                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0066 #traite_ast0 expressionstatement' ,"element" : element} ));
+                                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'expressionstatement' ,"element" : element} ));
                             }
                             break;
                             
@@ -3875,7 +3840,7 @@ class c_astphpparseur_vers_rev1{
                             if(obj.__xst === true){
                                 t+=espaces + obj.__xva;
                             }else{
-                                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0342 #traite_ast0 default' ,"element" : element} ));
+                                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'default' ,"element" : element} ));
                             }
                             break;
                             
@@ -3889,14 +3854,14 @@ class c_astphpparseur_vers_rev1{
                 if(obj.__xst === true){
                     t+=espaces + obj.__xva;
                 }else{
-                    return(this.#astphp_le( {"__xst" : false ,"__xme" : '0066 #traite_ast0 expressionstatement' ,"element" : element.expression} ));
+                    return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'expressionstatement' ,"element" : element.expression} ));
                 }
                 break;
                 
             default:
                 debugger;
                 /* ========================== */
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '3744 #traite_ast0 default' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'default' ,"element" : element} ));
                 break;
                 
         }
@@ -3920,10 +3885,10 @@ class c_astphpparseur_vers_rev1{
                 }
                 t+=obj.__xva;
             }else{
-                return(this.#astphp_le( {"__xst" : false ,"__xme" : '0066 #traite_ast0 expressionstatement'} ));
+                return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()} ));
             }
         }else{
-            return(this.#astphp_le( {"__xst" : false ,"__xme" : '0040 traite_ast ce n\'est pas un programme'} ));
+            return(this.#astphp_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'ce n\'est pas un programme'} ));
         }
         return({"__xst" : true ,"__xva" : t});
     }

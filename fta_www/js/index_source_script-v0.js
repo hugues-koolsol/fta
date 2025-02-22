@@ -58,7 +58,7 @@ function convertSource( objMatSrc ){
     if(type_source == ''){
         return(__m_rev1.empiler_erreur( {
                 "__xst" : false ,
-                "__xme" : 'file core , fonction convertSource la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '
+                "__xme" : __m_rev1.nl2()+'la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '
             } ));
     }
     var t='';
@@ -68,7 +68,7 @@ function convertSource( objMatSrc ){
             if(retProgrammeSource.__xst === true){
                 t+='<?php' + CRLF + retProgrammeSource.__xva + CRLF + '?>';
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un php'} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+'erreur dans un php'} ));
             }
             t=t.replace( /\/\*\*\//g , '' );
             t=t.replace( /\?><\?php/g , '' );
@@ -96,7 +96,7 @@ function convertSource( objMatSrc ){
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un javascript'} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+'erreur dans un javascript'} ));
             }
             return({
                     "__xst" : true ,
@@ -111,7 +111,7 @@ function convertSource( objMatSrc ){
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un html'} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+'erreur dans un html'} ));
             }
             return({
                     "__xst" : true ,
@@ -126,7 +126,7 @@ function convertSource( objMatSrc ){
             if(retProgrammeSource.__xst === true){
                 t+=retProgrammeSource.__xva;
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : 'file core , fonction convertSource : erreur dans un sql'} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+'erreur dans un sql'} ));
             }
             return({
                     "__xst" : true ,
@@ -138,7 +138,7 @@ function convertSource( objMatSrc ){
                 });
         }
     }else{
-        return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : 0 ,"__xme" : 'file_name, file_path and source must be filled'} ));
+        return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : 0 ,"__xme" : __m_rev1.nl2()+'les noms et chemin du fichier doivent être complétés'} ));
     }
 }
 /*
@@ -352,7 +352,6 @@ function enregistrer2(){
         document.getElementById( 'bouton_voir_tableau' ).style.display='inline-block';
         document.getElementById( 'zoneContenantLeSourceGenere2' ).value=conversion.__xva;
     }
-    __gi1.remplir_et_afficher_les_messages1( 'zonesource' );
     if(matriceFonction.__xst === true && sourcesCompactesIdentiques){
         if(a.value == fonctionReecriteAvecRetour1.__xva.replace( /\r\n/g , '\n' )){
             __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : '<b>👍👍 sources Egaux</b>'} );
@@ -378,7 +377,7 @@ function enregistrer2(){
                             document.getElementById( 'sauvegarderLeNormalise' ).disabled=false;
                             document.getElementById( 'nomDuSource' ).disabled=false;
                         }else{
-                            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'il y a eu un problème d\'écriture sur disque'} );
+                            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'il y a eu un problème d\'écriture sur disque'} );
                         }
                         __gi1.remplir_et_afficher_les_messages1( 'zonesource' );
                     } );
@@ -386,10 +385,11 @@ function enregistrer2(){
         }else{
             __m_rev1.empiler_erreur( {
                     "__xst" : false ,
-                    "__xme" : 'les sources sont différents mais les compactés sont égaux : <a href="javascript:reprendre()" style="border:2px lawngreen outset;background:lawngreen;">reprendre</a>&nbsp;<a style="border:2px lawngreen outset;background:lawngreen;" href="javascript:reprendreEtRecompiler()">reprendre et recompiler</a>  '
+                    "__xme" : 'les sources sont différents mais les compactés sont égaux : <br /><a href="javascript:reprendre()" class="yysucces">reprendre</a>&nbsp;<a class="yysucces" href="javascript:reprendreEtRecompiler()">reprendre et recompiler</a>'
                 } );
         }
     }
+    __gi1.remplir_et_afficher_les_messages1( 'zonesource' );
 }
 /*
   =====================================================================================================================
