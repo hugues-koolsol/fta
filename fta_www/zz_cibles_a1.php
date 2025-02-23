@@ -589,7 +589,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                     
                     if(mkdir($__dossier)){
 
-                        ajouterMessage('succes',__LINE__ . ' le dossier "' . $__dossier . '" a été créé avec succès !',BNF);
+                        ajouterMessage(__xsu,__LINE__ . ' le dossier "' . $__dossier . '" a été créé avec succès !',BNF);
 
                     }else{
 
@@ -642,7 +642,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                         
                         if(rmdir($__dossier)){
 
-                            ajouterMessage('succes',__LINE__ . ' le dossier "' . $__dossier . '" a été supprimé avec succès !',BNF);
+                            ajouterMessage(__xsu,__LINE__ . ' le dossier "' . $__dossier . '" a été supprimé avec succès !',BNF);
                             unset($_SESSION[APP_KEY][NAV][BNF]);
 
                         }else{

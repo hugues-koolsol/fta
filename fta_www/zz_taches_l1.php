@@ -69,10 +69,13 @@ if(isset($_POST['__ordonner_les_taches'])){
             if($tt2[__xst] === false){
 
                 ajouterMessage('erreur',__LINE__ . ' : ' . $tt2[__xme]);
-                recharger_la_page(BNF);
 
+            }else{
+
+                ajouterMessage(__xsu,__LINE__ . ' les tâches sont réordonnées');
             }
 
+            recharger_la_page(BNF);
 
         }
 

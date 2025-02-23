@@ -36,7 +36,11 @@ h1{text-align:center;}
 h1{  border:0;  margin:0;  height:10vmin; } 
 #numero_de_joueur{  font-size:1.8em;  color:red; text-align:center; } 
 @keyframes acsb1 { 
-   0% { transform: translateY(0)    } 25% { transform: translateY(15px) } 50% { transform: translateY(-15px)} 75% { transform: translateY(15px) } 100% { transform: translateY(0)  }
+   0% { transform: translateY(0)    } 
+  25% { transform: translateY(15px) } 
+  50% { transform: translateY(-15px)} 
+  75% { transform: translateY(15px) } 
+ 100% { transform: translateY(0)  }
 } 
 .csb1 { 
   animation: acsb1 0.25s; animation-iteration-count: 3;
@@ -45,8 +49,7 @@ h1{  border:0;  margin:0;  height:10vmin; }
   color: blue!important;
   background: yellow;
   animation: acsb1 0.25s; animation-iteration-count: 3;
-}
-        '),
+}'),
       #(
         =========================================================================================================
         on peut utiliser le css principal 
@@ -56,8 +59,7 @@ h1{  border:0;  margin:0;  height:10vmin; }
       style( ( 'type' , "text/css" ) , '
 tbody tr:nth-child(2n) {
  background-color: revert;
-}
-        ')
+}')
    ),
    body(
       h1( 'tictactoe' , a( ( 'href' , "." ) , 'page d\'accueil' )),
@@ -73,315 +75,330 @@ tbody tr:nth-child(2n) {
       ),
       javascriptDansHtml(
          ( 'type' , "text/javascript"),
-         directive( "use strict"),
-         declare( numero_de_joueur , 'x'),
-         declare( termine , false),
-         declare( message1 , ' clique sur une case '),
-         #( ================================================================ ),
-         fonction(
-            definition( nom(verifie_gagnant1) , argument(nj)),
-            contenu(
-               declare( i , 0),
-               boucle(
-                  initialisation( affecte( i , 0 )),
-                  condition( inf( i , 3 )),
-                  increment(i++),
-                  faire(
-                     choix(
-                        si(
-                           condition(
-                              et(
-                                 egalstricte(
-                                    appelf(
-                                       element(document),
-                                       nomf(getElementById),
-                                       p( plus( mult( i , 3 ) , 0 )),
-                                       prop(innerHTML)
+         source(
+            directive( "use strict"),
+            #(
+              =============================================================================================
+            ),
+            declare( numero_de_joueur , 'x'),
+            declare( termine , false),
+            declare( message1 , ' clique sur une case '),
+            #(
+              =============================================================================================
+            ),
+            fonction(
+               definition( nom(verifie_gagnant1) , argument(nj)),
+               contenu(
+                  declare( i , 0),
+                  boucle(
+                     initialisation( affecte( i , 0 )),
+                     condition( inf( i , 3 )),
+                     increment(i++),
+                     faire(
+                        choix(
+                           si(
+                              condition(
+                                 et(
+                                    egalstricte(
+                                       appelf(
+                                          element(document),
+                                          nomf(getElementById),
+                                          p( plus( mult( i , 3 ) , 0 )),
+                                          prop(innerHTML)
+                                       ),
+                                       nj
                                     ),
-                                    nj
-                                 ),
-                                 egalstricte(
-                                    appelf(
-                                       element(document),
-                                       nomf(getElementById),
-                                       p( plus( mult( i , 3 ) , 1 )),
-                                       prop(innerHTML)
+                                    egalstricte(
+                                       appelf(
+                                          element(document),
+                                          nomf(getElementById),
+                                          p( plus( mult( i , 3 ) , 1 )),
+                                          prop(innerHTML)
+                                       ),
+                                       nj
                                     ),
-                                    nj
-                                 ),
-                                 egalstricte(
-                                    appelf(
-                                       element(document),
-                                       nomf(getElementById),
-                                       p( plus( mult( i , 3 ) , 2 )),
-                                       prop(innerHTML)
-                                    ),
-                                    nj
+                                    egalstricte(
+                                       appelf(
+                                          element(document),
+                                          nomf(getElementById),
+                                          p( plus( mult( i , 3 ) , 2 )),
+                                          prop(innerHTML)
+                                       ),
+                                       nj
+                                    )
                                  )
-                              )
-                           ),
-                           alors( retourner(1))
+                              ),
+                              alors( retourner(1))
+                           )
                         )
                      )
-                  )
-               ),
-               declare( i , 0),
-               boucle(
-                  initialisation( affecte( i , 0 )),
-                  condition( inf( i , 3 )),
-                  increment(i++),
-                  faire(
-                     choix(
-                        si(
-                           condition(
-                              et(
-                                 egalstricte(
-                                    appelf( element(document) , nomf(getElementById) , p( plus( i , 0 ) ) , prop(innerHTML)),
-                                    nj
-                                 ),
-                                 egalstricte(
-                                    appelf( element(document) , nomf(getElementById) , p( plus( i , 3 ) ) , prop(innerHTML)),
-                                    nj
-                                 ),
-                                 egalstricte(
-                                    appelf( element(document) , nomf(getElementById) , p( plus( i , 6 ) ) , prop(innerHTML)),
-                                    nj
+                  ),
+                  declare( i , 0),
+                  boucle(
+                     initialisation( affecte( i , 0 )),
+                     condition( inf( i , 3 )),
+                     increment(i++),
+                     faire(
+                        choix(
+                           si(
+                              condition(
+                                 et(
+                                    egalstricte(
+                                       appelf( element(document) , nomf(getElementById) , p( plus( i , 0 ) ) , prop(innerHTML)),
+                                       nj
+                                    ),
+                                    egalstricte(
+                                       appelf( element(document) , nomf(getElementById) , p( plus( i , 3 ) ) , prop(innerHTML)),
+                                       nj
+                                    ),
+                                    egalstricte(
+                                       appelf( element(document) , nomf(getElementById) , p( plus( i , 6 ) ) , prop(innerHTML)),
+                                       nj
+                                    )
                                  )
-                              )
-                           ),
-                           alors( retourner(1))
+                              ),
+                              alors( retourner(1))
+                           )
                         )
                      )
-                  )
-               ),
-               choix(
-                  si(
-                     condition(
-                        et(
-                           egalstricte( appelf( element(document) , nomf(getElementById) , p(0) , prop(innerHTML) ) , nj),
-                           egalstricte( appelf( element(document) , nomf(getElementById) , p(4) , prop(innerHTML) ) , nj),
-                           egalstricte( appelf( element(document) , nomf(getElementById) , p(8) , prop(innerHTML) ) , nj)
+                  ),
+                  choix(
+                     si(
+                        condition(
+                           et(
+                              egalstricte( appelf( element(document) , nomf(getElementById) , p(0) , prop(innerHTML) ) , nj),
+                              egalstricte( appelf( element(document) , nomf(getElementById) , p(4) , prop(innerHTML) ) , nj),
+                              egalstricte( appelf( element(document) , nomf(getElementById) , p(8) , prop(innerHTML) ) , nj)
+                           )
+                        ),
+                        alors( retourner(1))
+                     )
+                  ),
+                  choix(
+                     si(
+                        condition(
+                           et(
+                              egalstricte( appelf( element(document) , nomf(getElementById) , p(6) , prop(innerHTML) ) , nj),
+                              egalstricte( appelf( element(document) , nomf(getElementById) , p(4) , prop(innerHTML) ) , nj),
+                              egalstricte( appelf( element(document) , nomf(getElementById) , p(2) , prop(innerHTML) ) , nj)
+                           )
+                        ),
+                        alors( retourner(1))
+                     )
+                  ),
+                  #( egalite ),
+                  declare( case_vide_trouve , false),
+                  declare(
+                     lst,
+                     appelf(
+                        element( appelf( element(document) , nomf(getElementById) , p( 't1' ) )),
+                        nomf(getElementsByTagName),
+                        p( 'td')
+                     )
+                  ),
+                  declare( i , 0),
+                  boucle(
+                     initialisation( affecte( i , 0 )),
+                     condition( inf( i , lst.length )),
+                     increment(i++),
+                     faire(
+                        choix(
+                           si( condition( egalstricte( lst[i].innerHTML , '&nbsp;' ) ) , alors( affecte( case_vide_trouve , true ) ))
+                        )
+                     )
+                  ),
+                  choix(
+                     si(
+                        condition( egalstricte( case_vide_trouve , false )),
+                        alors(
+                           retourner(0),
+                           #( egalite )
+                        )
+                     )
+                  ),
+                  retourner(2)
+               )
+            ),
+            #(
+              =============================================================================================
+            ),
+            fonction(
+               definition( nom(recommencer)),
+               contenu(
+                  affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , 'csb1'),
+                  declare(
+                     lst,
+                     appelf(
+                        element( appelf( element(document) , nomf(getElementById) , p( 't1' ) )),
+                        nomf(getElementsByTagName),
+                        p( 'td')
+                     )
+                  ),
+                  declare( i , 0),
+                  boucle( initialisation( affecte( i , 0 ) ) , condition( inf( i , lst.length ) ) , increment(i++) , faire( affecte( lst[i].innerHTML , '&nbsp;' ) )),
+                  affecte( numero_de_joueur , 'x'),
+                  affecte( termine , false),
+                  affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(innerHTML) ) , plus( numero_de_joueur , message1 )),
+                  appelf(
+                     nomf(setTimeout),
+                     p(
+                        appelf(
+                           nomf(function),
+                           contenu(
+                              affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , '')
+                           ),
+                           p()
                         )
                      ),
-                     alors( retourner(1))
+                     p(250)
                   )
-               ),
-               choix(
-                  si(
-                     condition(
-                        et(
-                           egalstricte( appelf( element(document) , nomf(getElementById) , p(6) , prop(innerHTML) ) , nj),
-                           egalstricte( appelf( element(document) , nomf(getElementById) , p(4) , prop(innerHTML) ) , nj),
-                           egalstricte( appelf( element(document) , nomf(getElementById) , p(2) , prop(innerHTML) ) , nj)
+               )
+            ),
+            #(
+              =============================================================================================
+            ),
+            fonction(
+               definition( nom(monClick) , argument(e)),
+               contenu(
+                  choix(
+                     si( condition( egalstricte( termine , true ) ) , alors( revenir() ))
+                  ),
+                  choix(
+                     si(
+                        condition( ou( egalstricte( e.target.innerHTML , 'x' ) , egalstricte( e.target.innerHTML , 'o' ) )),
+                        alors( revenir())
+                     )
+                  ),
+                  affecte( e.target.innerHTML , numero_de_joueur),
+                  declare( a_gagne , appelf( nomf(verifie_gagnant1) , p(numero_de_joueur) )),
+                  choix(
+                     si(
+                        condition( egalstricte( a_gagne , 1 )),
+                        alors(
+                           declare( t , concat( numero_de_joueur , ' a gagné !' )),
+                           affectop( '+=' , t , ' <button type="button" onclick="recommencer()">recommencer</button>'),
+                           affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(innerHTML) ) , t),
+                           affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , 'csb2'),
+                           affecte( termine , true),
+                           appelf(
+                              nomf(setTimeout),
+                              p(
+                                 appelf(
+                                    nomf(function),
+                                    contenu(
+                                       affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , '')
+                                    ),
+                                    p()
+                                 )
+                              ),
+                              p(1250)
+                           )
                         )
                      ),
-                     alors( retourner(1))
-                  )
-               ),
-               #( egalite ),
-               declare( case_vide_trouve , false),
-               declare(
-                  lst,
-                  appelf(
-                     element( appelf( element(document) , nomf(getElementById) , p( 't1' ) )),
-                     nomf(getElementsByTagName),
-                     p( 'td')
-                  )
-               ),
-               declare( i , 0),
-               boucle(
-                  initialisation( affecte( i , 0 )),
-                  condition( inf( i , lst.length )),
-                  increment(i++),
-                  faire(
-                     choix(
-                        si( condition( egalstricte( lst[i].innerHTML , '&nbsp;' ) ) , alors( affecte( case_vide_trouve , true ) ))
+                     sinonsi(
+                        condition( egalstricte( a_gagne , 2 )),
+                        alors(
+                           affecte(
+                              numero_de_joueur,
+                              testEnLigne( condition( egalstricte( numero_de_joueur , 'o' ) ) , siVrai( 'x' ) , siFaux( 'o' ))
+                           ),
+                           affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(innerHTML) ) , plus( numero_de_joueur , message1 )),
+                           affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , 'csb1'),
+                           appelf(
+                              nomf(setTimeout),
+                              p(
+                                 appelf(
+                                    nomf(function),
+                                    contenu(
+                                       affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , '')
+                                    ),
+                                    p()
+                                 )
+                              ),
+                              p(250)
+                           )
+                        )
+                     ),
+                     sinonsi(
+                        condition( egalstricte( a_gagne , 0 )),
+                        alors(
+                           declare( t , ' égalité ! '),
+                           affectop( '+=' , t , ' <button type="button" onclick="recommencer()">recommencer</button>'),
+                           affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(innerHTML) ) , t),
+                           affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , 'csb1'),
+                           affecte( termine , true),
+                           appelf(
+                              nomf(setTimeout),
+                              p(
+                                 appelf(
+                                    nomf(function),
+                                    contenu(
+                                       affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , '')
+                                    ),
+                                    p()
+                                 )
+                              ),
+                              p(1250)
+                           )
+                        )
                      )
                   )
-               ),
-               choix(
-                  si(
-                     condition( egalstricte( case_vide_trouve , false )),
-                     alors(
-                        retourner(0),
-                        #( egalite )
-                     )
-                  )
-               ),
-               retourner(2)
-            )
-         ),
-         #( ================================================================ ),
-         fonction(
-            definition( nom(recommencer)),
-            contenu(
-               affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , 'csb1'),
-               declare(
-                  lst,
-                  appelf(
-                     element( appelf( element(document) , nomf(getElementById) , p( 't1' ) )),
-                     nomf(getElementsByTagName),
-                     p( 'td')
-                  )
-               ),
-               declare( i , 0),
-               boucle( initialisation( affecte( i , 0 ) ) , condition( inf( i , lst.length ) ) , increment(i++) , faire( affecte( lst[i].innerHTML , '&nbsp;' ) )),
-               affecte( numero_de_joueur , 'x'),
-               affecte( termine , false),
-               affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(innerHTML) ) , plus( numero_de_joueur , message1 )),
-               appelf(
-                  nomf(setTimeout),
-                  p(
+               )
+            ),
+            #(
+              =============================================================================================
+            ),
+            fonction(
+               definition( nom(init)),
+               contenu(
+                  declare(
+                     lst,
                      appelf(
-                        nomf(function),
-                        contenu(
-                           affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , '')
-                        ),
-                        p()
+                        element( appelf( element(document) , nomf(getElementById) , p( 't1' ) )),
+                        nomf(getElementsByTagName),
+                        p( 'td')
                      )
                   ),
-                  p(250)
-               )
-            )
-         ),
-         #( ================================================================ ),
-         fonction(
-            definition( nom(monClick) , argument(e)),
-            contenu(
-               choix(
-                  si( condition( egalstricte( termine , true ) ) , alors( revenir() ))
-               ),
-               choix(
-                  si(
-                     condition( ou( egalstricte( e.target.innerHTML , 'x' ) , egalstricte( e.target.innerHTML , 'o' ) )),
-                     alors( revenir())
-                  )
-               ),
-               affecte( e.target.innerHTML , numero_de_joueur),
-               declare( a_gagne , appelf( nomf(verifie_gagnant1) , p(numero_de_joueur) )),
-               choix(
-                  si(
-                     condition( egalstricte( a_gagne , 1 )),
-                     alors(
-                        declare( t , concat( numero_de_joueur , ' a gagné !' )),
-                        affectop( '+=' , t , ' <button type="button" onclick="recommencer()">recommencer</button>'),
-                        affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(innerHTML) ) , t),
-                        affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , 'csb2'),
-                        affecte( termine , true),
-                        appelf(
-                           nomf(setTimeout),
-                           p(
-                              appelf(
-                                 nomf(function),
-                                 contenu(
-                                    affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , '')
-                                 ),
-                                 p()
-                              )
-                           ),
-                           p(1250)
-                        )
-                     )
+                  declare( i , 0),
+                  boucle(
+                     initialisation( affecte( i , 0 )),
+                     condition( inf( i , lst.length )),
+                     increment(i++),
+                     faire( appelf( element(lst[i]) , nomf(addEventListener) , p( 'click' ) , p(monClick) ))
                   ),
-                  sinonsi(
-                     condition( egalstricte( a_gagne , 2 )),
-                     alors(
-                        affecte(
-                           numero_de_joueur,
-                           testEnLigne( condition( egalstricte( numero_de_joueur , 'o' ) ) , siVrai( 'x' ) , siFaux( 'o' ))
-                        ),
-                        affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(innerHTML) ) , plus( numero_de_joueur , message1 )),
-                        affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , 'csb1'),
-                        appelf(
-                           nomf(setTimeout),
-                           p(
-                              appelf(
-                                 nomf(function),
-                                 contenu(
-                                    affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , '')
-                                 ),
-                                 p()
-                              )
-                           ),
-                           p(250)
-                        )
-                     )
-                  ),
-                  sinonsi(
-                     condition( egalstricte( a_gagne , 0 )),
-                     alors(
-                        declare( t , ' égalité ! '),
-                        affectop( '+=' , t , ' <button type="button" onclick="recommencer()">recommencer</button>'),
-                        affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(innerHTML) ) , t),
-                        affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , 'csb1'),
-                        affecte( termine , true),
-                        appelf(
-                           nomf(setTimeout),
-                           p(
-                              appelf(
-                                 nomf(function),
-                                 contenu(
-                                    affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , '')
-                                 ),
-                                 p()
-                              )
-                           ),
-                           p(1250)
-                        )
-                     )
-                  )
-               )
-            )
-         ),
-         #( ================================================================ ),
-         fonction(
-            definition( nom(init)),
-            contenu(
-               declare(
-                  lst,
+                  affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(innerHTML) ) , plus( numero_de_joueur , message1 )),
+                  affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , 'csb1'),
                   appelf(
-                     element( appelf( element(document) , nomf(getElementById) , p( 't1' ) )),
-                     nomf(getElementsByTagName),
-                     p( 'td')
+                     nomf(setTimeout),
+                     p(
+                        appelf(
+                           nomf(function),
+                           contenu(
+                              affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , '')
+                           ),
+                           p()
+                        )
+                     ),
+                     p(1250)
                   )
-               ),
-               declare( i , 0),
-               boucle(
-                  initialisation( affecte( i , 0 )),
-                  condition( inf( i , lst.length )),
-                  increment(i++),
-                  faire( appelf( element(lst[i]) , nomf(addEventListener) , p( 'click' ) , p(monClick) ))
-               ),
-               affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(innerHTML) ) , plus( numero_de_joueur , message1 )),
-               affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , 'csb1'),
-               appelf(
-                  nomf(setTimeout),
-                  p(
-                     appelf(
-                        nomf(function),
-                        contenu(
-                           affecte( appelf( element(document) , nomf(getElementById) , p( 'numero_de_joueur' ) , prop(className) ) , '')
-                        ),
-                        p()
-                     )
-                  ),
-                  p(1250)
                )
-            )
-         ),
-         #( ================================================================ ),
-         appelf(
-            element(window),
-            nomf(addEventListener),
-            p( 'load'),
-            p(
-               appelf(
-                  nomf(function),
-                  contenu(
-                     #( quand tout est chargé, on initialise le jeu ),
-                     appelf( nomf(init) , p())
-                  ),
-                  p()
+            ),
+            #(
+              =============================================================================================
+            ),
+            appelf(
+               element(window),
+               nomf(addEventListener),
+               p( 'load'),
+               p(
+                  appelf(
+                     nomf(function),
+                     contenu(
+                        #( quand tout est chargé, on initialise le jeu ),
+                        appelf( nomf(init) , p())
+                     ),
+                     p()
+                  )
                )
             )
          )

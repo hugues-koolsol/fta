@@ -306,7 +306,7 @@ if(isset($_POST) && count($_POST) > 0){
 
             $time_end=microtime(true);
             $time=((int)((($time_end - $time_start) * 1000) * 1000)) / 1000;
-            ajouterMessage('succes',__LINE__ . ' les fichiers sql ont bien été générés (' . $time . ' ms)',BNF);
+            ajouterMessage(__xsu,__LINE__ . ' les fichiers sql ont bien été générés (' . $time . ' ms)',BNF);
             recharger_la_page(BNF);
 
         }else{
@@ -584,7 +584,7 @@ $consUrlRedir .= $chi_id_requete !== '' ? '&amp;chi_id_requete=' . rawurlencode(
 $consUrlRedir .= $cht_rev_requete !== '' ? '&amp;cht_rev_requete=' . rawurlencode($cht_rev_requete) : '';
 $consUrlRedir .= $chp_type_requete !== '' ? '&amp;chp_type_requete=' . rawurlencode($chp_type_requete) : '';
 $boutons_avant='<a class="yyinfo" href="zz_requetes_a1.php?__action=__creation">Créer une nouvelle requete</a>';
-$boutons_avant .= ' <button class="yyavertissement" name="__action" value="__gererer_les_fichiers_des_requetes">gererer les fichiers des requetes</button>' . PHP_EOL;
+$boutons_avant .= ' <button class="yyalarme" name="__action" value="__gererer_les_fichiers_des_requetes">gererer les fichiers des requetes</button>' . PHP_EOL;
 $o1 .= construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrlRedir,$__xpage,$boutons_avant);
 $lsttbl='';
 $lsttbl .= '<thead><tr>';

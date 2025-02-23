@@ -109,7 +109,7 @@ function modifier_la_requete_en_base(&$data){
     
     if($tt[__xst] === true){
 
-        $data[__xst]=true;
+        $data[__xst]=__xsu;
         ecrire_le_php_de_la_requete_sur_disque($data[__entree]['id_requete'],$data[__entree]['php']);
 
     }else{
@@ -170,7 +170,7 @@ function enregistrer_la_requete_en_base(&$data){
     
     if($tt[__xst] === true){
 
-        $data[__xst]=true;
+        $data[__xst]=__xsu;
         $data['nouvel_id']=$tt['nouvel_id'];
         /*
           lors de la création dans l'interface, l'id est égal à 0 ou bien nnn si on part d'une requête existante
@@ -291,7 +291,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
     }
 
     $ret1=$db1temp->exec('COMMIT;');
-    $data[__xst]=true;
+    $data[__xst]=__xsu;
 
 }
 /*
@@ -415,7 +415,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
         
         if((@rename($chemin_bdd_base_temporaire,$chemin_bdd))){
 
-            $data[__xst]=true;
+            $data[__xst]=__xsu;
 
         }
 
@@ -460,7 +460,7 @@ function recuperer_les_bases_de_la_cible_en_cours(&$data){
     }
 
     $data[__xva]=$tt[__xva];
-    $data[__xst]=true;
+    $data[__xst]=__xsu;
 
 }
 /*
@@ -479,7 +479,7 @@ function recuperer_les_tableaux_des_bases(&$data){
 
         $data[__xva]=$obj[__xva];
         $id_bdd_de_la_base=$data[__entree]['id_bdd_de_la_base'];
-        $data[__xst]=true;
+        $data[__xst]=__xsu;
 
     }else{
 
@@ -603,7 +603,7 @@ function operation_sur_base(&$data,$nom_operation){
 
     }
 
-    $data[__xst]=true;
+    $data[__xst]=__xsu;
 
 }
 /*
@@ -688,7 +688,7 @@ function creer_table_dans_base(&$data){
 
     }
 
-    $data[__xst]=true;
+    $data[__xst]=__xsu;
 
 }
 /*
@@ -820,7 +820,7 @@ function ordonner_les_champs_de_table(&$data){
 
     }
 
-    $data[__xst]=true;
+    $data[__xst]=__xsu;
 
 }
 /*
@@ -852,7 +852,7 @@ function envoyer_le_rev_de_le_base_en_post(&$data){
     
     if($tt[__xst] === true){
 
-        $data[__xst]=true;
+        $data[__xst]=__xsu;
 
     }else{
 
@@ -892,7 +892,7 @@ function recuperer_zone_travail_pour_les_bases(&$data){
           if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$tt[valeur]='.var_export( $tt[__xva] , true ).PHP_EOL.PHP_EOL); fclose($fd);}
         */
         $data[__xva]=$tt[__xva];
-        $data[__xst]=true;
+        $data[__xst]=__xsu;
 
     }else{
 
@@ -1036,7 +1036,7 @@ function sauvegarder_format_rev_en_dbb(&$data){
 
         }
 
-        $data[__xst]=true;
+        $data[__xst]=__xsu;
     }
 
 

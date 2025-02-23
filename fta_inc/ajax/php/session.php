@@ -12,7 +12,7 @@ function definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&$data){
       'nombre_de_lignes' => 50,
     */
     $_SESSION[APP_KEY]['__parametres_utilisateurs'][$data[__entree]['nom_de_la_page']]['nombre_de_lignes']=$data[__entree]['nombre_de_lignes'];
-    $data[__xst]=true;
+    $data[__xst]=__xsu;
 
 }
 /*
@@ -21,7 +21,7 @@ function definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&$data){
 
 function recuperer_les_travaux_en_arriere_plan_de_la_session(&$data){
 
-    $data[__xst]=true;
+    $data[__xst]=__xsu;
     $data[__xva]=array( 'sess_travaux_en_arriere_plan' => array(), '__aa_js_sql' => array());
     $nom_bref='aa_php_sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.php';
     $nom_complet=INCLUDE_PATH . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR . $nom_bref;
@@ -77,7 +77,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(&$data){
 
     /* on calme le jeu pendant 100ms */
     usleep(100000);
-    $data[__xst]=true;
+    $data[__xst]=__xsu;
     $data['nombre_de_travaux_restants_fin']=isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']) ? count($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']) : 0;
 
 }
@@ -100,7 +100,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(&$data){
     $_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'][]=$data[__entree]['travail_en_arriere_plan'];
     /* on calme le jeu pendant 100ms */
     usleep(100000);
-    $data[__xst]=true;
+    $data[__xst]=__xsu;
 
 }
 /*

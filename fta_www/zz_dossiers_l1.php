@@ -107,7 +107,7 @@ if(isset($_GET['__action']) && '__recuperer_dossiers' === $_GET['__action']){
         
         if($tt[__xst] === true){
 
-            ajouterMessage('succes',__LINE__ . ' : les dossiers ont été importés',BNF);
+            ajouterMessage(__xsu,__LINE__ . ' : les dossiers ont été importés',BNF);
 
         }else{
 

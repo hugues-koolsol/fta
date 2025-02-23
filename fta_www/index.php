@@ -1,7 +1,7 @@
 <?php
 define('BNF',basename(__FILE__));
 require_once('aa_include.php');
-initialiser_les_services(true,false);
+initialiser_les_services( /*session=*/ true, /*bdd=*/ false);
 $o1='';
 $o1=html_header1(array( 'title' => 'Accueil', 'description' => 'Accueil'));
 print($o1);

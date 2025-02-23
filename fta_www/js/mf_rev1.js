@@ -8,14 +8,7 @@ class c_rev1{
     #NBESPACESSOURCEPRODUIT=4;
     #NBESPACESREV=3;
     /* __m_rev1.globale_messages */
-    globale_messages={
-        "erreurs" : [] ,
-        "avertissements" : [] ,
-        "infos" : [] ,
-        "lignes" : [] ,
-        "ids" : [] ,
-        "plages" : []
-    };
+    globale_messages={"erreurs" : [] ,"succes" : [] ,"alarmes" : [] ,"infos" : []};
     /* function constructor */
     constructor( nom_de_la_variable ){
         this.#nom_de_la_variable=nom_de_la_variable;
@@ -46,9 +39,9 @@ class c_rev1{
             }
         }else{
             if(a_retourner.hasOwnProperty( '__xav' )){
-                this.globale_messages['avertissements'].push( a_retourner );
+                this.globale_messages['alarmes'].push( a_retourner );
             }
-            if(a_retourner.__xst === false){
+            if(a_retourner.__xst === __xer){
                 this.globale_messages['erreurs'].push( a_retourner );
             }else{
                 this.globale_messages['infos'].push( a_retourner );
@@ -463,7 +456,7 @@ class c_rev1{
           le parent id=0 et début=1
         */
         if(tab.length <= 1){
-            return({"__xst" : true ,"__xva" : ''});
+            return({"__xst" : __xsu ,"__xva" : ''});
         }
         var i=0;
         var j=0;
@@ -670,7 +663,7 @@ class c_rev1{
                       }
                     */
                     obj=this.matrice_vers_source_rev1( tab , i , retourLigne , i + 1 , tab[i][10] , tab_retour_ligne , contient_un_defTab_tbel );
-                    if(obj.__xst === true){
+                    if(obj.__xst === __xsu){
                         var retour_ligne_stocke=tab_retour_ligne.pop();
                         /*
                           =====================================================================
@@ -710,7 +703,7 @@ class c_rev1{
                         }
                         t+=')';
                     }else{
-                        return({"__xst" : false ,"__xme" : 'erreur' ,"id" : i});
+                        return({"__xst" : __xer ,"__xme" : 'erreur' ,"id" : i});
                     }
                     count++;
                 }
@@ -719,7 +712,7 @@ class c_rev1{
                 }
             }
         }
-        return({"__xst" : true ,"__xva" : t ,"retour_ligne_parent" : retourLigne});
+        return({"__xst" : __xsu ,"__xva" : t ,"retour_ligne_parent" : retourLigne});
     }
     /*
       =============================================================================================================
@@ -1223,14 +1216,14 @@ class c_rev1{
                                   alors c'est une recherche de parenthèse ouvrante correspondante
                                   =====================================================
                                 */
-                                return({"__xst" : true ,"pos_ouv_par" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length - 1]][2]});
+                                return({"__xst" : __xsu ,"pos_ouv_par" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length - 1]][2]});
                             }
                             tab_pour_recherche_parentheses.pop();
                         }
                     }else{
                         if(drapeauParenthese){
                             if(i === l01 - 1){
-                                return({"__xst" : true ,"pos_ouv_par" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length - 1]][2]});
+                                return({"__xst" : __xsu ,"pos_ouv_par" : tableauEntree[tab_pour_recherche_parentheses[tab_pour_recherche_parentheses.length - 1]][2]});
                             }
                             tab_pour_recherche_parentheses.pop();
                         }
@@ -1271,7 +1264,7 @@ class c_rev1{
                             */
                             if(niveau > 0){
                                 return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                        "__xst" : false ,
+                                        "__xst" : __xer ,
                                         "ind" : i ,
                                         "__xme" : this.nl2() + 'les parenthèses ne se finissent pas à la fin du rev' ,
                                         "type" : 'rev' ,
@@ -1284,7 +1277,7 @@ class c_rev1{
                                     } ) ));
                             }else{
                                 return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                        "__xst" : false ,
+                                        "__xst" : __xer ,
                                         "ind" : i ,
                                         "__xme" : this.nl2() + 'le niveau ' ,
                                         "type" : 'rev' ,
@@ -1312,7 +1305,7 @@ class c_rev1{
                         }else{
                             /* cas d'erreur = f(""") */
                             return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                    "__xst" : false ,
+                                    "__xst" : __xer ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'une constante encadrée par des guillemets est incorrecte ' ,
                                     "type" : 'rev' ,
@@ -1327,7 +1320,7 @@ class c_rev1{
                     }else{
                         if(autoriserCstDansRacine === false){
                             return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                    "__xst" : false ,
+                                    "__xst" : __xer ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantess ' ,
                                     "type" : 'rev' ,
@@ -1344,7 +1337,7 @@ class c_rev1{
                     if(autoriserCstDansRacine === false && niveau === 0){
                         /* cas d'erreur = "" */
                         return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                "__xst" : false ,
+                                "__xst" : __xer ,
                                 "ind" : i ,
                                 "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes ' ,
                                 "type" : 'rev' ,
@@ -1374,7 +1367,7 @@ class c_rev1{
                     constanteQuotee=0;
                 }else if(c === '\\'){
                     if(i === l01 - 1){
-                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash ne doit pas terminer une constante en i=' + i} ));
+                        return(this.empiler_erreur( {"__xst" : __xer ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash ne doit pas terminer une constante en i=' + i} ));
                     }
                     /*  */
                     c1=tableauEntree[i + 1][0];
@@ -1405,7 +1398,7 @@ class c_rev1{
                         i++;
                     }else{
                         return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                "__xst" : false ,
+                                "__xst" : __xer ,
                                 "ind" : i ,
                                 "__xme" : this.nl2() + 'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u ' ,
                                 "type" : 'rev' ,
@@ -1437,7 +1430,7 @@ class c_rev1{
                 if(c === '/'){
                     if(autoriserCstDansRacine !== true){
                         if(i === l01 - 1){
-                            return(this.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
+                            return(this.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                         }
                     }
                     if(i + 1 < l01){
@@ -1485,7 +1478,7 @@ class c_rev1{
                         }
                     }else{
                         if(!(autoriserCstDansRacine === true)){
-                            return(this.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
+                            return(this.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                         }
                     }
                     dansCstRegex=false;
@@ -1493,14 +1486,14 @@ class c_rev1{
                     constanteQuoteePrecedente=4;
                     if(autoriserCstDansRacine !== true){
                         if(niveau === 0){
-                            return(this.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
+                            return(this.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                         }
                     }
                     /* methode3regex */
                     texte=texte.replace( /\\/g , '\\\\' ).replace( /"/g , '\\"' );
                     if(texte.indexOf( '\n' ) > 0 || texte.indexOf( '\r' ) >= 0 || texte.indexOf( '\t' ) > 0){
                         return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                "__xst" : false ,
+                                "__xst" : __xer ,
                                 "ind" : premier ,
                                 "__xme" : this.nl2() + 'il ne peut pas y avoir des retours à la ligne ou des tabulations dans une chaine de type regex ' ,
                                 "type" : 'rev' ,
@@ -1530,7 +1523,7 @@ class c_rev1{
                     constanteQuotee=0;
                 }else if(c === '\\'){
                     if(i === l01 - 1){
-                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash ne doit pas terminer une fonction'} ));
+                        return(this.empiler_erreur( {"__xst" : __xer ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash ne doit pas terminer une fonction'} ));
                     }
                     /*  */
                     c1=tableauEntree[i + 1][0];
@@ -1541,7 +1534,7 @@ class c_rev1{
                     i++;
                 }else if(c === '\n' || c === '\r'){
                     return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                            "__xst" : false ,
+                            "__xst" : __xer ,
                             "ind" : premier ,
                             "__xme" : this.nl2() + 'il ne peut pas y avoir des retours à la ligne dans une chaine de type regex ' ,
                             "type" : 'rev' ,
@@ -1580,7 +1573,7 @@ class c_rev1{
                     if(autoriserCstDansRacine !== true){
                         if(i === l01 - 1){
                             return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                    "__xst" : false ,
+                                    "__xst" : __xer ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes' ,
                                     "type" : 'rev' ,
@@ -1606,7 +1599,7 @@ class c_rev1{
                             dernier=i - 1;
                         }else{
                             return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                    "__xst" : false ,
+                                    "__xst" : __xer ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'apres une constante, il doit y avoir un caractère d\'echappement' ,
                                     "type" : 'rev' ,
@@ -1620,7 +1613,7 @@ class c_rev1{
                         }
                     }else{
                         if(!(autoriserCstDansRacine === true)){
-                            return(this.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
+                            return(this.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                         }
                     }
                     dansCstModele=false;
@@ -1628,7 +1621,7 @@ class c_rev1{
                     constanteQuoteePrecedente=2;
                     if(autoriserCstDansRacine !== true){
                         if(niveau === 0){
-                            return(this.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
+                            return(this.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                         }
                     }
                     /* methode3m */
@@ -1646,7 +1639,7 @@ class c_rev1{
                     constanteQuotee=0;
                 }else if(c === '\\'){
                     if(i === l01 - 1){
-                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash ne doit pas terminer une fonction'} ));
+                        return(this.empiler_erreur( {"__xst" : __xer ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash ne doit pas terminer une fonction'} ));
                     }
                     /*  */
                     c1=tableauEntree[i + 1][0];
@@ -1681,7 +1674,7 @@ class c_rev1{
                 if(c === '\''){
                     if(autoriserCstDansRacine !== true){
                         if(i === l01 - 1){
-                            return(this.empiler_erreur( {"__xst" : false ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
+                            return(this.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xva" : T ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                         }
                     }
                     if(i + 1 < l01){
@@ -1697,7 +1690,7 @@ class c_rev1{
                             dernier=i - 1;
                         }else{
                             return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                    "__xst" : false ,
+                                    "__xst" : __xer ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'il doit y avoir un caractère d\'echappement apres une constante encadrée par des apostrophes' ,
                                     "type" : 'rev' ,
@@ -1712,7 +1705,7 @@ class c_rev1{
                     }else{
                         if(!(autoriserCstDansRacine === true)){
                             return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                    "__xst" : false ,
+                                    "__xst" : __xer ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes' ,
                                     "type" : 'rev' ,
@@ -1728,7 +1721,7 @@ class c_rev1{
                     if(autoriserCstDansRacine !== true){
                         if(niveau === 0){
                             return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                    "__xst" : false ,
+                                    "__xst" : __xer ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes' ,
                                     "type" : 'rev' ,
@@ -1759,7 +1752,7 @@ class c_rev1{
                     constanteQuotee=0;
                 }else if(c === '\\'){
                     if(i === l01 - 1){
-                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash ne doit pas terminer une fonction'} ));
+                        return(this.empiler_erreur( {"__xst" : __xer ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash ne doit pas terminer une fonction'} ));
                     }
                     /*  */
                     c1=tableauEntree[i + 1][0];
@@ -1791,7 +1784,7 @@ class c_rev1{
                         i++;
                     }else{
                         return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                "__xst" : false ,
+                                "__xst" : __xer ,
                                 "ind" : i ,
                                 "__xme" : this.nl2() + 'un antislash doit être suivi par un autre antislash ou un apostrophe ou n,t,r,u' ,
                                 "type" : 'rev' ,
@@ -1883,7 +1876,7 @@ class c_rev1{
                     if(texte !== ''){
                         if(niveau === 0){
                             return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                    "__xst" : false ,
+                                    "__xst" : __xer ,
                                     "ind" : i ,
                                     "__xme" : this.nl2() + 'une fermeture de parenthése ne doit pas être au niveau 0' ,
                                     "type" : 'rev' ,
@@ -1924,7 +1917,7 @@ class c_rev1{
                                 console.log( 'ejson=' , ejson );
                                 return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                                         "erreur_conversion_chaine_tableau_en_json" : true ,
-                                        "__xst" : false ,
+                                        "__xst" : __xer ,
                                         "ind" : i ,
                                         "__xme" : this.nl2() + 'erreur de conversion de tableau' ,
                                         "type" : 'rev' ,
@@ -1936,11 +1929,11 @@ class c_rev1{
                                     } ) ));
                             }
                             if(rechercheParentheseCorrespondante === '('){
-                                return({"__xst" : true ,"pos_fer_par" : tableauEntree[i][2]});
+                                return({"__xst" : __xsu ,"pos_fer_par" : tableauEntree[i][2]});
                             }else{
                                 for( j=T.length - 1 ; j >= 0 ; j-- ){
                                     if(T[j][3] < T[T.length - 1][3]){
-                                        return({"__xst" : true ,"pos_ouv_par" : tableauEntree[T[j][11]][2]});
+                                        return({"__xst" : __xsu ,"pos_ouv_par" : tableauEntree[T[j][11]][2]});
                                         break;
                                     }
                                 }
@@ -1951,7 +1944,7 @@ class c_rev1{
                                   il faut retourner la position réelle en tenant compte des
                                   caractères utf8
                                 */
-                                return({"__xst" : true ,"pos_fer_par" : tableauEntree[pos_fer_par][2]});
+                                return({"__xst" : __xsu ,"pos_fer_par" : tableauEntree[pos_fer_par][2]});
                             }
                         }
                     }
@@ -1976,16 +1969,16 @@ class c_rev1{
                       =============================================================================
                     */
                     if(!dansCstSimple){
-                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash doit être dans une constante en i=' + i} ));
+                        return(this.empiler_erreur( {"__xst" : __xer ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash doit être dans une constante en i=' + i} ));
                     }
                     if(!dansCstDouble){
-                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash doit être dans une constante en i=' + i} ));
+                        return(this.empiler_erreur( {"__xst" : __xer ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash doit être dans une constante en i=' + i} ));
                     }
                     if(!dansCstModele){
-                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash doit être dans une constante en i=' + i} ));
+                        return(this.empiler_erreur( {"__xst" : __xer ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash doit être dans une constante en i=' + i} ));
                     }
                     if(!dansCstRegex){
-                        return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash doit être dans une constante en i=' + i} ));
+                        return(this.empiler_erreur( {"__xst" : __xer ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'un antislash doit être dans une constante en i=' + i} ));
                     }
                     /*
                       =============================================================================
@@ -2130,7 +2123,7 @@ class c_rev1{
                     if(texte !== ''){
                         if(autoriserCstDansRacine !== true){
                             if(niveau === 0){
-                                return(this.empiler_erreur( {"__xst" : false ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
+                                return(this.empiler_erreur( {"__xst" : __xer ,"__xva" : T ,"id" : i ,"__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes'} ));
                             }
                         }
                         indice++;
@@ -2154,7 +2147,7 @@ class c_rev1{
                             }else{
                                 if(niveauPrecedent < niveau){
                                     return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                            "__xst" : false ,
+                                            "__xst" : __xer ,
                                             "ind" : premier ,
                                             "__xme" : this.nl2() + 'une virgule ne doit pas être précédée d\'un vide' ,
                                             "type" : 'rev' ,
@@ -2170,7 +2163,7 @@ class c_rev1{
                         }else{
                             if(niveauPrecedent < niveau){
                                 return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                        "__xst" : false ,
+                                        "__xst" : __xer ,
                                         "ind" : premier ,
                                         "__xme" : this.nl2() + 'une virgule ne doit pas être précédée d\'un vide' ,
                                         "type" : 'rev' ,
@@ -2183,7 +2176,7 @@ class c_rev1{
                                     } ) ));
                             }else if(niveauPrecedent === niveau && texte_precedent === '' && constanteQuoteePrecedente === 0){
                                 return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                        "__xst" : false ,
+                                        "__xst" : __xer ,
                                         "ind" : premier ,
                                         "__xme" : this.nl2() + 'une virgule ne doit pas être précédée d\'un vide ' ,
                                         "type" : 'rev' ,
@@ -2222,7 +2215,7 @@ class c_rev1{
                         if(autoriserCstDansRacine !== true){
                             if(niveau === 0){
                                 return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                                        "__xst" : false ,
+                                        "__xst" : __xer ,
                                         "ind" : premier ,
                                         "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes' ,
                                         "type" : 'rev' ,
@@ -2272,7 +2265,7 @@ class c_rev1{
         */
         if(niveau !== 0 && quitterSiErreurNiveau){
             return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                    "__xst" : false ,
+                    "__xst" : __xer ,
                     "ind" : l01 - 1 ,
                     "__xme" : this.nl2() + '💥 des parenthèses ne correspondent pas, (' + (niveau > 0 ? ( 'il en manque :' ) : ( 'il y en a trop : ' )) + 'niveau=' + niveau + ') ' ,
                     "type" : 'rev' ,
@@ -2292,7 +2285,7 @@ class c_rev1{
             if(autoriserCstDansRacine !== true){
                 if(niveau === 0){
                     return(this.empiler_erreur( this.formatter_une_erreur_rev( {
-                            "__xst" : false ,
+                            "__xst" : __xer ,
                             "ind" : l01 - 1 ,
                             "__xme" : this.nl2() + 'la racine ne peut pas contenir des constantes ' ,
                             "type" : 'rev' ,
@@ -2324,7 +2317,7 @@ class c_rev1{
             return(this.empiler_erreur( this.formatter_une_erreur_rev( {
                     "ejson" : ejson ,
                     "erreur_conversion_chaine_tableau_en_json" : true ,
-                    "__xst" : false ,
+                    "__xst" : __xer ,
                     "__xme" : this.nl2() + 'erreur de conversion de tableau' ,
                     "type" : 'rev' ,
                     "chaine_tableau" : chaine_tableau ,
@@ -2340,10 +2333,10 @@ class c_rev1{
                     /*
                       à cause des décallages utf8, il faut prendre la position réelle dans le tableau en entrée
                     */
-                    return({"__xst" : true ,"pos_ouv_par" : tableauEntree[T[i][11]][2]});
+                    return({"__xst" : __xsu ,"pos_ouv_par" : tableauEntree[T[i][11]][2]});
                 }
             }
-            return({"__xst" : false ,"__xme" : 'pas de correspondance trouvée'});
+            return({"__xst" : __xer ,"__xme" : 'pas de correspondance trouvée'});
         }
         if(chaine_tableau_commentaires !== ''){
             chaine_tableau_commentaires='[' + chaine_tableau_commentaires.substr( 1 ) + ']';
@@ -2445,7 +2438,7 @@ class c_rev1{
           }
           }
         */
-        return({"__xst" : true ,"__xva" : T});
+        return({"__xst" : __xsu ,"__xva" : T});
     }
 }
 export{c_rev1 as c_rev1};

@@ -75,7 +75,7 @@ function shutdownHandler(){
 /* ================================================================================================ */
 function ma_trace($error){
 
-    $ret=array( __xst => false, __xms => array( $error), __entree => isset($GLOBALS['__entree']) ? $GLOBALS['__entree'] : null);
+    $ret=array( __xst => __xer, __xms => array( $error), __entree => isset($GLOBALS['__entree']) ? $GLOBALS['__entree'] : null);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($ret,JSON_FORCE_OBJECT) ;
     /* on a capturé une erreur de type 500, on force la réponse en 200 */
@@ -106,13 +106,13 @@ initialiser_les_services(false,true);
 if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
 
     $ret=array(
-        /*statut*/
-        __xst => false,
+        /*statut, à priori faux*/
+        __xst => __xer,
         /*erreurs*/
         __xms => array(),
         /*informations*/
         __xif => array(),
-        /*avertissements*/
+        /*alarmes*/
         __xav => array()
     );
     /* les messages sont mis en tableau */
@@ -129,7 +129,6 @@ if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
         
         if(!is_file(INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php')){
 
-            $ret[__xst]=false;
             $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'programme ajan non trouvé : "' . INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/ajax_' . $ret[__entree]['call']['funct'] . '.php"';
 
         }else{

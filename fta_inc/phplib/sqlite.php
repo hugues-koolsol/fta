@@ -501,7 +501,7 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table,$db,$essayer_auto_i
 
     }else{
 
-        return signaler_erreur(array( __xst => true, __xme => __LINE__ . ' erreur sur la liste des champs de la table ' . $nom_de_la_table . '  ', 'provenance' => BNF));
+        return signaler(array( __xst => true, __xme => __LINE__ . ' erreur sur la liste des champs de la table ' . $nom_de_la_table . '  ', 'provenance' => BNF));
     }
 
     $liste_des_cles_etrangeres=array();
@@ -528,7 +528,7 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table,$db,$essayer_auto_i
 
     }else{
 
-        return signaler_erreur(array( __xst => true, __xme => __LINE__ . ' erreur sur la liste des clés étrangères de la table ' . $nom_de_la_table . ' ', 'provenance' => BNF));
+        return signaler(array( __xst => true, __xme => __LINE__ . ' erreur sur la liste des clés étrangères de la table ' . $nom_de_la_table . ' ', 'provenance' => BNF));
     }
 
     $liste_des_indexes=array();
@@ -576,7 +576,7 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table,$db,$essayer_auto_i
 
                 }else{
 
-                    return signaler_erreur(array( __xst => true, __xme => __LINE__ . ' erreur sur la liste des indexes de la table ' . $nom_de_la_table . ' ', 'provenance' => BNF));
+                    return signaler(array( __xst => true, __xme => __LINE__ . ' erreur sur la liste des indexes de la table ' . $nom_de_la_table . ' ', 'provenance' => BNF));
                 }
 
 
@@ -587,7 +587,7 @@ function obtenir_tableau_sqlite_de_la_table($nom_de_la_table,$db,$essayer_auto_i
 
     }else{
 
-        return signaler_erreur(array( __xst => true, __xme => __LINE__ . ' erreur sur la liste des indexes de la table ' . $nom_de_la_table . ' ', 'provenance' => BNF));
+        return signaler(array( __xst => true, __xme => __LINE__ . ' erreur sur la liste des indexes de la table ' . $nom_de_la_table . ' ', 'provenance' => BNF));
     }
 
     $tableau=array( 'liste_des_champs' => $liste_des_champs, 'liste_des_indexes' => $liste_des_indexes);

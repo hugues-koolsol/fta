@@ -26,9 +26,9 @@ function bdd_convertir_rev_en_sql( nom_zone_source , nom_zone_genere , id_bdd , 
       var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
     */
     var matriceFonction=__m_rev1.rev_tm( a.value );
-    if(matriceFonction.__xst === true){
+    if(matriceFonction.__xst === __xsu){
         var objSql=__m_rev_vers_sql1.c_tab_vers_js( matriceFonction.__xva , {} );
-        if(objSql.__xst === true){
+        if(objSql.__xst === __xsu){
             var contenu=objSql.__xva.replace( /\/\* ==========DEBUT DEFINITION=========== \*\//g , '' );
             document.getElementById( nom_zone_genere ).value=contenu;
         }
@@ -51,13 +51,13 @@ function sauvegarder_format_rev_en_dbb( parametres_sauvegarde ){
         return(__gi1.recupérer_un_fetch( url , ajax_param ));
     }
     sauvegarder_format_rev_en_dbb1( 'za_ajax.php?sauvegarder_format_rev_en_dbb1' , ajax_param ).then( ( donnees ) => {
-            if(donnees.__xst === true){
-                __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : 'le format rev a été sauvegardé'} );
+            if(donnees.__xst === __xsu){
+                __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : 'le format rev a été sauvegardé'} );
             }else{
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur dans la sauvegarde du format rev'} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur dans la sauvegarde du format rev'} );
                 console.log( 'donnees=' , donnees );
             }
             __gi1.remplir_et_afficher_les_messages1( '' );
         } );
-    return({"__xst" : true});
+    return({"__xst" : __xsu});
 }

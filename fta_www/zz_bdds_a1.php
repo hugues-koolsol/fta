@@ -187,7 +187,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                 if($ret !== false){
 
                     fclose($fd);
-                    ajouterMessage('succes',__LINE__ . ' : Le fichier structure.' . $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'] . '.sql a bien été écrit sur le disque');
+                    ajouterMessage(__xsu,__LINE__ . ' : Le fichier structure.' . $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'] . '.sql a bien été écrit sur le disque');
 
                 }else{
 
@@ -665,7 +665,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
     }else{
 
         unset($_SESSION[APP_KEY][NAV][BNF]);
-        ajouterMessage('avertissement',__LINE__ . ' cas à étudier ' . (isset($_POST['__action']) ? ' : "' . $_POST['__action'] . '" ' : ' ') . substr($GLOBALS['__date'],11),BNF);
+        ajouterMessage(__xal,__LINE__ . ' cas à étudier ' . (isset($_POST['__action']) ? ' : "' . $_POST['__action'] . '" ' : ' ') . substr($GLOBALS['__date'],11),BNF);
         recharger_la_page($_SERVER['REQUEST_URI']);
     }
 
@@ -813,7 +813,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $paramUrl=str_replace('"','\\"',$paramUrl);
     $paramUrl=rawurlencode($paramUrl);
     $o1 .= '   <a href="javascript:__gi1.afficherModale2(\'' . enti1($paramUrl) . '\')" title="selectionner">📁</a>' . PHP_EOL;
-    $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.annuler_champ_modale(\'' . enti1($paramUrl) . '\')" title="annuler">🚫</a>' . PHP_EOL;
+    $o1 .= '   <a class="yyalarme" href="javascript:__gi1.annuler_champ_modale(\'' . enti1($paramUrl) . '\')" title="annuler">🚫</a>' . PHP_EOL;
     
     if($chx_dossier_id_basedd === '' || $chx_dossier_id_basedd === false || $chx_dossier_id_basedd === null){
 
@@ -928,7 +928,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $paramUrl=str_replace('"','\\"',$paramUrl);
     $paramUrl=rawurlencode($paramUrl);
     $o1 .= '   <a href="javascript:__gi1.afficherModale2(\'' . enti1($paramUrl) . '\')" title="selectionner">📁</a>' . PHP_EOL;
-    $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.annuler_champ_modale(\'' . enti1($paramUrl) . '\')" title="annuler">🚫</a>' . PHP_EOL;
+    $o1 .= '   <a class="yyalarme" href="javascript:__gi1.annuler_champ_modale(\'' . enti1($paramUrl) . '\')" title="annuler">🚫</a>' . PHP_EOL;
     
     if($__valeurs['T0.chx_dossier_id_basedd'] === ''
        || $__valeurs['T0.chx_dossier_id_basedd'] === false
@@ -956,7 +956,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
             }else{
 
-                $o1 .= '&nbsp; <span class="yyavertissement">le fichier structure.' . $__valeurs['T0.chp_nom_basedd'] . '.sql est absent</span>' . PHP_EOL;
+                $o1 .= '&nbsp; <span class="yyalarme">le fichier structure.' . $__valeurs['T0.chp_nom_basedd'] . '.sql est absent</span>' . PHP_EOL;
             }
 
             $chemin_fichier_donnees='../../' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . $__valeurs['T1.chp_nom_dossier'] . '/' . APP_KEY . '_donnees.' . $__valeurs['T0.chp_nom_basedd'] . '.sql';
@@ -967,7 +967,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
             }else{
 
-                $o1 .= '&nbsp; <span class="yyavertissement">le fichier donnees.' . $__valeurs['T0.chp_nom_basedd'] . '.sql est absent</span>' . PHP_EOL;
+                $o1 .= '&nbsp; <span class="yyalarme">le fichier donnees.' . $__valeurs['T0.chp_nom_basedd'] . '.sql est absent</span>' . PHP_EOL;
             }
 
             $o1 .= '  <br />' . PHP_EOL;

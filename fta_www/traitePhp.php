@@ -33,7 +33,7 @@ $o1='';
     <textarea class="txtar1" id="txtar2" rows="15" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 </div>
 <div class="yyconteneur_de_texte1">
-    <a class="yyavertissement" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_php2(&quot;txtar2&quot;,&quot;txtar3&quot;,null,null);" title="convertir rev en php">R2P↧</a>
+    <a class="yyalarme" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_php2(&quot;txtar2&quot;,&quot;txtar3&quot;,null,null);" title="convertir rev en php">R2P↧</a>
     <a style="float:right;" class="yysucces" href="javascript:__gi1.aller_a_la_ligne(&quot;txtar3&quot;,1)">aller à la ligne n°</a>
     <a style="float:right;" class="yyinfo" href="javascript:__gi1.aller_a_la_position(&quot;txtar3&quot;)">aller à la position</a>
     <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar3&quot;);" title="réduire la zone">&nbsp;👊&nbsp;</a>

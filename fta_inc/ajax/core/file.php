@@ -96,7 +96,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
 
             fwrite($fd,$texte_source);
             fclose($fd);
-            $data[__xst]=true;
+            $data[__xst]=__xsu;
             $data[__entree]['parametres_sauvegarde']=array(
                 'id_cible' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
                 'chp_provenance_rev' => 'source',
@@ -167,7 +167,7 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
 
                 $data['contenu_du_fichier']=$contenu_du_fichier;
                 $data['db']=$__valeurs;
-                $data[__xst]=true;
+                $data[__xst]=__xsu;
 
             }
 
@@ -197,7 +197,7 @@ function supprimer_un_fichier_avec_un_nom_encrypte(&$data){
 
         if(sauvegarder_et_supprimer_fichier($nomFichierDecripte)){
 
-            $data[__xst]=true;
+            $data[__xst]=__xsu;
 
         }else{
 
@@ -234,7 +234,7 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
             }else{
 
                 $data[__xva]=$contenu;
-                $data[__xst]=true;
+                $data[__xst]=__xsu;
             }
 
 
@@ -274,7 +274,7 @@ function charger_un_ficher_rev(&$data){
         if($contenu !== false){
 
             $data[__xva]=$contenu;
-            $data[__xst]=true;
+            $data[__xst]=__xsu;
 
         }else{
 
@@ -299,7 +299,7 @@ function getRevFiles(&$data){
     foreach(glob($dir . '*.rev') as $filename){
         $data['files'][]=basename($filename);
     }
-    $data[__xst]=true;
+    $data[__xst]=__xsu;
 
 }
 /*
@@ -364,7 +364,7 @@ function sauvegarger_un_fichier_rev(&$data){
 
             if(fclose($fd)){
 
-                $data[__xst]=true;
+                $data[__xst]=__xsu;
 
             }else{
 
@@ -426,7 +426,7 @@ function ecrire_fichier1(&$data){
 
                 if(fclose($fd)){
 
-                    $data[__xst]=true;
+                    $data[__xst]=__xsu;
 
                 }else{
 
@@ -466,7 +466,7 @@ function recuperer_un_genere(&$data){
         if($contenu===false){
             $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'erreur lecture fichier';
         }else{
-            $data[__xst]=true;
+            $data[__xst]=__xsu;
             $data[__xva]=$contenu;
             
         }
@@ -505,7 +505,7 @@ function concatener_des_fichiers1(&$data){
 
                     if(fclose($fd)){
 
-                        $data[__xst]=true;
+                        $data[__xst]=__xsu;
 
                     }else{
 

@@ -45,10 +45,10 @@ function convertSource( objMatSrc ){
                             if(objMatSrc.__xva[j][8] === 1 && objMatSrc.__xva[j + 1][2] === 'c'){
                                 tabConcatFichier.push( objMatSrc.__xva[j + 1][1] );
                             }else{
-                                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + ' concat fichjer ne doit avojr qu\'un seul argument '} ));
+                                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + ' concat fichjer ne doit avojr qu\'un seul argument '} ));
                             }
                         }else{
-                            return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + 'l\'élément ne doit pas se trouver là ' + JSON.stringify( objMatSrc.__xva[j] )} ));
+                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + 'l\'élément ne doit pas se trouver là ' + JSON.stringify( objMatSrc.__xva[j] )} ));
                         }
                     }
                 }
@@ -57,18 +57,18 @@ function convertSource( objMatSrc ){
     }
     if(type_source == ''){
         return(__m_rev1.empiler_erreur( {
-                "__xst" : false ,
-                "__xme" : __m_rev1.nl2()+'la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '
+                "__xst" : __xer ,
+                "__xme" : __m_rev1.nl2() + 'la fonction racine doit être "src_javascript", "src_html" , "src_sql" ou bien "src_php" '
             } ));
     }
     var t='';
     if(file_name != '' && file_path != '' && position_de_la_balise_source > 0){
         if(type_source == 'src_php' && file_extension == 'php'){
             retProgrammeSource=__m_rev_vers_php1.c_tab_vers_php( objMatSrc.__xva , {"indice_de_debut" : position_de_la_balise_source + 1} );
-            if(retProgrammeSource.__xst === true){
+            if(retProgrammeSource.__xst === __xsu){
                 t+='<?php' + CRLF + retProgrammeSource.__xva + CRLF + '?>';
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+'erreur dans un php'} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'erreur dans un php'} ));
             }
             t=t.replace( /\/\*\*\//g , '' );
             t=t.replace( /\?><\?php/g , '' );
@@ -84,7 +84,7 @@ function convertSource( objMatSrc ){
                 }
             }
             return({
-                    "__xst" : true ,
+                    "__xst" : __xsu ,
                     "__xva" : t ,
                     "file_name" : file_name ,
                     "file_path" : file_path ,
@@ -93,13 +93,13 @@ function convertSource( objMatSrc ){
                 });
         }else if(type_source == 'src_javascript' && file_extension == 'js'){
             retProgrammeSource=__m_rev_vers_js1.c_tab_vers_js( objMatSrc.__xva , {"indice_de_debut" : position_de_la_balise_source + 1} );
-            if(retProgrammeSource.__xst === true){
+            if(retProgrammeSource.__xst === __xsu){
                 t+=retProgrammeSource.__xva;
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+'erreur dans un javascript'} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'erreur dans un javascript'} ));
             }
             return({
-                    "__xst" : true ,
+                    "__xst" : __xsu ,
                     "__xva" : t ,
                     "file_name" : file_name ,
                     "file_path" : file_path ,
@@ -108,13 +108,13 @@ function convertSource( objMatSrc ){
                 });
         }else if(type_source == 'src_html' && file_extension == 'html'){
             retProgrammeSource=__module_html1.tabToHtml1( objMatSrc.__xva , position_de_la_balise_source + 1 , false , 0 );
-            if(retProgrammeSource.__xst === true){
+            if(retProgrammeSource.__xst === __xsu){
                 t+=retProgrammeSource.__xva;
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+'erreur dans un html'} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'erreur dans un html'} ));
             }
             return({
-                    "__xst" : true ,
+                    "__xst" : __xsu ,
                     "__xva" : t ,
                     "file_name" : file_name ,
                     "file_path" : file_path ,
@@ -123,13 +123,13 @@ function convertSource( objMatSrc ){
                 });
         }else if(type_source == 'src_sql' && file_extension == 'sql'){
             retProgrammeSource=__m_rev_vers_sql1.c_tab_vers_js( objMatSrc.__xva , {"indice_de_debut" : position_de_la_balise_source + 1} );
-            if(retProgrammeSource.__xst === true){
+            if(retProgrammeSource.__xst === __xsu){
                 t+=retProgrammeSource.__xva;
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+'erreur dans un sql'} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'erreur dans un sql'} ));
             }
             return({
-                    "__xst" : true ,
+                    "__xst" : __xsu ,
                     "__xva" : t ,
                     "file_name" : file_name ,
                     "file_path" : file_path ,
@@ -138,7 +138,7 @@ function convertSource( objMatSrc ){
                 });
         }
     }else{
-        return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : 0 ,"__xme" : __m_rev1.nl2()+'les noms et chemin du fichier doivent être complétés'} ));
+        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : 0 ,"__xme" : __m_rev1.nl2() + 'les noms et chemin du fichier doivent être complétés'} ));
     }
 }
 /*
@@ -181,8 +181,8 @@ function sauvegardeTexteSource(){
             return(__gi1.recupérer_un_fetch( url , ajax_param ));
         }
         sauvegarger_un_fichier_rev( 'za_ajax.php?sauvegarger_un_fichier_rev' , ajax_param ).then( ( donnees ) => {
-                if(donnees.__xst === true){
-                    __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : '👍 fichier sauvegardé'} );
+                if(donnees.__xst === __xsu){
+                    __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : '👍 fichier sauvegardé'} );
                 }
                 __gi1.remplir_et_afficher_les_messages1( 'zonesource' );
             } );
@@ -259,8 +259,8 @@ function concateneFichiers( tabConcatFichier , file_name , file_extension , file
             return(__gi1.recupérer_un_fetch( url , ajax_param ));
         }
         concatener_des_fichiers1( 'za_ajax.php?concatener_des_fichiers1' , ajax_param ).then( ( donnees ) => {
-                if(donnees.__xst === true){
-                    __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : 'le fichier ' + fichierAConcatener + ' a été concaténé'} );
+                if(donnees.__xst === __xsu){
+                    __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : 'le fichier ' + fichierAConcatener + ' a été concaténé'} );
                     if(donnees.__entree.tabConcatFichier){
                         concateneFichiers( donnees.__entree.tabConcatFichier , donnees.__entree.file_name , donnees.__entree.file_extension , donnees.__entree.file_path );
                     }
@@ -280,7 +280,7 @@ function concateneFichiers( tabConcatFichier , file_name , file_extension , file
         }
         recuperer_un_genere( 'za_ajax.php?recuperer_un_genere' , ajax_param ).then( ( donnees ) => {
                 console.log( donnees );
-                if(donnees.__xst === true){
+                if(donnees.__xst === __xsu){
                     document.getElementById( 'zoneContenantLeSourceGenere2' ).value=donnees.__xva;
                 }else{
                     debugger;
@@ -295,7 +295,7 @@ function concateneFichiers( tabConcatFichier , file_name , file_extension , file
 function enregistrer2(){
     var sourcesCompactesIdentiques=false;
     var sourcesIdentiques=false;
-    var conversion={"__xst" : false};
+    var conversion={"__xst" : __xer};
     document.getElementById( 'bouton_voir_source' ).style.display='none';
     document.getElementById( 'bouton_voir_matrice' ).style.display='none';
     document.getElementById( 'bouton_voir_tableau' ).style.display='none';
@@ -317,12 +317,12 @@ function enregistrer2(){
     var endMicro=performance.now();
     console.log( 'analyse syntaxique et mise en matrice endMicro=' , (parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000) + ' ms' );
     console.log( 'matriceFonction=' , matriceFonction );
-    if(matriceFonction.__xst === true){
+    if(matriceFonction.__xst === __xsu){
         var startMicro=performance.now();
         var fonctionReecriteAvecRetour1=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
         var endMicro=performance.now();
         console.log( 'reconstitution du source endMicro=' , (parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000) + ' ms' );
-        if(fonctionReecriteAvecRetour1.__xst === true){
+        if(fonctionReecriteAvecRetour1.__xst === __xsu){
             document.getElementById( 'normalise' ).value=fonctionReecriteAvecRetour1.__xva;
             ajusteTailleTextareaContenantSource( 'normalise' );
             memeHauteur( 'normalise' , 'zonesource' );
@@ -332,13 +332,13 @@ function enregistrer2(){
             var compacteReecrit=__m_rev1.matrice_vers_source_rev1( matriceDeLaFonctionReecrite.__xva , 0 , false , 1 );
             var endMicro=performance.now();
             console.log( 'comparaison des compactés=' , (parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000) + ' ms' );
-            if(compacteOriginal.__xst == true && compacteReecrit.__xst === true){
+            if(compacteOriginal.__xst == true && compacteReecrit.__xst === __xsu){
                 if(compacteOriginal.__xva == compacteReecrit.__xva){
                     sourcesCompactesIdentiques=true;
-                    __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : '<b>👍 sources compactés Egaux</b>'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : '<b>👍 sources compactés Egaux</b>'} );
                     var conversion=convertSource( matriceFonction );
                 }else{
-                    __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'sources compactés différents'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'sources compactés différents'} );
                 }
             }else{
             }
@@ -346,15 +346,15 @@ function enregistrer2(){
         }else{
         }
     }
-    if(conversion.__xst === true){
+    if(conversion.__xst === __xsu){
         document.getElementById( 'bouton_voir_source' ).style.display='inline-block';
         document.getElementById( 'bouton_voir_matrice' ).style.display='inline-block';
         document.getElementById( 'bouton_voir_tableau' ).style.display='inline-block';
         document.getElementById( 'zoneContenantLeSourceGenere2' ).value=conversion.__xva;
     }
-    if(matriceFonction.__xst === true && sourcesCompactesIdentiques){
+    if(matriceFonction.__xst === __xsu && sourcesCompactesIdentiques){
         if(a.value == fonctionReecriteAvecRetour1.__xva.replace( /\r\n/g , '\n' )){
-            __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : '<b>👍👍 sources Egaux</b>'} );
+            __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : '<b>👍👍 sources Egaux</b>'} );
             document.getElementById( 'sauvegarderLeNormalise' ).disabled=false;
             document.getElementById( 'nomDuSource' ).disabled=false;
             if(conversion.__xst == true){
@@ -369,22 +369,22 @@ function enregistrer2(){
                     return(__gi1.recupérer_un_fetch( url , ajax_param ));
                 }
                 ecrire_fichier1( 'za_ajax.php?ecrire_fichier1' , ajax_param ).then( ( donnees ) => {
-                        if(donnees.__xst === true){
-                            __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : '<b>👍👍👍 le programme résultant a été écrit sur le disque</b>'} );
+                        if(donnees.__xst === __xsu){
+                            __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : '<b>👍👍👍 le programme résultant a été écrit sur le disque</b>'} );
                             if(conversion.tabConcatFichier.length > 0){
                                 concateneFichiers( conversion.tabConcatFichier , conversion.file_name , conversion.file_extension , conversion.file_path );
                             }
                             document.getElementById( 'sauvegarderLeNormalise' ).disabled=false;
                             document.getElementById( 'nomDuSource' ).disabled=false;
                         }else{
-                            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2()+'il y a eu un problème d\'écriture sur disque'} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'il y a eu un problème d\'écriture sur disque'} );
                         }
                         __gi1.remplir_et_afficher_les_messages1( 'zonesource' );
                     } );
             }
         }else{
             __m_rev1.empiler_erreur( {
-                    "__xst" : false ,
+                    "__xst" : __xer ,
                     "__xme" : 'les sources sont différents mais les compactés sont égaux : <br /><a href="javascript:reprendre()" class="yysucces">reprendre</a>&nbsp;<a class="yysucces" href="javascript:reprendreEtRecompiler()">reprendre et recompiler</a>'
                 } );
         }
@@ -413,7 +413,7 @@ function voirMatrice1( div_de_la_zone_source ){
     if(zoneContenantLaMatrice && document.getElementById( 'zoneContenantLaMatrice' ).innerHTML === ''){
         var contenu=document.getElementById( div_de_la_zone_source ).value;
         var matrice=__m_rev1.rev_tm( contenu );
-        if(matrice.__xst === true){
+        if(matrice.__xst === __xsu){
             var zoneMatrice=document.createElement( 'table' );
             __gi1.construit_tableau_html_de_le_matrice_rev( zoneMatrice , matrice );
             zoneContenantLaMatrice.appendChild( zoneMatrice );
@@ -464,7 +464,7 @@ function chargerFichierRev( nomFichierSource ){
         return(__gi1.recupérer_un_fetch( url , ajax_param ));
     }
     charger_fichier_rev1( 'za_ajax.php?charger_un_ficher_rev' , ajax_param ).then( ( donnees ) => {
-            if(donnees.__xst === true){
+            if(donnees.__xst === __xsu){
                 localStorage.setItem( "fta_dernier_fichier_charge" , donnees.__entree.file_name );
                 var zoneSource=document.getElementById( 'zonesource' );
                 zoneSource.value=donnees.__xva;
@@ -475,6 +475,7 @@ function chargerFichierRev( nomFichierSource ){
                 document.getElementById( 'nomDuSource' ).disabled=true;
                 enregistrer2();
             }else{
+                console.log( 'donnees=' , donnees );
                 __gi1.remplir_et_afficher_les_messages1( 'zonesource' );
             }
         } );
@@ -491,7 +492,7 @@ function initialisation_page_rev( par ){
     }
     var ajax_param={"call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'getRevFiles'}};
     charger_la_liste_des_sources1( 'za_ajax.php?getRevFiles' , ajax_param ).then( ( donnees ) => {
-            if(donnees.__xst == true){
+            if(donnees.__xst === __xsu){
                 var fta_dernier_fichier_charge=localStorage.getItem( 'fta_dernier_fichier_charge' );
                 var trouve='';
                 var t='';
@@ -507,7 +508,7 @@ function initialisation_page_rev( par ){
                     chargerFichierRev( fta_dernier_fichier_charge );
                 }
             }else{
-                console.log( r );
+                console.log( 'donnees=' , donnees );
                 alert( 'BAD job !' );
                 return;
             }

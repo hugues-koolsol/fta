@@ -19,13 +19,19 @@ define('ENCRYPTION_DONNEES_EN_PLUS',base64_encode('une_valeur_très_compliquée_
 define('ENCRYPTION_METHODE','aes-256-cbc');
 /*statut*/
 define('__xst','__xst');
+/*n° erreur*/
+define('__xer',0);
+/*n° succes*/
+define('__xsu',1);
+/*n° alarme*/
+define('__xal',2);
+/*n° info*/
+define('__xif',3);
 /*message*/
 define('__xme','__xme');
 /*plusieurs messages dans un tableau */
 define('__xms','__xms');
-/*plusieurs informations dans un tableau */
-define('__xif','__xif');
-/*plusieurs avertissements dans un tableau */
+/*plusieurs alarmes dans un tableau */
 define('__xav','__xav');
 /*valeur*/
 define('__xva','__xva');
@@ -276,7 +282,7 @@ function construire_navigation_pour_liste($__debut,$__nbMax,$__nbEnregs,$consUrl
 
     }else{
 
-        $o1 .= '<form class="yylistForm1 yyavertissement" method="post">';
+        $o1 .= '<form class="yylistForm1 yyalarme" method="post">';
         $o1 .= $boutons_avant;
         $o1 .= 'Aucun enregistrement trouvé</form>' . PHP_EOL;
     }
@@ -523,7 +529,7 @@ function sq0($s){
 /*
   =====================================================================================================================
 */
-function signaler_erreur($tab){
+function signaler($tab){
 
     
     if(isset($tab['provenance']) && $tab['provenance'] !== ''){
@@ -543,13 +549,7 @@ function signaler_erreur($tab){
 */
 function ajouterMessage($type_de_message,$message,$page=''){
 
-    $tableauTypeMessage=array(
-        'succes',
-        'info',
-        'erreur',
-        'danger',
-        'avertissement'
-    );
+    $tableauTypeMessage=array( 'erreur', __xsu, 'alarme', 'info');
     
     if($page === ''){
 
@@ -605,47 +605,40 @@ function ajouterMessage($type_de_message,$message,$page=''){
 function recupere_les_messages_de_session($bnf){
 
     $les_messages_a_afficher='';
-    $tableauTypeMessage=array(
-        'normal',
-        'succes',
-        'info',
-        'erreur',
-        'danger',
-        'avertissement'
-    );
+    $tableauTypeMessage=array( 'erreur' => 'erreur', __xsu => 'succes', 'alarme' => 'alarme', 'info' => 'info');
     $visible='hidden';
-    foreach($tableauTypeMessage as $v1){
+    foreach($tableauTypeMessage as $k1 => $v1){
         
-        if(isset($_SESSION[APP_KEY][NAV][$bnf][$v1])){
+        if(isset($_SESSION[APP_KEY][NAV][$bnf][$k1])){
 
             
-            if(count($_SESSION[APP_KEY][NAV][$bnf][$v1]) > 0){
+            if(count($_SESSION[APP_KEY][NAV][$bnf][$k1]) > 0){
 
-                foreach($_SESSION[APP_KEY][NAV][$bnf][$v1] as $kerr => $verr){
+                foreach($_SESSION[APP_KEY][NAV][$bnf][$k1] as $kerr => $verr){
                     $les_messages_a_afficher .= '<div class="yy' . $v1 . '">' . $verr . '</div>' . PHP_EOL;
                     $visible='visible;';
                 }
 
             }
 
-            unset($_SESSION[APP_KEY][NAV][$bnf][$v1]);
+            unset($_SESSION[APP_KEY][NAV][$bnf][$k1]);
 
         }
 
         
-        if(isset($_SESSION[APP_KEY][NAV][$v1])){
+        if(isset($_SESSION[APP_KEY][NAV][$k1])){
 
             
-            if(count($_SESSION[APP_KEY][NAV][$v1]) > 0){
+            if(count($_SESSION[APP_KEY][NAV][$k1]) > 0){
 
-                foreach($_SESSION[APP_KEY][NAV][$v1] as $kerr => $verr){
+                foreach($_SESSION[APP_KEY][NAV][$k1] as $kerr => $verr){
                     $les_messages_a_afficher .= '<div class="yy' . $v1 . '">' . $verr . '</div>' . PHP_EOL;
                     $visible='visible;';
                 }
 
             }
 
-            unset($_SESSION[APP_KEY][NAV][$v1]);
+            unset($_SESSION[APP_KEY][NAV][$k1]);
 
         }
 
@@ -788,7 +781,7 @@ function verifie_id_envoye($nom_du_champ,$page_de_redirection,$bnf,&$post){
            && is_numeric($_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ])
         ){
 
-            ajouterMessage('avertissement',__LINE__ . ' désolé, il faut sauvegarder à nouveau');
+            ajouterMessage('alarme',__LINE__ . ' désolé, il faut sauvegarder à nouveau');
             recharger_la_page($bnf . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][$bnf][$nom_du_champ]);
 
         }else{
@@ -975,8 +968,11 @@ const __xst='__xst';
 const __xme='__xme';
 const __xms='__xms';
 const __xva='__xva';
+const __xer=0;
+const __xsu=1;
+const __xal=2;
+const __xif=3;
 const __entree='__entree';
-//var __gi1=null;
 /*
   =====================================================================================================================
 */
@@ -1022,7 +1018,7 @@ function initialiser_le_module_apres_chargement(element){
             });
     }else if(element.src.indexOf("js/module_requete_sql.js") >= 0){
          import(element.src).then(function(Module){
-                __module_requete_sql1=new Module.requete_sql('__module_requete_sql1','div_de_travail');
+                __module_requete_sql1=new Module.requete_sql('__module_requete_sql1','div_de_travail',true);
             });
     }else if(element.src.indexOf("js/mf_astjs_vers_rev1.js") >= 0){
          import(element.src).then(function(Module){

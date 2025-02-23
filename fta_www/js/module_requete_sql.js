@@ -47,7 +47,7 @@ class requete_sql{
       =============================================================================================================
       function constructor
     */
-    constructor( nom_de_la_variable , nom_de_la_div_de_travail ){
+    constructor( nom_de_la_variable , nom_de_la_div_de_travail , charger_la_base=true ){
         this.#nom_de_la_variable=nom_de_la_variable;
         if(nom_de_la_div_de_travail !== null){
             this.#div_de_travail=document.getElementById( nom_de_la_div_de_travail );
@@ -55,7 +55,9 @@ class requete_sql{
             /* dans un webworker, la référence est en amont */
             this.#globale_debut_url='../' + this.#globale_debut_url;
         }
-        this.nouvelle( this.apres_chargement_des_bases );
+        if(charger_la_base !== false){
+            this.nouvelle( this.apres_chargement_des_bases );
+        }
     }
     /*
       =============================================================================================================
@@ -140,7 +142,7 @@ class requete_sql{
         that.#obj_webs.bases=init.bases;
         console.log( 'that.#obj_webs.tableau_des_bases_tables_champs=' , that.#obj_webs.tableau_des_bases_tables_champs );
         var obj1=__m_rev1.rev_tm( that.#globale_rev_requete );
-        if(obj1.__xst !== true){
+        if(obj1.__xst !== __xsu){
             return;
         }
         var tab=obj1.__xva;
@@ -471,16 +473,16 @@ class requete_sql{
                                         if(that.#obj_webs.type_de_requete === 'update'){
                                             if(tab[j][1] === 'affecte' && tab[j][2] === 'f'){
                                                 var obj=__m_rev1.matrice_vers_source_rev1( tab , j , false , j + 1 );
-                                                if(obj.__xst === true){
+                                                if(obj.__xst === __xsu){
                                                     if(formule_update !== ''){
                                                         formule_update+=',';
                                                     }
                                                     formule_update+='affecte(' + obj.__xva + ')';
                                                 }else{
-                                                    __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' il faut un affecte pour une requete update '} );
+                                                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + ' il faut un affecte pour une requete update '} );
                                                 }
                                             }else{
-                                                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' il faut un affecte pour une requete update '} );
+                                                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + ' il faut un affecte pour une requete update '} );
                                             }
                                         }else{
                                             this.#obj_webs['champs_sortie'].push( {
@@ -497,7 +499,7 @@ class requete_sql{
                                           c'est une formule
                                         */
                                         var obj=__m_rev1.matrice_vers_source_rev1( tab , tab[j][7] , true , j );
-                                        if(obj.__xst === true){
+                                        if(obj.__xst === __xsu){
                                             this.#obj_webs['champs_sortie'].push( {"type_d_element" : 'formule' ,"formule" : obj.__xva} );
                                         }
                                     }
@@ -506,7 +508,7 @@ class requete_sql{
                                       c'est une formule
                                     */
                                     var obj=__m_rev1.matrice_vers_source_rev1( tab , tab[j][7] , true , j );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         this.#obj_webs['champs_sortie'].push( {"type_d_element" : 'formule' ,"formule" : obj.__xva} );
                                     }
                                 }
@@ -514,7 +516,7 @@ class requete_sql{
                                 if(tab[j][1] === 'alias_champ'){
                                 }else{
                                     var obj=__m_rev1.matrice_vers_source_rev1( tab , j , true , j + 1 );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         this.#obj_webs['champs_sortie'].push( {"type_d_element" : 'formule' ,"formule" : tab[j][1] + '(' + obj.__xva + ')'} );
                                     }
                                 }
@@ -526,12 +528,12 @@ class requete_sql{
                 }
             }else if(tab[i][2] === 'f' && 'conditions' === tab[i][1]){
                 var obj=__m_rev1.matrice_vers_source_rev1( tab , tab[i + 1][7] , true , i + 1 );
-                if(obj.__xst === true){
+                if(obj.__xst === __xsu){
                     this.#obj_webs['conditions'].push( {"type_d_element" : 'formule' ,"formule" : obj.__xva} );
                 }
             }else if(tab[i][2] === 'f' && 'complements' === tab[i][1]){
                 var obj=__m_rev1.matrice_vers_source_rev1( tab , tab[i + 1][7] , true , i + 1 );
-                if(obj.__xst === true){
+                if(obj.__xst === __xsu){
                     this.#obj_webs['complements'].push( {"type_d_element" : 'formule' ,"formule" : obj.__xva} );
                 }
             }
@@ -907,7 +909,7 @@ class requete_sql{
         var zone_formule=document.getElementById( 'zone_formule' );
         var rev_de_la_formule=zone_formule.value;
         var obj=__m_rev1.rev_tcm( rev_de_la_formule );
-        if(obj.__xst === true){
+        if(obj.__xst === __xsu){
             if(!this.#obj_webs[destination]){
                 this.#obj_webs[destination]=[];
             }
@@ -1128,7 +1130,7 @@ class requete_sql{
         var zone_formule=document.getElementById( 'zone_formule' );
         var rev_de_la_formule=zone_formule.value;
         var obj=__m_rev1.rev_tcm( rev_de_la_formule );
-        if(obj.__xst === true){
+        if(obj.__xst === __xsu){
             if((this.#obj_webs.type_de_requete === 'select'
                        || this.#obj_webs.type_de_requete === 'select_liste')
                    && destination === 'champs_sortie'
@@ -1541,9 +1543,9 @@ class requete_sql{
           var matriceFonction=functionToArray2(tableau1.__xva,true,false,'');
         */
         var matriceFonction=__m_rev1.rev_tm( rev_texte );
-        if(matriceFonction.__xst === true){
+        if(matriceFonction.__xst === __xsu){
             var obj2=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 rev_texte=obj2.__xva;
             }
         }
@@ -1690,16 +1692,16 @@ class requete_sql{
                 var le_json=JSON.parse( t );
                 return le_json;
             }catch(e){
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur sur convertion json, texte non json=' + t} );
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'url=' + url} );
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : JSON.stringify( en_entree )} );
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : JSON.stringify( donnees )} );
-                return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t});
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur sur convertion json, texte non json=' + t} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'url=' + url} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( en_entree )} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( donnees )} );
+                return({"__xst" : __xer ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t});
             }
         }catch(e){
             debugger;
             console.log( 'e=' , e );
-            return({"__xst" : false ,"__xme" : e.message});
+            return({"__xst" : __xer ,"__xme" : e.message});
         }
     }
     /*
@@ -1717,9 +1719,9 @@ class requete_sql{
           var obj1=functionToArray2(tableau1.__xva,false,true,'');
         */
         var obj1=__m_rev1.rev_tm( document.getElementById( 'txtar1' ).value );
-        if(obj1.__xst === true){
+        if(obj1.__xst === __xsu){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 var ajax_param={
                     "call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'modifier_la_requete_en_base'} ,
                     "rev" : document.getElementById( 'txtar1' ).value ,
@@ -1732,12 +1734,12 @@ class requete_sql{
                 };
                 modifier_la_requete_en_base( this.#globale_debut_url + '?modifier_la_requete_en_base' , ajax_param , this ).then( ( donnees ) => {
                         console.log( 'donnees=' , donnees );
-                        if(donnees.__xst === true){
-                            __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : ' requête sauvegardée'} );
+                        if(donnees.__xst === __xsu){
+                            __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : ' requête sauvegardée'} );
                             console.log( true );
                         }else{
                             console.log( 'donnees=' , donnees );
-                            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la requête'} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la requête'} );
                         }
                         __gi1.remplir_et_afficher_les_messages1( '' );
                     } );
@@ -1761,9 +1763,9 @@ class requete_sql{
           var obj1=functionToArray2(tableau1.__xva,false,true,'');
         */
         var obj1=__m_rev1.rev_tm( document.getElementById( 'txtar1' ).value );
-        if(obj1.__xst === true){
+        if(obj1.__xst === __xsu){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 var ajax_param={
                     "call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'enregistrer_la_requete_en_base'} ,
                     "rev" : document.getElementById( 'txtar1' ).value ,
@@ -1776,13 +1778,13 @@ class requete_sql{
                 };
                 enregistrer_la_requete_en_base( this.#globale_debut_url + '?enregistrer_la_requete_en_base' , ajax_param , this ).then( ( donnees ) => {
                         console.log( 'donnees=' , donnees );
-                        if(donnees.__xst === true){
+                        if(donnees.__xst === __xsu){
                             var recharger_page='zz_requetes_a1.php?__action=__modification&__id=' + donnees.nouvel_id;
                             window.location=recharger_page;
                             return;
                         }else{
                             console.log( 'donnees=' , donnees );
-                            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la requête'} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la requête'} );
                         }
                         __gi1.remplir_et_afficher_les_messages1( '' );
                     } );
@@ -1863,7 +1865,7 @@ class requete_sql{
                                            || tab[j][1] === 'dans')
                                 ){
                                     var obj=__m_rev_vers_sql1.traite_sqlite_fonction_de_champ( tab , j , 0 , options );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         var parametre=obj.__xva.match( /\$par\[(.*)\]/ );
                                         if(parametre === null){
                                             tableau_des_conditions.push( {
@@ -1902,7 +1904,7 @@ class requete_sql{
                                || tab[i][1] === 'dans')
                     ){
                         var obj=__m_rev_vers_sql1.traite_sqlite_fonction_de_champ( tab , i , 0 , options );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             var parametre=obj.__xva.match( /\$par\[(.*)\]/ );
                             if(parametre === null){
                                 tableau_des_conditions.push( {
@@ -2096,10 +2098,10 @@ class requete_sql{
                                         }else{
                                             if(tab[m][2] === 'f'){
                                                 var obj=__m_rev_vers_sql1.traite_sqlite_fonction_de_champ( tab , m , 0 , options );
-                                                if(obj.__xst === true){
+                                                if(obj.__xst === __xsu){
                                                     valeur_du_champ=obj.__xva;
                                                 }else{
-                                                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '0198 erreur sur fonction dans update conditions "' + tab[l][1] + '"'} ));
+                                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0198 erreur sur fonction dans update conditions "' + tab[l][1] + '"'} ));
                                                 }
                                             }else{
                                                 if(tab[m][1].toLowerCase() === 'null' && tab[m][4] === 0){
@@ -2387,7 +2389,7 @@ class requete_sql{
                                                    || tab[j][1] === 'pas_comme')
                                         ){
                                             var obj=__m_rev_vers_sql1.traite_sqlite_fonction_de_champ( tab , j , 0 , options );
-                                            if(obj.__xst === true){
+                                            if(obj.__xst === __xsu){
                                                 var parametre=obj.__xva.match( /\$par\[(.*)\]/ );
                                                 if(parametre === null){
                                                     tableau_des_conditions.push( {
@@ -2425,7 +2427,7 @@ class requete_sql{
                                        || tab[i][1] === 'pas_comme')
                             ){
                                 var obj=__m_rev_vers_sql1.traite_sqlite_fonction_de_champ( tab , i , 0 , options );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     var parametre=obj.__xva.match( /\$par\[(.*)\]/ );
                                     if(parametre === null){
                                         tableau_des_conditions.push( {
@@ -2528,7 +2530,7 @@ class requete_sql{
             t+='    }' + CRLF;
         }
         t+='}' + CRLF;
-        return({"__xst" : true ,"__xva" : t});
+        return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
       =============================================================================================================
@@ -2541,9 +2543,9 @@ class requete_sql{
           var obj1=functionToArray2(tableau1.__xva,false,true,'');
         */
         var obj1=__m_rev1.rev_tm( source_rev );
-        if(obj1.__xst === true){
+        if(obj1.__xst === __xsu){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 obj2.__xva=obj2.__xva.replace( /\/\* ==========DEBUT DEFINITION=========== \*\//g , '' );
                 if(obj2.__xva.indexOf( 'WHERE ' ) >= 0){
                     var str1=obj2.__xva.substr( 0 , obj2.__xva.indexOf( 'WHERE ' ) );
@@ -2558,7 +2560,7 @@ class requete_sql{
                     obj2.__xva=str1 + str2;
                 }
                 var obj3=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {"au_format_php" : true} );
-                if(obj3.__xst === true){
+                if(obj3.__xst === __xsu){
                     var i=0;
                     for( i=0 ; i < obj3.tableau_des_tables_utilisees.length ; i++ ){
                         var base={};
@@ -2575,19 +2577,19 @@ class requete_sql{
                         }
                     }
                     var obj4=this.#transformer_requete_en_fonction_php( this.#obj_webs.type_de_requete , obj3 , id_requete );
-                    if(obj4.__xst === true){
-                        return({"__xst" : true ,"source_sql" : obj2.__xva ,"source_php" : obj4.__xva});
+                    if(obj4.__xst === __xsu){
+                        return({"__xst" : __xsu ,"source_sql" : obj2.__xva ,"source_php" : obj4.__xva});
                     }else{
-                        return(__m_rev1.empiler_erreur( {"__xst" : false ,"source_sql" : obj2.__xva ,"__xme" : 'module_requete erreur 2455 erreur de conversion en php '} ));
+                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"source_sql" : obj2.__xva ,"__xme" : 'module_requete erreur 2455 erreur de conversion en php '} ));
                     }
                 }else{
-                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"source_sql" : obj2.__xva ,"message" : 'module_requete erreur 2456 erreur de conversion en sql '} ));
+                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"source_sql" : obj2.__xva ,"message" : 'module_requete erreur 2456 erreur de conversion en sql '} ));
                 }
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'module_requete erreur 2457 erreur de conversion en sql '} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_requete erreur 2457 erreur de conversion en sql '} ));
             }
         }else{
-            return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'module_requete erreur 2458'} ));
+            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_requete erreur 2458'} ));
         }
     }
     /*
@@ -2604,7 +2606,7 @@ class requete_sql{
             __gi1.raz_des_messages();
             __gi1.masquer_les_messages1( '' );
             var obj1=this.transform_source_rev_vers_sql( document.getElementById( txtarea_source ).value , id_requete );
-            if(obj1.__xst === true){
+            if(obj1.__xst === __xsu){
                 document.getElementById( txtarea_dest ).value=obj1.source_sql;
                 document.getElementById( 'txtar3' ).value=obj1.source_php;
             }else{
@@ -2638,13 +2640,13 @@ class requete_sql{
         }
         var ajax_param={"call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'recuperer_les_bases_de_la_cible_en_cours'}};
         recuperer_les_bases_de_la_cible_en_cours( this.#globale_debut_url + '?recuperer_les_bases_de_la_cible_en_cours' , ajax_param , this ).then( ( donnees ) => {
-                if(donnees.__xst === true){
+                if(donnees.__xst === __xsu){
                     console.log( 'bases_chargées' );
                     this.#obj_init['bases']={};
                     var i={};
                     for(i in donnees.__xva){
                         var obj2=__m_rev1.rev_tm( donnees.__xva[i]['T0.chp_rev_travail_basedd'] );
-                        if(obj2.__xst === true){
+                        if(obj2.__xst === __xsu){
                             this.#obj_init['bases'][donnees.__xva[i]['T0.chi_id_basedd']]={
                                 "chi_id_basedd" : donnees.__xva[i]['T0.chi_id_basedd'] ,
                                 "chp_nom_basedd" : donnees.__xva[i]['T0.chp_nom_basedd'] ,

@@ -35,7 +35,11 @@ h1{text-align:center;}
 h1{  border:0;  margin:0;  height:10vmin; } 
 #numero_de_joueur{  font-size:1.8em;  color:red; text-align:center; } 
 @keyframes acsb1 { 
-   0% { transform: translateY(0)    } 25% { transform: translateY(15px) } 50% { transform: translateY(-15px)} 75% { transform: translateY(15px) } 100% { transform: translateY(0)  }
+   0% { transform: translateY(0)    } 
+  25% { transform: translateY(15px) } 
+  50% { transform: translateY(-15px)} 
+  75% { transform: translateY(15px) } 
+ 100% { transform: translateY(0)  }
 } 
 .csb1 { 
   animation: acsb1 0.25s; animation-iteration-count: 3;
@@ -83,10 +87,15 @@ tbody tr:nth-child(2n) {
 //<![CDATA[
 //<source_javascript_rev>
 "use strict";
+/*
+  =====================================================================================================================
+*/
 var numero_de_joueur='x';
 var termine=false;
 var message1=' clique sur une case ';
-/* ================================================================ */
+/*
+  =====================================================================================================================
+*/
 function verifie_gagnant1( nj ){
     var i=0;
     for( i=0 ; i < 3 ; i++ ){
@@ -133,7 +142,9 @@ function verifie_gagnant1( nj ){
     }
     return 2;
 }
-/* ================================================================ */
+/*
+  =====================================================================================================================
+*/
 function recommencer(){
     document.getElementById( 'numero_de_joueur' ).className='csb1';
     var lst=document.getElementById( 't1' ).getElementsByTagName( 'td' );
@@ -148,7 +159,9 @@ function recommencer(){
             document.getElementById( 'numero_de_joueur' ).className='';
         } , 250 );
 }
-/* ================================================================ */
+/*
+  =====================================================================================================================
+*/
 function monClick( e ){
     if(termine === true){
         return;
@@ -185,7 +198,9 @@ function monClick( e ){
             } , 1250 );
     }
 }
-/* ================================================================ */
+/*
+  =====================================================================================================================
+*/
 function init(){
     var lst=document.getElementById( 't1' ).getElementsByTagName( 'td' );
     var i=0;
@@ -198,7 +213,9 @@ function init(){
             document.getElementById( 'numero_de_joueur' ).className='';
         } , 1250 );
 }
-/* ================================================================ */
+/*
+  =====================================================================================================================
+*/
 window.addEventListener( 'load' , function(){
         /* quand tout est chargé, on initialise le jeu */
         init();

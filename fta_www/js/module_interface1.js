@@ -113,16 +113,11 @@ class interface1{
             document.getElementById( this.#nom_div_des_messages1 ).innerHTML='';
             /* display a pu être mis à "none" ailleurs */
             document.getElementById( this.#nom_div_des_messages1 ).style.visibility='hidden';
-        }catch(e){}
+        }catch(e){
+            /* par vu, pas pris */
+        }
         /* __m_rev1 */
-        __m_rev1.globale_messages={
-            "erreurs" : [] ,
-            "avertissements" : [] ,
-            "infos" : [] ,
-            "lignes" : [] ,
-            "ids" : [] ,
-            "plages" : []
-        };
+        __m_rev1.globale_messages={"erreurs" : [] ,"succes" : [] ,"alarmes" : [] ,"infos" : []};
     }
     /*
       =============================================================================================================
@@ -140,7 +135,8 @@ class interface1{
         var tab_cas_erreur=[
             /*  */
             {"type" : 'erreurs' ,"css_cls" : 'yyerreur' ,"nom_zone" : '__xme'},
-            {"type" : 'avertissements' ,"css_cls" : 'yyavertissement' ,"nom_zone" : '__xav'},
+            {"type" : 'succes' ,"css_cls" : 'yyerreur' ,"nom_zone" : '__xme'},
+            {"type" : 'alarmes' ,"css_cls" : 'yyalarme' ,"nom_zone" : '__xav'},
             {"type" : 'infos' ,"css_cls" : 'yysucces' ,"nom_zone" : '__xme'}
         ];
         for(let cas in tab_cas_erreur){
@@ -172,7 +168,7 @@ class interface1{
             }
         }
         if(il_existe_des_messages_masques === true){
-            zon.innerHTML+='<div class="yyavertissement">' + '<span id="message_masquer_les_details">le détail des erreurs n\'est pas visible</span> <a id="bouton_voir_les_messages_masques" data-masque="1" class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.afficher_les_erreurs_masquees()">voir</a>' + '</div>';
+            zon.innerHTML+='<div class="yyalarme">' + '<span id="message_masquer_les_details">le détail des erreurs n\'est pas visible</span> <a id="bouton_voir_les_messages_masques" data-masque="1" class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.afficher_les_erreurs_masquees()">voir</a>' + '</div>';
         }
         if(zon.innerHTML !== ''){
             zon.style.visibility='visible';
@@ -200,7 +196,7 @@ class interface1{
         try{
             var response=await fetch( url , en_entree ).catch( ( err ) => {
                 /* console.error('err interface recupérer_un_fetch ',err); */
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() + ' recupérer_un_fetch <br/>' + err} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + ' recupérer_un_fetch <br/>' + err} );
             } ).finally( () => {
                 /* vide */
             } );
@@ -220,12 +216,12 @@ class interface1{
                 }
                 return le_json;
             }catch(e){
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur sur convertion json, texte non json=' + t ,"masquee" : masquer_les_messages_du_serveur} );
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur} );
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : JSON.stringify( en_entree ) ,"masquee" : masquer_les_messages_du_serveur} );
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : JSON.stringify( donnees ) ,"masquee" : masquer_les_messages_du_serveur} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur sur convertion json, texte non json=' + t ,"masquee" : masquer_les_messages_du_serveur} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( en_entree ) ,"masquee" : masquer_les_messages_du_serveur} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( donnees ) ,"masquee" : masquer_les_messages_du_serveur} );
                 return({
-                        "__xst" : false ,
+                        "__xst" : __xer ,
                         "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t ,
                         "masquee" : masquer_les_messages_du_serveur
                     });
@@ -234,13 +230,13 @@ class interface1{
             console.log( e );
             if(e.message === 'signal timed out'){
                 __m_rev1.empiler_erreur( {
-                        "__xst" : false ,
+                        "__xst" : __xer ,
                         "__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt( (delais_admis / 1000) * 10 , 10 ) / 10) + ' secondes '
                     } );
             }else{
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : e.message} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : e.message} );
             }
-            return({"__xst" : false ,"__xme" : e.message});
+            return({"__xst" : __xer ,"__xme" : e.message});
         }
     }
     /*
@@ -498,7 +494,7 @@ class interface1{
             return a;
         }
         definir_le_nombre_de_lignes_a_afficher_pour_une_liste1( 'za_ajax.php?definir_le_nombre_de_lignes_a_afficher_pour_une_liste' , ajax_param ).then( ( donnees ) => {
-                if(donnees.__xst === true){
+                if(donnees.__xst === __xsu){
                     window.location.reload( true );
                     return;
                 }else{
@@ -834,21 +830,21 @@ class interface1{
                 }
                 /* on transforme le ast du js en rev */
                 var obj1=__m_astjs_vers_rev1.traite_ast( obj.body , tableau_des_commentaires_js , {} );
-                if(obj1.__xst === true){
-                    return({"__xst" : true ,"__xva" : obj1.__xva});
+                if(obj1.__xst === __xsu){
+                    return({"__xst" : __xsu ,"__xva" : obj1.__xva});
                 }else{
-                    __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur convertit_source_javascript_en_rev 3433'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur convertit_source_javascript_en_rev 3433'} );
                 }
             }
         }catch(e){
             console.error( 'e=' , e );
             if(e.pos){
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2() ,"plage" : [e.pos,e.pos]} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"plage" : [e.pos,e.pos]} );
             }else{
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2()} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
             }
         }
-        return({"__xst" : true ,"__xva" : obj1.__xva});
+        return({"__xst" : __xsu ,"__xva" : obj1.__xva});
     }
     /*
       =============================================================================================================
@@ -869,20 +865,20 @@ class interface1{
             var obj=parseur_javascript.parse( a.value , {"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : false ,"onComment" : tabComment} );
             /* on transforme le ast en rev */
             var obj=__m_astjs_vers_rev1.traite_ast( obj.body , tabComment , {} );
-            if(obj.__xst === true){
+            if(obj.__xst === __xsu){
                 document.getElementById( nom_de_la_text_area_rev ).value=obj.__xva;
                 var tableau1=__m_rev1.txt_en_tableau( obj.__xva );
                 var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva , true , false , '' );
-                if(matriceFonction.__xst === true){
+                if(matriceFonction.__xst === __xsu){
                     /*
                       var startMicro = performance.now();
                     */
                     var obj2=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
-                    if(obj2.__xst === true){
+                    if(obj2.__xst === __xsu){
                         document.getElementById( nom_de_la_text_area_rev ).value=obj2.__xva;
                     }
                 }else{
-                    __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur rev'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur rev'} );
                 }
             }else{
                 this.remplir_et_afficher_les_messages1( nom_de_la_text_area_js );
@@ -891,9 +887,9 @@ class interface1{
             /* console.error('e=',e); */
             debugger;
             if(e.pos){
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2( e ) + '"' + e.message + '"' ,"plage" : [e.pos,e.pos]} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) + '"' + e.message + '"' ,"plage" : [e.pos,e.pos]} );
             }else{
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2( e ) + '"' + e.message + '"'} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) + '"' + e.message + '"'} );
             }
         }
         this.remplir_et_afficher_les_messages1( nom_de_la_text_area_js );
@@ -910,7 +906,7 @@ class interface1{
         var obj=__m_rev_vers_js1.c_rev_vers_js( a.value , {} );
         var endMicro=performance.now();
         /* console.log('%c\n\n=============\nconvertion de rev en js ='+(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms','background:lightblue;'); */
-        if(obj.__xst === true){
+        if(obj.__xst === __xsu){
             document.getElementById( chp_genere_source ).value=obj.__xva;
             if(id_source !== null && id_cible !== null){
                 var parametres_sauvegarde={"matrice" : obj.matriceFonction ,"chp_provenance_rev" : 'source' ,"chx_source_rev" : id_source ,"id_cible" : id_cible};
@@ -934,7 +930,7 @@ class interface1{
         var endMicro=performance.now();
         var tm=parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000;
         console.log( '%c\n\n=============\nconvertion de rev en php en ' + tm + ' ms' , 'background:lightblue;' );
-        if(obj.__xst === true){
+        if(obj.__xst === __xsu){
             document.getElementById( nom_zone_genere_php ).value=obj.__xva;
             if(id_source !== null && id_cible !== null){
                 var parametres_sauvegarde={"matrice" : obj.matriceFonction ,"chp_provenance_rev" : 'source' ,"chx_source_rev" : id_source ,"id_cible" : id_cible};
@@ -958,17 +954,17 @@ class interface1{
         var endMicro=performance.now();
         /* console.log('\n\n=============\nmise en tableau endMicro=',(parseInt((endMicro - startMicro) * 1000,10) / 1000) + ' ms'); */
         var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva , true , false , '' );
-        if(matriceFonction.__xst === true){
+        if(matriceFonction.__xst === __xsu){
             var objPhp=__m_rev_vers_php1.c_tab_vers_php( matriceFonction.__xva , {} );
             debugger;
             /* avrif */
-            if(objPhp.__xst === true){
+            if(objPhp.__xst === __xsu){
                 document.getElementById( nom_zone_genere_php ).value=objPhp.__xva;
                 if(bouton_interface === true){
                     /* pour firefox ! */
                     return;
                 }
-                return({"__xst" : true ,"__xva" : matriceFonction.__xva});
+                return({"__xst" : __xsu ,"__xva" : matriceFonction.__xva});
             }
         }
         this.remplir_et_afficher_les_messages1( nom_zone_source_rev );
@@ -976,7 +972,7 @@ class interface1{
             /* pour firefox ! */
             return;
         }
-        return({"__xst" : true});
+        return({"__xst" : __xsu});
     }
     /*
       =============================================================================================================
@@ -1002,7 +998,7 @@ class interface1{
             let php_moins_commentaires_sql=a.value.replace( regex , '' );
             var ast_de_php=parseur.parseCode( php_moins_commentaires_sql );
             var obj=__m_astphpparseur_vers_rev1.traite_ast( ast_de_php , options_traitement );
-            if(obj.__xst === true){
+            if(obj.__xst === __xsu){
                 document.getElementById( nom_de_la_text_area_rev ).value=obj.__xva;
                 if(obj.__xva.substr( 0 , 4 ) !== 'php('){
                     var tableau1=__m_rev1.txt_en_tableau( 'php(' + obj.__xva + ')' );
@@ -1010,9 +1006,9 @@ class interface1{
                     var tableau1=__m_rev1.txt_en_tableau( obj.__xva );
                 }
                 var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva , true , false , '' );
-                if(matriceFonction.__xst === true){
+                if(matriceFonction.__xst === __xsu){
                     var obj2=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
-                    if(obj2.__xst === true){
+                    if(obj2.__xst === __xsu){
                         document.getElementById( nom_de_la_text_area_rev ).value=obj2.__xva;
                     }else{
                         this.remplir_et_afficher_les_messages1( nom_de_la_text_area_rev );
@@ -1031,9 +1027,9 @@ class interface1{
             /* console.error(e); */
             debugger;
             if(e.lineNumber){
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2( e ) + 'erreur dans le source php : <br />' + e.message ,"ligne" : e.lineNumber} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) + 'erreur dans le source php : <br />' + e.message ,"ligne" : e.lineNumber} );
             }else{
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2( e ) + 'erreur dans le source php : <br />' + e.message} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) + 'erreur dans le source php : <br />' + e.message} );
             }
             this.remplir_et_afficher_les_messages1( nom_de_la_text_area_php );
         }
@@ -1047,16 +1043,16 @@ class interface1{
         var a=document.getElementById( nom_de_la_textarea_rev );
         var tableau1=__m_rev1.txt_en_tableau( a.value );
         var obj1=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
-        if(obj1.__xst === true){
+        if(obj1.__xst === __xsu){
             var obj2=__module_html1.tabToHtml1( obj1.__xva , 0 , false , 0 );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 document.getElementById( nom_de_la_textarea_html ).value=obj2.__xva;
-                __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : 'html produit'} );
+                __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : 'html produit'} );
             }else{
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur de reconstruction du html'} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur de reconstruction du html'} );
             }
         }else{
-            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur pour le rev'} );
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour le rev'} );
         }
         __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
     }
@@ -1069,7 +1065,7 @@ class interface1{
             options_json['zone_source']=nom_de_la_textarea;
         }catch(e){
             console.log( e );
-            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '0050 convertit-html-en-rev.js erreur dans les paramètres option'} );
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0050 convertit-html-en-rev.js erreur dans les paramètres option'} );
             __gi1.remplir_et_afficher_les_messages1( 'txtar2' );
             return;
         }
@@ -1092,9 +1088,9 @@ class interface1{
             }else{
                 var tableau1=__m_rev1.txt_en_tableau( obj.__xva );
                 var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva , true , false , '' );
-                if(matriceFonction.__xst === true){
+                if(matriceFonction.__xst === __xsu){
                     var obj2=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
-                    if(obj2.__xst === true){
+                    if(obj2.__xst === __xsu){
                         if(options_json.hasOwnProperty( 'zone_html_rev' )){
                             document.getElementById( options_json.zone_html_rev ).value=obj2.__xva;
                         }
@@ -1140,7 +1136,7 @@ class interface1{
         try{
             var json_de_ast=JSON.parse( par.__xva );
             var obj=__m_astphpnikic_vers_rev1.traite_ast_nikic( json_de_ast , options );
-            if(obj.__xst === true){
+            if(obj.__xst === __xsu){
                 /* console.log(obj); */
                 if(nom_de_la_text_area_rev !== ''){
                     document.getElementById( options.nom_de_la_text_area_rev ).value=obj.__xva;
@@ -1150,9 +1146,9 @@ class interface1{
                         var tableau1=__m_rev1.txt_en_tableau( obj.__xva );
                     }
                     var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva , true , false , '' );
-                    if(matriceFonction.__xst === true){
+                    if(matriceFonction.__xst === __xsu){
                         var obj2=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
-                        if(obj2.__xst === true){
+                        if(obj2.__xst === __xsu){
                             document.getElementById( options.nom_de_la_text_area_rev ).value=obj2.__xva;
                         }else{
                             this.remplir_et_afficher_les_messages1( options.nom_de_la_text_area_rev );
@@ -1166,7 +1162,7 @@ class interface1{
                 console.log( obj );
             }
         }catch(e){
-            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2( e ) + '<br />' + e.message} );
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) + '<br />' + e.message} );
         }
         this.remplir_et_afficher_les_messages1( nom_de_la_text_area_php );
     }
@@ -1175,13 +1171,18 @@ class interface1{
     */
     traitement_apres_recuperation_ast_de_php2_ko( reponse_ajax , json_de_reponse=null ){
         if(json_de_reponse !== null){
+            if(json_de_reponse.hasOwnProperty( '__xst' )){
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'Retour serveur, __xst="' + JSON.stringify( json_de_reponse.__xst ) + '"'} );
+            }else{
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'pas de "__xst" dans le Retour serveur'} );
+            }
             if(json_de_reponse.hasOwnProperty( '__xms' )){
                 for(var i in json_de_reponse.__xms){
                     if(json_de_reponse.__xms[i].indexOf( ' on line ' ) >= 0){
                         var num_ligne=parseInt( json_de_reponse.__xms[i].substr( json_de_reponse.__xms[i].indexOf( ' on line ' ) + 9 ) , 10 );
-                        __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : json_de_reponse.__xms[i] ,"ligne" : num_ligne} );
+                        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : json_de_reponse.__xms[i] ,"ligne" : num_ligne} );
                     }else{
-                        __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : json_de_reponse.__xms[i]} );
+                        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : json_de_reponse.__xms[i]} );
                     }
                 }
                 if(json_de_reponse.hasOwnProperty( '__entree' )
@@ -1206,7 +1207,7 @@ class interface1{
             if(reponse_ajax !== ''){
                 reponse_ajax=reponse_ajax.replace( "<font size='1'>" , '<font>' );
                 reponse_ajax=reponse_ajax.replace( "font-size: x-large;" , '' );
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : reponse_ajax} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : reponse_ajax} );
             }
             this.remplir_et_afficher_les_messages1( '' );
         }
@@ -1218,9 +1219,9 @@ class interface1{
         this.raz_des_messages();
         var tableau1=__m_rev1.txt_en_tableau( document.getElementById( nom_de_la_textarea_rev ).value );
         var obj1=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
-        if(obj1.__xst === true){
+        if(obj1.__xst === __xsu){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 obj2.__xva=obj2.__xva.replace( /\/\* ==========DEBUT DEFINITION=========== \*\//g , '' );
                 document.getElementById( nom_de_la_textarea_sql ).value=obj2.__xva;
                 __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_sql );
@@ -1240,34 +1241,34 @@ class interface1{
             texte=texte.replace( /\/\*\*\//g , '' );
             var ast=window.sqliteParser( texte , {} );
             var obj=__m_astsqliteparseur_vers_rev1.traite_ast_de_sqliteparseur( ast );
-            if(obj.__xst === true){
+            if(obj.__xst === __xsu){
                 document.getElementById( nom_de_la_textarea_rev ).value=obj.__xva;
                 this.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
                 var tableau1=__m_rev1.txt_en_tableau( obj.__xva );
                 var obj1=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
-                if(obj1.__xst === true){
+                if(obj1.__xst === __xsu){
                     var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
-                    if(obj2.__xst === true){
-                        __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : 'sql => rev ok et rev => sql  OK'} );
+                    if(obj2.__xst === __xsu){
+                        __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : 'sql => rev ok et rev => sql  OK'} );
                         this.remplir_et_afficher_les_messages1( '' );
                         obj2.__xva=obj2.__xva.replace( /\/\* ==========DEBUT DEFINITION=========== \*\//g , '' );
                         document.getElementById( 'txtar3' ).value=obj2.__xva;
                     }else{
-                        __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2()} );
+                        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
                         this.remplir_et_afficher_les_messages1( '' );
                         return;
                     }
                 }else{
-                    __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2()} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
                     this.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
                     return;
                 }
             }else{
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2()} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
                 this.remplir_et_afficher_les_messages1( nom_de_la_textarea_sql );
             }
         }catch(e){
-            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : __m_rev1.nl2( e ) + 'erreur de reconstruction du sql<br />' + e.message} );
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) + 'erreur de reconstruction du sql<br />' + e.message} );
             this.remplir_et_afficher_les_messages1( nom_de_la_textarea_sql );
         }
     }
@@ -1312,25 +1313,25 @@ class interface1{
         console.log( matriceFonction1 );
         /* ✍  console.log(JSON.stringify(matriceFonction1.value)); */
         document.getElementById( 'resultat1' ).innerHTML='';
-        if(matriceFonction1.__xst === true){
+        if(matriceFonction1.__xst === __xsu){
             var parent=document.getElementById( 'resultat1' );
             var startMicro=performance.now();
             var fonctionReecriteAvecRetour1=__m_rev1.matrice_vers_source_rev1( matriceFonction1.__xva , 0 , true , 1 );
             var resultat_compacte_ok='';
             var diResultatsCompactes=document.createElement( 'div' );
-            if(fonctionReecriteAvecRetour1.__xst === true){
+            if(fonctionReecriteAvecRetour1.__xst === __xsu){
                 var compacteOriginal=__m_rev1.matrice_vers_source_rev1( matriceFonction1.__xva , 0 , false , 1 );
                 var tableau2=__m_rev1.txt_en_tableau( fonctionReecriteAvecRetour1.__xva );
                 var matriceDeLaFonctionReecrite=__m_rev1.tb_vers_matrice( tableau2.__xva , true , autoriser_constante_dans_la_racine , '' );
                 var compacteReecrit=__m_rev1.matrice_vers_source_rev1( matriceDeLaFonctionReecrite.__xva , 0 , false , 1 );
-                if(compacteOriginal.__xst === true && compacteReecrit.__xst === true){
+                if(compacteOriginal.__xst === __xsu && compacteReecrit.__xst === __xsu){
                     if(compacteOriginal.__xva == compacteReecrit.__xva){
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:green;">👍 sources compactés Egaux</b><br />';
                         resultat_compacte_ok=__m_rev1.entitees_html( compacteOriginal.__xva );
-                        __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : '👍 sources compactés Egaux : ' + tempsTraitement} );
+                        __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : '👍 sources compactés Egaux : ' + tempsTraitement} );
                     }else{
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">💥sources compactés différents</b>';
-                        __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '💥sources compactés différents'} );
+                        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '💥sources compactés différents'} );
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />o=' + compacteOriginal.__xva;
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />r=' + compacteReecrit.__xva;
                     }
@@ -1353,10 +1354,10 @@ class interface1{
             var difonctionReecriteAvecRetour1=document.createElement( 'div' );
             difonctionReecriteAvecRetour1.className='yyconteneur_de_texte1';
             difonctionReecriteAvecRetour1.style.fontSize='0.9em';
-            if(fonctionReecriteAvecEtColoration1.__xst === true){
+            if(fonctionReecriteAvecEtColoration1.__xst === __xsu){
                 difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + __m_rev1.entitees_html( fonctionReecriteAvecEtColoration1.__xva ) + '</textarea>';
             }else{
-                difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + __m_rev1.entitees_html( fonctionReecriteAvecRetour1.message ) + '</textarea>';
+                difonctionReecriteAvecRetour1.innerHTML='<textarea class="txtar1" rows="10" autocorrect="off" autocapitalize="off" spellcheck="false">' + __m_rev1.entitees_html( fonctionReecriteAvecRetour1.__xme ) + '</textarea>';
             }
             document.getElementById( 'resultat1' ).appendChild( difonctionReecriteAvecRetour1 );
             /*  */
@@ -1464,7 +1465,7 @@ function toto(&$data){
     try {
         $ast = $parser->parse($data[__entree]['texteSource']);
         $data[__xva]=json_encode($ast);
-        $data[__xst]=true;
+        $data[__xst]=__xsu;
     } catch (Error $error) {
        $data[__xms][]=$error->getMessage();
        return;
@@ -1505,14 +1506,15 @@ while($i<5){
       =============================================================================================================
     */
     remplir_une_textarea_avex_un_source_de_test_rev( nom_de_la_text_area_rev ){
+        this.raz_des_messages();
         /*
-          "àà" <- dans l'excellent notepad++ de windows, ces deux a avec un accent grave 
+          "àà" <- dans l'excellent notepad++ de windows, ces deux a avec un accent grave 
           n'ont pas le même aspect car ils ont un encodage différent.
           J'aimerais bien que les navigateurs fassent la même chose.
         */
         var t=`#( début aaaa  debut),
 a(
-  #(test , 👍,𤭢,àà),
+  #(test , 👍,𤭢,àà),
   b(
     xx(
       y(
@@ -1566,9 +1568,11 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
 \
 )`;
         document.getElementById( nom_de_la_text_area_rev ).value=t;
-        var lines=t.split( /\r|\r\n|\n/ );
-        var count=lines.length;
-        document.getElementById( nom_de_la_text_area_rev ).setAttribute( 'rows' , count + 1 );
+        /*
+          var lines=t.split( /\r|\r\n|\n/ );
+          var count=lines.length;
+        */
+        document.getElementById( nom_de_la_text_area_rev ).setAttribute( 'rows' , 30 );
     }
     /*
       =============================================================================================================
@@ -1673,12 +1677,12 @@ COMMIT;
         /* console.log( "L'appel de txt_en_tableau a demandé " + (t1 - t0) + " millisecondes."); */
         /* ici, on ne quitte pas si il y a une erreur de niveau */
         var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva ,  /* niv */ false , false , '' );
-        if(matriceFonction.__xst === true){
+        if(matriceFonction.__xst === __xsu){
             /*
               var startMicro = performance.now();
             */
             var obj2=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 a.value=obj2.__xva;
             }
             /*
@@ -2100,7 +2104,7 @@ COMMIT;
         var position_debut=zoneSource.selectionStart;
         var position_fin=zoneSource.selectionEnd;
         if(position_debut < 0){
-            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'veuillez sélectionner une parenthèse dans la zone de texte'} );
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'veuillez sélectionner une parenthèse dans la zone de texte'} );
             this.remplir_et_afficher_les_messages1( nomDeLaTextAreaContenantLeSource );
             return;
         }
@@ -2120,7 +2124,7 @@ COMMIT;
                         if(texte.substr( i , 1 ) === '('){
                             texte=texte.substr( i );
                             var arr=__m_rev1.rev_parenthe1( texte , '(' );
-                            if(arr.__xst === true){
+                            if(arr.__xst === __xsu){
                                 zoneSource.focus();
                                 zoneSource.selectionStart=i + 1;
                                 position_debut=i + 1;
@@ -2137,7 +2141,7 @@ COMMIT;
                 texte=texte.substr( position_debut - 1 );
                 console.log( 'texte="' , texte + '"' );
                 var arr=__m_rev1.rev_parenthe1( texte , '(' );
-                if(arr.__xst === true){
+                if(arr.__xst === __xsu){
                     zoneSource.focus();
                     zoneSource.selectionStart=position_debut;
                     zoneSource.selectionEnd=(position_debut + arr.posFerPar) - 1;
@@ -2150,7 +2154,7 @@ COMMIT;
             */
             texte=texte.substr( 0 , position_debut + 1 );
             var arr=__m_rev1.rev_parenthe1( texte , ')' );
-            if(arr.__xst === true){
+            if(arr.__xst === __xsu){
                 zoneSource.focus();
                 zoneSource.selectionStart=arr.posOuvPar + 1;
                 zoneSource.selectionEnd=position_debut;
@@ -2165,7 +2169,7 @@ COMMIT;
                     if(texte.substr( i , 1 ) === '('){
                         texte=texte.substr( i );
                         var arr=__m_rev1.rev_parenthe1( texte , '(' );
-                        if(arr.__xst === true){
+                        if(arr.__xst === __xsu){
                             zoneSource.focus();
                             zoneSource.selectionStart=i + 1;
                             position_debut=i + 1;
@@ -2186,7 +2190,7 @@ COMMIT;
                     */
                     var tableau1=__m_rev1.txt_en_tableau( texte );
                     var matriceFonction=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
-                    if(matriceFonction.__xst === true){
+                    if(matriceFonction.__xst === __xsu){
                         var l01=matriceFonction.__xva.length;
                         var fait=false;
                         var repereDansTableau=-1;
@@ -2203,7 +2207,7 @@ COMMIT;
                                         var positionParentheseDuParent=matriceFonction.__xva[matriceFonction.__xva[i][7]][11];
                                         texte=texte.substr( positionParentheseDuParent );
                                         var arr=__m_rev1.rev_parenthe1( texte , '(' );
-                                        if(arr.__xst === true){
+                                        if(arr.__xst === __xsu){
                                             zoneSource.focus();
                                             position_debut=tableau1.__xva[positionParentheseDuParent][2] + 1;
                                             position_fin=positionParentheseDuParent + arr.posFerPar;
@@ -2228,7 +2232,7 @@ COMMIT;
                         if(texte.substr( i , 1 ) === '('){
                             texte=texte.substr( i );
                             var arr=__m_rev1.rev_parenthe1( texte , '(' );
-                            if(arr.__xst === true){
+                            if(arr.__xst === __xsu){
                                 zoneSource.focus();
                                 zoneSource.selectionStart=i + 1;
                                 position_debut=i + 1;
@@ -2539,7 +2543,7 @@ COMMIT;
                           }else{
                               presDe=str.substr(0,i + 10);
                           }
-                          return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1785 pres de "' + presDe + '"'});
+                          return({"__xst" : __xer ,"id" : i ,"__xme" : 'Erreur 1785 pres de "' + presDe + '"'});
                         */
                     }else if(c0 === '='){
                         if(cp1 === "'" || cp1 === '"'){
@@ -2553,7 +2557,7 @@ COMMIT;
                             }else{
                                 presDe=str.substr( 0 , i + 10 );
                             }
-                            return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + ' pres de "' + presDe + '"'});
+                            return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + ' pres de "' + presDe + '"'});
                         }
                     }else{
                     }
@@ -2598,7 +2602,7 @@ COMMIT;
                                 */
                                 tabTags.pop();
                             }else{
-                                return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'les balises html ne sont pas équilibrées'});
+                                return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'les balises html ne sont pas équilibrées'});
                             }
                             nomTag='';
                             dansBaliseFermante=false;
@@ -2610,7 +2614,7 @@ COMMIT;
                                 }else{
                                     presDe=str.substr( 0 , i + 10 );
                                 }
-                                return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
+                                return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                             }
                             if(nomTag.toLowerCase() === 'textarea'){
                                 dansTextArea=true;
@@ -2627,7 +2631,7 @@ COMMIT;
                         }else{
                             presDe=str.substr( 0 , i + 10 );
                         }
-                        return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
+                        return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                     }else{
                         nomTag+=c0;
                         if(nomTag === '![C' + 'DATA['){
@@ -2642,7 +2646,7 @@ COMMIT;
                             }else{
                                 presDe=str.substr( 0 , i + 10 );
                             }
-                            return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + ' pres de "' + presDe + '"'});
+                            return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + ' pres de "' + presDe + '"'});
                         }else{
                             dansNomTag=true;
                             nomTag+=c0;
@@ -2662,7 +2666,7 @@ COMMIT;
                                     }else{
                                         presDe=str.substr( 0 , i + 10 );
                                     }
-                                    return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
+                                    return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                                 }
                                 tabTags.pop();
                                 niveau--;
@@ -2677,7 +2681,7 @@ COMMIT;
                                 }else{
                                     presDe=str.substr( 0 , i + 10 );
                                 }
-                                return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
+                                return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                             }
                             dansTag=false;
                             dansInner=true;
@@ -2687,7 +2691,7 @@ COMMIT;
                                 }else{
                                     presDe=str.substr( 0 , i + 10 );
                                 }
-                                return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
+                                return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                             }
                             /*
                               pas de pop ici, dans <a b="c">d</a>, on est sur le > avant le d
@@ -2700,7 +2704,7 @@ COMMIT;
                                 }else{
                                     presDe=str.substr( 0 , i + 10 );
                                 }
-                                return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
+                                return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                             }else{
                                 dansNomPropriete=true;
                             }
@@ -2716,7 +2720,7 @@ COMMIT;
                             }else{
                                 presDe=str.substr( 0 , i + 10 );
                             }
-                            return({"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
+                            return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                         }
                         dansBaliseFermante=true;
                         i++;
@@ -2754,7 +2758,7 @@ COMMIT;
                         }else{
                             presDe=str.substr( 0 , i + 10 );
                         }
-                        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1935 pres de "' + presDe + '"'});
+                        return({"__xst" : __xer ,"id" : i ,"__xme" : 'Erreur 1935 pres de "' + presDe + '"'});
                     }
                 }else{
                 }
@@ -2769,7 +2773,7 @@ COMMIT;
                         }else{
                             presDe=str.substr( 0 , i + 10 );
                         }
-                        return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1952 pres de "' + presDe + '"'});
+                        return({"__xst" : __xer ,"id" : i ,"__xme" : 'Erreur 1952 pres de "' + presDe + '"'});
                     }
                 }
             }
@@ -2780,7 +2784,7 @@ COMMIT;
             }else{
                 presDe=str.substr( 0 , i + 10 );
             }
-            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1964 pres de "' + presDe + '"'});
+            return({"__xst" : __xer ,"id" : i ,"__xme" : 'Erreur 1964 pres de "' + presDe + '"'});
         }
         if(dansTag){
             if(i > 50){
@@ -2788,9 +2792,9 @@ COMMIT;
             }else{
                 presDe=str.substr( 0 , i + 10 );
             }
-            return({"__xst" : false ,"id" : i ,"__xme" : 'Erreur 1972 pres de "' + presDe + '"'});
+            return({"__xst" : __xer ,"id" : i ,"__xme" : 'Erreur 1972 pres de "' + presDe + '"'});
         }
-        return({"__xst" : true});
+        return({"__xst" : __xsu});
     }
     /*
       =============================================================================================================

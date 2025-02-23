@@ -27,8 +27,7 @@ html(
 --yyvhmd:35px; /* hauteur du menu à défilement */ 
 --yyvhgb:32px; /* hauteur des grands boutons ( quitter et index ) */ 
 --yyvhmc:24px; /* hauteur minimale de conteneur ( div ) */ 
-}
-        '),
+}'),
       #( Le css root étant défini plus haut, on peut utiliser le fichier 6.css ),
       link( ( 'rel' , "stylesheet" ) , ( 'as' , "style" ) , ( 'type' , "text/css" ) , ( 'href' , "fta_www/6.css" ))
    ),

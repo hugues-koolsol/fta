@@ -180,7 +180,7 @@ foreach($tt[__xva] as $k0 => $v0){
            || substr($v0['T0.chp_nom_source'],-4) === '.sql'
         ){
 
-            $lsttbl .= ' <a class="yyavertissement" data-attendre_message="oui" href="javascript:zz_l1_convertir_un_source_sur_disque(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque">😊</a>';
+            $lsttbl .= ' <a class="yyalarme" data-attendre_message="oui" href="javascript:zz_l1_convertir_un_source_sur_disque(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque">😊</a>';
 
         }else if(substr($v0['T0.chp_nom_source'],-3) === '.js'){
 

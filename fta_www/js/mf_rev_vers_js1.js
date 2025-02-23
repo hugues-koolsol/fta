@@ -76,7 +76,7 @@ class c_rev_vers_js1{
             }catch(e){}
         }
         __m_rev1.empiler_erreur( o );
-        debugger
+        debugger;
         return o;
     }
     /*
@@ -99,7 +99,7 @@ class c_rev_vers_js1{
     #rev_js1( id , niveau , opt ){
         /* term_final : false , retour_ligne : false , separateur : ',' , dans_initialisation : true */
         if(this.#l02 <= 1){
-            return({"__xst" : true ,"__xva" : ''});
+            return({"__xst" : __xsu ,"__xva" : ''});
         }
         let t='';
         let obj=null;
@@ -134,7 +134,7 @@ class c_rev_vers_js1{
                         if(this.#tb[i][8] === 1 && this.#tb[i + 1][2] === 'c'){
                             t+=this.#macst_pour_javascript( this.#tb[i + 1] );
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + ' un seul argument'} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' un seul argument'} ));
                         }
                         break;
                         
@@ -142,7 +142,7 @@ class c_rev_vers_js1{
                         if(this.#tb[i][8] === 1 && this.#tb[i + 1][2] === 'c'){
                             t+=this.#macst_pour_javascript( this.#tb[i + 1] );
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + ' "' + this.#tb[i][1] + '" doit avoir un seul paramètre '} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + ' "' + this.#tb[i][1] + '" doit avoir un seul paramètre '} ));
                         }
                         break;
                         
@@ -158,7 +158,7 @@ class c_rev_vers_js1{
                             }else if(this.#tb[i][8] === 1 && this.#tb[i][1] === 'break' && this.#tb[i + 1][2] === 'c'){
                                 t+=this.#tb[i][1] + ' ' + this.#tb[i + 1][1];
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' doit être sous le format ' + this.tb[i][1] + '() strictement'} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' doit être sous le format ' + this.tb[i][1] + '() strictement'} ));
                             }
                         }
                         break;
@@ -167,7 +167,7 @@ class c_rev_vers_js1{
                         if(this.#tb[i][8] === 0){
                             t+='return';
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + ' ne doit pas avoir de paramètre'} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' ne doit pas avoir de paramètre'} ));
                         }
                         break;
                         
@@ -182,10 +182,10 @@ class c_rev_vers_js1{
                                     contenu_retour+=this.#macst_pour_javascript( this.#tb[j] );
                                 }else{
                                     obj=this.#js_traiteInstruction1( niveau + 1 , j , {} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         contenu_retour+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + 'retourner '} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + 'retourner '} ));
                                     }
                                     constante_simple=false;
                                 }
@@ -203,7 +203,7 @@ class c_rev_vers_js1{
                         
                     case 'appelf' :
                         obj=this.#js_traiteAppelFonction( i , true , niveau + 1 , false , '' );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             if(obj.hasOwnProperty( 'arguments_a_ajouter_au_retour' ) && obj.arguments_a_ajouter_au_retour !== ''){
                                 if(obj.__xva.substr( obj.__xva.length - 1 , 1 ) === ';'){
                                     obj.__xva=obj.__xva.substr( 0 , obj.__xva.length - 1 );
@@ -213,20 +213,20 @@ class c_rev_vers_js1{
                                 t+=obj.__xva;
                             }
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + 'il faut un nom de fonction à appeler n(xxxx)'} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'il faut un nom de fonction à appeler n(xxxx)'} ));
                         }
                         break;
                         
                     case 'cascade' :
                         obj=this.#rev_js1( i , niveau , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             if(obj.__xva.length > 0){
                                 t+=obj.__xva.substr( 0 , obj.__xva.length - 1 );
                             }else{
                                 t+=obj.__xva;
                             }
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2() + 'cascade'} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'cascade'} ));
                         }
                         break;
                         
@@ -240,7 +240,11 @@ class c_rev_vers_js1{
                             }else if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                                 les_cas.push( [j,this.#tb[j][1],i] );
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + 'la syntaxe est boucle_sur_objet_dans(pourChaque(dans(a , b)),faire())'} ));
+                                return(this.#rev_js_le( {
+                                        "__xst" : __xer ,
+                                        "id" : i ,
+                                        "__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'la syntaxe est boucle_sur_objet_dans(pourChaque(dans(a , b)),faire())'
+                                    } ));
                             }
                         }
                         var pourChaque='';
@@ -248,20 +252,20 @@ class c_rev_vers_js1{
                         for( j=0 ; j < les_cas.length ; j=j + 1 ){
                             if(les_cas[j][1] === 'pourChaque'){
                                 obj=this.#rev_js1( les_cas[j][0] , niveau + 1 , {"term_final" : false} );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     pourChaque+=obj.__xva;
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                 }
                             }else if(les_cas[j][1] === 'faire'){
                                 if(this.#tb[les_cas[j][0]][8] === 0){
                                     faire+='';
                                 }else{
                                     obj=this.#rev_js1( les_cas[j][0] , niveau + 1 , {} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         faire+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                             }
@@ -288,26 +292,26 @@ class c_rev_vers_js1{
                             }else if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                                 les_cas.push( [j,this.#tb[j][1],i] );
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + 'syntaxe = boucle_sur_objet_dans(pourChaque(dans(a , b)),faire())'} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'syntaxe = boucle_sur_objet_dans(pourChaque(dans(a , b)),faire())'} ));
                             }
                         }
                         for( j=0 ; j < les_cas.length ; j=j + 1 ){
                             if(les_cas[j][1] === 'pourChaque'){
                                 obj=this.#rev_js1( les_cas[j][0] , niveau + 1 , {"term_final" : false} );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     pourChaque+=obj.__xva;
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                 }
                             }else if(les_cas[j][1] === 'faire'){
                                 if(this.#tb[les_cas[j][0]][8] === 0){
                                     faire+='';
                                 }else{
                                     obj=this.#rev_js1( les_cas[j][0] , niveau + 1 , {} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         faire+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] +'faire'} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'faire'} ));
                                     }
                                 }
                             }
@@ -332,10 +336,10 @@ class c_rev_vers_js1{
                                         valeurQuand=this.#tb[j + 1][1];
                                     }else{
                                         obj=this.#js_traiteInstruction1( niveau , j + 1 , {} );
-                                        if(obj.__xst === true){
+                                        if(obj.__xst === __xsu){
                                             valeurQuand=obj.__xva;
                                         }else{
-                                            return(this.#rev_js_le( {"__xst" : false ,"id" : ind ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : ind ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                         }
                                     }
                                 }else if(this.#tb[j][1] === 'est'){
@@ -348,10 +352,10 @@ class c_rev_vers_js1{
                                         }else if(this.#tb[k][1] === 'valeur' && this.#tb[k][2] === 'f'){
                                             if(this.#tb[k + 1][2] === 'f'){
                                                 obj=this.#js_traiteInstruction1( niveau , k + 1 , {} );
-                                                if(obj.__xst === true){
+                                                if(obj.__xst === __xsu){
                                                     valeurCas=obj.__xva;
                                                 }else{
-                                                    return(this.#rev_js_le( {"__xst" : false ,"id" : ind ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : ind ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                                 }
                                             }else{
                                                 valeurCas=this.#macst_pour_javascript( this.#tb[k + 1] ).replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\r' );
@@ -361,16 +365,16 @@ class c_rev_vers_js1{
                                                 niveau+=2;
                                                 obj=this.#rev_js1( k , niveau , {} );
                                                 niveau-=2;
-                                                if(obj.__xst === true){
+                                                if(obj.__xst === __xsu){
                                                     InstructionsCas=__m_rev1.resps( niveau + 2 ) + obj.__xva;
                                                 }else{
-                                                    return(this.#rev_js_le( {"__xst" : false ,"id" : k ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : k ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                                 }
                                             }else{
                                                 InstructionsCas='';
                                             }
                                         }else{
-                                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                         }
                                     }
                                     valeursCase+=__m_rev1.resps( niveau + 1 );
@@ -387,7 +391,7 @@ class c_rev_vers_js1{
                                         valeursCase+=__m_rev1.resps( niveau + 2 );
                                     }
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                 }
                             }
                         }
@@ -408,7 +412,7 @@ class c_rev_vers_js1{
                             }else if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                                 les_cas.push( [j,this.#tb[j][1],i] );
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] +'syntaxe=faire_tant_que(instructions(),conditions())'} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'syntaxe=faire_tant_que(instructions(),conditions())'} ));
                             }
                         }
                         var condition='';
@@ -417,14 +421,14 @@ class c_rev_vers_js1{
                             if(les_cas[j][1] === 'condition'){
                                 if(this.#tb[les_cas[j][0] + 1][8] >= 5){
                                     obj=this.#TraiteOperations2( les_cas[j][0] , niveau + 1 , 0 , true );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         condition+=obj.__xva + un_espace_p0;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }else{
                                     obj=this.#TraiteOperations2( les_cas[j][0] , niveau + 1 , 0 , false );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         if(obj.__xva.length >= 120){
                                             obj=this.#TraiteOperations2( les_cas[j][0] , niveau + 1 , 0 , true );
                                             condition+=obj.__xva + un_espace_p0;
@@ -432,7 +436,7 @@ class c_rev_vers_js1{
                                             condition+=obj.__xva;
                                         }
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                             }else if(les_cas[j][1] === 'instructions'){
@@ -440,10 +444,10 @@ class c_rev_vers_js1{
                                     /* pas d'enfants, ne rien faire ! */
                                 }else{
                                     obj=this.#rev_js1( les_cas[j][0] , niveau + 1 , {} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         instructions+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                             }
@@ -461,7 +465,7 @@ class c_rev_vers_js1{
                             }else if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                                 les_cas.push( [j,this.#tb[j][1],i] );
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                             }
                         }
                         var condition='';
@@ -470,14 +474,14 @@ class c_rev_vers_js1{
                             if(les_cas[j][1] === 'condition'){
                                 if(this.#tb[les_cas[j][0] + 1][8] >= 5){
                                     obj=this.#TraiteOperations2( les_cas[j][0] , niveau + 1 , 0 , true );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         condition+=obj.__xva + un_espace_p0;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }else{
                                     obj=this.#TraiteOperations2( les_cas[j][0] , niveau + 1 , 0 , false );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         if(obj.__xva.length >= 120){
                                             obj=this.#TraiteOperations2( les_cas[j][0] , niveau + 1 , 0 , true );
                                             condition+=obj.__xva + un_espace_p0;
@@ -485,7 +489,7 @@ class c_rev_vers_js1{
                                             condition+=obj.__xva;
                                         }
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                             }else if(les_cas[j][1] === 'faire'){
@@ -493,10 +497,10 @@ class c_rev_vers_js1{
                                     /* pas d'enfants, ne rien faire ! */
                                 }else{
                                     obj=this.#rev_js1( les_cas[j][0] , niveau + 1 , {} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         faire+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                             }
@@ -523,7 +527,11 @@ class c_rev_vers_js1{
                             }else if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                                 les_cas.push( [j,this.#tb[j][1],i] );
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]+'syntaxe = boucle(condition(),initialisation(),increment(),faire())'} ));
+                                return(this.#rev_js_le( {
+                                        "__xst" : __xer ,
+                                        "id" : id ,
+                                        "__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'syntaxe = boucle(condition(),initialisation(),increment(),faire())'
+                                    } ));
                             }
                         }
                         var initialisation='';
@@ -536,10 +544,10 @@ class c_rev_vers_js1{
                                     initialisation='';
                                 }else{
                                     obj=this.#rev_js1( les_cas[j][0] , niveau + 1 , {"term_final" : false ,"retour_ligne" : false ,"separateur" : ',' ,"dans_initialisation" : true} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         initialisation+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                             }else if(les_cas[j][1] === 'condition'){
@@ -547,10 +555,10 @@ class c_rev_vers_js1{
                                     condition='';
                                 }else{
                                     obj=this.#TraiteOperations2( les_cas[j][0] , niveau + 1 , 0 , false );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         condition+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                             }else if(les_cas[j][1] === 'increment'){
@@ -558,13 +566,13 @@ class c_rev_vers_js1{
                                     increment='';
                                 }else{
                                     obj=this.#rev_js1( les_cas[j][0] , niveau + 1 , {"term_final" : false ,"retour_ligne" : false ,"separateur" : ',' ,"dans_initialisation" : true} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         increment+=obj.__xva;
                                         if(increment.substr( increment.length - 1 , 1 ) === ';'){
                                             increment=increment.substr( 0 , increment.length - 1 );
                                         }
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                             }else if(les_cas[j][1] === 'faire'){
@@ -572,10 +580,10 @@ class c_rev_vers_js1{
                                     /* pas d'enfants, ne rien faire ! */
                                 }else{
                                     obj=this.#rev_js1( les_cas[j][0] , niveau + 1 , {} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         faire+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                             }
@@ -601,10 +609,10 @@ class c_rev_vers_js1{
                             if(this.#tb[j][1] === 'faire' && this.#tb[j][2] === 'f'){
                                 if(this.#tb[j][8] > 0){
                                     obj=this.#rev_js1( j , niveau + 1 , {} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         contenu+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                             }else if(this.#tb[j][1] === 'sierreur' && this.#tb[j][2] === 'f'){
@@ -617,38 +625,34 @@ class c_rev_vers_js1{
                                                 sierreur+='catch(' + nomErreur + '){}';
                                             }else{
                                                 obj=this.#rev_js1( j + 2 , niveau + 1 , {} );
-                                                if(obj.__xst === true){
+                                                if(obj.__xst === __xsu){
                                                     sierreur+='catch(' + nomErreur + '){' + un_espace_p1 + obj.__xva + un_espace_p0 + '}';
                                                     contenu_catch_est_vide=false;
                                                 }else{
-                                                    return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + 'sierreur'} ));
+                                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'sierreur'} ));
                                                 }
                                             }
                                         }else{
-                                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + 'sierreur le deuxième argument doit être "faire"'} ));
+                                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'sierreur le deuxième argument doit être "faire"'} ));
                                         }
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + 'sierreur le premier argument doit être une variable'} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'sierreur le premier argument doit être une variable'} ));
                                     }
                                 }else{
-                                    return(this.#rev_js_le( {
-                                            "__xst" : false ,
-                                            "id" : i ,
-                                            "__xme" : __m_rev1.nl2()+this.#tb[i][1] + 'sierreur doit contenir 2 arguments sierreur(e,faire())'
-                                        } ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'sierreur doit contenir 2 arguments sierreur(e,faire())'} ));
                                 }
                             }else if(this.#tb[j][1] === 'finalement' && this.#tb[j][2] === 'f'){
                                 obj=this.#rev_js1( j , niveau + 1 , {} );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     if(contenu_catch_est_vide === true){
                                         finalement+=un_espace_p0;
                                     }
                                     finalement+='finally{' + un_espace_p1 + obj.__xva + un_espace_p0 + '}';
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + 'finalement'} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'finalement'} ));
                                 }
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                             }
                         }
                         t+='try{';
@@ -698,7 +702,11 @@ class c_rev_vers_js1{
                             }else if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                                 les_cas.push( [j,this.#tb[j][1],0,this.#tb[j]] );
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]+'syntaxe = choix(si(condition(),alors()),sinonsi(condition(),alors()),sinon(alors()))'} ));
+                                return(this.#rev_js_le( {
+                                        "__xst" : __xer ,
+                                        "id" : id ,
+                                        "__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'syntaxe = choix(si(condition(),alors()),sinonsi(condition(),alors()),sinon(alors()))'
+                                    } ));
                             }
                         }
                         for( j=0 ; j < les_cas.length ; j=j + 1 ){
@@ -732,7 +740,7 @@ class c_rev_vers_js1{
                                     }
                                 }
                                 if(debutCondition === 0){
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]+' condition est manquante dans un si'} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' condition est manquante dans un si'} ));
                                 }
                                 for( k=0 ; k < les_comts.length ; k=k + 1 ){
                                     if(les_comts[k].indexOf( '\n' ) >= 0){
@@ -747,15 +755,15 @@ class c_rev_vers_js1{
                                 t+='if(';
                                 if(this.#tb[debutCondition + 1][8] >= 5){
                                     obj=this.#TraiteOperations2( debutCondition , niveau + 1 , 0 , true );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         t+=obj.__xva;
                                         t+=un_espace_p0 + '){';
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + ' condition '} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' condition '} ));
                                     }
                                 }else{
                                     obj=this.#TraiteOperations2( debutCondition , niveau + 1 , 0 , false );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         if(obj.__xva.length > 120){
                                             obj=this.#TraiteOperations2( debutCondition , niveau + 1 , 0 , true );
                                             t+=obj.__xva;
@@ -765,16 +773,16 @@ class c_rev_vers_js1{
                                             t+='){';
                                         }
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + 'condition'} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'condition'} ));
                                     }
                                 }
                                 if(les_cas[j][2] > 0 && les_cas[j][4] > 0){
                                     obj=this.#rev_js1( les_cas[j][2] , niveau + 1 , {} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         t+=un_espace_p1;
                                         t+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                                 if(aDesSinonSi){
@@ -797,7 +805,7 @@ class c_rev_vers_js1{
                                     }
                                 }
                                 if(debutCondition === 0){
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + 'condition manquante dans le sinon'} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'condition manquante dans le sinon'} ));
                                 }
                                 for( k=0 ; k < les_comts.length ; k=k + 1 ){
                                     if(les_comts[k].indexOf( '\n' ) >= 0){
@@ -813,15 +821,15 @@ class c_rev_vers_js1{
                                 t+='}else if(';
                                 if(this.#tb[debutCondition + 1][8] >= 5){
                                     obj=this.#TraiteOperations2( debutCondition , niveau + 1 , 0 , true );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         t+=obj.__xva;
                                         t+=un_espace_p0 + '){';
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] +  'sinonsi '} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'sinonsi '} ));
                                     }
                                 }else{
                                     obj=this.#TraiteOperations2( debutCondition , niveau + 1 , 0 , false );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         if(obj.__xva.length > 120){
                                             obj=this.#TraiteOperations2( debutCondition , niveau + 1 , 0 , true );
                                             t+=obj.__xva;
@@ -830,17 +838,17 @@ class c_rev_vers_js1{
                                             t+=obj.__xva + '){';
                                         }
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] + 'sinonsi '} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'sinonsi '} ));
                                     }
                                 }
                                 /* contenu du else if */
                                 if(les_cas[j][2] > 0 && les_cas[j][4] > 0){
                                     obj=this.#rev_js1( les_cas[j][2] , niveau + 1 , {} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         t+=un_espace_p1;
                                         t+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                                 if(aUnSinon){
@@ -855,11 +863,11 @@ class c_rev_vers_js1{
                                 t+='}else{';
                                 if(les_cas[j][2] > 0 && les_cas[j][4] > 0){
                                     obj=this.#rev_js1( les_cas[j][2] , niveau + 1 , {} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         t+=un_espace_p1;
                                         t+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] } ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : les_cas[j][0] ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                                 t+=un_espace_p0;
@@ -869,16 +877,15 @@ class c_rev_vers_js1{
                         ne_pas_mettre_de_terminateur=true;
                         break;
                         
-                        
                     case 'affecte' : 
                     case 'dans' : 
                     case 'de' : 
                     case 'affectop' :
                         obj=this.#js_traite_affecte( i , niveau , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         break;
                         
@@ -909,19 +916,19 @@ class c_rev_vers_js1{
                             }else if("variable_publique" === this.#tb[i][1]){
                                 prefixe_declaration='';
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]+' prefixe  inconnu'} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' prefixe  inconnu'} ));
                             }
                             var debut='';
                             var debut2='';
                             obj=this.#js_traiteInstruction1( niveau , les_declarations[0][0] , {} );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 debut=le_commentaire + prefixe_declaration + obj.__xva;
                                 debut2=le_commentaire + obj.__xva;
                             }else{
-                                this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} );
+                                this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} );
                             }
                             obj=this.#js_traiteInstruction1( niveau , les_declarations[1][0] , {} );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 if(dans_initialisation === true && t !== ''){
                                     if(obj.__xva === ''){
                                         t+=debut2;
@@ -936,10 +943,10 @@ class c_rev_vers_js1{
                                     }
                                 }
                             }else{
-                                this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} );
+                                this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} );
                             }
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]+' declare  doit avoir 2 paramètres'} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' declare  doit avoir 2 paramètres'} ));
                         }
                         break;
                         
@@ -958,10 +965,10 @@ class c_rev_vers_js1{
                             valeur=this.#tb[i + 1][1];
                         }else{
                             obj=this.#js_traiteInstruction1( niveau , i + 1 , {} );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 valeur=obj.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                             }
                         }
                         if(this.#tb[i][1] === 'preinc'){
@@ -982,40 +989,40 @@ class c_rev_vers_js1{
                         /* todo trouver un mot pour throw */
                         if(this.#tb[i + 1][1] === 'new'){
                             obj=this.#js_traite_new( i + 1 , niveau , {} );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 t+='throw ' + obj.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                             }
                             if(this.#tb[i + 1][8] === 1 && this.#tb[i + 2][1] === 'appelf'){
                                 obj=this.#js_traiteAppelFonction( i + 2 , true , niveau , false , '' );
                             }
                         }else if('testEnLigne' === this.#tb[i + 1][1] && this.#tb[i + 1][2] === 'f'){
                             obj=this.#js_traiteInstruction1( niveau , i + 1 , {} );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 t+='throw ' + obj.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                             }
                         }else if(this.#tb[i + 1][1] === 'virgule' && this.#tb[i + 1][2] === 'f'){
                             /* huguesobjOperation=this.#TraiteOperations2(i + 1,niveau,0,false); */
                             objOperation=this.#js_traiteInstruction1( niveau , i + 1 , {} );
-                            if(objOperation.__xst === true){
+                            if(objOperation.__xst === __xsu){
                                 t+='throw ' + objOperation.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                             }
                         }else if(this.#tb[i + 1][1] === 'appelf' && this.#tb[i + 1][2] === 'f'){
                             obj=this.#js_traiteAppelFonction( i + 1 , true , niveau , false , '' );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 t+='throw ' + obj.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                             }
                         }else if(this.#tb[i + 1][2] === 'c'){
                             t+='throw ' + this.#macst_pour_javascript( this.#tb[i + 1] );
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         break;
                         
@@ -1024,38 +1031,38 @@ class c_rev_vers_js1{
                             t+='delete ' + this.#tb[i + 1][1];
                         }else{
                             obj=this.#js_traiteInstruction1( niveau , i + 1 , {} );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 t+='delete ' + obj.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                             }
                         }
                         break;
                         
                     case 'new' :
                         obj=this.#js_traite_new( i , niveau , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         break;
                         
                     case 'defTab' :
                         obj=this.#js_traiteDefinitiontableau( i , niveau , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         break;
                         
                     case 'void' :
                         obj=this.#js_traiteInstruction1( niveau , i + 1 , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+='void(' + obj.__xva + ')';
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         break;
                         
@@ -1065,10 +1072,10 @@ class c_rev_vers_js1{
                     case 'testEnLigne' : 
                     case 'condition' :
                         obj=this.#js_traiteInstruction1( niveau , i , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         break;
                         
@@ -1076,10 +1083,10 @@ class c_rev_vers_js1{
                     case 'méthode' : 
                     case "definition_de_classe" :
                         obj=this.#js_traiteInstruction1( niveau , i , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         ne_pas_mettre_de_terminateur=true;
                         break;
@@ -1094,7 +1101,7 @@ class c_rev_vers_js1{
                             var locale='';
                             for( j=i + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                                 if(this.#tb[j][2] === 'c'){
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]  } ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                 }
                                 if(this.#tb[j][1] === 'nom_de_classe' && this.#tb[j][8] === 1 && this.#tb[j + 1][2] === 'c'){
                                     nom_de_classe=this.#macst_pour_javascript( this.#tb[j + 1] );
@@ -1104,7 +1111,7 @@ class c_rev_vers_js1{
                                     locale=this.#macst_pour_javascript( this.#tb[j + 1] ) + ' as ';
                                 }else if(this.#tb[j][1] === '#'){
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                 }
                             }
                             if(this.#tb[i][1] === 'exporter_par_defaut'){
@@ -1120,19 +1127,19 @@ class c_rev_vers_js1{
                           dans le cas d'un !function(){} !!! si si , ça existe !!!
                         */
                         obj=this.#js_traiteInstruction1( niveau , i , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         break;
                         
                     case "obj" :
                         obj=this.#js_traiteDefinitionObjet( i , niveau , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         break;
                         
@@ -1145,10 +1152,10 @@ class c_rev_vers_js1{
                             }else if(this.#tb[j][1] === 'contenu' && this.#tb[j][2] === 'f'){
                                 if(this.#tb[j][8] > 0){
                                     obj=this.#rev_js1( j , niveau + 1 , {} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         contenu_etiquette+=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                                     }
                                 }
                             }
@@ -1156,38 +1163,38 @@ class c_rev_vers_js1{
                         if(nom_etiquette !== ''){
                             t+=nom_etiquette + ':' + un_espace_p1 + contenu_etiquette;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         ne_pas_mettre_de_terminateur=true;
                         break;
                         
                     case "importer" :
                         obj=this.#js_traite_import( i , niveau , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         break;
                         
                     case "" :
                         /* un bloc, ça arrive de temps en temps */
                         obj=this.#rev_js1( i , niveau + 1 , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+='{' + un_espace_p1 + obj.__xva + un_espace_p0 + '}';
                             ne_pas_mettre_de_terminateur=true;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         break;
                         
                     default:
                         /* en dernier lieu, on teste une instruction */
                         var objOperation=this.#js_traiteInstruction1( niveau + 1 , i , {} );
-                        if(objOperation.__xst === true){
+                        if(objOperation.__xst === __xsu){
                             t+=objOperation.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                         }
                         break;
                         
@@ -1200,7 +1207,7 @@ class c_rev_vers_js1{
         if(opt.hasOwnProperty( 'term_final' ) && opt.term_final === false){
             t=t.substr( 0 , t.length - 1 );
         }
-        return({"__xst" : true ,"__xva" : t});
+        return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
       =============================================================================================================
@@ -1218,28 +1225,28 @@ class c_rev_vers_js1{
                     
                 case 'appelf' :
                     var obj=this.#js_traiteAppelFonction( this.#tb[id][0] , true , niveau , false , '' );
-                    if(obj.__xst === true){
+                    if(obj.__xst === __xsu){
                         t+=obj.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }
                     break;
                     
                 case 'defTab' :
                     var obj=this.#js_traiteDefinitiontableau( id , niveau , {} );
-                    if(obj.__xst === true){
+                    if(obj.__xst === __xsu){
                         t+=obj.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }
                     break;
                     
                 case 'tableau' :
                     var objtableau=this.#js_traitetableau1( id , niveau , {} );
-                    if(objtableau.__xst === true){
+                    if(objtableau.__xst === __xsu){
                         t+=objtableau.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" :__m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }
                     break;
                     
@@ -1252,14 +1259,14 @@ class c_rev_vers_js1{
                     for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                         if(this.#tb[j][1] === 'condition'){
                             var objCondition=this.#TraiteOperations2( j , niveau + 1 , 0 , false );
-                            if(objCondition.__xst === true){
+                            if(objCondition.__xst === __xsu){
                                 testlignecondition=objCondition.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                             }
                         }else if(this.#tb[j][1] === 'siVrai'){
                             var obj_si=this.#rev_js1( j , niveau + 1 , {"retour_ligne" : false ,"term_final" : false} );
-                            if(obj_si.__xst === true){
+                            if(obj_si.__xst === __xsu){
                                 if(obj_si.__xva.length > 50){
                                     if(obj_si.__xva.indexOf( '\n' ) < 0){
                                         var obj_si=this.#rev_js1( j , niveau + 1 , {"retour_ligne" : true ,"term_final" : false} );
@@ -1271,11 +1278,11 @@ class c_rev_vers_js1{
                                 }
                                 si_vrai+=obj_si.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                             }
                         }else if(this.#tb[j][1] === 'siFaux'){
                             var obj_si=this.#rev_js1( j , niveau + 1 , {"retour_ligne" : true ,"term_final" : false} );
-                            if(obj_si.__xst === true){
+                            if(obj_si.__xst === __xsu){
                                 if(obj_si.__xva.length > 50){
                                     if(obj_si.__xva.indexOf( '\n' ) < 0){
                                         var obj_si=this.#rev_js1( j , niveau + 1 , {"retour_ligne" : true ,"term_final" : false} );
@@ -1287,10 +1294,10 @@ class c_rev_vers_js1{
                                 }
                                 si_faux+=obj_si.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                             }
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]+'la syntaxe =testEnLigne(condition(),siVrai(),siFaux())'} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : (__m_rev1.nl2() + this.#tb[id][1]) + 'la syntaxe =testEnLigne(condition(),siVrai(),siFaux())'} ));
                         }
                     }
                     if(un_trop_long === true){
@@ -1302,28 +1309,28 @@ class c_rev_vers_js1{
                     
                 case 'obj' :
                     var obj=this.#js_traiteDefinitionObjet( id , niveau , {} );
-                    if(obj.__xst === true){
+                    if(obj.__xst === __xsu){
                         t+=obj.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }
                     break;
                     
                 case 'new' :
                     var obj=this.#js_traite_new( id , niveau , {} );
-                    if(obj.__xst === true){
+                    if(obj.__xst === __xsu){
                         t+=obj.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }
                     break;
                     
                 case 'definition_de_classe' :
                     var obj=this.#js_traiteDefinitionClasse( id , niveau , {} );
-                    if(obj.__xst === true){
+                    if(obj.__xst === __xsu){
                         t+=obj.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }
                     break;
                     
@@ -1331,12 +1338,12 @@ class c_rev_vers_js1{
                     if(this.#tb[this.#tb[id][7]][1] === 'dans'){
                         for( var j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                             if(this.#tb[j][2] === 'c'){
-                                return({"__xst" : true ,"__xva" : 'var ' + this.#macst_pour_javascript( this.#tb[j] )});
+                                return({"__xst" : __xsu ,"__xva" : 'var ' + this.#macst_pour_javascript( this.#tb[j] )});
                             }
                         }
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }
                     break;
                     
@@ -1351,37 +1358,37 @@ class c_rev_vers_js1{
                     if(this.#tb[this.#tb[id][7]][1] === 'de'){
                         for( var j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                             if(this.#tb[j][2] === 'c'){
-                                return({"__xst" : true ,"__xva" : type + ' ' + this.#macst_pour_javascript( this.#tb[j] )});
+                                return({"__xst" : __xsu ,"__xva" : type + ' ' + this.#macst_pour_javascript( this.#tb[j] )});
                             }else if(this.#tb[j][2] === 'f'){
                                 var objOperation=this.#js_traiteInstruction1( niveau + 1 , j , {} );
-                                if(objOperation.__xst === true){
-                                    return({"__xst" : true ,"__xva" : type + ' ' + objOperation.__xva});
+                                if(objOperation.__xst === __xsu){
+                                    return({"__xst" : __xsu ,"__xva" : type + ' ' + objOperation.__xva});
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                 }
                                 break;
                             }
                         }
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" :__m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }else if(this.#tb[this.#tb[id][7]][1] === 'dans'){
                         for( var j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                             if(this.#tb[j][2] === 'c'){
-                                return({"__xst" : true ,"__xva" : type + ' ' + this.#macst_pour_javascript( this.#tb[j] )});
+                                return({"__xst" : __xsu ,"__xva" : type + ' ' + this.#macst_pour_javascript( this.#tb[j] )});
                             }
                         }
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }else{
                         debugger;
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }
                     break;
                     
                 case '' :
                     var obj=this.#rev_js1( id , niveau + 1 , {} );
-                    if(obj.__xst === true){
+                    if(obj.__xst === __xsu){
                         t+=obj.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]+' bloc'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : (__m_rev1.nl2() + this.#tb[id][1]) + ' bloc'} ));
                     }
                     break;
                     
@@ -1393,10 +1400,10 @@ class c_rev_vers_js1{
                         t+=this.#macst_pour_javascript( this.#tb[id + 1] );
                     }else{
                         obj=this.#js_traiteInstruction1( niveau , id + 1 , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                         }
                     }
                     break;
@@ -1412,13 +1419,13 @@ class c_rev_vers_js1{
                             if(this.#tb[j][1] === '#'){
                             }else if(this.#tb[j][1] === 'prop'){
                                 obj=this.#js_traiteInstruction1( niveau , j + 1 , {} );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     propriete+='.' + obj.__xva;
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                 }
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                             }
                         }
                     }
@@ -1434,10 +1441,10 @@ class c_rev_vers_js1{
                         valeur=this.#tb[id + 1][1];
                     }else{
                         var obj=this.#js_traiteInstruction1( niveau , id + 1 , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             valeur=obj.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                         }
                     }
                     if(this.#tb[id][1] === 'preinc'){
@@ -1459,10 +1466,10 @@ class c_rev_vers_js1{
                 case 'affectop' : 
                 case 'affecte' :
                     var obj=this.#js_traite_affecte( id , niveau , {} );
-                    if(obj.__xst === true){
+                    if(obj.__xst === __xsu){
                         t+=obj.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }
                     break;
                     
@@ -1471,10 +1478,10 @@ class c_rev_vers_js1{
                         t+='delete ' + this.#tb[id + 1][1];
                     }else{
                         obj=this.#js_traiteInstruction1( niveau , id + 1 , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+='delete ' + obj.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                         }
                     }
                     break;
@@ -1484,25 +1491,25 @@ class c_rev_vers_js1{
                     var etend='';
                     for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                         if(this.#tb[j][2] === 'c'){
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                         }else{
                             if(this.#tb[j][1] === '#'){
                             }else if(this.#tb[j][1] === 'etend'){
                                 obj=this.#js_traiteInstruction1( niveau , j + 1 , {} );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     etend='extends ' + obj.__xva;
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                 }
                             }else if(this.#tb[j][1] === 'contenu'){
                                 obj=this.#rev_js1( j , niveau + 1 , {} );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     contenu=obj.__xva;
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                 }
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                             }
                         }
                     }
@@ -1531,19 +1538,19 @@ class c_rev_vers_js1{
                                         contenu+='${' + this.#tb[k][1] + '}';
                                     }else{
                                         obj=this.#js_traiteInstruction1( niveau , k , {} );
-                                        if(obj.__xst === true){
+                                        if(obj.__xst === __xsu){
                                             contenu+='${' + obj.__xva + '}';
                                         }else{
-                                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                         }
                                     }
                                 }
                                 contenu='`' + contenu + '`';
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                             }
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                         }
                     }
                     t+=le_nom + contenu;
@@ -1552,13 +1559,13 @@ class c_rev_vers_js1{
                 case 'exporter_declaration' :
                     if(this.#tb[id][8] === 1){
                         obj=this.#js_traiteInstruction1( niveau , id + 1 , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             t+='export ' + obj.__xva + '';
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                         }
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }
                     break;
                     
@@ -1569,17 +1576,17 @@ class c_rev_vers_js1{
                         if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                         }else if(this.#tb[j][1] === 'prop' && this.#tb[j][2] === 'f'){
                             obj=this.#js_traiteInstruction1( niveau , j + 1 , {} );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 propriété+='.' + obj.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                             }
                         }else{
                             obj=this.#js_traiteInstruction1( niveau , j , {} );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 valeur+=obj.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                             }
                         }
                     }
@@ -1595,18 +1602,18 @@ class c_rev_vers_js1{
                             if(this.#tb[j][1] === 'délégué' && this.#tb[j][2] === 'f'){
                                 fnt='yield* ';
                                 obj=this.#js_traiteInstruction1( niveau , j + 1 , {} );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     valeur+=obj.__xva;
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                 }
                             }else{
                                 fnt='yield ';
                                 obj=this.#js_traiteInstruction1( niveau , j , {} );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     valeur+=obj.__xva;
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                 }
                             }
                         }
@@ -1623,14 +1630,14 @@ class c_rev_vers_js1{
                             precedent_est_commentaire=true;
                         }else{
                             obj=this.#js_traiteInstruction1( niveau , j , {} );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 if(virgule !== '' && precedent_est_commentaire === false){
                                     virgule+=',';
                                 }
                                 virgule+=obj.__xva;
                                 precedent_est_commentaire=false;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                             }
                         }
                     }
@@ -1643,14 +1650,14 @@ class c_rev_vers_js1{
                                 precedent_est_commentaire=true;
                             }else{
                                 obj=this.#js_traiteInstruction1( niveau , j , {} );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     if(virgule !== '' && precedent_est_commentaire === false){
                                         virgule+=',' + __m_rev1.resps( niveau - 1 );
                                     }
                                     virgule+=obj.__xva;
                                     precedent_est_commentaire=false;
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                 }
                             }
                         }
@@ -1685,29 +1692,29 @@ class c_rev_vers_js1{
                                     nomFonction=this.#tb[j + 1][1];
                                 }else{
                                     obj=this.#js_traiteInstruction1( niveau , j + 1 , {} );
-                                    if(obj.__xst === true){
+                                    if(obj.__xst === __xsu){
                                         nomFonction=obj.__xva;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                     }
                                 }
                             }else if(this.#tb[j][1] === 'asynchrone' && this.#tb[j][2] === 'f'){
                                 if(this.#tb[j][8] === 0){
                                     asynchrone='async ';
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                 }
                             }else if(this.#tb[j][1] === 'générateur' && this.#tb[j][2] === 'f'){
                                 if(this.#tb[j][8] === 0){
                                     generateur='*';
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                 }
                             }else if(this.#tb[j][1] === 'mode'){
                                 if(this.#tb[j][8] === 1 && this.#tb[j + 1][1] === 'privée'){
                                     modeFonction='#';
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                 }
                             }else if(this.#tb[j][1] === 'statique'){
                                 statique='static ';
@@ -1719,7 +1726,7 @@ class c_rev_vers_js1{
                                 }else if(this.#tb[j][8] === 1 && this.#tb[j + 1][1] === 'écrire'){
                                     typeFonction='set ';
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]+'type méthode doit être écrire ou lire '} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : (__m_rev1.nl2() + this.#tb[id][1]) + 'type méthode doit être écrire ou lire '} ));
                                 }
                             }
                         }
@@ -1741,26 +1748,26 @@ class c_rev_vers_js1{
                                             nom_argument=this.#macst_pour_javascript( this.#tb[k] );
                                         }else if(this.#tb[k][2] === 'f' && this.#tb[k][1] === 'defaut' && this.#tb[k][8] === 1){
                                             obj=this.#js_traiteInstruction1( niveau , k + 1 , {} );
-                                            if(obj.__xst === true){
+                                            if(obj.__xst === __xsu){
                                                 valeur_par_defaut=obj.__xva;
                                             }else{
-                                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]+'argument(xxx,[defaut(yyy)]) '} ));
+                                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : (__m_rev1.nl2() + this.#tb[id][1]) + 'argument(xxx,[defaut(yyy)]) '} ));
                                             }
                                         }else if(this.#tb[k][2] === 'f' && this.#tb[k][1] === 'obj'){
                                             obj=this.#js_traiteInstruction1( niveau , k , {} );
-                                            if(obj.__xst === true){
+                                            if(obj.__xst === __xsu){
                                                 if(nom_argument === ''){
                                                     nom_argument=obj.__xva;
                                                 }else{
-                                                    return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                                                 }
                                             }else{
-                                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]+'argument(xxx,[defaut(yyy)]) '} ));
+                                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : (__m_rev1.nl2() + this.#tb[id][1]) + 'argument(xxx,[defaut(yyy)]) '} ));
                                             }
                                         }else if(this.#tb[k][2] === 'f' && this.#tb[k][1] === '#'){
                                             commentaire=this.#tb[k][13].trim().replace( /\n/g , ' ' ).replace( /\r/g , ' ' );
                                         }else{
-                                            return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                                         }
                                     }
                                     argumentsFonction+=', ' + le_commentaire + (commentaire !== '' ? ( '/' + '* ' + commentaire + ' *' + '/ ' ) : ( '' )) + nom_argument + (valeur_par_defaut !== '' ? ( '=' + valeur_par_defaut ) : ( '' )) + ' ';
@@ -1784,7 +1791,7 @@ class c_rev_vers_js1{
                                     }else if(typeFonction === ''){
                                         t+=(statique + asynchrone + modeFonction) + '[' + nomFonction + '](' + (argumentsFonction === '' ? ( '' ) : ( argumentsFonction.substr( 1 ) )) + '){';
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]+ ' ' + typeFonction} ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : (__m_rev1.nl2() + this.#tb[id][1]) + ' ' + typeFonction} ));
                                     }
                                 }else{
                                     t+=(statique + typeFonction + asynchrone + modeFonction + nomFonction) + '(' + (argumentsFonction === '' ? ( '' ) : ( argumentsFonction.substr( 1 ) )) + '){';
@@ -1799,20 +1806,20 @@ class c_rev_vers_js1{
                                 t+='}';
                             }else{
                                 obj=this.#rev_js1( positionContenu , niveau + 1 , {} );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     t+=__m_rev1.resps( niveau + 1 );
                                     t+=obj.__xva;
                                     t+=__m_rev1.resps( niveau );
                                     t+='}';
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : positionContenu ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]+' contenu de "' + nomFonction + '"'} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : positionContenu ,"__xme" : (__m_rev1.nl2() + this.#tb[id][1]) + ' contenu de "' + nomFonction + '"'} ));
                                 }
                             }
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                         }
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }
                     break;
                     
@@ -1820,17 +1827,17 @@ class c_rev_vers_js1{
                     /* if(tableau_des_opérateurs_js.hasOwnProperty(this.#tb[id][1])){ */
                     if(this.#tbleau_precedences_js.hasOwnProperty( this.#tb[id][1] )){
                         var obj=this.#TraiteOperations2( this.#tb[id][0] , niveau + 1 , 0 , false );
-                        if(obj.__xst === false){
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+this.#tb[id][1]} ));
+                        if(obj.__xst === __xer){
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                         }
                         t+='' + obj.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2() + ' non traité "' + this.#tb[id][1] + '"'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + ' non traité "' + this.#tb[id][1] + '"'} ));
                     }
                     
             }
         }
-        return({"__xst" : true ,"__xva" : t});
+        return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
       =============================================================================================================
@@ -1849,13 +1856,13 @@ class c_rev_vers_js1{
                 if(this.#tb[j][8] === 1 && this.#tb[j + 1][2] === 'c'){
                     provenance+=this.#macst_pour_javascript( this.#tb[j + 1] );
                 }else{
-                    return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
+                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
                 }
             }else if(this.#tb[j][1] === 'espace_de_noms'){
                 if(this.#tb[j][8] === 1 && this.#tb[j + 1][2] === 'c'){
                     espace_de_noms+=this.#macst_pour_javascript( this.#tb[j + 1] );
                 }else{
-                    return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
+                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
                 }
             }else if(this.#tb[j][1] === 'bibliotheque_spécifiée'){
                 if(specifie !== ''){
@@ -1866,7 +1873,7 @@ class c_rev_vers_js1{
                 }else if(this.#tb[j][8] === 2 && this.#tb[j + 1][2] === 'c' && this.#tb[j + 2][2] === 'c'){
                     specifie+=this.#macst_pour_javascript( this.#tb[j + 1] ) + ' as ' + this.#macst_pour_javascript( this.#tb[j + 2] );
                 }else{
-                    return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
+                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
                 }
             }else if(this.#tb[j][1] === 'bibliotheque_par_défaut'){
                 if(par_defaut !== ''){
@@ -1875,10 +1882,10 @@ class c_rev_vers_js1{
                 if(this.#tb[j][8] === 1 && this.#tb[j + 1][2] === 'c'){
                     par_defaut+=this.#macst_pour_javascript( this.#tb[j + 1] );
                 }else{
-                    return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
+                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
                 }
             }else{
-                return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
+                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
             }
         }
         t+='import ' + (espace_de_noms !== '' ?
@@ -1892,7 +1899,7 @@ class c_rev_vers_js1{
               ) : ( 
                 ''
               )) + (specifie !== '' ? ( '{' + specifie + '}' ) : ( '' )) + ' from ' + provenance;
-        return({"__xst" : true ,"__xva" : t});
+        return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
       =============================================================================================================
@@ -1931,9 +1938,9 @@ class c_rev_vers_js1{
             debugger;
         }
         var objInstructionGauche=this.#js_traiteInstruction1( niveau , l_objet_affecte['par0'][0] , {} );
-        if(objInstructionGauche.__xst === true){
+        if(objInstructionGauche.__xst === __xsu){
             var objInstructionDroite=this.#js_traiteInstruction1( niveau , l_objet_affecte['par1'][0] , {} );
-            if(objInstructionDroite.__xst === true){
+            if(objInstructionDroite.__xst === __xsu){
                 /*
                   on écrit l'affectation ici 
                 */
@@ -1959,22 +1966,22 @@ class c_rev_vers_js1{
                             if(this.#tb[l_objet_affecte['par2'][0] + 1][2] === 'c'){
                                 t='(' + t + ').' + this.#tb[l_objet_affecte['par2'][0] + 1][1];
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
                             }
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
                         }
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
                     }
                 }
             }else{
-                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
+                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
             }
         }else{
-            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
+            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
         }
-        return({"__xst" : true ,"__xva" : t});
+        return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
       =============================================================================================================
@@ -2021,7 +2028,7 @@ class c_rev_vers_js1{
                         textObj+=__m_rev1.resps( niveau + 1 );
                     }
                     textObj+='';
-                    this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() + 'attention CE N\'EST PAS UNE ERREUR MAIS..., paramètre vide dans un tableau '} );
+                    this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + 'attention CE N\'EST PAS UNE ERREUR MAIS..., paramètre vide dans un tableau '} );
                 }else{
                     for( var k=j + 1 ; k < this.#l02 ; k=this.#tb[k][12] ){
                         if(this.#tb[k][1] === '#' && this.#tb[k][2] === 'f'){
@@ -2039,7 +2046,7 @@ class c_rev_vers_js1{
                         }else{
                             nombre_de_parametres++;
                             obje=this.#js_traiteInstruction1( niveau + 2 , k , {} );
-                            if(obje.__xst === true){
+                            if(obje.__xst === __xsu){
                                 if(precedent_est_commentaire === true){
                                     precedent_est_commentaire=false;
                                 }else{
@@ -2051,7 +2058,7 @@ class c_rev_vers_js1{
                                 textObj+=obje.__xva;
                                 /* textObj+=','; */
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                             }
                             if(this.#tb[k][2] === 'c'){
                                 seul_element=this.#macst_pour_javascript( this.#tb[k] );
@@ -2068,13 +2075,13 @@ class c_rev_vers_js1{
                         if(this.#tb[j + 1][1] === 'appelf'){
                             aDesAppelsRecursifs=true;
                             obj=this.#js_traiteAppelFonction( j + 1 , true , niveau , true , '' );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 proprietes+='.' + obj.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                             }
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                         }
                     }
                 }
@@ -2113,7 +2120,7 @@ class c_rev_vers_js1{
             }
             t+=']' + proprietes;
         }
-        return({"__xst" : true ,"__xva" : t});
+        return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
       =============================================================================================================
@@ -2139,10 +2146,10 @@ class c_rev_vers_js1{
                     nom_du_tableau='';
                 }else{
                     var obj1=this.#js_traiteInstruction1( niveau , j + 1 , {} );
-                    if(obj1.__xst === true){
+                    if(obj1.__xst === __xsu){
                         nom_du_tableau=obj1.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'nomt'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + 'nomt'} ));
                     }
                 }
                 break;
@@ -2154,7 +2161,7 @@ class c_rev_vers_js1{
                     if(this.#tb[j][1] === 'nomt' || this.#tb[j][1] === 'p' || this.#tb[j][1] === '#' || this.#tb[j][1] === 'prop'){
                         continue;
                     }else{
-                        this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'nomt,p,prop mai pas "' + this.#tb[j][1] + '"'} );
+                        this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + 'nomt,p,prop mai pas "' + this.#tb[j][1] + '"'} );
                     }
                 }
             }
@@ -2180,35 +2187,35 @@ class c_rev_vers_js1{
                     }else{
                         if(this.#tb[j][8] === 1 && this.#tb[j + 1][1] === 'obj'){
                             obj=this.#js_traiteDefinitionObjet( j , niveau , {} );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 argumentsFonction+='[' + obj.__xva + ']';
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'obj'} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + 'obj'} ));
                             }
                         }else if(this.#tb[j][8] === 1 && this.#tb[j + 1][2] === 'f'){
                             if(this.#tb[j + 1][1] === 'p'){
                                 obj=this.#rev_js1( j , niveau , {} );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     if(nom_du_tableau === 'Array' && nbEnfants >= 4){
                                         forcerNvelleLigneEnfant=true;
                                     }
                                     argumentsFonction+='[' + obj.__xva + ']';
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                                 }
                             }else if(this.#tbleau_precedences_js.hasOwnProperty( this.#tb[j + 1][1] )){
                                 var objOperation=this.#TraiteOperations2( j + 1 , niveau , 0 , false );
-                                if(objOperation.__xst === true){
+                                if(objOperation.__xst === __xsu){
                                     argumentsFonction+='[' + objOperation.__xva + ']';
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                                 }
                             }else{
                                 var obj2=this.#js_traiteInstruction1( niveau , j + 1 , {} );
-                                if(obj2.__xst === true){
+                                if(obj2.__xst === __xsu){
                                     argumentsFonction+='[' + obj2.__xva + ']';
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                                 }
                             }
                         }
@@ -2221,13 +2228,13 @@ class c_rev_vers_js1{
                         if(this.#tb[j][8] === 1 && this.#tb[j + 1][2] === 'f'){
                             if(this.#tb[j + 1][1] === 'appelf'){
                                 obj=this.#js_traiteAppelFonction( j + 1 , true , niveau , true , '' );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     proprietes_du_tableau+='.' + obj.__xva;
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()+'prop'} ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + 'prop'} ));
                                 }
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()+'fonction inconnue ' + this.#tb[j][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + 'fonction inconnue ' + this.#tb[j][1]} ));
                             }
                         }
                     }
@@ -2237,9 +2244,9 @@ class c_rev_vers_js1{
             t+=argumentsFonction;
             t+=proprietes_du_tableau;
         }else{
-            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()+'nomt(xxxx)'} ));
+            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'nomt(xxxx)'} ));
         }
-        return({"__xst" : true ,"__xva" : t ,"forcerNvelleLigneEnfant" : forcerNvelleLigneEnfant ,"termineParUnePropriete" : termineParUnePropriete});
+        return({"__xst" : __xsu ,"__xva" : t ,"forcerNvelleLigneEnfant" : forcerNvelleLigneEnfant ,"termineParUnePropriete" : termineParUnePropriete});
     }
     /*
       =============================================================================================================
@@ -2254,14 +2261,14 @@ class c_rev_vers_js1{
             }else if(this.#tb[i][1] === 'appelf' && this.#tb[i][2] === 'f'){
                 var obj=this.#js_traiteAppelFonction( i , true , niveau , false , '' );
                 /* ✍ this.#tb,id,dansConditionOuDansFonction,niveau,recursif,nom_de_la_fonction_parente */
-                if(obj.__xst === true){
+                if(obj.__xst === __xsu){
                     valeur+=obj.__xva;
                 }else{
-                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
+                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
                 }
             }else if(this.#tb[i][1] === 'defTab' && this.#tb[i][2] === 'f'){
                 var obj1=this.#js_traiteDefinitiontableau( this.#tb , i , niveau , {} );
-                if(obj1.__xst === true){
+                if(obj1.__xst === __xsu){
                     if(obj1.__xva.startsWith( '[' ) && obj1.__xva.endsWith( ']' )){
                         debugger;
                         if(obj1.__xva.trim().replace( /\r/g , '' ).replace( /\n/g , '' ) === '[]'){
@@ -2273,30 +2280,30 @@ class c_rev_vers_js1{
                         valeur+=obj1.__xva;
                     }
                 }else{
-                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
+                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
                 }
             }else if(this.#tb[i][1] === 'prop' && this.#tb[i][2] === 'f'){
                 for( var j=i + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                     var obj2=this.#js_traiteInstruction1( niveau , j , {} );
-                    if(obj2.__xst === true){
+                    if(obj2.__xst === __xsu){
                         props+='.' + obj2.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()+ 'prop'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + 'prop'} ));
                     }
                 }
             }else{
-                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'inconnu "' + this.#tb[i][1] + '"'} ));
+                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + 'inconnu "' + this.#tb[i][1] + '"'} ));
             }
         }
         if(valeur + props === '[]'){
-            return({"__xst" : true ,"__xva" : '[]'});
+            return({"__xst" : __xsu ,"__xva" : '[]'});
         }else{
             if(props !== ''){
                 t='(new ' + valeur + ')' + props;
             }else{
                 t='new ' + valeur;
             }
-            return({"__xst" : true ,"__xva" : t});
+            return({"__xst" : __xsu ,"__xva" : t});
         }
     }
     /*
@@ -2319,7 +2326,7 @@ class c_rev_vers_js1{
                         if(this.#tb[j][1] === 'étend' && this.#tb[j][8] === 1 && this.#tb[j + 1][2] === 'c'){
                             debugger;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()+' "' + this.#tb[j][1] + '" inconnu'} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + ' "' + this.#tb[j][1] + '" inconnu'} ));
                         }
                     }
                 }
@@ -2329,16 +2336,16 @@ class c_rev_vers_js1{
                 }else{
                     /* var obj=js_this.#tbTojavascript1(this.#tb,i + 1,false,false,niveau + 1); */
                     var obj=this.#rev_js1( i , niveau + 1 , {} );
-                    if(obj.__xst === true){
+                    if(obj.__xst === __xsu){
                         contenu_classe+=obj.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                     }
                 }
             }else if(this.#tb[i][1] === 'étend' && this.#tb[i][2] === 'f' && this.#tb[i][8] === 1 && this.#tb[i + 1][2] === 'c'){
                 etend=' extends ' + this.#tb[i + 1][1];
             }else{
-                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
             }
         }
         t+='class ' + nom_classe + etend + '{';
@@ -2346,14 +2353,14 @@ class c_rev_vers_js1{
         t+=contenu_classe;
         t+=__m_rev1.resps( niveau );
         t+='}';
-        return({"__xst" : true ,"__xva" : t});
+        return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
       =============================================================================================================
     */
     #js_traiteDefinitionObjet( id , niveau , opt ){
         if(this.#tb[id][8] === 0){
-            return({"__xst" : true ,"__xva" : "{}"});
+            return({"__xst" : __xsu ,"__xva" : "{}"});
         }
         var commt='';
         var t='';
@@ -2392,7 +2399,7 @@ class c_rev_vers_js1{
                 if(this.#tb[j][8] === 1 && this.#tb[j + 1][2] === 'c'){
                     propriete+='.' + this.#tb[j + 1][1];
                 }else{
-                    return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                 }
             }else if(this.#tb[j][1] === '' && this.#tb[j][2] === 'f'){
                 valeur='';
@@ -2421,29 +2428,29 @@ class c_rev_vers_js1{
                             }
                         }else if(this.#tb[k][1] === 'defaut'){
                             var objOperation=this.#js_traiteInstruction1( niveau + 1 , k + 1 , {} );
-                            if(objOperation.__xst === true){
+                            if(objOperation.__xst === __xsu){
                                 défaut=objOperation.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                             }
                         }else if(numero === 0){
                             /* o={...super.getContainerClasses()} */
                             var objOperation=this.#js_traiteInstruction1( niveau + 1 , k , {} );
-                            if(objOperation.__xst === true){
+                            if(objOperation.__xst === __xsu){
                                 cle=objOperation.__xva;
                                 valeur=null;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                             }
                         }else if(numero === 1){
                             var objOperation=this.#js_traiteInstruction1( niveau + 1 , k , {} );
-                            if(objOperation.__xst === true){
+                            if(objOperation.__xst === __xsu){
                                 valeur=objOperation.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                             }
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2() + 'dans js_traiteDefinitionObjet il y a un problème'} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + 'dans js_traiteDefinitionObjet il y a un problème'} ));
                         }
                     }
                 }
@@ -2493,7 +2500,7 @@ class c_rev_vers_js1{
             }
         }
         tt+='}' + propriete;
-        return({"__xst" : true ,"__xva" : tt});
+        return({"__xst" : __xsu ,"__xva" : tt});
     }
     /*
       =============================================================================================================
@@ -2543,7 +2550,7 @@ class c_rev_vers_js1{
                     nomFonction=this.#tb[j + 2][1];
                 }else if(this.#tb[j + 1][1] === 'appelf' && this.#tb[j + 1][2] === 'f'){
                     var obj1=this.#js_traiteAppelFonction( j + 1 , true , niveau , true , nom_de_la_fonction_parente );
-                    if(obj1.__xst === true){
+                    if(obj1.__xst === __xsu){
                         if(obj1.__xva.substr( obj1.__xva.length - 1 , 1 ) === ';'){
                             obj1.__xva=obj1.__xva.substr( 0 , obj1.__xva.length - 1 );
                         }
@@ -2551,64 +2558,64 @@ class c_rev_vers_js1{
                         enfantTermineParUnePropriete=obj1.termineParUnePropriete;
                         aDesAppelsRecursifs=true;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'"' + this.#tb[j][1] + '"'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + '"' + this.#tb[j][1] + '"'} ));
                     }
                 }else if(this.#tb[j + 1][1] === 'tableau' && this.#tb[j + 1][2] === 'f'){
                     var obj_tableau=this.#js_traitetableau1( j + 1 , niveau , {} );
-                    if(obj_tableau.__xst === true){
+                    if(obj_tableau.__xst === __xsu){
                         nomFonction=obj_tableau.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'"' + this.#tb[j][1] + '"'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + '"' + this.#tb[j][1] + '"'} ));
                     }
                 }else if(this.#tb[j + 1][2] === 'f' && this.#tb[j + 1][1] === 'testEnLigne'){
                     var obj_tableau=this.#js_traiteInstruction1( niveau , j + 1 , {} );
-                    if(obj_tableau.__xst === true){
+                    if(obj_tableau.__xst === __xsu){
                         nomFonction='(' + obj_tableau.__xva + ')';
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'"' + this.#tb[j][1] + '"'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + '"' + this.#tb[j][1] + '"'} ));
                     }
                 }else if(this.#tb[j + 1][2] === 'f' && this.#tb[j + 1][1] === 'chainé'){
                     var obj_tableau=this.#js_traiteInstruction1( niveau , j + 1 , {} );
-                    if(obj_tableau.__xst === true){
+                    if(obj_tableau.__xst === __xsu){
                         nomFonction=obj_tableau.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'"' + this.#tb[j][1] + '"'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + '"' + this.#tb[j][1] + '"'} ));
                     }
                 }else if(this.#tb[j + 1][1] === 'virgule' && this.#tb[j + 1][2] === 'f'){
                     /* hugues var objOperation=this.#TraiteOperations2(j + 1,niveau,0,false); */
                     var objOperation=this.#js_traiteInstruction1( niveau , j + 1 , {} );
-                    if(objOperation.__xst === true){
+                    if(objOperation.__xst === __xsu){
                         nomFonction='(' + objOperation.__xva + ')';
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'"' + this.#tb[j][1] + '"'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + '"' + this.#tb[j][1] + '"'} ));
                     }
                 }else if(this.#tb[j + 1][1] === '' && this.#tb[j + 1][2] === 'f'){
                     var objtestLi=this.#rev_js1( j + 1 , niveau + 1 , {} );
-                    if(objtestLi.__xst === true){
+                    if(objtestLi.__xst === __xsu){
                         nomFonction=objtestLi.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'"' + this.#tb[j][1] + '"'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + '"' + this.#tb[j][1] + '"'} ));
                     }
                 }else if(this.#tb[j + 1][1] === 'new' && this.#tb[j + 1][2] === 'f'){
                     var objtestLi=this.#js_traite_new( j + 1 , niveau , {} );
-                    if(objtestLi.__xst === true){
+                    if(objtestLi.__xst === __xsu){
                         nomFonction=objtestLi.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'"' + this.#tb[j][1] + '"'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + '"' + this.#tb[j][1] + '"'} ));
                     }
                 }else if(this.#tb[j + 1][1] === 'defTab' && this.#tb[j + 1][2] === 'f'){
                     var obj=this.#js_traiteDefinitiontableau( this.#tb , j + 1 , niveau , {} );
-                    if(obj.__xst === true){
+                    if(obj.__xst === __xsu){
                         nomFonction=obj.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'"' + this.#tb[j][1] + '"'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + '"' + this.#tb[j][1] + '"'} ));
                     }
                 }else{
                     var obj_tableau=this.#js_traiteInstruction1( niveau , j + 1 , {} );
-                    if(obj_tableau.__xst === true){
+                    if(obj_tableau.__xst === __xsu){
                         nomFonction=obj_tableau.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()+'"' + this.#tb[j][1] + '"'} ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + '"' + this.#tb[j][1] + '"'} ));
                     }
                 }
             }else if(this.#tb[j][1] === 'flechee' && this.#tb[j][2] === 'f'){
@@ -2632,23 +2639,23 @@ class c_rev_vers_js1{
                         if(this.#tb[k][1] === '#'){
                         }else if(this.#tb[k][1] === 'tableau'){
                             var obj_tableau=this.#js_traitetableau1( k , niveau , {} );
-                            if(obj_tableau.__xst === true){
+                            if(obj_tableau.__xst === __xsu){
                                 nomElement+=obj_tableau.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2() + 'element'} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + 'element'} ));
                             }
                         }else if(this.#tb[k][2] === 'f' && this.#tbleau_precedences_js.hasOwnProperty( this.#tb[k][1] )){
                             var obj=this.#TraiteOperations2( this.#tb[k][0] , niveau + 1 , 0 , false );
-                            if(obj.__xst === false){
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2() + 'element'} ));
+                            if(obj.__xst === __xer){
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + 'element'} ));
                             }
                             nomElement+='(' + obj.__xva + ')';
                         }else{
                             var objinst=this.#js_traiteInstruction1( niveau , k , {} );
-                            if(objinst.__xst === true){
+                            if(objinst.__xst === __xsu){
                                 nomElement+=objinst.__xva;
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2() + 'element incorrecte dans appelf '} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + 'element incorrecte dans appelf '} ));
                             }
                         }
                     }
@@ -2656,7 +2663,7 @@ class c_rev_vers_js1{
             }
         }
         if(!(positionAppelFonction > 0) && nomFonction !== ''){
-            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2() + ' il faut un nom de fonction à appeler nomf(xxxx)'} ));
+            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + ' il faut un nom de fonction à appeler nomf(xxxx)'} ));
         }
         for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
             if(this.#tb[j][2] === 'f'){
@@ -2675,7 +2682,7 @@ class c_rev_vers_js1{
                 ){
                     continue;
                 }else{
-                    return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2() + ' l\'argument de appelf "' + this.#tb[j][1] + '" n\'est pas pris en compte'} ));
+                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + ' l\'argument de appelf "' + this.#tb[j][1] + '" n\'est pas pris en compte'} ));
                 }
             }
         }
@@ -2684,10 +2691,10 @@ class c_rev_vers_js1{
             if(this.#tb[j][7] === id){
                 if(this.#tb[j][1] === 'obj'){
                     obj=this.#js_traiteDefinitionObjet( j , niveau , {} );
-                    if(obj.__xst === true){
+                    if(obj.__xst === __xsu){
                         argumentsFonction+=', ' + obj.__xva;
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2() } ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
                     }
                 }else if(this.#tb[j][1] === 'prop'){
                     termineParUnePropriete=true;
@@ -2698,20 +2705,20 @@ class c_rev_vers_js1{
                             if(this.#tb[j + 1][1] === 'appelf'){
                                 aDesAppelsRecursifs=true;
                                 obj=this.#js_traiteAppelFonction( j + 1 , true , niveau , true , nomFonction );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     proprietesFonction+='.' + obj.__xva;
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() } ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                                 }
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() } ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                             }
                         }
                     }
                 }else if(this.#tb[j][1] === 'appelf'){
                     aDesAppelsRecursifs=true;
                     obj=this.#js_traiteAppelFonction( j , true , niveau , true , nomFonction );
-                    if(obj.__xst === true){
+                    if(obj.__xst === __xsu){
                         argumentsFonction+=', ';
                         if(nomFonction === 'Array' && nbEnfants >= 4){
                             forcerNvelleLigneEnfant=true;
@@ -2719,7 +2726,7 @@ class c_rev_vers_js1{
                         }
                         argumentsFonction+=obj.__xva + ' ';
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() } ));
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                     }
                 }else if(this.#tb[j][1] === 'contenu'){
                     contenu='';
@@ -2728,11 +2735,11 @@ class c_rev_vers_js1{
                     }else{
                         /* obj=js_this.#tbTojavascript1(this.#tb,j + 1,false,false,niveau + 1); */
                         obj=this.#rev_js1( j , niveau + 1 , {} );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             contenu+=__m_rev1.resps( niveau + 1 );
                             contenu+=obj.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() } ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                         }
                     }
                 }else if(this.#tb[j][1] === 'p'){
@@ -2756,31 +2763,31 @@ class c_rev_vers_js1{
                                         argumentsFonction+=this.#macst_pour_javascript( this.#tb[k] );
                                         numero_position++;
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() } ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                                     }
                                 }else if(this.#tb[k][2] === 'f' && this.#tb[k][1] === 'defaut'){
                                     if(this.#tb[k][8] === 1 && this.#tb[k + 1][2] === 'c'){
                                         argumentsFonction+='=' + this.#macst_pour_javascript( this.#tb[k + 1] );
                                     }else{
                                         var objJs=this.#js_traiteInstruction1( niveau , k + 1 , {} );
-                                        if(objJs.__xst === true){
+                                        if(objJs.__xst === __xsu){
                                             argumentsFonction+='=' + objJs.__xva + ' ';
                                         }else{
-                                            return(this.#rev_js_le( {"__xst" : false ,"id" : this.#tb[k][0] ,"__xme" : __m_rev1.nl2() } ));
+                                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : this.#tb[k][0] ,"__xme" : __m_rev1.nl2()} ));
                                         }
                                     }
                                 }else{
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() } ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                                 }
                             }
                         }
                     }else{
                         if(this.#tb[j][8] === 1 && this.#tb[j + 1][1] === 'obj'){
                             obj=this.#js_traiteDefinitionObjet( j + 1 , niveau , {} );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 argumentsFonction+=', ' + obj.__xva + ' ';
                             }else{
-                                return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() } ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                             }
                         }else if(this.#tb[j + 1][2] === 'f'){
                             if(this.#tb[j][8] > 1){
@@ -2794,7 +2801,7 @@ class c_rev_vers_js1{
                                     }
                                 }
                                 if(a_un_commentaire === false){
-                                    return(this.#rev_js_le( {"__xst" : false ,"id" : j ,"__xme" : __m_rev1.nl2() } ));
+                                    return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                                 }
                             }
                             var precedent_est_un_commentaire=false;
@@ -2817,29 +2824,29 @@ class c_rev_vers_js1{
                                     argumentsFonction+=this.#tb[k][13];
                                 }else if(this.#tb[k][2] === 'f' && this.#tb[k][1] === 'appelf'){
                                     objOperation=this.#js_traiteAppelFonction( k , true , niveau , true , nomFonction );
-                                    if(objOperation.__xst === true){
+                                    if(objOperation.__xst === __xsu){
                                         if(objOperation.__xva.substr( objOperation.__xva.length - 1 , 1 ) === ';'){
                                             objOperation.__xva=objOperation.__xva.substr( 0 , objOperation.__xva.length - 1 );
                                         }
                                         argumentsFonction+=objOperation.__xva + ' ';
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : k ,"__xme" : __m_rev1.nl2() } ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : k ,"__xme" : __m_rev1.nl2()} ));
                                     }
                                 }else if(this.#tb[k][2] === 'c'){
                                     argumentsFonction+=this.#macst_pour_javascript( this.#tb[k] ) + ' ';
                                 }else if(this.#tbleau_precedences_js.hasOwnProperty( this.#tb[k][1] )){
                                     var objOperation=this.#TraiteOperations2( k , niveau , 0 , false );
-                                    if(objOperation.__xst === true){
+                                    if(objOperation.__xst === __xsu){
                                         argumentsFonction+=objOperation.__xva + ' ';
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : k ,"__xme" : __m_rev1.nl2() } ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : k ,"__xme" : __m_rev1.nl2()} ));
                                     }
                                 }else{
                                     var objJs=this.#js_traiteInstruction1( niveau , k , {} );
-                                    if(objJs.__xst === true){
+                                    if(objJs.__xst === __xsu){
                                         argumentsFonction+=objJs.__xva + ' ';
                                     }else{
-                                        return(this.#rev_js_le( {"__xst" : false ,"id" : this.#tb[k][0] ,"__xme" : __m_rev1.nl2() } ));
+                                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : this.#tb[k][0] ,"__xme" : __m_rev1.nl2()} ));
                                     }
                                 }
                             }
@@ -3140,7 +3147,7 @@ class c_rev_vers_js1{
             console.log( '%c cas spécial de transformer_point_en_tableau ' , 'background:yellow;color:red;' , t );
         }
         return({
-                "__xst" : true ,
+                "__xst" : __xsu ,
                 "__xva" : t ,
                 "forcerNvelleLigneEnfant" : forcerNvelleLigneEnfant ,
                 "termineParUnePropriete" : termineParUnePropriete ,
@@ -3189,8 +3196,8 @@ class c_rev_vers_js1{
         let un_espacem2='';
         let propriete='';
         if(!this.#tbleau_precedences_js.hasOwnProperty( this.#tb[id][1] )){
-            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2() + ' pour "' + this.#tb[id][1] + '"'} ));
-            /* return(php_logerr({"__xst" : false ,"id" : i ,"__xme" : '2259 php_traiteOperation 1633 "' + this.#tb[id][1] + '"'})); */
+            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + ' pour "' + this.#tb[id][1] + '"'} ));
+            /* return(php_logerr({"__xst" : __xer ,"id" : i ,"__xme" : '2259 php_traiteOperation 1633 "' + this.#tb[id][1] + '"'})); */
         }
         var operateur_courant=this.#tbleau_precedences_js[this.#tb[id][1]];
         var operandes=[];
@@ -3206,7 +3213,7 @@ class c_rev_vers_js1{
                 if(this.#tbleau_precedences_js.hasOwnProperty( this.#tb[i][1] )){
                     var sous_operateur=this.#tbleau_precedences_js[this.#tb[i][1]];
                     var objOperation=this.#TraiteOperations2( i , niveau + 1 , niveauOp , ajouter_des_sauts_de_lignes );
-                    if(objOperation.__xst === true){
+                    if(objOperation.__xst === __xsu){
                         if(sous_operateur.priorite >= operateur_courant.priorite || this.#tb[id][1] === 'concat' && this.#tb[i][1] !== 'concat'){
                             if(this.#tb[i][1] === 'plus' && this.#tb[id][1] === 'plus' || this.#tb[i][1] === 'non' && this.#tb[id][1] === 'non'){
                                 /*
@@ -3224,21 +3231,21 @@ class c_rev_vers_js1{
                             }
                         }
                     }else{
-                        return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
-                        /* return(php_logerr({"__xst" : false ,"id" : i ,"__xme" : '2282 php_traiteOperation'})); */
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
+                        /* return(php_logerr({"__xst" : __xer ,"id" : i ,"__xme" : '2282 php_traiteOperation'})); */
                     }
                 }else{
                     if(this.#tb[i][1] === 'prop' && this.#tb[i][2] === 'f'){
                         /* cas très très très spécial (a||b).c */
                         var obj1=this.#js_traiteInstruction1( niveau , i + 1 , {} );
-                        if(obj1.__xst === true){
+                        if(obj1.__xst === __xsu){
                             propriete=obj1.__xva;
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
                         }
                     }else{
                         var obj1=this.#js_traiteInstruction1( niveau , i , {} );
-                        if(obj1.__xst === true){
+                        if(obj1.__xst === __xsu){
                             if(this.#tb[i][2] === 'c'
                                    || this.#tb[i][2] === 'f'
                                        && (this.#tb[i][1] === 'appelf'
@@ -3262,15 +3269,15 @@ class c_rev_vers_js1{
                                 operandes.push( {"valeur" : '(' + obj1.__xva + ')'} );
                             }
                         }else{
-                            return(this.#rev_js_le( {"__xst" : false ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
-                            /* return(php_logerr({"__xst" : false ,"id" : i ,"__xme" : '2291 php_traiteOperation '})); */
+                            return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
+                            /* return(php_logerr({"__xst" : __xer ,"id" : i ,"__xme" : '2291 php_traiteOperation '})); */
                         }
                     }
                 }
             }
         }
         if(operandes.length === 0){
-            return(this.#rev_js_le( {"__xst" : false ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
+            return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2()} ));
         }else if(operandes.length === 1){
             if(this.#tb[id][1] === 'moins'){
                 t+='-' + operandes[0].valeur;
@@ -3313,7 +3320,7 @@ class c_rev_vers_js1{
         */
         /* console.log('operandes=' , operandes ); */
         /* debugger */
-        return({"__xst" : true ,"__xva" : t});
+        return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
       =============================================================================================================
@@ -3330,7 +3337,7 @@ class c_rev_vers_js1{
             indice_de_debut=les_options.indice_de_debut;
         }
         obj=this.#rev_js1( indice_de_debut , 0 , {} );
-        if(obj.__xst === true){
+        if(obj.__xst === __xsu){
             if(obj.__xva.length >= 2 && obj.__xva.substr( 0 , 2 ) === '\r\n'){
                 obj.__xva=obj.__xva.substr( 2 );
             }
@@ -3343,7 +3350,7 @@ class c_rev_vers_js1{
             obj.matriceFonction=this.#tb;
             return obj;
         }else{
-            return(this.#rev_js_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'erreur de conversion en js'} ));
+            return(this.#rev_js_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'erreur de conversion en js'} ));
         }
     }
     /*
@@ -3359,11 +3366,11 @@ class c_rev_vers_js1{
           obj=functionToArray2(obj.__xva,true,false,'');
         */
         obj=__m_rev1.rev_tm( source_rev );
-        if(obj.__xst === true){
+        if(obj.__xst === __xsu){
             this.#tb=obj.__xva;
             this.#l02=obj.__xva.length;
             obj=this.#rev_js1( 0 , 0 , {} );
-            if(obj.__xst === true){
+            if(obj.__xst === __xsu){
                 if(obj.__xva.length >= 2 && obj.__xva.substr( 0 , 2 ) === '\r\n'){
                     obj.__xva=obj.__xva.substr( 2 );
                 }
@@ -3376,10 +3383,10 @@ class c_rev_vers_js1{
                 obj.matriceFonction=this.#tb;
                 return obj;
             }else{
-                return(this.#rev_js_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'erreur de conversion en js'} ));
+                return(this.#rev_js_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'erreur de conversion en js'} ));
             }
         }else{
-            return(this.#rev_js_le( {"__xst" : false ,"__xme" : __m_rev1.nl2() + 'erreur dans un rev'} ));
+            return(this.#rev_js_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'erreur dans un rev'} ));
         }
     }
 }

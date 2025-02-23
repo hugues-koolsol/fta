@@ -72,7 +72,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         if(sauvegarder_et_supprimer_fichier($fichier_cible)){
 
-            ajouterMessage('succes',__LINE__ . ' : le fichier a bien été supprimé du disque',BNF);
+            ajouterMessage(__xsu,__LINE__ . ' : le fichier a bien été supprimé du disque',BNF);
 
         }else{
 
@@ -144,7 +144,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }else{
 
-            ajouterMessage('succes',__LINE__ . ' : le fichier a bien été créé en base',BNF);
+            ajouterMessage(__xsu,__LINE__ . ' : le fichier a bien été créé en base',BNF);
             
             if($taille_contenu > TAILLE_MAXI_SOURCE){
 
@@ -166,7 +166,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         if(rmdir($_POST['__supprimer_ce_repertoire_du_disque'])){
 
-            ajouterMessage('succes',__LINE__ . ' : la suppression du répertoire a réussi',BNF);
+            ajouterMessage(__xsu,__LINE__ . ' : la suppression du répertoire a réussi',BNF);
 
         }else{
 
@@ -186,7 +186,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         if(copy($_POST['__importer_ce_fichier_de_' . 'fta'],$fichier_cible)){
 
-            ajouterMessage('succes',__LINE__ . ' : l\'import du fichier a réussi',BNF);
+            ajouterMessage(__xsu,__LINE__ . ' : l\'import du fichier a réussi',BNF);
 
         }else{
 
@@ -206,7 +206,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         if(mkdir($chemin_relatif,0777,true)){
 
-            ajouterMessage('succes',__LINE__ . ' : la création du répertoire a réussi',BNF);
+            ajouterMessage(__xsu,__LINE__ . ' : la création du répertoire a réussi',BNF);
 
         }else{
 
@@ -968,7 +968,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
                                     }else{
 
-                                        $o1 .= '<div class="yyavertissement">' . __LINE__ . ' le fichier ' . $nom_fichier . ' ne comporte pas une extension connue</div>';
+                                        $o1 .= '<div class="yyalarme">' . __LINE__ . ' le fichier ' . $nom_fichier . ' ne comporte pas une extension connue</div>';
                                     }
 
                                 }
@@ -990,7 +990,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
         }else{
 
-            $o1 .= '<div class="yyavertissement">';
+            $o1 .= '<div class="yyalarme">';
             $o1 .= 'ce répertoire n\'existe pas sur le disque';
             $o1 .= '<button id="__creer_le_repertoire_sur_le_disque" name="__creer_le_repertoire_sur_le_disque" >Créer le répertoire</button>';
             $o1 .= '<a class="yydanger" href="zz_dossiers_a1.php?__action=__suppression&amp;__id=' . $__id . '" title="supprimer de la Bdd">supprimer de la base</a>';

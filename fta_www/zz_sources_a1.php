@@ -126,7 +126,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                 
                 if(copy($nom_complet_du_source_dans_fta,$nomCompletSource)){
 
-                    ajouterMessage('succes',__LINE__ . ' : le fichier a bien été importé ');
+                    ajouterMessage(__xsu,__LINE__ . ' : le fichier a bien été importé ');
 
                 }else{
 
@@ -286,7 +286,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                     if($ret !== false){
 
                         fclose($fd);
-                        ajouterMessage('succes',__LINE__ . ' : Le généré a bien été écrit sur le disque');
+                        ajouterMessage(__xsu,__LINE__ . ' : Le généré a bien été écrit sur le disque');
                         /* si on est dans fta, que l'utilisateur=1 et que le dossier =1, on écrit le source rev aussi */
                         /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $__valeurs , true ) . '</pre>' ; exit(0);*/
                         
@@ -304,7 +304,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                                 if($ret !== false){
 
                                     fclose($fd);
-                                    ajouterMessage('succes',__LINE__ . ' : le rev aussi a été écrit sur disque');
+                                    ajouterMessage(__xsu,__LINE__ . ' : le rev aussi a été écrit sur disque');
 
                                 }else{
 
@@ -912,7 +912,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $paramUrl=str_replace('"','\\"',$paramUrl);
     $paramUrl=rawurlencode($paramUrl);
     $o1 .= '   <a href="javascript:__gi1.afficherModale2(\'' . enti1($paramUrl) . '\')" title="selectionner">📁</a>' . PHP_EOL;
-    $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.annuler_champ_modale(\'' . enti1($paramUrl) . '\')" title="annuler">🚫</a>' . PHP_EOL;
+    $o1 .= '   <a class="yyalarme" href="javascript:__gi1.annuler_champ_modale(\'' . enti1($paramUrl) . '\')" title="annuler">🚫</a>' . PHP_EOL;
     
     if($chx_dossier_id_source === '' || $chx_dossier_id_source === false){
 
@@ -1007,7 +1007,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $paramUrl=str_replace('"','\\"',$paramUrl);
     $paramUrl=rawurlencode($paramUrl);
     $o1 .= '   <a href="javascript:__gi1.afficherModale2(\'' . enti1($paramUrl) . '\')" title="selectionner">📁</a>' . PHP_EOL;
-    $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.annuler_champ_modale(\'' . enti1($paramUrl) . '\')" title="annuler">🚫</a>' . PHP_EOL;
+    $o1 .= '   <a class="yyalarme" href="javascript:__gi1.annuler_champ_modale(\'' . enti1($paramUrl) . '\')" title="annuler">🚫</a>' . PHP_EOL;
     
     if($__valeurs['T0.chx_dossier_id_source'] === null || $__valeurs['T0.chx_dossier_id_source'] === false){
 
@@ -1063,25 +1063,25 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.htm') !== false){
 
             $o1 .= '   <a class="yyinfo" href="javascript:convertir_rev_en_html(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R2H&#8615;</a>' . PHP_EOL;
-            $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.convertir_text_area_html_en_rev(&quot;chp_genere_source&quot;,&quot;{\'zone_html_rev\':\'chp_rev_source\'}&quot;)" class="yysucces">&#8613;H2R</a>' . PHP_EOL;
+            $o1 .= '   <a class="yyalarme" href="javascript:__gi1.convertir_text_area_html_en_rev(&quot;chp_genere_source&quot;,&quot;{\'zone_html_rev\':\'chp_rev_source\'}&quot;)" class="yysucces">&#8613;H2R</a>' . PHP_EOL;
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.php') !== false){
 
             $o1 .= '   <a class="yysucces" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_php2(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R2P&#8615;</a>' . PHP_EOL;
-            $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.bouton_convertir_text_area_php_en_rev_avec_nikic2(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':false}&quot;,true)">nicky htm strict 2 </a>' . PHP_EOL;
-            $o1 .= '   <a class="yyavertissement" href="javascript:__gi1.bouton_convertir_text_area_php_en_rev_avec_nikic2(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':true}&quot;,true)">nicky htm echo 2</a>' . PHP_EOL;
+            $o1 .= '   <a class="yyalarme" href="javascript:__gi1.bouton_convertir_text_area_php_en_rev_avec_nikic2(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':false}&quot;,true)">nicky htm strict 2 </a>' . PHP_EOL;
+            $o1 .= '   <a class="yyalarme" href="javascript:__gi1.bouton_convertir_text_area_php_en_rev_avec_nikic2(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':true}&quot;,true)">nicky htm echo 2</a>' . PHP_EOL;
             $o1 .= '   <a class="yyinfo" href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':false}&quot;,false)">phpp htm strict</a>';
             $o1 .= '   <a class="yyinfo" href="javascript:__gi1.convertir_text_area_php_en_rev_avec_php_parseur_js(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,&quot;{\'nettoyer_html\':true}&quot;,false)">phpp htm echo</a>';
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.sql') !== false){
 
             $o1 .= '   <a class="yyinfo" href="javascript:convertir_rev_en_sql(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">&#8615; rev =&gt; sql &#8615;</a>' . PHP_EOL;
-            $o1 .= '   <a class="yyavertissement" href="javascript:convertir_sqlite_en_rev(\'chp_rev_source\',\'chp_genere_source\')">&#8613; sql =&gt; rev &#8613;</a>' . PHP_EOL;
+            $o1 .= '   <a class="yyalarme" href="javascript:convertir_sqlite_en_rev(\'chp_rev_source\',\'chp_genere_source\')">&#8613; sql =&gt; rev &#8613;</a>' . PHP_EOL;
 
         }else{
 
             $o1 .= '   <a class="yyinfo" href="javascript:convertir_rev_en_texte(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">&#8615; rev =&gt; texte &#8615;</a>' . PHP_EOL;
-            $o1 .= '   <a class="yyavertissement" href="javascript:convertir_texte_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613; texte =&gt; rev &#8613;</a>' . PHP_EOL;
+            $o1 .= '   <a class="yyalarme" href="javascript:convertir_texte_en_rev(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;)">&#8613; texte =&gt; rev &#8613;</a>' . PHP_EOL;
         }
 
 
@@ -1111,8 +1111,8 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
             
             if($__valeurs['T0.chp_type_source'] === 'normal'){
 
-                $o1 .= '   <a href="javascript:lire_un_fichier_du_disque(&quot;' . encrypter(enti1($nomCompletSource)) . '&quot;)" class="yyavertissement">lire du disque</a>' . PHP_EOL;
-                $o1 .= '   <a class="yydanger" href="javascript:supprimer_un_fichier_du_disque(&quot;' . encrypter(enti1($nomCompletSource)) . '&quot;)" class="yyavertissement">supprimer du disque</a>' . PHP_EOL;
+                $o1 .= '   <a href="javascript:lire_un_fichier_du_disque(&quot;' . encrypter(enti1($nomCompletSource)) . '&quot;)" class="yyalarme">lire du disque</a>' . PHP_EOL;
+                $o1 .= '   <a class="yydanger" href="javascript:supprimer_un_fichier_du_disque(&quot;' . encrypter(enti1($nomCompletSource)) . '&quot;)" class="yyalarme">supprimer du disque</a>' . PHP_EOL;
 
             }
 
@@ -1162,7 +1162,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     
     if(isset($_GET['__option']) && $_GET['__option'] === 'remplacer_le_fichier'){
 
-        $o1 .= '   <button class="yyavertissement" type="submit" name="option" value="remplacer_le_fichier" class="">remplacer le fichier et enregistrer les modifications</button>' . PHP_EOL;
+        $o1 .= '   <button class="yyalarme" type="submit" name="option" value="remplacer_le_fichier" class="">remplacer le fichier et enregistrer les modifications</button>' . PHP_EOL;
 
     }
 

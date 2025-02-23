@@ -20,7 +20,7 @@ function recuperer_ast_de_php2(&$data){
           retourne false
         */
         $data[__xva]=json_encode($ast,JSON_INVALID_UTF8_IGNORE);
-        $data[__xst]=true;
+        $data[__xst]=__xsu;
     }catch(Error $error){
         $data[__xms][]=$error->getMessage();
         return;

@@ -23,7 +23,7 @@
 */
 function js_texte_convertit_texte_en_rev_racine( le_texte , niveau ){
     var t='texte(`' + le_texte.replace( /`/g , '\\`' ) + '`)';
-    return({"__xst" : true ,"value" : t});
+    return({"__xst" : __xsu ,"value" : t});
 }
 /*
   =====================================================================================================================
@@ -33,7 +33,7 @@ function convertir_tableau_rev_vers_texte_racine( tab , id , niveau ){
       appel à la fonction récursive
     */
     var ob=convertir_tableau_rev_vers_texte1( tab , id , niveau );
-    if(ob.__xst === true){
+    if(ob.__xst === __xsu){
         if(ob.value.substr( 0 , 2 ) === CRLF){
             ob.value=ob.value.substr( 2 );
         }
@@ -69,13 +69,13 @@ function convertir_tableau_rev_vers_texte1( tab , id , niveau ){
                       ... la fonction texte pour laquelle on appelle le récursif 
                     */
                     var objTexte=convertir_tableau_rev_vers_texte1( tab , i , niveau );
-                    if(objTexte.__xst === true){
+                    if(objTexte.__xst === __xsu){
                         t+=objTexte.value;
                     }else{
-                        return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : '0070 erreur dans un texte'} ));
+                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xme" : '0070 erreur dans un texte'} ));
                     }
                 }else{
-                    return(__m_rev1.empiler_erreur( {"__xst" : false ,"id" : i ,"__xme" : '0067seules les fonctions texte et # sont admises dans un texte'} ));
+                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xme" : '0067seules les fonctions texte et # sont admises dans un texte'} ));
                 }
             }else if(tab[i][2] === 'c'){
                 /*
@@ -102,5 +102,5 @@ function convertir_tableau_rev_vers_texte1( tab , id , niveau ){
             }
         }
     }
-    return({"__xst" : true ,"value" : t});
+    return({"__xst" : __xsu ,"value" : t});
 }

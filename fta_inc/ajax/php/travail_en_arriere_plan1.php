@@ -41,7 +41,7 @@ function enregistrer_les_sql_en_base(&$data){
 
         if($ret[__xst] === true){
 
-            $data[__xst]=true;
+            $data[__xst]=__xsu;
 
         }else{
 
@@ -110,7 +110,7 @@ function enregistrer_les_sources_en_base(&$data){
         if(fwrite($fd,$data[__entree]['params']['source_genere'])){
 
             fclose($fd);
-            $data[__xst]=true;
+            $data[__xst]=__xsu;
 
         }
 
@@ -220,7 +220,7 @@ function supprimer_un_commentaire1(&$data){
                     $data0[$arr[1]]['nom_source']=$arr[0];
                 }
                 $stmt->close();
-                $data[__xst]=true;
+                $data[__xst]=__xsu;
                 $data[__xva]=$data0;
 
             }
@@ -320,7 +320,7 @@ function remplacer_des_chaine1(&$data){
                 $data0[$arr[1]]['nom_source']=$arr[0];
             }
             $stmt->close();
-            $data[__xst]=true;
+            $data[__xst]=__xsu;
             $data['provenance']=$data[__entree]['parametre']['provenance'];
             $data[__xva]=$data0;
 
@@ -331,7 +331,7 @@ function remplacer_des_chaine1(&$data){
 
     }else{
 
-        $data[__xst]=true;
+        $data[__xst]=__xsu;
     }
 
 

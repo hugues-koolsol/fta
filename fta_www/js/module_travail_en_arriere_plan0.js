@@ -12,12 +12,17 @@ var liste_des_travaux_en_arriere_plan=[];
 var liste_des_taches_en_arriere_plan=[];
 var travail_en_cours=false;
 var tache_en_cours=false;
+var __m_rev1=null;
 var __module_html1=null;
 var __module_requete_sql1=null;
-var __m_rev_vers_php1=null;
 var __m_rev_vers_js1=null;
-var __m_rev1=null;
+var __m_rev_vers_php1=null;
+let __m_rev_vers_sql1=null;
 var __aa_js_sql={};
+const __xer=0;
+const __xsu=1;
+const __xal=2;
+const __xif=3;
 import( './mf_rev1.js' ).then( function( Module ){
         __m_rev1=new Module.c_rev1( '__m_rev1' );
     } );
@@ -25,7 +30,7 @@ import( './module_html.js' ).then( function( Module ){
         __module_html1=new Module.traitements_sur_html( '__module_html1' );
     } );
 import( './module_requete_sql.js' ).then( function( Module ){
-        __module_requete_sql1=new Module.requete_sql( '__module_requete_sql1' , null );
+        __module_requete_sql1=new Module.requete_sql( '__module_requete_sql1' , null , false );
     } );
 import( './mf_rev_vers_js1.js' ).then( function( Module ){
         __m_rev_vers_js1=new Module.c_rev_vers_js1( '__m_rev_vers_js1' , null );
@@ -69,7 +74,7 @@ async function recuperer_un_fetch_dans_module_travail_en_ap( url , donnees ){
             console.log( 'url=' + url );
             console.log( JSON.stringify( en_entree ) );
             console.log( JSON.stringify( donnees ) );
-            return({"__xst" : false ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t});
+            return({"__xst" : __xer ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t});
         }
     }catch(e){
         console.log( e );
@@ -78,7 +83,7 @@ async function recuperer_un_fetch_dans_module_travail_en_ap( url , donnees ){
         }else{
             console.log( e.message );
         }
-        return({"__xst" : false ,"__xme" : e.message});
+        return({"__xst" : __xer ,"__xme" : e.message});
     }
 }
 /*
@@ -90,7 +95,7 @@ function enregistrer_les_sql_en_base( params , fonction_apres ){
         return(recuperer_un_fetch_dans_module_travail_en_ap( url , ajax_param ));
     }
     enregistrer_les_sql_en_base1( '../za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session' , ajax_param ).then( ( donnees ) => {
-            if(donnees.__xst === true){
+            if(donnees.__xst === __xsu){
                 console.log( '%cYOUPIIIII sql donnees=' , 'background:yellow;color:red;' , donnees );
                 liste_des_taches_en_arriere_plan[params['id_tache']].etat='terminée';
                 tache_en_cours=false;
@@ -108,7 +113,7 @@ function enregistrer_les_sql_en_base( params , fonction_apres ){
                 return;
             }
         } );
-    return({"__xst" : true});
+    return({"__xst" : __xsu});
 }
 /*
   =====================================================================================================================
@@ -119,7 +124,7 @@ function enregistrer_les_sources_en_base( params , fonction_apres ){
         return(recuperer_un_fetch_dans_module_travail_en_ap( url , ajax_param ));
     }
     enregistrer_les_sources_en_base1( '../za_ajax.php?enregistrer_les_sources_en_base' , ajax_param ).then( ( donnees ) => {
-            if(donnees.__xst === true){
+            if(donnees.__xst === __xsu){
                 console.log( '%cYOUPIIIII donnees=' , 'background:yellow;color:red;' , donnees );
                 liste_des_taches_en_arriere_plan[params['id_tache']].etat='terminée';
                 tache_en_cours=false;
@@ -137,7 +142,7 @@ function enregistrer_les_sources_en_base( params , fonction_apres ){
                 return;
             }
         } );
-    return({"__xst" : true});
+    return({"__xst" : __xsu});
 }
 /*
   =====================================================================================================================
@@ -189,11 +194,11 @@ function apres_traite_un_remplacement( id_tache , arg , provenance ){
                         tache_en_cours=true;
                         if(provenance === 'sql'){
                             var objSource=__m_rev_vers_sql1.c_tab_vers_js( tab , {} );
-                            if(objSource.__xst === true){
+                            if(objSource.__xst === __xsu){
                                 var obj1=__m_rev1.matrice_vers_source_rev1( tab , 0 , true , 1 );
-                                if(obj1.__xst === true){
+                                if(obj1.__xst === __xsu){
                                     var obj2=__module_requete_sql1.transform_source_rev_vers_sql( obj1.__xva , id_source );
-                                    if(obj2.__xst === true){
+                                    if(obj2.__xst === __xsu){
                                         arg[id_source].tab=[];
                                         var params={
                                             "arg" : arg ,
@@ -237,9 +242,9 @@ function apres_traite_un_remplacement( id_tache , arg , provenance ){
                             }else if(extension === '.php'){
                                 var objSource=__m_rev_vers_php1.c_tab_vers_php( tab , {} );
                             }
-                            if(objSource.__xst === true){
+                            if(objSource.__xst === __xsu){
                                 var obj=__m_rev1.matrice_vers_source_rev1( tab , 0 , true , 1 );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     arg[id_source].tab=[];
                                     var params={"arg" : arg ,"id_tache" : j ,"id_source" : id_source ,"source_rev" : obj.__xva ,"source_genere" : objSource.__xva};
                                     enregistrer_les_sources_en_base( params , traitement_apres_remplacement_chaine_en_bdd );
@@ -338,9 +343,9 @@ function traite_une_suppression( id_tache , arg ){
                             var objSource=__m_rev_vers_php1.c_tab_vers_php( tab1 , {"indice_de_debut" : i} );
                             console.log( '%c on traite un php ' , 'color:red;background:yellow;' , objSource.__xst );
                         }
-                        if(objSource.__xst === true){
+                        if(objSource.__xst === __xsu){
                             var obj=__m_rev1.matrice_vers_source_rev1( tab1 , 0 , true , 1 );
-                            if(obj.__xst === true){
+                            if(obj.__xst === __xsu){
                                 arg[id_source].tab1=[];
                                 var params={
                                     "arg" : arg ,
@@ -487,7 +492,7 @@ function supprimer_un_commentaire1( parametre_supprimer_un_commentaire1 , la_tac
         return(recuperer_un_fetch_dans_module_travail_en_ap( url , ajax_param ));
     }
     supprimer_un_commentaire2( '../za_ajax.php?supprimer_un_commentaire1' , ajax_param ).then( ( donnees ) => {
-            if(donnees.__xst === true){
+            if(donnees.__xst === __xsu){
                 console.log( 'donnees=' , donnees );
                 traitement_a_lancer_si_succes( donnees.__xva );
             }else{
@@ -500,7 +505,7 @@ function supprimer_un_commentaire1( parametre_supprimer_un_commentaire1 , la_tac
                 return;
             }
         } );
-    return({"__xst" : true});
+    return({"__xst" : __xsu});
 }
 /*
   
@@ -516,7 +521,7 @@ function remplacer_des_chaine1( parametre_remplacer_des_chaines1 , la_tache_en_c
         return(recuperer_un_fetch_dans_module_travail_en_ap( url , ajax_param ));
     }
     remplacer_des_chaine2( '../za_ajax.php?remplacer_des_chaine1' , ajax_param ).then( ( donnees ) => {
-            if(donnees.__xst === true){
+            if(donnees.__xst === __xsu){
                 traitement_a_lancer_si_succes( donnees.__xva , donnees );
             }else{
                 parametre_remplacer_des_chaines1.etat_du_travail='travail_en_arriere_plan_en_erreur';
@@ -528,7 +533,7 @@ function remplacer_des_chaine1( parametre_remplacer_des_chaines1 , la_tache_en_c
                 return;
             }
         } );
-    return({"__xst" : true});
+    return({"__xst" : __xsu});
 }
 /*
   
@@ -628,7 +633,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
                 return(recuperer_un_fetch_dans_module_travail_en_ap( url , ajax_param ));
             }
             supprimer_un_travail_en_arriere_plan_en_session1( '../za_ajax.php?supprimer_un_travail_en_arriere_plan_en_session' , ajax_param ).then( ( donnees ) => {
-                    if(donnees.__xst === true){
+                    if(donnees.__xst === __xsu){
                         var i={};
                         for(i in liste_des_travaux_en_arriere_plan){
                             if(liste_des_travaux_en_arriere_plan[i].etat_du_travail == 'travail_en_arriere_plan_terminé'){
@@ -652,7 +657,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(){
             break;
         }
     }
-    return({"__xst" : true});
+    return({"__xst" : __xsu});
 }
 /*
   
@@ -670,7 +675,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(){
                 return(recuperer_un_fetch_dans_module_travail_en_ap( url , ajax_param ));
             }
             enregistrer_un_travail_en_arriere_plan_en_session1( '../za_ajax.php?enregistrer_un_travail_en_arriere_plan_en_session' , ajax_param ).then( ( donnees ) => {
-                    if(donnees.__xst === true){
+                    if(donnees.__xst === __xsu){
                         var i={};
                         for(i in liste_des_travaux_en_arriere_plan){
                             if(liste_des_travaux_en_arriere_plan[i].etat_du_travail === 'travail_en_arriere_plan_reçu'){
@@ -690,7 +695,7 @@ function enregistrer_un_travail_en_arriere_plan_en_session(){
             break;
         }
     }
-    return({"__xst" : true});
+    return({"__xst" : __xsu});
 }
 /*
   
@@ -768,7 +773,7 @@ function recuperer_les_travaux_en_session(){
         return(recuperer_un_fetch_dans_module_travail_en_ap( url , ajax_param ));
     }
     recuperer_les_travaux_en_arriere_plan_de_la_session1( '../za_ajax.php?recuperer_les_travaux_en_arriere_plan_de_la_session' , ajax_param ).then( ( donnees ) => {
-            if(donnees.__xst === true){
+            if(donnees.__xst === __xsu){
                 /* console.log('donnees.__xva=',donnees.__xva); */
                 __aa_js_sql=donnees.__xva.__aa_js_sql;
                 /* console.log('__aa_js_sql[1]=' , __aa_js_sql[1] ); */

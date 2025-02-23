@@ -144,16 +144,16 @@ class module_svg_bdd{
                 var le_json=JSON.parse( t );
                 return le_json;
             }catch(e){
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'erreur sur convertion json, texte non json=' + t} );
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : 'url=' + url} );
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : JSON.stringify( en_entree )} );
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : JSON.stringify( donnees )} );
-                return({"__xst" : false ,"message" : 'le retour n\'est pas en json'});
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur sur convertion json, texte non json=' + t} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'url=' + url} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( en_entree )} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( donnees )} );
+                return({"__xst" : __xer ,"message" : 'le retour n\'est pas en json'});
             }
         }catch(e){
             debugger;
             console.log( 'e=' , e );
-            return({"__xst" : false ,"message" : e.message});
+            return({"__xst" : __xer ,"message" : e.message});
         }
     }
     /*
@@ -718,7 +718,7 @@ class module_svg_bdd{
             "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
         };
         supprimer_en_bdd_l_index( 'za_ajax.php?supprimer_en_bdd_l_index' , ajax_param , this ).then( ( donnees ) => {
-                if(donnees.__xst === true){
+                if(donnees.__xst === __xsu){
                     console.log( true );
                 }else{
                     console.log( 'KO donnees=' , donnees );
@@ -732,9 +732,9 @@ class module_svg_bdd{
     ajouter_un_index_dans_base_de_modale( id_svg_rectangle_de_l_index , nom_de_l_index , nom_de_la_table ){
         var rev_texte='add_index(' + document.getElementById( id_svg_rectangle_de_l_index ).getAttribute( 'donnees_rev_de_l_index' ) + ')';
         var obj1=__m_rev1.rev_tm( rev_texte );
-        if(obj1.__xst === true){
+        if(obj1.__xst === __xsu){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 var source_sql=obj2.__xva;
                 async function ajouter_en_bdd_l_index( url="" , donnees , that ){
                     return(that.#recupérer_un_fetch( url , donnees ));
@@ -745,7 +745,7 @@ class module_svg_bdd{
                     "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
                 };
                 ajouter_en_bdd_l_index( 'za_ajax.php?ajouter_en_bdd_l_index' , ajax_param , this ).then( ( donnees ) => {
-                        if(donnees.__xst === true){
+                        if(donnees.__xst === __xsu){
                             console.log( true );
                         }else{
                             console.error( 'KO donnees=' , donnees );
@@ -765,9 +765,9 @@ class module_svg_bdd{
             var nom_du_champ=a.getAttribute( 'nom_du_champ' );
             definition_du_champ+='sql(field(' + a.getAttribute( 'donnees_rev_du_champ' ) + '))';
             var obj1=__m_rev1.rev_tm( definition_du_champ );
-            if(obj1.__xst === true){
+            if(obj1.__xst === __xsu){
                 var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
-                if(obj2.__xst === true){
+                if(obj2.__xst === __xsu){
                     async function ajouter_en_bdd_le_champ( url="" , donnees , that ){
                         return(that.#recupérer_un_fetch( url , donnees ));
                     }
@@ -778,7 +778,7 @@ class module_svg_bdd{
                         "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
                     };
                     ajouter_en_bdd_le_champ( 'za_ajax.php?ajouter_en_bdd_le_champ' , ajax_param , this ).then( ( donnees ) => {
-                            if(donnees.__xst === true){
+                            if(donnees.__xst === __xsu){
                                 this.#message_succes_et_fermer_modale( donnees );
                             }else{
                                 this.#message_erreur_modale( donnees );
@@ -823,7 +823,7 @@ class module_svg_bdd{
                   il faut supprimer le champ de cet index puis supprimer l'index s'il n'y a plus de champ
                 */
                 var obj=__m_rev1.rev_tm( elt.proprietes.donnees_rev_de_l_index );
-                if(obj.__xst === true){
+                if(obj.__xst === __xsu){
                     var j=0;
                     for( j=0 ; j < obj.__xva.length ; j++ ){
                         if(obj.__xva[j][1] === 'fields' && obj.__xva[j][3] === 0 && obj.__xva[j][2] === 'f'){
@@ -844,7 +844,7 @@ class module_svg_bdd{
                                     }else{
                                         var nouvelle_matrice=__m_rev1.supprimer_un_element_de_la_matrice( obj.__xva , k , 0 );
                                         var obj=__m_rev1.matrice_vers_source_rev1( nouvelle_matrice , 0 , false , 1 );
-                                        if(obj.__xst === true){
+                                        if(obj.__xst === __xsu){
                                             this.#arbre[this.#id_bdd_de_la_base_en_cours].arbre_svg[i].proprietes.donnees_rev_de_l_index=obj.__xva;
                                         }else{
                                             debugger;
@@ -1114,7 +1114,7 @@ class module_svg_bdd{
                 id_svg_rectangle_de_l_index=lst[i].getAttribute( 'id' );
                 if(lst[i].getAttribute( 'donnees_rev_de_l_index' ) && lst[i].getAttribute( 'donnees_rev_de_l_index' ) !== ''){
                     var obj_matrice_de_l_index=__m_rev1.rev_tm( lst[i].getAttribute( 'donnees_rev_de_l_index' ) );
-                    if(obj_matrice_de_l_index.__xst === true){
+                    if(obj_matrice_de_l_index.__xst === __xsu){
                         for( k=1 ; k < obj_matrice_de_l_index.__xva.length ; k++ ){
                             if(obj_matrice_de_l_index.__xva[k][7] === 0){
                                 if(obj_matrice_de_l_index.__xva[k][2] === 'f'){
@@ -1247,7 +1247,7 @@ class module_svg_bdd{
                 id_svg_rectangle_du_champ=lst[i].getAttribute( 'id' );
                 if(lst[i].getAttribute( 'donnees_rev_du_champ' ) && lst[i].getAttribute( 'donnees_rev_du_champ' ) !== ''){
                     var obj_matrice_du_champ=__m_rev1.rev_tm( lst[i].getAttribute( 'donnees_rev_du_champ' ) );
-                    if(obj_matrice_du_champ.__xst === true){
+                    if(obj_matrice_du_champ.__xst === __xsu){
                         for( k=1 ; k < obj_matrice_du_champ.__xva.length ; k++ ){
                             if(obj_matrice_du_champ.__xva[k][7] === 0){
                                 if(obj_matrice_du_champ.__xva[k][2] === 'f'){
@@ -1387,20 +1387,20 @@ class module_svg_bdd{
                 tables[a2].presente_dans_tableau_2=true;
             }else{
                 tables[a2]={"presente_dans_tableau_1" : false ,"presente_dans_tableau_2" : true};
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : ' la table ' + a2 + ' est absente du tableau1 '} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : ' la table ' + a2 + ' est absente du tableau1 '} );
                 differences_entre_les_tables=true;
             }
         }
         for(var a0 in tables){
             if(tables[a0].presente_dans_tableau_2 === false){
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : ' la table ' + a0 + ' est absente du tableau2'} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : ' la table ' + a0 + ' est absente du tableau2'} );
                 differences_entre_les_tables=true;
             }
         }
         if(differences_entre_les_tables === true){
-            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : ' des tables ne sont pas les mêmes'} );
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : ' des tables ne sont pas les mêmes'} );
         }else{
-            __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : ' il y a les mêmes tables dans les deux tableaux'} );
+            __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : ' il y a les mêmes tables dans les deux tableaux'} );
         }
         if(differences_entre_les_tables === false){
             for(var a0 in tables){
@@ -1548,11 +1548,11 @@ class module_svg_bdd{
                                         if('cid' === typechamp){
                                         }else if(typechamp === 'auto_increment'){
                                             __m_rev1.empiler_erreur( {
-                                                    "__xst" : false ,
+                                                    "__xst" : __xer ,
                                                     "__xme" : ' pour la table ' + a0 + ' , le champ ' + champ + ' , le type ' + typechamp + ' on a une différence mais ce n\'est peut-être pas une erreur ! '
                                                 } );
                                         }else{
-                                            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : ' pour la table ' + a0 + ' , le champ ' + champ + ' , le type ' + typechamp + ' on a une différence'} );
+                                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : ' pour la table ' + a0 + ' , le champ ' + champ + ' , le type ' + typechamp + ' on a une différence'} );
                                         }
                                     }
                                 }
@@ -1570,12 +1570,12 @@ class module_svg_bdd{
                         }else{
                             if(champs[champ].presente_dans_tableau_1 === true && champs[champ].presente_dans_tableau_2 === false){
                                 __m_rev1.empiler_erreur( {
-                                        "__xst" : false ,
+                                        "__xst" : __xer ,
                                         "__xme" : ' pour la table ' + a0 + ' , le champ ' + champ + ' est dans la base physique mais pas dans la base du champ généré '
                                     } );
                             }else{
                                 __m_rev1.empiler_erreur( {
-                                        "__xst" : false ,
+                                        "__xst" : __xer ,
                                         "__xme" : ' pour la table ' + a0 + ' , le champ ' + champ + ' est dans la base du champ généré mais pas dans la base physique  '
                                     } );
                             }
@@ -1642,12 +1642,12 @@ class module_svg_bdd{
                     if(par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty( 'different' )
                            && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].different === true
                     ){
-                        la_class_quoi='yyavertissement';
+                        la_class_quoi='yyalarme';
                     }
                     if(par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].hasOwnProperty( 'absent_de_l_autre_tableau' )
                            && par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].absent_de_l_autre_tableau === true
                     ){
-                        la_class_quoi='yyavertissement';
+                        la_class_quoi='yyalarme';
                     }
                     /*
                       t+='<td class="'+la_class_quoi+'">'+par['donnees'][references[ref]][nom_de_la_table].liste_des_champs[nom_du_champ].name+'</td>';
@@ -1755,11 +1755,11 @@ class module_svg_bdd{
     */
     comparer_la_base_physique_et_la_base_virtuelle( id_bdd_de_la_base_en_cours ){
         var obj1=this.#creer_rev_de_la_base_a_partir_de_svg( id_bdd_de_la_base_en_cours );
-        if(obj1.__xst === true){
+        if(obj1.__xst === __xsu){
             var obj2=__m_rev1.rev_tm( obj1.__xva );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 var obj3=__m_rev_vers_sql1.c_tab_vers_js( obj2.__xva , {} );
-                if(obj3.__xst === true){
+                if(obj3.__xst === __xsu){
                     async function recuperer_les_tableaux_des_bases( url="" , donnees , that ){
                         return(that.#recupérer_un_fetch( url , donnees ));
                     }
@@ -1771,7 +1771,7 @@ class module_svg_bdd{
                         "id_bdd_de_la_base" : id_bdd_de_la_base_en_cours
                     };
                     recuperer_les_tableaux_des_bases( 'za_ajax.php?recuperer_les_tableaux_des_bases' , ajax_param , this ).then( ( donnees ) => {
-                            if(donnees.__xst === true){
+                            if(donnees.__xst === __xsu){
                                 this.afficher_resultat_comparaison_base_physique_et_base_virtuelle( {"donnees" : donnees.__xva ,"id_bdd_de_la_base_en_cours" : id_bdd_de_la_base_en_cours} );
                             }else{
                                 console.error( 'donnees=' , donnees );
@@ -1799,12 +1799,12 @@ class module_svg_bdd{
         this.#id_bdd_de_la_base_en_cours=parseInt( id_bdd , 10 );
         __gi1.raz_des_messages();
         var obj=this.#creer_rev_de_la_base_a_partir_de_svg( this.#id_bdd_de_la_base_en_cours );
-        if(obj.__xst === true){
+        if(obj.__xst === __xsu){
             var texte_rev=obj.__xva;
             var obj2=__m_rev1.rev_tm( texte_rev );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 var obj3=__m_rev_vers_sql1.c_tab_vers_js( obj2.__xva , {} );
-                if(obj3.__xst === true){
+                if(obj3.__xst === __xsu){
                     var source_sql_de_la_base=obj3.__xva;
                 }else{
                     __gi1.remplir_et_afficher_les_messages1( '' );
@@ -1830,7 +1830,7 @@ class module_svg_bdd{
             "source_sql_de_la_base" : source_sql_de_la_base
         };
         creer_la_base_a_partir_du_shema_sur_disque( 'za_ajax.php?creer_la_base_a_partir_du_shema_sur_disque' , ajax_param , this ).then( ( donnees ) => {
-                if(donnees.__xst === true){
+                if(donnees.__xst === __xsu){
                     console.log( true );
                 }else{
                     console.error( 'KO donnees=' , donnees );
@@ -1848,12 +1848,12 @@ class module_svg_bdd{
         this.#id_bdd_de_la_base_en_cours=parseInt( id_bdd , 10 );
         __gi1.raz_des_messages();
         var obj=this.#creer_rev_de_la_base_a_partir_de_svg( this.#id_bdd_de_la_base_en_cours );
-        if(obj.__xst === true){
+        if(obj.__xst === __xsu){
             var texte_rev=obj.__xva;
             var obj2=__m_rev1.rev_tm( texte_rev );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 var obj3=__m_rev_vers_sql1.c_tab_vers_js( obj2.__xva , {} );
-                if(obj3.__xst === true){
+                if(obj3.__xst === __xsu){
                     var source_sql_de_la_base=obj3.__xva;
                     var tab=obj2.__xva;
                     var l01=tab.length;
@@ -1897,7 +1897,7 @@ class module_svg_bdd{
             "liste_des_tables" : liste_des_tables
         };
         reecrire_la_base_a_partir_du_shema_sur_disque( 'za_ajax.php?reecrire_la_base_a_partir_du_shema_sur_disque' , ajax_param , this ).then( ( donnees ) => {
-                if(donnees.__xst === true){
+                if(donnees.__xst === __xsu){
                     this.#message_succes_et_fermer_modale( donnees );
                 }else{
                     this.#message_erreur_modale( donnees );
@@ -1925,7 +1925,7 @@ class module_svg_bdd{
                 id_svg_rectangle_de_la_base=lst[i].getAttribute( 'id' );
                 if(lst[i].getAttribute( 'donnees_rev_meta_de_la_base' ) && lst[i].getAttribute( 'donnees_rev_meta_de_la_base' ) !== ''){
                     var obj_matrice_de_la_table=__m_rev1.rev_tm( lst[i].getAttribute( 'donnees_rev_meta_de_la_base' ) );
-                    if(obj_matrice_de_la_table.__xst === true){
+                    if(obj_matrice_de_la_table.__xst === __xsu){
                         var l=1;
                         for( l=1 ; l < obj_matrice_de_la_table.__xva.length ; l++ ){
                             if(obj_matrice_de_la_table.__xva[l][3] === 0 && obj_matrice_de_la_table.__xva[l][8] === 2){
@@ -2034,9 +2034,9 @@ class module_svg_bdd{
         var nouveau_rev=(t0 + nouveauTableau.join( ',' )) + '))';
         var chaine_create_table='';
         var obj1=__m_rev1.rev_tm( nouveau_rev );
-        if(obj1.__xst === true){
+        if(obj1.__xst === __xsu){
             var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 chaine_create_table=obj2.__xva;
             }else{
                 return;
@@ -2047,9 +2047,9 @@ class module_svg_bdd{
         var i=0;
         for( i=0 ; i < tab_des_index_rev.length ; i++ ){
             var obj1=__m_rev1.rev_tm( tab_des_index_rev[i] );
-            if(obj1.__xst === true){
+            if(obj1.__xst === __xsu){
                 var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
-                if(obj2.__xst === true){
+                if(obj2.__xst === __xsu){
                     tab_des_index_sql.push( obj2.__xva );
                 }else{
                     return;
@@ -2086,11 +2086,11 @@ class module_svg_bdd{
             "en_base_et_sur_schema" : en_base_et_sur_schema
         };
         ordonner_les_champs_de_table( 'za_ajax.php?ordonner_les_champs_de_table' , ajax_param , this ).then( ( donnees ) => {
-                if(donnees.__xst === true){
+                if(donnees.__xst === __xsu){
                     if(donnees.__entree.mode_supression_de_champ === true && en_base_et_sur_schema === false){
                     }else{
                         var obj=this.#reordonner_les_champs_de_la_table_dans_le_svg( donnees.__entree.id_bdd_de_la_base , donnees.__entree.nom_de_la_table , donnees.__entree.ordre_modifie , donnees.__entree.id_svg_conteneur_table , donnees.__entree.nouveau_rev );
-                        if(obj.__xst === true){
+                        if(obj.__xst === __xsu){
                             console.log( 'réordonner OK' );
                         }else{
                             console.log( 'réordonner KO' );
@@ -2115,12 +2115,12 @@ class module_svg_bdd{
         */
         this.#supprimer_recursivement_les_elements_de_l_arbre( id_bdd_de_la_base , id_svg_conteneur_table );
         var obj1=__m_rev1.rev_tm( nouveau_rev );
-        if(obj1.__xst === true){
+        if(obj1.__xst === __xsu){
             var indice_courant=this.#recuperer_prochain_id_svg();
             this.#ajouter_table_et_index_a_arbre( obj1.__xva , 1 , indice_courant , id_bdd_de_la_base , nom_de_la_table );
             this.#modifier_les_references_des_liens( id_bdd_de_la_base );
         }
-        return({"__xst" : true});
+        return({"__xst" : __xsu});
     }
     /*
       =============================================================================================================
@@ -2291,7 +2291,7 @@ class module_svg_bdd{
                 id_svg_rectangle_de_la_table=lst[i].getAttribute( 'id' );
                 if(lst[i].getAttribute( 'meta_rev_de_la_table' ) && lst[i].getAttribute( 'meta_rev_de_la_table' ) !== ''){
                     var obj_matrice_de_la_table=__m_rev1.rev_tm( lst[i].getAttribute( 'meta_rev_de_la_table' ) );
-                    if(obj_matrice_de_la_table.__xst === true){
+                    if(obj_matrice_de_la_table.__xst === __xsu){
                         var l=1;
                         for( l=1 ; l < obj_matrice_de_la_table.__xva.length ; l++ ){
                             if(obj_matrice_de_la_table.__xva[l][3] === 0 && obj_matrice_de_la_table.__xva[l][8] === 2){
@@ -2368,7 +2368,7 @@ class module_svg_bdd{
         t+='<br />';
         t+='liste des champs : <input id="liste_des_champs_de_l_index" type="text" value="" disabled style="width:90%;"/>';
         t+='<br />';
-        t+='<a class="yyavertissement" href="javascript:' + this.#nom_de_la_variable + '.raz_liste_des_champs_de_l_index()">raz</a>';
+        t+='<a class="yyalarme" href="javascript:' + this.#nom_de_la_variable + '.raz_liste_des_champs_de_l_index()">raz</a>';
         for( i=0 ; i < liste_des_champs.length ; i++ ){
             t+='<a href="javascript:' + this.#nom_de_la_variable + '.ajouter_un_champ_a_l_index_dans_modale(&quot;' + liste_des_champs[i] + '&quot;)">' + liste_des_champs[i] + '</a>';
         }
@@ -2709,7 +2709,7 @@ class module_svg_bdd{
             "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
         };
         supprimer_table_dans_base( 'za_ajax.php?supprimer_table_dans_base' , ajax_param , this ).then( ( donnees ) => {
-                if(donnees.__xst === true){
+                if(donnees.__xst === __xsu){
                     this.#message_succes_modale( donnees );
                 }else{
                     this.#message_erreur_modale( donnees );
@@ -2724,9 +2724,9 @@ class module_svg_bdd{
     ajouter_la_table_en_base_de_modale( id_svg_rectangle_de_la_table , nom_de_la_table ){
         var t=this.#creer_definition_table_en_rev( document.getElementById( id_svg_rectangle_de_la_table ) );
         var obj1=__m_rev1.rev_tm( t );
-        if(obj1.__xst === true){
+        if(obj1.__xst === __xsu){
             var obj2=tabToSql0( obj1.__xva , 0 , 0 , {"tableau_tables_champs" : []} );
-            if(obj2.__xst === true){
+            if(obj2.__xst === __xsu){
                 async function creer_table_dans_base( url="" , donnees , that ){
                     return(that.#recupérer_un_fetch( url , donnees ));
                 }
@@ -2736,7 +2736,7 @@ class module_svg_bdd{
                     "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
                 };
                 creer_table_dans_base( 'za_ajax.php?creer_table_dans_base' , ajax_param , this ).then( ( donnees ) => {
-                        if(donnees.__xst === true){
+                        if(donnees.__xst === __xsu){
                             this.#message_succes_modale( donnees );
                         }else{
                             this.#message_erreur_modale( donnees );
@@ -2778,7 +2778,7 @@ class module_svg_bdd{
                   On repère tous les champs qui font référence à cette table         
                 */
                 var obj=__m_rev1.rev_tm( this.#arbre[this.#id_bdd_de_la_base_en_cours].arbre_svg[i].proprietes.donnees_rev_du_champ );
-                if(obj.__xst === true){
+                if(obj.__xst === __xsu){
                     var j=0;
                     for( j=0 ; j < obj.__xva.length ; j++ ){
                         if(obj.__xva[j][7] === 0 && obj.__xva[j][1] === 'references' && obj.__xva[j][2] === 'f'){
@@ -2958,13 +2958,13 @@ class module_svg_bdd{
             var texte_rev=document.getElementById( id_svg_rectangle ).getAttribute( nom_propriete );
             var obj1=__m_rev1.rev_tm( texte_rev );
             var nouveau_rev='';
-            if(obj1.__xst === true){
+            if(obj1.__xst === __xsu){
                 var i=0;
                 for( i=0 ; i < obj1.__xva.length ; i++ ){
                     if(obj1.__xva[i][3] === 1 && obj1.__xva[i][1] === 'transform_base_sur_svg'){
                         var tab=__m_rev1.supprimer_un_element_de_la_matrice( obj1.__xva , i - 1 , 0 );
                         var obj2=__m_rev1.matrice_vers_source_rev1( tab , 0 , false , 1 );
-                        if(obj2.__xst === true){
+                        if(obj2.__xst === __xsu){
                             if(obj2.__xva !== ''){
                                 obj2.__xva+=',';
                             }
@@ -2983,13 +2983,13 @@ class module_svg_bdd{
             var texte_rev=document.getElementById( id_svg_rectangle ).getAttribute( nom_propriete );
             var obj1=__m_rev1.rev_tm( texte_rev );
             var nouveau_rev='';
-            if(obj1.__xst === true){
+            if(obj1.__xst === __xsu){
                 var i=0;
                 for( i=0 ; i < obj1.__xva.length ; i++ ){
                     if(obj1.__xva[i][3] === 1 && obj1.__xva[i][1] === 'transform_table_sur_svg'){
                         var tab=__m_rev1.supprimer_un_element_de_la_matrice( obj1.__xva , i - 1 , 0 );
                         var obj2=__m_rev1.matrice_vers_source_rev1( tab , 0 , false , 1 );
-                        if(obj2.__xst === true){
+                        if(obj2.__xst === __xsu){
                             if(obj2.__xva !== ''){
                                 obj2.__xva+=',';
                             }
@@ -3387,7 +3387,7 @@ class module_svg_bdd{
             }
         }
         if(racine_du_svg === null){
-            return(__m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '2670 il y a eu un problème lors de la récupération de l\'arbre svg'} ));
+            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '2670 il y a eu un problème lors de la récupération de l\'arbre svg'} ));
         }
         this.#id_svg_de_la_base_en_cours=parseInt( racine_du_svg.getAttribute( 'id_svg_de_la_base_en_cours' ) , 10 );
         /*
@@ -3410,7 +3410,7 @@ class module_svg_bdd{
                 t+='\nadd_index(' + lst[i].getAttribute( 'donnees_rev_de_l_index' ) + ')';
             }
         }
-        return({"__xst" : true ,"__xva" : t});
+        return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
       =============================================================================================================
@@ -3421,7 +3421,7 @@ class module_svg_bdd{
         this.#id_bdd_de_la_base_en_cours=parseInt( id_bdd_de_la_base , 10 );
         __gi1.raz_des_messages();
         var obj=this.#creer_rev_de_la_base_a_partir_de_svg( this.#id_bdd_de_la_base_en_cours );
-        if(obj.__xst === true){
+        if(obj.__xst === __xsu){
             t=obj.__xva;
         }else{
             __gi1.remplir_et_afficher_les_messages1( '' );
@@ -3437,18 +3437,18 @@ class module_svg_bdd{
             "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
         };
         envoyer_le_rev_de_le_base_en_post( 'za_ajax.php?envoyer_le_rev_de_le_base_en_post' , ajax_param , this ).then( ( donnees ) => {
-                if(donnees.__xst === true){
-                    __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : ' Le schema de la base est sauvegardé'} );
+                if(donnees.__xst === __xsu){
+                    __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : ' Le schema de la base est sauvegardé'} );
                 }else{
                     console.log( donnees );
                     if(donnees.hasOwnProperty( '__xms' )){
                         if( typeof donnees.__xms === 'object' && !Array.isArray( donnees.__xms ) && donnees.__xms !== null){
                             for(var i in donnees.__xms){
-                                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : donnees.__xms[i]} );
+                                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : donnees.__xms[i]} );
                             }
                         }
                     }
-                    __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la base'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la base'} );
                 }
                 __gi1.remplir_et_afficher_les_messages1( '' );
             } );
@@ -3648,16 +3648,16 @@ class module_svg_bdd{
         };
         indice_courant++;
         var indice_du_champ=indice_courant - 1;
-        var objrev={"__xst" : false};
+        var objrev={"__xst" : __xer};
         var tabrev=[];
         var couleur_nom_de_champ='navy';
         var non_nulle=false;
         if(donnees_rev_du_champ !== ''){
             objrev=__m_rev1.rev_tm( donnees_rev_du_champ );
-            if(objrev.__xst === true){
+            if(objrev.__xst === __xsu){
                 tabrev=objrev.__xva;
             }else{
-                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '2653'} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '2653'} );
             }
             var o=1;
             for( o=1 ; o < tabrev.length ; o++ ){
@@ -3925,7 +3925,7 @@ class module_svg_bdd{
                                 }
                             }
                             var obj1=__m_rev1.matrice_vers_source_rev1( tab , l , false , l + 1 );
-                            if(obj1.__xst === true){
+                            if(obj1.__xst === __xsu){
                                 meta_de_la_table=obj1.__xva;
                             }else{
                                 debugger;
@@ -3979,10 +3979,10 @@ class module_svg_bdd{
                                         */
                                         nom_du_champ=tab[m + 1][1];
                                         var obj1=__m_rev1.matrice_vers_source_rev1( tab , l , false , l + 1 );
-                                        if(obj1.__xst === true){
+                                        if(obj1.__xst === __xsu){
                                             var donnees_rev_du_champ=obj1.__xva;
                                         }else{
-                                            __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : '0849 problème sur les données du champ "' + nom_du_champ + '"'} );
+                                            __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : '0849 problème sur les données du champ "' + nom_du_champ + '"'} );
                                             __gi1.remplir_et_afficher_les_messages1( '' );
                                             return;
                                         }
@@ -4026,10 +4026,10 @@ class module_svg_bdd{
                                     */
                                     var donnees_rev_de_l_index='';
                                     var obj1=__m_rev1.matrice_vers_source_rev1( tab , i , false , i + 1 );
-                                    if(obj1.__xst === true){
+                                    if(obj1.__xst === __xsu){
                                         donnees_rev_de_l_index=obj1.__xva;
                                     }else{
-                                        __m_rev1.empiler_erreur( {"__xst" : true ,"__xme" : '0849 problème sur les données de l\'index "' + nom_de_l_index + '"'} );
+                                        __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : '0849 problème sur les données de l\'index "' + nom_de_l_index + '"'} );
                                         __gi1.remplir_et_afficher_les_messages1( '' );
                                     }
                                     var a=this.#ajouter_index_a_table( id_bdd_de_la_base , indice_courant , nom_de_l_index , id_svg_conteneur_table , nom_de_la_table , donnees_rev_de_l_index );
@@ -4041,7 +4041,7 @@ class module_svg_bdd{
                 }
             }
         }
-        return({"__xst" : true ,"indice_courant" : indice_courant ,"id_svg_conteneur_table" : id_svg_conteneur_table});
+        return({"__xst" : __xsu ,"indice_courant" : indice_courant ,"id_svg_conteneur_table" : id_svg_conteneur_table});
     }
     /*
       =============================================================================================================
@@ -4107,10 +4107,10 @@ class module_svg_bdd{
         }
         var ajax_param={"call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'recuperer_zone_travail_pour_les_bases'} ,"les_id_des_bases" : les_id_des_bases};
         recuperer_les_donnees_de_le_base_en_post( 'za_ajax.php?recuperer_zone_travail_pour_les_bases' , ajax_param , this ).then( ( donnees ) => {
-                if(donnees.__xst !== true){
+                if(donnees.__xst !== __xsu){
                     console.log( 'donnees=' , donnees );
-                    __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : donnees.message} );
-                    __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '0132 erreur de récupération des données de la base'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : donnees.message} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'récupération des données de la base'} );
                     __gi1.remplir_et_afficher_les_messages1( '' );
                 }else{
                     var nouvel_arbre={};
@@ -4122,15 +4122,15 @@ class module_svg_bdd{
                             "chp_nom_basedd" : donnees.__xva[i]['T0.chp_nom_basedd']
                         };
                         if(donnees.__xva[i]['T0.chp_rev_travail_basedd'] === '' || donnees.__xva[i]['T0.chp_rev_travail_basedd'] === null){
-                            __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '0803 le champ chp_rev_travail_basedd est vide [module_svg[charger_les_bases_en_asynchrone]]'} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0803 le champ chp_rev_travail_basedd est vide [module_svg[charger_les_bases_en_asynchrone]]'} );
                         }
                         if(donnees.__xva[i]['T0.chp_rev_travail_basedd'] === null || donnees.__xva[i]['T0.chp_rev_travail_basedd'] === ''){
                         }else{
                             var obj1=__m_rev1.rev_tm( donnees.__xva[i]['T0.chp_rev_travail_basedd'] );
-                            if(obj1.__xst === true){
+                            if(obj1.__xst === __xsu){
                                 this.#arbre[donnees.__xva[i]['T0.chi_id_basedd']]['matrice']=obj1.__xva;
                             }else{
-                                __m_rev1.empiler_erreur( {"__xst" : false ,"__xme" : '0126'} );
+                                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
                                 __gi1.remplir_et_afficher_les_messages1( '' );
                                 return;
                             }
@@ -4271,7 +4271,7 @@ class module_svg_bdd{
                                     }
                                 }
                                 var obj1=__m_rev1.matrice_vers_source_rev1( tab , indice_matr , false , indice_matr + 1 );
-                                if(obj1.__xst === true){
+                                if(obj1.__xst === __xsu){
                                     meta_de_la_base=obj1.__xva;
                                 }else{
                                     debugger;
@@ -4299,7 +4299,7 @@ class module_svg_bdd{
                             if(tab[indice_matr][7] === 0 && tab[indice_matr][1] === 'create_table'){
                                 id_tab_table_en_cours=indice_matr;
                                 var obj=this.#ajouter_table_et_index_a_arbre( tab , id_tab_table_en_cours , indice_svg_courant , id_bdd_de_la_base , null );
-                                if(obj.__xst === true){
+                                if(obj.__xst === __xsu){
                                     indice_svg_courant=obj.indice_courant;
                                     id_svg_conteneur_table=obj.id_svg_conteneur_table;
                                 }else{
