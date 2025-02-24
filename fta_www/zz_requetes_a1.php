@@ -5,7 +5,7 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
-    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
+    ajouterMessage(__xsu,__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -42,7 +42,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__modification' && isset($_
     
     $tt=sql_32(array( 'T0_chi_id_requete' => $id_requete, 'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
     
-    if($tt[__xst] === true){
+    if($tt[__xst] === __xsu){
 
         $requete_en_cours=$tt[__xva][0];
 

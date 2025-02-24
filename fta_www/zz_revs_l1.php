@@ -5,7 +5,7 @@ initialiser_les_services(true,true);
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
-    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
+    ajouterMessage(__xsu,__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -27,13 +27,13 @@ if(isset($_GET['supprimer_tout']) && $_GET['supprimer_tout'] === '1'){
     
     $tt=sql_14(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
     
-    if($tt[__xst] === false){
+    if($tt[__xst] === __xer){
 
-        ajouterMessage('erreur',__LINE__ . ' problème ',BNF);
+        ajouterMessage(__xer,__LINE__ . ' problème ',BNF);
 
     }else{
 
-        ajouterMessage('info',__LINE__ . ' tout a été supprimé',BNF);
+        ajouterMessage(__xsu,__LINE__ . ' tout a été supprimé',BNF);
     }
 
     recharger_la_page(BNF);
@@ -217,7 +217,7 @@ $tt=sql_13(array(
     'page_courante' => BNF
 ));
 
-if($tt[__xst] === false){
+if($tt[__xst] === __xer){
 
     $o1 .= '<div>';
     $o1 .= '<div class="yydanger">Erreur sql</div>';

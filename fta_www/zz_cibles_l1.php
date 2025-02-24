@@ -33,10 +33,10 @@ if(isset($_GET['__action']) && '__selectionner_cette_cible' === $_GET['__action'
         
         $tt=sql_34(array( 'T0_chi_id_cible' => $__id));
         
-        if($tt[__xst] === true && count($tt[__xva]) === 1){
+        if($tt[__xst] === __xsu && count($tt[__xva]) === 1){
 
             $_SESSION[APP_KEY]['cible_courante']=array( 'chi_id_cible' => $tt[__xva][0]['T0.chi_id_cible'], 'chp_nom_cible' => $tt[__xva][0]['T0.chp_nom_cible'], 'chp_dossier_cible' => $tt[__xva][0]['T0.chp_dossier_cible']);
-            ajouterMessage('info',__LINE__ . ' : une nouvelle cible a été sélectionnée ' . date('H:i:s'),BNF);
+            ajouterMessage(__xsu,__LINE__ . ' : une nouvelle cible a été sélectionnée ' . date('H:i:s'),BNF);
 
         }
 
@@ -148,7 +148,7 @@ $tt=sql_33(array(
 ));
 /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt['sql0'] , true ) . '</pre>' ; exit(0);*/
 
-if($tt[__xst] === false){
+if($tt[__xst] === __xer){
 
     $o1 .= '<div>';
     $o1 .= '<div class="yydanger">Erreur sql</div>';

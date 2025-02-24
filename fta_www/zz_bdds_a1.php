@@ -7,7 +7,7 @@ $__page_liste_de_reference='zz_bdds_l1.php';
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
-    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
+    ajouterMessage(__xsu,__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -28,7 +28,7 @@ function erreur_dans_champs_saisis_basesdd(){
           // todo ajouter le test
         */
         $caracteresInterdits='$!&\\:;"\'#%&@()[]{}<>*/+-_=^`|';
-        ajouterMessage('erreur',__LINE__ . ' : le nom de la base de donnée doit etre indiqué et ne doit pas contenir les caractères espaces ',BNF);
+        ajouterMessage(__xer,__LINE__ . ' : le nom de la base de donnée doit etre indiqué et ne doit pas contenir les caractères espaces ',BNF);
         $uneErreur=true;
 
     }
@@ -36,7 +36,7 @@ function erreur_dans_champs_saisis_basesdd(){
     
     if(substr($_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'],0,1) === ' '){
 
-        ajouterMessage('erreur',__LINE__ . ' : le nom de la base de donnée ne doit pas commencer par un espace ',BNF);
+        ajouterMessage(__xer,__LINE__ . ' : le nom de la base de donnée ne doit pas commencer par un espace ',BNF);
         $uneErreur=true;
 
     }
@@ -49,7 +49,7 @@ function erreur_dans_champs_saisis_basesdd(){
            || $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_basedd'] === false
         ){
 
-            ajouterMessage('erreur',__LINE__ . ' : le dossier doit être indiqué pour une base sqlite',BNF);
+            ajouterMessage(__xer,__LINE__ . ' : le dossier doit être indiqué pour une base sqlite',BNF);
             $uneErreur=true;
 
         }
@@ -63,7 +63,7 @@ function erreur_dans_champs_saisis_basesdd(){
            || $_SESSION[APP_KEY][NAV][BNF]['chp_fournisseur_basedd'] === '')
     ){
 
-        ajouterMessage('erreur',__LINE__ . ' : le fournisseur de la bdd doit être "sqlite" ou "mysql" ou bien ne doit pas être renseigné ',BNF);
+        ajouterMessage(__xer,__LINE__ . ' : le fournisseur de la bdd doit être "sqlite" ou "mysql" ou bien ne doit pas être renseigné ',BNF);
         $uneErreur=true;
 
     }
@@ -153,9 +153,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_26(array( 'T0_chi_id_basedd' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'], 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         
-        if($tt[__xst] === false || count($tt[__xva]) !== 1){
+        if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-            ajouterMessage('erreur',__LINE__ . ' on ne peut pas écrire la structure sur disque');
+            ajouterMessage(__xer,__LINE__ . ' on ne peut pas écrire la structure sur disque');
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
         }
@@ -171,7 +171,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                 
                 if(!sauvegarder_et_supprimer_fichier($nomCompletSource)){
 
-                    ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer le fichier du disque ',BNF);
+                    ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer le fichier du disque ',BNF);
                     recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
                 }
@@ -191,19 +191,19 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
                 }else{
 
-                    ajouterMessage('erreur',__LINE__ . ' : il y a eu un problème lors de l\'écriture ');
+                    ajouterMessage(__xer,__LINE__ . ' : il y a eu un problème lors de l\'écriture ');
                 }
 
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' : il y a eu un problème lors de l\'ouverture du fichier ');
+                ajouterMessage(__xer,__LINE__ . ' : il y a eu un problème lors de l\'ouverture du fichier ');
             }
 
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' : problème sur le dossier cible ');
+            ajouterMessage(__xer,__LINE__ . ' : problème sur le dossier cible ');
         }
 
         recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
@@ -221,11 +221,11 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             if(copy($nom_de_la_base_source,$nom_de_la_base_cible)){
 
-                ajouterMessage('info',__LINE__ . ' la base a bien été importée ');
+                ajouterMessage(__xsu,__LINE__ . ' la base a bien été importée ');
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' la base n\'a pas été importée ');
+                ajouterMessage(__xer,__LINE__ . ' la base n\'a pas été importée ');
             }
 
 
@@ -248,7 +248,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             if(!mkdir($chemin_base_temporaire,0777,true)){
 
-                ajouterMessage('erreur',__LINE__ . ' : impossible de créer le répertoire temporaire ');
+                ajouterMessage(__xer,__LINE__ . ' : impossible de créer le répertoire temporaire ');
                 $continuer=false;
 
             }
@@ -275,7 +275,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                         require_once('../fta_inc/phplib/sqlite.php');
                         $ret=obtenir_la_structure_de_la_base_sqlite($base_temporaire,true);
                         
-                        if($ret[__xst] === true){
+                        if($ret[__xst] === __xsu){
 
                             $tableauDesTables=$ret['value'];
                             $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']=$tableauDesTables;
@@ -283,7 +283,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
                         }else{
 
-                            ajouterMessage('erreur',' erreur sur la structure de la base ',BNF);
+                            ajouterMessage(__xer,' erreur sur la structure de la base ',BNF);
                         }
 
 
@@ -294,13 +294,13 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
                 }else{
 
-                    ajouterMessage('erreur',__LINE__ . ' : impossible de créer fichier temporaire ');
+                    ajouterMessage(__xer,__LINE__ . ' : impossible de créer fichier temporaire ');
                 }
 
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' : il n\'y a rien à convertir ');
+                ajouterMessage(__xer,__LINE__ . ' : il n\'y a rien à convertir ');
             }
 
 
@@ -332,9 +332,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_26(array( 'T0_chi_id_basedd' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'], 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         
-        if($tt[__xst] === false || count($tt[__xva]) !== 1){
+        if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-            ajouterMessage('erreur',__LINE__ . ' on ne peut pas écrire la structure sur disque');
+            ajouterMessage(__xer,__LINE__ . ' on ne peut pas écrire la structure sur disque');
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
         }
@@ -349,30 +349,30 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
             $ret=obtenir_la_structure_de_la_base_sqlite($chemin_fichier,true);
             
-            if($ret[__xst] === true){
+            if($ret[__xst] === __xsu){
 
                 $nom_du_fichier_dump='../../' . $__valeurs['T2.chp_dossier_cible'] . $__valeurs['T1.chp_nom_dossier'] . '/' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . '_donnees.' . $_SESSION[APP_KEY][NAV][BNF]['chp_nom_basedd'] . '.sql';
                 $retour_ecriture=ecrire_le_dump_de_la_base_sqlite_sur_disque($chemin_fichier,$nom_du_fichier_dump,$ret['value']);
                 
-                if($retour_ecriture[__xst] === true){
+                if($retour_ecriture[__xst] === __xsu){
 
-                    ajouterMessage('info',__LINE__ . ' le fichier dump a bien été produit ',BNF);
+                    ajouterMessage(__xsu,__LINE__ . ' le fichier dump a bien été produit ',BNF);
 
                 }else{
 
-                    ajouterMessage('erreur',__LINE__ . ' problème pour produire le dump ',BNF);
+                    ajouterMessage(__xer,__LINE__ . ' problème pour produire le dump ',BNF);
                 }
 
 
             }else{
 
-                ajouterMessage('erreur',' erreur sur la structure de la base "' . $__valeurs['T0.chp_nom_basedd'] . '"',BNF);
+                ajouterMessage(__xer,' erreur sur la structure de la base "' . $__valeurs['T0.chp_nom_basedd'] . '"',BNF);
             }
 
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' fichier de la base de donnée sqlite introuvable ',BNF);
+            ajouterMessage(__xer,__LINE__ . ' fichier de la base de donnée sqlite introuvable ',BNF);
         }
 
         $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']=$tableauDesTables;
@@ -384,14 +384,14 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         require_once(INCLUDE_PATH . '/phplib/sqlite.php');
         $obj=comparer_une_base_physique_et_une_base_virtuelle($_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'],$_SESSION[APP_KEY][NAV][BNF]['chp_genere_basedd']);
         
-        if($obj[__xst] === true){
+        if($obj[__xst] === __xsu){
 
             $_SESSION[APP_KEY][NAV][BNF]['comparer_deux_tableaux']=$obj[__xva];
             /* array( 'tableau1' => $ret['value'] , 'tableau2' => $ret2['value'] );*/
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' erreur sur la comparaison des structures',BNF);
+            ajouterMessage(__xer,__LINE__ . ' erreur sur la comparaison des structures',BNF);
         }
 
         recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
@@ -420,9 +420,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_26(array( 'T0_chi_id_basedd' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'], 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         
-        if($tt[__xst] === false || count($tt[__xva]) !== 1){
+        if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-            ajouterMessage('erreur',__LINE__ . ' on ne peut pas écrire la structure sur disque');
+            ajouterMessage(__xer,__LINE__ . ' on ne peut pas écrire la structure sur disque');
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
         }
@@ -437,7 +437,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
             $ret=obtenir_la_structure_de_la_base_sqlite_v2($chemin_fichier,true);
             
-            if($ret[__xst] === true){
+            if($ret[__xst] === __xsu){
 
                 /*
                   on testera plus bas que la variable de session __contexte_tableauDesTables existe pour produire le rev
@@ -447,13 +447,13 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
             }else{
 
-                ajouterMessage('erreur',' erreur sur la structure de la base "' . $__valeurs['T0.chp_nom_basedd'] . '"',BNF);
+                ajouterMessage(__xer,' erreur sur la structure de la base "' . $__valeurs['T0.chp_nom_basedd'] . '"',BNF);
             }
 
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' fichier de la base de donnée sqlite introuvable ',BNF);
+            ajouterMessage(__xer,__LINE__ . ' fichier de la base de donnée sqlite introuvable ',BNF);
         }
 
         recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
@@ -475,7 +475,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
+                ajouterMessage(__xer,__LINE__ . ' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
                 recharger_la_page($__page_liste_de_reference);
             }
 
@@ -506,18 +506,18 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             'c_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
         ));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
             error_reporting(E_ALL);
             
             if($tt['code_erreur'] === 19){
 
-                ajouterMessage('erreur',__LINE__ . ' ce nom existe déjà en bdd ',BNF);
+                ajouterMessage(__xer,__LINE__ . ' ce nom existe déjà en bdd ',BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
+                ajouterMessage(__xer,__LINE__ . ' ' . $tt[__xme],BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
             }
 
@@ -528,12 +528,12 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             if($tt['changements'] === 1){
 
-                ajouterMessage('info',' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2),BNF);
+                ajouterMessage(__xsu,' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2),BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+                ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
             }
 
@@ -570,9 +570,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_26(array( 'T0_chi_id_basedd' => $__id, 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         
-        if($tt[__xst] === false || count($tt[__xva]) !== 1){
+        if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-            ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer cet enregistrement ',BNF);
+            ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer cet enregistrement ',BNF);
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
         }
@@ -592,14 +592,14 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_18(array( 'chi_id_basedd' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd'], 'chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
         }else{
 
-            ajouterMessage('info','l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11));
+            ajouterMessage(__xsu,'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11));
             recharger_la_page($__page_liste_de_reference);
         }
 
@@ -649,14 +649,14 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                     'chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
                 )));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
             recharger_la_page(BNF . '?__action=__creation');
 
         }else{
 
-            ajouterMessage('info',__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé',BNF);
+            ajouterMessage(__xsu,__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé',BNF);
             recharger_la_page(BNF . '?__action=__modification&__id=' . $tt['nouvel_id']);
         }
 
@@ -679,7 +679,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
     }
 
-    ajouterMessage('info',__LINE__ . ' cas à étudier ' . substr($GLOBALS['__date'],11));
+    ajouterMessage(__xsu,__LINE__ . ' cas à étudier ' . substr($GLOBALS['__date'],11));
     recharger_la_page($__page_liste_de_reference);
 
 }
@@ -699,7 +699,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__suppression' || $_GET['_
     
     if($__id === 0){
 
-        ajouterMessage('erreur',__LINE__ . ' la base 0 ne peut pas être traitée');
+        ajouterMessage(__xer,__LINE__ . ' la base 0 ne peut pas être traitée');
         recharger_la_page($__page_liste_de_reference);
 
     }else{
@@ -726,9 +726,9 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__suppression' || $_GET['_
         
         $tt=sql_26(array( 'T0_chi_id_basedd' => $__id, 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         
-        if($tt[__xst] === false || count($tt[__xva]) !== 1){
+        if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-            ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer cette base');
+            ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer cette base');
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
         }
@@ -760,7 +760,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     
     if($__valeurs['T0.chi_id_basedd'] === 1 && APP_KEY === 'fta'){
 
-        ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer cette base');
+        ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer cette base');
         recharger_la_page($__page_liste_de_reference);
 
     }
@@ -840,7 +840,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
         $tt=sql_50(array( 'T0_chi_id_basedd' => $chx_dossier_id_basedd, 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         $nom_dossier='';
         
-        if($tt[__xst] === true && count($tt[__xva]) === 1){
+        if($tt[__xst] === __xsu && count($tt[__xva]) === 1){
 
             $nom_dossier=$tt[__xva][0]['T0.chp_nom_dossier'];
 

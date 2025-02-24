@@ -16,13 +16,13 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
 
         }else{
 
-            return array( __xst => false, __xme => 'erreur ecriture fichier sql_' . $id_requete . '.php');
+            return array( __xst => __xer, __xme => 'erreur ecriture fichier sql_' . $id_requete . '.php');
         }
 
 
     }else{
 
-        return array( __xst => false, __xme => 'erreur ouverture fichier sql_' . $id_requete . '.php');
+        return array( __xst => __xer, __xme => 'erreur ouverture fichier sql_' . $id_requete . '.php');
     }
 
     sql_inclure_reference(6);
@@ -41,7 +41,7 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
     $retour_sql=sql_6(array( 'T0_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
     /*      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql , true ) . '</pre>' ; exit(0);*/
     
-    if($retour_sql[__xst] === true){
+    if($retour_sql[__xst] === __xsu){
 
         $chaine_js='';
         foreach($retour_sql[__xva] as $k1 => $v1){
@@ -60,22 +60,22 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
             }else{
 
                 @fclose($fd);
-                return array( __xst => false, __xme => 'erreur ecriture fichier ' . $nom_bref);
+                return array( __xst => __xer, __xme => 'erreur ecriture fichier ' . $nom_bref);
             }
 
 
         }else{
 
-            return array( __xst => false, __xme => 'erreur ouverture fichier ' . $nom_bref);
+            return array( __xst => __xer, __xme => 'erreur ouverture fichier ' . $nom_bref);
         }
 
 
     }else{
 
-        return array( __xst => false, __xme => $retour_sql[__xme]);
+        return array( __xst => __xer, __xme => $retour_sql[__xme]);
     }
 
-    return array( __xst => true);
+    return array( __xst => __xsu);
 
 }
 /*
@@ -95,6 +95,7 @@ function modifier_la_requete_en_base(&$data){
     */
     /*sql_inclure_fin*/
     
+    
     $a_modifier=array(
         'c_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
         'c_chi_id_requete' => $data[__entree]['id_requete'],
@@ -107,7 +108,7 @@ function modifier_la_requete_en_base(&$data){
     );
     $tt=sql_9($a_modifier);
     
-    if($tt[__xst] === true){
+    if($tt[__xst] === __xsu){
 
         $data[__xst]=__xsu;
         ecrire_le_php_de_la_requete_sur_disque($data[__entree]['id_requete'],$data[__entree]['php']);
@@ -168,7 +169,7 @@ function enregistrer_la_requete_en_base(&$data){
             ));
     $tt=sql_7($a_inserer);
     
-    if($tt[__xst] === true){
+    if($tt[__xst] === __xsu){
 
         $data[__xst]=__xsu;
         $data['nouvel_id']=$tt['nouvel_id'];
@@ -194,7 +195,7 @@ function enregistrer_la_requete_en_base(&$data){
             'n_cht_php_requete' => $nouveau_php
         ));
         
-        if($tt35[__xst] === true){
+        if($tt35[__xst] === __xsu){
 
             ecrire_le_php_de_la_requete_sur_disque($data['nouvel_id'],$nouveau_php);
 
@@ -247,7 +248,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
     
-    if($tt[__xst] === false || count($tt[__xva]) !== 1){
+    if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
         return;
@@ -327,7 +328,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
     
-    if($tt[__xst] === false || count($tt[__xva]) !== 1){
+    if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
         return;
@@ -452,7 +453,7 @@ function recuperer_les_bases_de_la_cible_en_cours(&$data){
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
     
-    if($tt[__xst] === false){
+    if($tt[__xst] === __xer){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' recuperer_les_bases bdd non trouvée';
         return;
@@ -475,7 +476,7 @@ function recuperer_les_tableaux_des_bases(&$data){
     require_once(INCLUDE_PATH . '/phplib/sqlite.php');
     $obj=comparer_une_base_physique_et_une_base_virtuelle($data[__entree]['id_bdd_de_la_base'],$data[__entree]['source_base_sql']);
     
-    if($obj[__xst] === true){
+    if($obj[__xst] === __xsu){
 
         $data[__xva]=$obj[__xva];
         $id_bdd_de_la_base=$data[__entree]['id_bdd_de_la_base'];
@@ -553,7 +554,7 @@ function operation_sur_base(&$data,$nom_operation){
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
     
-    if($tt[__xst] === false || count($tt[__xva]) !== 1){
+    if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
         return;
@@ -640,7 +641,7 @@ function creer_table_dans_base(&$data){
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
     
-    if($tt[__xst] === false || count($tt[__xva]) !== 1){
+    if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base bdd non trouvée';
         return;
@@ -724,7 +725,7 @@ function ordonner_les_champs_de_table(&$data){
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
     
-    if($tt[__xst] === false || count($tt[__xva]) !== 1){
+    if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
         $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table bdd non trouvée';
         return;
@@ -850,7 +851,7 @@ function envoyer_le_rev_de_le_base_en_post(&$data){
     );
     $tt=sql_10($a_modifier);
     
-    if($tt[__xst] === true){
+    if($tt[__xst] === __xsu){
 
         $data[__xst]=__xsu;
 
@@ -886,7 +887,7 @@ function recuperer_zone_travail_pour_les_bases(&$data){
     );
     $tt=sql_11($a_selectionner);
     
-    if($tt[__xst] === true){
+    if($tt[__xst] === __xsu){
 
         /*
           if($fd=fopen('toto.txt','a')){fwrite($fd,PHP_EOL.PHP_EOL.'===================='.PHP_EOL.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$tt[valeur]='.var_export( $tt[__xva] , true ).PHP_EOL.PHP_EOL); fclose($fd);}
@@ -941,7 +942,7 @@ function sauvegarder_format_rev_en_dbb(&$data){
     );
     $tt=sql_5($a_supprimer);
     
-    if($tt[__xst] !== true){
+    if($tt[__xst] !== __xsu){
 
         $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' Erreur sur suppression dans la table rev ';
         $data[__xst]=false;
@@ -1023,7 +1024,7 @@ function sauvegarder_format_rev_en_dbb(&$data){
     
     $tt=sql_12($a_sauvegarder);
     
-    if($tt[__xst] !== true){
+    if($tt[__xst] !== __xsu){
 
         $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' Erreur sur insertion';
 

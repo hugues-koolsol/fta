@@ -5,7 +5,7 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
-    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
+    ajouterMessage(__xsu,__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -158,7 +158,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
     $retour_sql=sql_6(array( 'T0_chx_cible_requete' => $chi_id_cible));
     /*      echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $retour_sql , true ) . '</pre>' ; exit(0);*/
     
-    if($retour_sql[__xst] === true){
+    if($retour_sql[__xst] === __xsu){
 
         $chaine_js='';
         $chaine_php='';
@@ -173,7 +173,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
         
         if(!mkdir($repertoire_destination,511)){
 
-            return array( __xst => false, __xme => __LINE__ . ' erreur création du répertoire inc/sql');
+            return array( __xst => __xer, __xme => __LINE__ . ' erreur création du répertoire inc/sql');
 
         }
 
@@ -191,13 +191,13 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
 
                 }else{
 
-                    return array( __xst => false, __xme => __LINE__ . ' erreur ecriture fichier sql_' . $v1['T0.chi_id_requete'] . '.php');
+                    return array( __xst => __xer, __xme => __LINE__ . ' erreur ecriture fichier sql_' . $v1['T0.chi_id_requete'] . '.php');
                 }
 
 
             }else{
 
-                return array( __xst => false, __xme => __LINE__ . ' erreur ouverture fichier sql_' . $v1['T0.chi_id_requete'] . '.php');
+                return array( __xst => __xer, __xme => __LINE__ . ' erreur ouverture fichier sql_' . $v1['T0.chi_id_requete'] . '.php');
             }
 
         }
@@ -213,13 +213,13 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
 
             }else{
 
-                return array( __xst => false, __xme => __LINE__ . ' erreur ecriture fichier ' . $nom_bref);
+                return array( __xst => __xer, __xme => __LINE__ . ' erreur ecriture fichier ' . $nom_bref);
             }
 
 
         }else{
 
-            return array( __xst => false, __xme => __LINE__ . ' erreur ouverture fichier ' . $nom_bref);
+            return array( __xst => __xer, __xme => __LINE__ . ' erreur ouverture fichier ' . $nom_bref);
         }
 
         $nom_bref='aa_php_sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.php';
@@ -234,13 +234,13 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
 
             }else{
 
-                return array( __xst => false, __xme => __LINE__ . ' erreur ecriture fichier ' . $nom_bref);
+                return array( __xst => __xer, __xme => __LINE__ . ' erreur ecriture fichier ' . $nom_bref);
             }
 
 
         }else{
 
-            return array( __xst => false, __xme => __LINE__ . ' erreur ouverture fichier ' . $nom_bref);
+            return array( __xst => __xer, __xme => __LINE__ . ' erreur ouverture fichier ' . $nom_bref);
         }
 
         $zip=new ZipArchive();
@@ -248,7 +248,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
         if($zip->open($repertoire_destination . DIRECTORY_SEPARATOR . 'sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.zip',ZIPARCHIVE::CREATE) !== true
         ){
 
-            return array( __xst => false, __xme => __LINE__ . ' erreur ouverture fichier zip');
+            return array( __xst => __xer, __xme => __LINE__ . ' erreur ouverture fichier zip');
 
         }
 
@@ -259,7 +259,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
             if(!$zip->addFile($chemin_fichier,$nom_fichier)){
 
                 $zip->close();
-                return array( __xst => false, __xme => __LINE__ . ' ajout du fichier "' . $nom_fichier . '" au zip impossible ');
+                return array( __xst => __xer, __xme => __LINE__ . ' ajout du fichier "' . $nom_fichier . '" au zip impossible ');
 
             }
 
@@ -269,11 +269,11 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
 
     }else{
 
-        return array( __xst => false, __xme => __LINE__ . ' erreur sql ' . $retour_sql[__xme]);
+        return array( __xst => __xer, __xme => __LINE__ . ' erreur sql ' . $retour_sql[__xme]);
     }
 
     
-    if($retour_sql[__xst] === true){
+    if($retour_sql[__xst] === __xsu){
 
         foreach($retour_sql[__xva] as $k1 => $v1){
             
@@ -287,7 +287,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
 
     }
 
-    return array( __xst => true);
+    return array( __xst => __xsu);
 
 }
 /*
@@ -302,7 +302,7 @@ if(isset($_POST) && count($_POST) > 0){
         $time_start=microtime(true);
         $gen=gererer_le_fichier_des_requetes($_SESSION[APP_KEY]['cible_courante']['chi_id_cible']);
         
-        if($gen[__xst] === true){
+        if($gen[__xst] === __xsu){
 
             $time_end=microtime(true);
             $time=((int)((($time_end - $time_start) * 1000) * 1000)) / 1000;
@@ -311,7 +311,7 @@ if(isset($_POST) && count($_POST) > 0){
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' ' . $gen[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' ' . $gen[__xme],BNF);
             recharger_la_page(BNF);
         }
 
@@ -335,9 +335,9 @@ if(isset($_POST) && count($_POST) > 0){
         
         $tt=sql_4(array( 'chi_id_requete' => $_POST['supprimer_une_requete'], 'chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         
-        if($tt[__xst] !== true){
+        if($tt[__xst] !== __xsu){
 
-            ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' ' . $tt[__xme],BNF);
             recharger_la_page(BNF);
 
         }
@@ -359,14 +359,14 @@ if(isset($_POST) && count($_POST) > 0){
         
         $tt=sql_5(array( 'chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'chp_provenance_rev' => 'sql', 'chx_source_rev' => $_POST['supprimer_une_requete']));
         
-        if($tt[__xst] !== true){
+        if($tt[__xst] !== __xsu){
 
-            ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' ' . $tt[__xme],BNF);
             recharger_la_page(BNF);
 
         }else{
 
-            ajouterMessage('info',__LINE__ . ' requête supprimée ' . $_POST['supprimer_une_requete'],BNF);
+            ajouterMessage(__xsu,__LINE__ . ' requête supprimée ' . $_POST['supprimer_une_requete'],BNF);
             recharger_la_page(BNF);
         }
 
@@ -396,13 +396,13 @@ if(isset($_POST) && count($_POST) > 0){
         
         $tt=sql_3(array( 'c_chi_id_requete' => $_POST['renuméroter_une_requete'], 'c_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'n_chi_id_requete' => $_POST['__nouveau_numéro']));
         
-        if($tt[__xst] === true){
+        if($tt[__xst] === __xsu){
 
-            ajouterMessage('info',__LINE__ . ' requête renumérotée dans requetes de ' . $_POST['renuméroter_une_requete'] . ' à ' . $_POST['__nouveau_numéro'] . '',BNF);
+            ajouterMessage(__xsu,__LINE__ . ' requête renumérotée dans requetes de ' . $_POST['renuméroter_une_requete'] . ' à ' . $_POST['__nouveau_numéro'] . '',BNF);
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' ' . $tt[__xme],BNF);
             recharger_la_page(BNF);
         }
 
@@ -421,14 +421,14 @@ if(isset($_POST) && count($_POST) > 0){
         
         $tt=sql_8(array( 'n_chx_source_rev' => $_POST['__nouveau_numéro'], 'c_chx_cible_rev' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'c_chp_provenance_rev' => 'sql', 'c_chx_source_rev' => $_POST['renuméroter_une_requete']));
         
-        if($tt[__xst] !== true){
+        if($tt[__xst] !== __xsu){
 
-            ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' ' . $tt[__xme],BNF);
             recharger_la_page(BNF);
 
         }else{
 
-            ajouterMessage('info',__LINE__ . ' requête renumérotée dans rev  de ' . $_POST['renuméroter_une_requete'] . ' à ' . $_POST['__nouveau_numéro'] . '',BNF);
+            ajouterMessage(__xsu,__LINE__ . ' requête renumérotée dans rev  de ' . $_POST['renuméroter_une_requete'] . ' à ' . $_POST['__nouveau_numéro'] . '',BNF);
             recharger_la_page(BNF);
         }
 
@@ -447,7 +447,7 @@ function obtenir_entete_de_la_page(){
     $o1='';
     $o1=html_header1(array( 'title' => 'Requetes', 'description' => 'Requetes'));
     $o1 .= '<h1>Liste des Requetes </h1>';
-    return array( __xst => true, 'value' => $o1);
+    return array( __xst => __xsu, 'value' => $o1);
 
 }
 /*
@@ -563,7 +563,7 @@ $tt=sql_2(array(
     'page_courante' => BNF
 ));
 
-if($tt[__xst] === false){
+if($tt[__xst] === __xer){
 
     $o1 .= '<div>';
     $o1 .= '<div class="yydanger">Erreur sql</div>';

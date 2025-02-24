@@ -534,11 +534,11 @@ function signaler($tab){
     
     if(isset($tab['provenance']) && $tab['provenance'] !== ''){
 
-        ajouterMessage('erreur',$tab[__xme],$tab['provenance']);
+        ajouterMessage(__xer,$tab[__xme],$tab['provenance']);
 
     }else{
 
-        ajouterMessage('erreur',$tab[__xme]);
+        ajouterMessage(__xer,$tab[__xme]);
     }
 
     return $tab;
@@ -549,7 +549,7 @@ function signaler($tab){
 */
 function ajouterMessage($type_de_message,$message,$page=''){
 
-    $tableauTypeMessage=array( 'erreur', __xsu, 'alarme', 'info');
+    $tableauTypeMessage=array( __xer, __xsu, __xal, __xif);
     
     if($page === ''){
 
@@ -569,7 +569,7 @@ function ajouterMessage($type_de_message,$message,$page=''){
 
         }else{
 
-            $_SESSION[APP_KEY][NAV]['erreur'][]='MESSAGE AVEC UN MAUVAIS TYPE "' . $type_de_message . '" ' . $message;
+            $_SESSION[APP_KEY][NAV][__xer][]='MESSAGE AVEC UN MAUVAIS TYPE "' . $type_de_message . '" ' . $message;
         }
 
 
@@ -591,7 +591,7 @@ function ajouterMessage($type_de_message,$message,$page=''){
 
         }else{
 
-            $_SESSION[APP_KEY][NAV][$page]['erreur'][]='MESSAGE AVEC UN MAUVAIS TYPE "' . $type_de_message . '" ' . $message;
+            $_SESSION[APP_KEY][NAV][$page][__xer][]='MESSAGE AVEC UN MAUVAIS TYPE "' . $type_de_message . '" ' . $message;
         }
 
     }
@@ -605,7 +605,7 @@ function ajouterMessage($type_de_message,$message,$page=''){
 function recupere_les_messages_de_session($bnf){
 
     $les_messages_a_afficher='';
-    $tableauTypeMessage=array( 'erreur' => 'erreur', __xsu => 'succes', 'alarme' => 'alarme', 'info' => 'info');
+    $tableauTypeMessage=array( __xer => 'erreur', __xsu => 'succes', __xal => 'alarme', __xif => 'info');
     $visible='hidden';
     foreach($tableauTypeMessage as $k1 => $v1){
         
@@ -786,7 +786,7 @@ function verifie_id_envoye($nom_du_champ,$page_de_redirection,$bnf,&$post){
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' désolé, sha1 différents sur ' . $nom_du_champ . ', cette erreur sera analysée');
+            ajouterMessage(__xer,__LINE__ . ' désolé, sha1 différents sur ' . $nom_du_champ . ', cette erreur sera analysée');
             recharger_la_page($page_de_redirection);
         }
 

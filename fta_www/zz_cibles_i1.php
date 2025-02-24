@@ -338,7 +338,7 @@ WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
 
 $tt=sql_26(array( 'T0_chi_id_basedd' => 1, 'T0_chx_cible_id_basedd' => 1));
 
-if($tt[__xst] === false || count($tt[__xva]) !== 1){
+if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
     echo __FILE__ . ' ' . __LINE__ . ' erreur de récupération du rev de la base = <pre>' . $tt[__xme] . '</pre>' ;
     exit(0);

@@ -12,7 +12,7 @@ function erreur_dans_champs_saisis_taches(){
     
     if($_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'] === ''){
 
-        ajouterMessage('erreur',__LINE__ . ' : le texte de la tâche ne doit pas être vide ',BNF);
+        ajouterMessage(__xer,__LINE__ . ' : le texte de la tâche ne doit pas être vide ',BNF);
         $uneErreur=true;
 
     }
@@ -52,7 +52,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']);
+                ajouterMessage(__xer,__LINE__ . ' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']);
                 recharger_la_page('zz_taches_l1.php');
             }
 
@@ -74,9 +74,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_29(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'c_chi_id_tache' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache'], 'n_chp_texte_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'], 'n_chp_priorite_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' ' . $tt[__xme],BNF);
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']);
 
         }else if($tt['changements'] === 1){
@@ -84,19 +84,19 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             if(isset($_POST['__enregistrer_les_modifications_et_retour'])){
 
-                ajouterMessage('info',' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2));
+                ajouterMessage(__xsu,' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2));
                 recharger_la_page('zz_taches_l1.php');
 
             }else{
 
-                ajouterMessage('info',' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2),BNF);
+                ajouterMessage(__xsu,' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2),BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']);
             }
 
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_tache']);
         }
 
@@ -128,21 +128,21 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             $tt=sql_31(array( 'chi_id_tache' => $__id, 'chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
             
-            if($tt[__xst] === false){
+            if($tt[__xst] === __xer){
 
-                ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+                ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
                 recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
             }else{
 
-                ajouterMessage('info','l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11));
+                ajouterMessage(__xsu,'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11));
                 recharger_la_page('zz_taches_l1.php');
             }
 
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer cet enregistrement ',BNF);
+            ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer cet enregistrement ',BNF);
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
         }
 
@@ -181,9 +181,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_30(array( array( 'chp_texte_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'], 'chp_priorite_tache' => $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache'], 'chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'])));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
             recharger_la_page(BNF . '?__action=__creation');
 
         }else{
@@ -191,12 +191,12 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             if(isset($_POST['option']) && $_POST['option'] === 'enregistrer_et_revenir_a_la_liste'){
 
-                ajouterMessage('info',__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé');
+                ajouterMessage(__xsu,__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé');
                 recharger_la_page('zz_taches_l1.php');
 
             }else{
 
-                ajouterMessage('info',__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé',BNF);
+                ajouterMessage(__xsu,__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé',BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $tt['nouvel_id']);
             }
 
@@ -214,7 +214,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
     }
 
-    ajouterMessage('info',__LINE__ . ' cas à étudier ' . substr($GLOBALS['__date'],11));
+    ajouterMessage(__xsu,__LINE__ . ' cas à étudier ' . substr($GLOBALS['__date'],11));
     recharger_la_page('zz_taches_l1.php');
 
 }
@@ -234,7 +234,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['
     
     if($__id === 0){
 
-        ajouterMessage('erreur',__LINE__ . ' il y a eu un problème ');
+        ajouterMessage(__xer,__LINE__ . ' il y a eu un problème ');
         recharger_la_page('zz_taches_l1.php');
 
     }else{
@@ -254,9 +254,9 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['
         
         $tt=sql_28(array( 'T0_chi_id_tache' => $__id, 'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
         
-        if($tt[__xst] === false || count($tt[__xva]) !== 1){
+        if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-            ajouterMessage('erreur',__LINE__ . ' on ne peut pas écrire la structure sur disque');
+            ajouterMessage(__xer,__LINE__ . ' on ne peut pas écrire la structure sur disque');
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_basedd']);
 
         }

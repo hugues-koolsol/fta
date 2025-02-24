@@ -5,7 +5,7 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
-    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible avant d\'accéder aux sources');
+    ajouterMessage(__xsu,__LINE__ . ' : veuillez sélectionner une cible avant d\'accéder aux sources');
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -18,7 +18,7 @@ function obtenir_entete_de_la_page(){
     $o1='';
     $o1=html_header1(array( 'title' => 'Sources', 'description' => 'Sources'));
     $o1 .= '<h1>Liste des sources de ' . $_SESSION[APP_KEY]['cible_courante']['chp_dossier_cible'] . '</h1>';
-    return array( __xst => true, 'value' => $o1);
+    return array( __xst => __xsu, 'value' => $o1);
 
 }
 /*
@@ -136,7 +136,7 @@ $tt=sql_61(array(
     'page_courante' => BNF
 ));
 
-if($tt[__xst] === false){
+if($tt[__xst] === __xer){
 
     $o1 .= '<div>';
     $o1 .= '<div class="yydanger">Erreur sql</div>';

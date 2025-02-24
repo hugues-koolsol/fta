@@ -19,7 +19,7 @@ function recupere_une_donnees_des_cibles($id){
     
     $tt=sql_34(array( 'T0_chi_id_cible' => $id));
     
-    if($tt[__xst] === false || count($tt[__xva]) !== 1){
+    if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
         return false;
 
@@ -62,7 +62,7 @@ function erreur_dans_champs_saisis_cibles(){
               // todo ajouter le test
             */
             $caracteresInterdits='$!&\\:;"\'#%&@()[]{}<>*/+-_=^`|';
-            ajouterMessage('erreur',__LINE__ . ' : le nom cible doit etre indiqué et ne doit pas contenir les caractères espaces ',BNF);
+            ajouterMessage(__xer,__LINE__ . ' : le nom cible doit etre indiqué et ne doit pas contenir les caractères espaces ',BNF);
             $uneErreur=true;
 
         }
@@ -70,7 +70,7 @@ function erreur_dans_champs_saisis_cibles(){
         
         if(substr($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'],0,1) === ' '){
 
-            ajouterMessage('erreur',__LINE__ . ' : le nom cible ne doit pas commencer par un espace ',BNF);
+            ajouterMessage(__xer,__LINE__ . ' : le nom cible ne doit pas commencer par un espace ',BNF);
             $uneErreur=true;
 
         }
@@ -83,7 +83,7 @@ function erreur_dans_champs_saisis_cibles(){
               // todo ajouter le test
             */
             $caracteresInterdits='$!&\\:;"\'#%&@()[]{}<>*/+-_=^`|';
-            ajouterMessage('erreur',__LINE__ . ' : le nom cible doit etre indiqué et ne doit pas contenir les caractères espaces ',BNF);
+            ajouterMessage(__xer,__LINE__ . ' : le nom cible doit etre indiqué et ne doit pas contenir les caractères espaces ',BNF);
             $uneErreur=true;
 
         }
@@ -91,7 +91,7 @@ function erreur_dans_champs_saisis_cibles(){
         
         if(substr($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'],0,1) === ' '){
 
-            ajouterMessage('erreur',__LINE__ . ' : le nom cible ne doit pas commencer par un espace ',BNF);
+            ajouterMessage(__xer,__LINE__ . ' : le nom cible ne doit pas commencer par un espace ',BNF);
             $uneErreur=true;
 
         }
@@ -134,7 +134,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
+                ajouterMessage(__xer,__LINE__ . ' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
                 recharger_la_page('zz_cibles_l1.php');
             }
 
@@ -180,9 +180,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         }
 
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' ' . $tt[__xme],BNF);
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
 
         }else{
@@ -190,12 +190,12 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             if($tt['changements'] === 1){
 
-                ajouterMessage('info',' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2),BNF);
+                ajouterMessage(__xsu,' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2),BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' erreur de mise à jour',BNF);
+                ajouterMessage(__xer,__LINE__ . ' erreur de mise à jour',BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_cible']);
             }
 
@@ -214,7 +214,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         if($__valeurs === false){
 
-            ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer cet enregistrement ',BNF);
+            ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer cet enregistrement ',BNF);
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
         }
@@ -222,7 +222,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         if($__valeurs['T0.chp_nom_cible'] === 'fta' && $__valeurs['T0.chp_dossier_cible'] === 'fta'){
 
-            ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer "fta"');
+            ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer "fta"');
             recharger_la_page('zz_cibles_l1.php');
 
         }
@@ -240,9 +240,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_38(array());
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',$tt[__xme],BNF);
+            ajouterMessage(__xer,$tt[__xme],BNF);
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
         }
@@ -263,9 +263,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_14(array( 'chx_cible_rev' => $__id));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',$tt[__xme],BNF);
+            ajouterMessage(__xer,$tt[__xme],BNF);
             sql_inclure_reference(40);
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_40.php');
@@ -281,7 +281,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }
 
-        ajouterMessage('info',__LINE__ . ' : la suppression des rev a fonctionné');
+        ajouterMessage(__xsu,__LINE__ . ' : la suppression des rev a fonctionné');
         /*
           =====================================================================================================
         */
@@ -298,9 +298,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_41(array( 'chx_cible_id_source' => $__id));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',$tt[__xme],BNF);
+            ajouterMessage(__xer,$tt[__xme],BNF);
             sql_inclure_reference(40);
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_40.php');
@@ -316,7 +316,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }
 
-        ajouterMessage('info',__LINE__ . ' : la suppression des sources a fonctionné');
+        ajouterMessage(__xsu,__LINE__ . ' : la suppression des sources a fonctionné');
         /*
           =====================================================================================================
         */
@@ -333,9 +333,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_42(array( 'chx_cible_requete' => $__id));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',$tt[__xme],BNF);
+            ajouterMessage(__xer,$tt[__xme],BNF);
             sql_inclure_reference(40);
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_40.php');
@@ -351,7 +351,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }
 
-        ajouterMessage('info',__LINE__ . ' : la suppression des requetes a fonctionné');
+        ajouterMessage(__xsu,__LINE__ . ' : la suppression des requetes a fonctionné');
         /*
           =====================================================================================================
         */
@@ -368,9 +368,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_43(array( 'chx_cible_id_basedd' => $__id));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',$tt[__xme],BNF);
+            ajouterMessage(__xer,$tt[__xme],BNF);
             sql_inclure_reference(40);
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_40.php');
@@ -386,7 +386,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }
 
-        ajouterMessage('info',__LINE__ . ' : la suppression des bases a fonctionné');
+        ajouterMessage(__xsu,__LINE__ . ' : la suppression des bases a fonctionné');
         /*
           =====================================================================================================
         */
@@ -403,9 +403,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_44(array( 'chx_cible_dossier' => $__id));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',$tt[__xme],BNF);
+            ajouterMessage(__xer,$tt[__xme],BNF);
             sql_inclure_reference(40);
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_40.php');
@@ -421,7 +421,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }
 
-        ajouterMessage('info',__LINE__ . ' : la suppression des dossiers a fonctionné');
+        ajouterMessage(__xsu,__LINE__ . ' : la suppression des dossiers a fonctionné');
         /*
           =====================================================================================================
         */
@@ -438,9 +438,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_45(array( 'chi_id_cible' => $__id));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',$tt[__xme],BNF);
+            ajouterMessage(__xer,$tt[__xme],BNF);
             sql_inclure_reference(40);
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_40.php');
@@ -456,7 +456,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }
 
-        ajouterMessage('info',__LINE__ . ' : la suppression de la cible a fonctionné');
+        ajouterMessage(__xsu,__LINE__ . ' : la suppression de la cible a fonctionné');
         /*
           =====================================================================================================
         */
@@ -493,7 +493,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         if($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'] === 'fta' && $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] === 'fta'){
 
-            ajouterMessage('erreur',__LINE__ . ' : le projet fta est la racine et est déjà créé',BNF);
+            ajouterMessage(__xer,__LINE__ . ' : le projet fta est la racine et est déjà créé',BNF);
             recharger_la_page(BNF . '?__action=__creation');
 
         }
@@ -518,9 +518,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_36(array( array( 'chp_nom_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'], 'chp_dossier_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'], 'chp_commentaire_cible' => $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible'])));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
             recharger_la_page(BNF . '?__action=__creation');
 
         }else{
@@ -544,16 +544,16 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             $tt37=sql_37(array( array( 'chx_cible_dossier' => $tt['nouvel_id'], 'chp_nom_dossier' => '/')));
             
-            if($tt37[__xst] === false){
+            if($tt37[__xst] === __xer){
 
-                ajouterMessage('erreur',__LINE__ . ' : ' . $tt37[__xme],BNF);
+                ajouterMessage(__xer,__LINE__ . ' : ' . $tt37[__xme],BNF);
                 recharger_la_page(BNF . '?__action=__creation');
 
             }else{
 
                 $nom_du_dossier='../../' . $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'];
                 @mkdir($nom_du_dossier);
-                ajouterMessage('info',__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé',BNF);
+                ajouterMessage(__xsu,__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé',BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $tt['nouvel_id']);
             }
 
@@ -593,7 +593,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
                     }else{
 
-                        ajouterMessage('erreur',__LINE__ . ' il y a eu un problème lors de la création du dossier "' . $__dossier . '" ',BNF);
+                        ajouterMessage(__xer,__LINE__ . ' il y a eu un problème lors de la création du dossier "' . $__dossier . '" ',BNF);
                     }
 
 
@@ -694,7 +694,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
     }
 
-    ajouterMessage('info',__LINE__ . ' cas à étudier ' . substr($GLOBALS['__date'],11));
+    ajouterMessage(__xsu,__LINE__ . ' cas à étudier ' . substr($GLOBALS['__date'],11));
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -714,7 +714,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] === '__suppression' || $_GET['
     
     if($__id === 1 && $_GET['__action'] === '__suppression'){
 
-        ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer la cible 1');
+        ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer la cible 1');
         recharger_la_page('zz_cibles_l1.php');
 
     }
@@ -722,7 +722,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] === '__suppression' || $_GET['
     
     if($__id === 0){
 
-        ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer ou modifier la cible 0');
+        ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer ou modifier la cible 0');
         recharger_la_page('zz_cibles_l1.php');
 
     }else{
@@ -731,7 +731,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] === '__suppression' || $_GET['
         
         if($__valeurs === false){
 
-            ajouterMessage('erreur',__LINE__ . ' cible non trouvée');
+            ajouterMessage(__xer,__LINE__ . ' cible non trouvée');
             recharger_la_page('zz_cibles_l1.php');
 
         }

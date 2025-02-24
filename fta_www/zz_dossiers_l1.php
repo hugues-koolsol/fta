@@ -5,7 +5,7 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
-    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible ');
+    ajouterMessage(__xsu,__LINE__ . ' : veuillez sélectionner une cible ');
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -41,9 +41,9 @@ if(isset($_GET['__action']) && '__recuperer_dossiers' === $_GET['__action']){
     
     $tt=sql_51(array( 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
     
-    if($tt[__xst] === false){
+    if($tt[__xst] === __xer){
 
-        ajouterMessage('erreur',__LINE__ . ' : erreur de récupération des dossiers actuels ' . $tt[__xme],BNF);
+        ajouterMessage(__xer,__LINE__ . ' : erreur de récupération des dossiers actuels ' . $tt[__xme],BNF);
         recharger_la_page(BNF);
 
     }
@@ -105,19 +105,19 @@ if(isset($_GET['__action']) && '__recuperer_dossiers' === $_GET['__action']){
         
         $tt=sql_52($tableau_a_inserer);
         
-        if($tt[__xst] === true){
+        if($tt[__xst] === __xsu){
 
             ajouterMessage(__xsu,__LINE__ . ' : les dossiers ont été importés',BNF);
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' : erreur d\'importation des dossiers ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' : erreur d\'importation des dossiers ' . $tt[__xme],BNF);
         }
 
 
     }else{
 
-        ajouterMessage('info',__LINE__ . ' : les dossiers sont synchronisés',BNF);
+        ajouterMessage(__xsu,__LINE__ . ' : les dossiers sont synchronisés',BNF);
     }
 
     recharger_la_page(BNF);
@@ -309,7 +309,7 @@ $tt=sql_53(array(
     'page_courante' => BNF
 ));
 
-if($tt[__xst] === false){
+if($tt[__xst] === __xer){
 
     $o1 .= '<div>';
     $o1 .= '<div class="yydanger">Erreur sql</div>';

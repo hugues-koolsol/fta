@@ -95,11 +95,11 @@ class interface1{
         if(est_masque === 1){
             document.getElementById( 'bouton_voir_les_messages_masques' ).setAttribute( 'data-masque' , '0' );
             document.getElementById( 'bouton_voir_les_messages_masques' ).innerHTML='masquer';
-            document.getElementById( 'message_masquer_les_details' ).innerHTML='le détail des erreurs est visible ';
+            document.getElementById( 'message_masquer_les_details' ).innerHTML='le détail des messages du serveur est visible'; // 
         }else{
             document.getElementById( 'bouton_voir_les_messages_masques' ).setAttribute( 'data-masque' , '1' );
             document.getElementById( 'bouton_voir_les_messages_masques' ).innerHTML='voir';
-            document.getElementById( 'message_masquer_les_details' ).innerHTML='le détail des erreurs n\'est pas visible ';
+            document.getElementById( 'message_masquer_les_details' ).innerHTML='le détail des messages du serveur est masqué';
         }
     }
     /*
@@ -168,7 +168,7 @@ class interface1{
             }
         }
         if(il_existe_des_messages_masques === true){
-            zon.innerHTML+='<div class="yyalarme">' + '<span id="message_masquer_les_details">le détail des erreurs n\'est pas visible</span> <a id="bouton_voir_les_messages_masques" data-masque="1" class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.afficher_les_erreurs_masquees()">voir</a>' + '</div>';
+            zon.innerHTML+='<div class="yyinfo">' + '<span id="message_masquer_les_details">le détail des messages du serveur est masqué</span> <a id="bouton_voir_les_messages_masques" data-masque="1" class="yyalarme" href="javascript:' + this.#nom_de_la_variable + '.afficher_les_erreurs_masquees()">voir</a>' + '</div>';
         }
         if(zon.innerHTML !== ''){
             zon.style.visibility='visible';
@@ -214,6 +214,18 @@ class interface1{
                         __m_rev1.empiler_erreur( {"__xst" : le_json.__xst ,"__xme" : le_json.__xms[i] ,"masquee" : masquer_les_messages_du_serveur} );
                     }
                 }
+                if(le_json.hasOwnProperty( 'signaux' )){
+                    var tableau_des_signaux=[__xsu,__xer,__xal,__xif];
+                    for(let j=0;j<tableau_des_signaux.length;j++){
+                        if(le_json.signaux.hasOwnProperty(tableau_des_signaux[j])){
+                            for( let i in le_json.signaux[tableau_des_signaux[j]] ){
+                                __m_rev1.empiler_erreur( {"__xst" : tableau_des_signaux[j] ,"__xme" : le_json.signaux[tableau_des_signaux[j]][i] ,"masquee" : masquer_les_messages_du_serveur} );
+                            }
+                            le_json.signaux[tableau_des_signaux[j]]=[];
+                        }
+                    }
+                }
+                
                 return le_json;
             }catch(e){
                 __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur sur convertion json, texte non json=' + t ,"masquee" : masquer_les_messages_du_serveur} );

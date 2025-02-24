@@ -156,6 +156,13 @@ class c_rev_vers_sql1{
         var obj_op=this.#recuperer_operateur_sqlite( tab[id][1] );
         if(obj_op.__xst === __xsu){
             operateur=obj_op.__xva;
+            if(tab[id][8]===0){
+                /*
+                  si c'est un opérateur de type décroissant() dans "trier_par( champ(...) , décroissant())"
+                  
+                */
+                return({"__xst" : __xsu ,"__xva" : ' '+operateur ,"operateur" : operateur});
+            }
         }else{
             return(this.#rev_sql_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'problème sur l\'opérateur'} ));
         }
@@ -182,7 +189,6 @@ class c_rev_vers_sql1{
                         if(options.au_format_php === true){
                             if(tab[i][1].substr( 0 , 1 ) === ':'){
                                 if(operateur_rev === '' && tab[tab[id][7]][1] === 'dans' || operateur_rev === 'dans'){
-                                    debugger;
                                     t+='\'.sq0($par[\'' + tab[i][1].substr( 1 ) + '\']).\'';
                                 }else{
                                     t+='\'.sq1($par[\'' + tab[i][1].substr( 1 ) + '\']).\'';
@@ -606,6 +612,7 @@ class c_rev_vers_sql1{
                             if(this.#tb[j][1] === 'complements'){
                                 for( k=j + 1 ; k < this.#l02 ; k=this.#tb[k][12] ){
                                     if(this.#tb[k][1] === 'trier_par' && this.#tb[k][8] >= 1){
+
                                         for( l=k + 1 ; l < this.#l02 ; l=this.#tb[l][12] ){
                                             options.tableau_des_alias=tableau_des_alias;
                                             obj=this.traite_sqlite_fonction_de_champ( this.#tb , l , niveau , options );

@@ -5,7 +5,7 @@ initialiser_les_services( /*sess*/ true, /*bdd*/ true);
 
 if(!isset($_GET['__id_des_bases'])){
 
-    ajouterMessage('erreur',__LINE__ . ' : veuillez sélectionner au moins une base ');
+    ajouterMessage(__xer,__LINE__ . ' : veuillez sélectionner au moins une base ');
     recharger_la_page('zz_bdds_l1.php');
 
 }
@@ -27,7 +27,7 @@ $tt=sql_49(array( 'T0_chi_id_basedd' => $_GET['__id_des_bases'], 'T0_chx_cible_i
 $tableau_en_entree=explode(',',$_GET['__id_des_bases']);
 $__nbEnregs=0;
 
-if($tt[__xst] === true){
+if($tt[__xst] === __xsu){
 
     $__nbEnregs=$tt[__xva][0][0];
 
@@ -36,7 +36,7 @@ if($tt[__xst] === true){
 
 if($__nbEnregs === 0){
 
-    ajouterMessage('erreur',__LINE__ . ' : veuillez sélectionner une base qui existe ');
+    ajouterMessage(__xer,__LINE__ . ' : veuillez sélectionner une base qui existe ');
     recharger_la_page('zz_bdds_l1.php');
 
 }
@@ -44,7 +44,7 @@ if($__nbEnregs === 0){
 
 if($__nbEnregs !== count($tableau_en_entree)){
 
-    ajouterMessage('erreur',__LINE__ . ' : veuillez sélectionner des bases qui existent ');
+    ajouterMessage(__xer,__LINE__ . ' : veuillez sélectionner des bases qui existent ');
     recharger_la_page('zz_bdds_l1.php');
 
 }

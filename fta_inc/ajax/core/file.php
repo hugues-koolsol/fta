@@ -32,7 +32,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
             'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
         ));
 
-        if($tt[__xst] === false || count($tt[__xva]) !== 1){
+        if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
             $data[__xst]=false;
             $data[__xms][]=__LINE__ . ' ' . __FILE__ . ' KO';
@@ -148,7 +148,7 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
             'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
         ));
 
-        if($tt[__xst] === false || count($tt[__xva]) !== 1){
+        if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
             $data[__xst]=false;
             $data[__xms][]=__LINE__ . ' ' . __FILE__ . ' KO';
@@ -364,6 +364,10 @@ function sauvegarger_un_fichier_rev(&$data){
 
             if(fclose($fd)){
 
+                ajouterMessage(__xer,BNF . ' ' . __LINE__ . '👍fichier sauvegargé sur disque 1 (test)');
+                ajouterMessage(__xsu,BNF . ' ' . __LINE__ . '👍fichier sauvegargé sur disque 2 (test)');
+                ajouterMessage(__xal,BNF . ' ' . __LINE__ . '👍fichier sauvegargé sur disque 3 (test)');
+                ajouterMessage(__xif,BNF . ' ' . __LINE__ . '👍fichier sauvegargé sur disque 4 (test)');
                 $data[__xst]=__xsu;
 
             }else{

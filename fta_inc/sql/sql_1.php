@@ -30,14 +30,14 @@ function sql_1($par){
             );
         }
         return array(
-           __xst  => true       ,
+           __xst  => __xsu  ,
            __xva  => $donnees0   ,
            'sql0'    => $sql0          ,
            'where0'  => $where0     ,
         );
     }else{
         return array(
-           __xst  => false ,
+           __xst  => __xer ,
            __xme => $GLOBALS[BDD][BDD_1][LIEN_BDD]->lastErrorMsg(),
            'sql0'    => $sql0,
            'where0'  => $where0     ,

@@ -5,7 +5,7 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
-    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible avant d\'accéder aux dossiers');
+    ajouterMessage(__xsu,__LINE__ . ' : veuillez sélectionner une cible avant d\'accéder aux dossiers');
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -25,7 +25,7 @@ function erreur_dans_champs_saisis_dossiers(){
           // todo ajouter le test
         */
         $caracteresInterdits='$!&\\:;"\'#%&@()[]{}<>*/+-_=^`|';
-        ajouterMessage('erreur',__LINE__ . ' : le nom dossier doit etre indiqué et ne doit pas contenir les caractères espaces ',BNF);
+        ajouterMessage(__xer,__LINE__ . ' : le nom dossier doit etre indiqué et ne doit pas contenir les caractères espaces ',BNF);
         $uneErreur=true;
 
     }
@@ -33,7 +33,7 @@ function erreur_dans_champs_saisis_dossiers(){
     
     if(substr($_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'],0,1) !== '/'){
 
-        ajouterMessage('erreur',__LINE__ . ' : le nom du dossier doit commencer par un caractère "/" ',BNF);
+        ajouterMessage(__xer,__LINE__ . ' : le nom du dossier doit commencer par un caractère "/" ',BNF);
         $uneErreur=true;
 
     }
@@ -76,7 +76,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' : la copie du fichier dans le répertoire de sauvegarde a échoué ',BNF);
+            ajouterMessage(__xer,__LINE__ . ' : la copie du fichier dans le répertoire de sauvegarde a échoué ',BNF);
         }
 
         recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
@@ -138,9 +138,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                 ));
         $tt=sql_54($a_inserer);
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' : le fichier n\'a pas été créé en base',BNF);
+            ajouterMessage(__xer,__LINE__ . ' : le fichier n\'a pas été créé en base',BNF);
 
         }else{
 
@@ -170,7 +170,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' : la suppression du répertoire a échoué',BNF);
+            ajouterMessage(__xer,__LINE__ . ' : la suppression du répertoire a échoué',BNF);
         }
 
         recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
@@ -190,7 +190,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' : l\'import du fichier a échoué',BNF);
+            ajouterMessage(__xer,__LINE__ . ' : l\'import du fichier a échoué',BNF);
         }
 
         recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
@@ -210,7 +210,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' : la création du répertoire a échoué',BNF);
+            ajouterMessage(__xer,__LINE__ . ' : la création du répertoire a échoué',BNF);
         }
 
         recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
@@ -232,7 +232,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
+                ajouterMessage(__xer,__LINE__ . ' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
                 recharger_la_page('zz_dossiers_l1.php');
             }
 
@@ -254,17 +254,17 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         $a_modifier=array( 'n_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'n_chp_nom_dossier' => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'], 'c_chi_id_dossier' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier'], 'c_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']);
         $tt=sql_55($a_modifier);
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
             
             if($tt['code_erreur'] === 19){
 
-                ajouterMessage('erreur',__LINE__ . ' ce nom existe déjà en bdd ',BNF);
+                ajouterMessage(__xer,__LINE__ . ' ce nom existe déjà en bdd ',BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
+                ajouterMessage(__xer,__LINE__ . ' ' . $tt[__xme],BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
             }
 
@@ -274,12 +274,12 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             if($tt['changements'] === 1){
 
-                ajouterMessage('info',' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2),BNF);
+                ajouterMessage(__xsu,' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2),BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+                ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_dossier']);
             }
 
@@ -318,9 +318,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             $tt=sql_50(array( 'T0_chi_id_dossier' => $__id, 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
             /* echo __FILE__ . ' ' . __LINE__ . ' $tt = <pre>' . var_export( $tt , true ) . '</pre>' ; exit(0);*/
             
-            if($tt[__xst] === false || count($tt[__xva]) !== 1){
+            if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-                ajouterMessage('erreur',__LINE__ . ' : dossier non trouvé ',BNF);
+                ajouterMessage(__xer,__LINE__ . ' : dossier non trouvé ',BNF);
                 recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
             }
@@ -335,7 +335,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
                 }else{
 
-                    ajouterMessage('erreur',__LINE__ . ' : on ne peut pas supprimer le dossier racine',BNF);
+                    ajouterMessage(__xer,__LINE__ . ' : on ne peut pas supprimer le dossier racine',BNF);
                     recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
                 }
 
@@ -357,9 +357,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             $tt=sql_56(array( 'T0_chx_dossier_id_source' => $__id, 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
             
-            if($tt[__xst] === false || count($tt[__xva]) !== 1){
+            if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-                ajouterMessage('erreur',__LINE__ . ' : dossier non trouvé ',BNF);
+                ajouterMessage(__xer,__LINE__ . ' : dossier non trouvé ',BNF);
                 recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
             }
@@ -368,7 +368,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             if($nombre_de_sources > 0){
 
-                ajouterMessage('erreur',__LINE__ . ' : ce dossier contient encore des sources rattachés <a class="yyinfo" href="zz_sources_l1.php?chi_id_dossier=' . $__valeurs['T0.chi_id_dossier'] . '">voir les sources du dossier ' . $__valeurs['T0.chp_nom_dossier'] . '</a>',BNF);
+                ajouterMessage(__xer,__LINE__ . ' : ce dossier contient encore des sources rattachés <a class="yyinfo" href="zz_sources_l1.php?chi_id_dossier=' . $__valeurs['T0.chi_id_dossier'] . '">voir les sources du dossier ' . $__valeurs['T0.chp_nom_dossier'] . '</a>',BNF);
                 recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
             }
@@ -388,9 +388,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             $tt=sql_57(array( 'T0_chx_dossier_id_basedd' => $__id, 'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
             
-            if($tt[__xst] === false || count($tt[__xva]) !== 1){
+            if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-                ajouterMessage('erreur',__LINE__ . ' : bdd non trouvé ',BNF);
+                ajouterMessage(__xer,__LINE__ . ' : bdd non trouvé ',BNF);
                 recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
             }
@@ -399,7 +399,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             if($nombre_de_bases > 0){
 
-                ajouterMessage('erreur',__LINE__ . ' : ce dossier contient encore des bases rattachés',BNF);
+                ajouterMessage(__xer,__LINE__ . ' : ce dossier contient encore des bases rattachés',BNF);
                 recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
             }
@@ -419,21 +419,21 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             $tt=sql_58(array( 'chi_id_dossier' => $__id, 'chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
             
-            if($tt[__xst] === false){
+            if($tt[__xst] === __xer){
 
-                ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+                ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
                 recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
             }else{
 
-                ajouterMessage('info','l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11));
+                ajouterMessage(__xsu,'l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11));
                 recharger_la_page('zz_dossiers_l1.php');
             }
 
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer cet enregistrement ',BNF);
+            ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer cet enregistrement ',BNF);
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
         }
 
@@ -470,14 +470,14 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_37(array( array( 'chp_nom_dossier' => $_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'], 'chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'])));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
             recharger_la_page(BNF . '?__action=__creation');
 
         }else{
 
-            ajouterMessage('info',__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé',BNF);
+            ajouterMessage(__xsu,__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé',BNF);
             recharger_la_page(BNF . '?__action=__modification&__id=' . $tt['nouvel_id']);
         }
 
@@ -500,7 +500,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
     }
 
-    ajouterMessage('info',__LINE__ . ' cas à étudier ' . substr($GLOBALS['__date'],11));
+    ajouterMessage(__xsu,__LINE__ . ' cas à étudier ' . substr($GLOBALS['__date'],11));
     recharger_la_page('zz_dossiers_l1.php');
 
 }
@@ -519,7 +519,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['
     
     if($__id === 0){
 
-        ajouterMessage('erreur',__LINE__ . ' il y a eu un problème ');
+        ajouterMessage(__xer,__LINE__ . ' il y a eu un problème ');
         recharger_la_page('zz_dossiers_l1.php');
 
     }else{
@@ -542,9 +542,9 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['
         
         $tt=sql_50(array( 'T0_chi_id_dossier' => $__id, 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         
-        if($tt[__xst] === false || count($tt[__xva]) !== 1){
+        if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-            ajouterMessage('erreur',__LINE__ . ' valeurs non trouvées pour cet id');
+            ajouterMessage(__xer,__LINE__ . ' valeurs non trouvées pour cet id');
             recharger_la_page('zz_dossiers_l1.php');
 
         }
@@ -737,7 +737,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
                         
                         $tt=sql_59(array( 'T0_chp_nom_source' => $liste_des_fichiers, 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'], 'T0_chx_dossier_id_source' => $__id));
                         
-                        if($tt[__xst] === false){
+                        if($tt[__xst] === __xer){
 
                             echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export($tt[__xme],true) . '</pre>' ;
                             exit(0);
@@ -769,7 +769,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
                         
                         $tt=sql_60(array( 'T0_chp_nom_dossier' => $liste_des_dossiers, 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
                         
-                        if($tt[__xst] === false){
+                        if($tt[__xst] === __xer){
 
                             echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export($tt[__xme],true) . '</pre>' ;
                             exit(0);

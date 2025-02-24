@@ -5,7 +5,7 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
-    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible avant d\'accéder aux sources');
+    ajouterMessage(__xsu,__LINE__ . ' : veuillez sélectionner une cible avant d\'accéder aux sources');
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -27,7 +27,7 @@ function erreur_dans_champs_saisis_sources(){
           // todo ajouter le test
         */
         $caracteresInterdits='$!&\\:;"\'#%&@()[]{}<>*/+-_=^`|';
-        ajouterMessage('erreur',__LINE__ . ' : le nom source doit etre indiqué et ne doit pas contenir les caractères espaces ',BNF);
+        ajouterMessage(__xer,__LINE__ . ' : le nom source doit etre indiqué et ne doit pas contenir les caractères espaces ',BNF);
         $uneErreur=true;
 
     }
@@ -35,7 +35,7 @@ function erreur_dans_champs_saisis_sources(){
     
     if(substr($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'],0,1) === ' '){
 
-        ajouterMessage('erreur',__LINE__ . ' : le nom source ne doit pas commencer par un espace ',BNF);
+        ajouterMessage(__xer,__LINE__ . ' : le nom source ne doit pas commencer par un espace ',BNF);
         $uneErreur=true;
 
     }
@@ -110,9 +110,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             $tt=sql_62(array( 'T0_chi_id_source' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
             
-            if($tt[__xst] === false || count($tt[__xva]) !== 1){
+            if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-                ajouterMessage('erreur',__LINE__ . ' valeurs non trouvées pour cet id');
+                ajouterMessage(__xer,__LINE__ . ' valeurs non trouvées pour cet id');
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
 
             }
@@ -130,19 +130,19 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
                 }else{
 
-                    ajouterMessage('erreur',__LINE__ . ' : il y a eu une erreur lors de la copie du fichier ');
+                    ajouterMessage(__xer,__LINE__ . ' : il y a eu une erreur lors de la copie du fichier ');
                 }
 
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' : le fichier n\'existe pas dans fta ');
+                ajouterMessage(__xer,__LINE__ . ' : le fichier n\'existe pas dans fta ');
             }
 
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' : on ne peut pas faire de copie sur cet environnement ');
+            ajouterMessage(__xer,__LINE__ . ' : on ne peut pas faire de copie sur cet environnement ');
         }
 
         recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
@@ -162,7 +162,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             require_once('../fta_inc/phplib/sqlite.php');
             $ret=produire_un_tableau_de_la_structure_d_une_bdd_grace_a_un_source_de_structure($_SESSION[APP_KEY][NAV][BNF]['chp_genere_source']);
             
-            if($ret[__xst] === true){
+            if($ret[__xst] === __xsu){
 
                 $_SESSION[APP_KEY][NAV][BNF]['tableauDesTables']=$ret['value'];
 
@@ -171,7 +171,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' : il n\'y a rien à convertir ');
+            ajouterMessage(__xer,__LINE__ . ' : il n\'y a rien à convertir ');
         }
 
         recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
@@ -205,9 +205,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_62(array( 'T0_chi_id_source' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         
-        if($tt[__xst] === false || count($tt[__xva]) !== 1){
+        if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-            ajouterMessage('erreur',__LINE__ . ' valeurs non trouvées pour cet id');
+            ajouterMessage(__xer,__LINE__ . ' valeurs non trouvées pour cet id');
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
 
         }
@@ -224,7 +224,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                 
                 if(!sauvegarder_et_supprimer_fichier($nomCompletSource)){
 
-                    ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer le fichier du disque ',BNF);
+                    ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer le fichier du disque ',BNF);
                     recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
 
                 }
@@ -242,7 +242,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                 
                 if(strpos($texte_source,$alea1) !== false){
 
-                    ajouterMessage('erreur',__LINE__ . ' : il y a eu un léger problème lors de l\'écriture , veuillez réessayer');
+                    ajouterMessage(__xer,__LINE__ . ' : il y a eu un léger problème lors de l\'écriture , veuillez réessayer');
 
                 }else{
 
@@ -308,13 +308,13 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
                                 }else{
 
-                                    ajouterMessage('erreur',__LINE__ . ' le fichier rev n\'a pas pu être écrit');
+                                    ajouterMessage(__xer,__LINE__ . ' le fichier rev n\'a pas pu être écrit');
                                 }
 
 
                             }else{
 
-                                ajouterMessage('erreur',__LINE__ . ' le fichier rev n\'a pas pu être ouvert');
+                                ajouterMessage(__xer,__LINE__ . ' le fichier rev n\'a pas pu être ouvert');
                             }
 
 
@@ -323,7 +323,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
                     }else{
 
-                        ajouterMessage('erreur',__LINE__ . ' : il y a eu un problème lors de l\'écriture ');
+                        ajouterMessage(__xer,__LINE__ . ' : il y a eu un problème lors de l\'écriture ');
                     }
 
                 }
@@ -331,13 +331,13 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' : il y a eu un problème lors de l\'ouverture du fichier ');
+                ajouterMessage(__xer,__LINE__ . ' : il y a eu un problème lors de l\'ouverture du fichier ');
             }
 
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' : problème sur le dossier cible ');
+            ajouterMessage(__xer,__LINE__ . ' : problème sur le dossier cible ');
         }
 
         recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
@@ -361,7 +361,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
+                ajouterMessage(__xer,__LINE__ . ' : POST __id1 = ' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
                 recharger_la_page('zz_sources_l1.php');
             }
 
@@ -390,9 +390,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         $tt=sql_62(array( 'T0_chi_id_source' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         
-        if($tt[__xst] === false || count($tt[__xva]) !== 1){
+        if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-            ajouterMessage('erreur',__LINE__ . ' valeurs non trouvées pour cet id');
+            ajouterMessage(__xer,__LINE__ . ' valeurs non trouvées pour cet id');
             recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
 
         }
@@ -425,13 +425,13 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             $tt=sql_50(array( 'T0_chi_id_dossier' => $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'], 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
             $nom_dossier='';
             
-            if($tt[__xst] === true && count($tt[__xva]) === 1){
+            if($tt[__xst] === __xsu && count($tt[__xva]) === 1){
 
                 $nouveau_dossier=$tt[__xva][0];
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' :  dossier non trouvé');
+                ajouterMessage(__xer,__LINE__ . ' :  dossier non trouvé');
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
             }
 
@@ -457,8 +457,8 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                     }else{
 
                         /* si le fichier existe déjà sur le disque */
-                        ajouterMessage('info',__LINE__ . ' :  Utilisez le bouton "remplacer le fichier ..." pour remplacer ce fichier');
-                        ajouterMessage('erreur',__LINE__ . ' :  ce fichier "' . $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'] . '" existe déjà sur disque');
+                        ajouterMessage(__xsu,__LINE__ . ' :  Utilisez le bouton "remplacer le fichier ..." pour remplacer ce fichier');
+                        ajouterMessage(__xer,__LINE__ . ' :  ce fichier "' . $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'] . '" existe déjà sur disque');
                         $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']=$__valeurs['T0.chp_nom_source'];
                         recharger_la_page(BNF . '?__option=remplacer_le_fichier&__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
                     }
@@ -515,9 +515,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             'n_chp_type_source' => $_SESSION[APP_KEY][NAV][BNF]['chp_type_source']
         ));
         
-        if($tt[__xst] === true && $tt['changements'] === 1){
+        if($tt[__xst] === __xsu && $tt['changements'] === 1){
 
-            ajouterMessage('info',' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2),BNF);
+            ajouterMessage(__xsu,' les modifications ont été enregistrées à ' . substr($GLOBALS['__date'],11) . '.' . substr(microtime(),2,2),BNF);
             /* echo __FILE__ . ' ' . __LINE__ . ' $le_fichier_est_renomme = <pre>' . var_export( $le_fichier_est_renomme , true ) . '</pre>  $nom_complet_du_nouveau_fichier = <pre>' . var_export( $nom_complet_du_nouveau_fichier , true ) . '</pre>  $nom_complet_de_l_ancien_fichier = <pre>' . var_export( $nom_complet_de_l_ancien_fichier , true ) . '</pre>' ; exit(0);*/
             
             if($le_fichier_est_renomme){
@@ -527,7 +527,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                 
                 if($deja_renomme === false && !(@rename($nom_complet_de_l_ancien_fichier,$nom_complet_du_nouveau_fichier))){
 
-                    ajouterMessage('erreur',__LINE__ . ' :  ATTENTION, le nom du fichier original sur disque n\'a pas pu $etre rétabli');
+                    ajouterMessage(__xer,__LINE__ . ' :  ATTENTION, le nom du fichier original sur disque n\'a pas pu $etre rétabli');
 
                 }
 
@@ -541,12 +541,12 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             if($tt['code_erreur'] === 19){
 
-                ajouterMessage('erreur',__LINE__ . ' ce nom existe déjà en bdd ',BNF);
+                ajouterMessage(__xer,__LINE__ . ' ce nom existe déjà en bdd ',BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' ' . $tt[__xme],BNF);
+                ajouterMessage(__xer,__LINE__ . ' ' . $tt[__xme],BNF);
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
             }
 
@@ -592,9 +592,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             $tt=sql_62(array( 'T0_chi_id_source' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
             
-            if($tt[__xst] === false || count($tt[__xva]) !== 1){
+            if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-                ajouterMessage('erreur',__LINE__ . ' valeurs non trouvées pour cet id');
+                ajouterMessage(__xer,__LINE__ . ' valeurs non trouvées pour cet id');
                 recharger_la_page(BNF . '?__action=__modification&__id=' . $_SESSION[APP_KEY][NAV][BNF]['chi_id_source']);
 
             }
@@ -622,7 +622,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                     
                     if(!sauvegarder_et_supprimer_fichier($nom_complet_de_l_ancien_fichier)){
 
-                        ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer le fichier du disque ',BNF);
+                        ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer le fichier du disque ',BNF);
                         recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
                     }
@@ -635,7 +635,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
         }else{
 
-            ajouterMessage('erreur',__LINE__ . ' on ne peut pas supprimer cet enregistrement ',BNF);
+            ajouterMessage(__xer,__LINE__ . ' on ne peut pas supprimer cet enregistrement ',BNF);
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
         }
 
@@ -661,7 +661,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         
         if(false === $tt[__xst]){
 
-            ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
             recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
 
         }else{
@@ -681,14 +681,14 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             
             $tt=sql_39(array( 'chi_id_source' => $_SESSION[APP_KEY][NAV][BNF]['chi_id_source'], 'chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
             
-            if($tt[__xst] === true || $tt['changements'] === 1){
+            if($tt[__xst] === __xsu || $tt['changements'] === 1){
 
-                ajouterMessage('info','384 l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11));
+                ajouterMessage(__xsu,'384 l\'enregistrement a été supprimé à ' . substr($GLOBALS['__date'],11));
                 recharger_la_page('zz_sources_l1.php');
 
             }else{
 
-                ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+                ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
                 recharger_la_page(BNF . '?__action=__suppression&__id=' . $__id);
             }
 
@@ -748,14 +748,14 @@ if(isset($_POST) && sizeof($_POST) >= 1){
                 ));
         $tt=sql_54($a_inserer);
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme],BNF);
             recharger_la_page(BNF . '?__action=__creation');
 
         }else{
 
-            ajouterMessage('info',__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé',BNF);
+            ajouterMessage(__xsu,__LINE__ . ' : l\'enregistrement (' . $tt['nouvel_id'] . ') a bien été créé',BNF);
             recharger_la_page(BNF . '?__action=__modification&__id=' . $tt['nouvel_id']);
         }
 
@@ -780,7 +780,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
 
     }
 
-    ajouterMessage('info',__LINE__ . ' cas à étudier ' . substr($GLOBALS['__date'],11));
+    ajouterMessage(__xsu,__LINE__ . ' cas à étudier ' . substr($GLOBALS['__date'],11));
     recharger_la_page('zz_sources_l1.php');
 
 }
@@ -800,7 +800,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['
     
     if($__id === 0){
 
-        ajouterMessage('erreur',__LINE__ . ' il y a eu un problème ');
+        ajouterMessage(__xer,__LINE__ . ' il y a eu un problème ');
         recharger_la_page('zz_sources_l1.php');
 
     }
@@ -826,9 +826,9 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['
     
     $tt=sql_62(array( 'T0_chi_id_source' => $__id, 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
     
-    if($tt[__xst] === false || count($tt[__xva]) !== 1){
+    if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-        ajouterMessage('erreur',__LINE__ . ' valeurs non trouvées pour cet id');
+        ajouterMessage(__xer,__LINE__ . ' valeurs non trouvées pour cet id');
         recharger_la_page(BNF . '?__action=__modification&__id=' . $__id);
 
     }
@@ -939,7 +939,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
         $tt50=sql_50(array( 'T0_chi_id_dossier' => $chx_dossier_id_source, 'T0_chx_cible_dossier' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
         /* echo __FILE__ . ' ' . __LINE__ . ' $tt50 = <pre>' . var_export( $tt50 , true ) . '</pre>' ; exit(0);*/
         
-        if($tt50[__xst] === false || count($tt50[__xva]) !== 1){
+        if($tt50[__xst] === __xer || count($tt50[__xva]) !== 1){
 
             $o1 .= '<span class="yydanger">Problème sur récupération du dossier</span>' . PHP_EOL;
 

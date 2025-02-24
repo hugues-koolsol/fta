@@ -10,7 +10,7 @@ function obtenir_entete_de_la_page(){
     $o1='';
     $o1=html_header1(array( 'title' => 'Taches', 'description' => 'Taches'));
     $o1 .= '<h1>Liste des tâches </h1>';
-    return array( __xst => true, 'value' => $o1);
+    return array( __xst => __xsu, 'value' => $o1);
 
 }
 /*
@@ -37,15 +37,15 @@ if(isset($_POST['__ordonner_les_taches'])){
     
     $tt=sql_64(array( 'T0_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'T0_chp_priorite_tache' => 50));
     
-    if($tt[__xst] === false){
+    if($tt[__xst] === __xer){
 
-        ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
+        ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme]);
         recharger_la_page(BNF);
 
     }
 
     $nouvelle_priorite=1;
-    /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt[__xva] , true ) . '</pre>' ; exit(0);*/
+    /*echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $tt[__xva] , true ) . '</pre>' ; exit(0);*/
     foreach($tt[__xva] as $k1 => $v1){
         
         if($nouvelle_priorite < 50){
@@ -64,23 +64,28 @@ if(isset($_POST['__ordonner_les_taches'])){
             /*sql_inclure_fin*/
             
             /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $v1 , true ) . '</pre>' ; exit(0);*/
-            $tt2=sql_65(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'c_chi_id_tache' => $v1['T0.chi_id_tache'], 'n_chp_priorite_tache' => $nouvelle_priorite));
+            $tt2=sql_65(array(/**/
+                'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
+                'c_chi_id_tache' => $v1['T0.chi_id_tache'],
+                'n_chp_priorite_tache' => $nouvelle_priorite
+            ));            
             
-            if($tt2[__xst] === false){
+            
+            if($tt2[__xst] === __xer){
 
-                ajouterMessage('erreur',__LINE__ . ' : ' . $tt2[__xme]);
+                ajouterMessage(__xer,__LINE__ . ' : ' . $tt2[__xme]);
+                recharger_la_page(BNF);
 
-            }else{
 
-                ajouterMessage(__xsu,__LINE__ . ' les tâches sont réordonnées');
             }
 
-            recharger_la_page(BNF);
 
         }
 
         $nouvelle_priorite++;
     }
+    ajouterMessage(__xsu,__LINE__ . ' les tâches sont réordonnées');
+    recharger_la_page(BNF);
 
 }
 
@@ -104,9 +109,9 @@ if(isset($_POST['__soustraire_1_aux_priorites'])){
     
     $tt=sql_23(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'n_chp_priorite_tache' => 50));
     
-    if($tt[__xst] === false){
+    if($tt[__xst] === __xer){
 
-        ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
+        ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme]);
         recharger_la_page(BNF);
 
     }
@@ -126,14 +131,13 @@ if(isset($_POST['__soustraire_1_aux_priorites'])){
     
     $tt=sql_25(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
     
-    if($tt[__xst] === false){
+    if($tt[__xst] === __xer){
 
-        ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
-        recharger_la_page(BNF);
+        ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme]);
 
     }else{
 
-        ajouterMessage('info',__LINE__ . ' : les priorités ont été diminuées');
+        ajouterMessage(__xsu,__LINE__ . ' : les priorités ont été diminuées');
     }
 
     recharger_la_page(BNF);
@@ -160,9 +164,9 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
     
     $tt=sql_23(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'n_chp_priorite_tache' => 50));
     
-    if($tt[__xst] === false){
+    if($tt[__xst] === __xer){
 
-        ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
+        ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme]);
         recharger_la_page(BNF);
 
     }
@@ -181,14 +185,14 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
     
     $tt=sql_24(array( 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
     
-    if($tt[__xst] === false){
+    if($tt[__xst] === __xer){
 
-        ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
+        ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme]);
         recharger_la_page(BNF);
 
     }else{
 
-        ajouterMessage('info',__LINE__ . ' : les priorités ont été augmentées');
+        ajouterMessage(__xsu,__LINE__ . ' : les priorités ont été augmentées');
     }
 
     recharger_la_page(BNF);
@@ -218,13 +222,13 @@ if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
         
         $tt=sql_22(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'n_chp_priorite_tache' => 99));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
+            ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme]);
 
         }else{
 
-            ajouterMessage('info',__LINE__ . ' : tâche modifiée');
+            ajouterMessage(__xsu,__LINE__ . ' : tâche modifiée');
         }
 
 
@@ -257,13 +261,13 @@ if(isset($_GET['__action']) && '__mettre_a_0' === $_GET['__action']){
         
         $tt=sql_22(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'], 'n_chp_priorite_tache' => 0));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
+            ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme]);
 
         }else{
 
-            ajouterMessage('info',__LINE__ . ' : tâche modifiée');
+            ajouterMessage(__xsu,__LINE__ . ' : tâche modifiée');
         }
 
 
@@ -297,13 +301,13 @@ if(isset($_GET['__action']) && '__mettre_a_plus_1' === $_GET['__action']){
         
         $tt=sql_21(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
+            ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme]);
 
         }else{
 
-            ajouterMessage('info',__LINE__ . ' : tâche modifiée');
+            ajouterMessage(__xsu,__LINE__ . ' : tâche modifiée');
         }
 
 
@@ -337,13 +341,13 @@ if(isset($_GET['__action']) && '__mettre_a_moins_1' === $_GET['__action']){
         
         $tt=sql_20(array( 'c_chi_id_tache' => $_GET['__id'], 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init']));
         
-        if($tt[__xst] === false){
+        if($tt[__xst] === __xer){
 
-            ajouterMessage('erreur',__LINE__ . ' : ' . $tt[__xme]);
+            ajouterMessage(__xer,__LINE__ . ' : ' . $tt[__xme]);
 
         }else{
 
-            ajouterMessage('info',__LINE__ . ' : tâche modifiée');
+            ajouterMessage(__xsu,__LINE__ . ' : tâche modifiée');
         }
 
 
@@ -451,7 +455,7 @@ $tt=sql_19(array(
     'page_courante' => BNF
 ));
 
-if($tt[__xst] === false){
+if($tt[__xst] === __xer){
 
     $o1 .= '<div>';
     $o1 .= '<div class="yydanger">Erreur sql</div>';

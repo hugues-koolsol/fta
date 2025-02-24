@@ -34,12 +34,12 @@ function enregistrer_les_sql_en_base(&$data){
         'n_cht_php_requete' => $data[__entree]['params']['source_php']
     ));
 
-    if($tt[__xst] === true && $tt['changements'] === 1){
+    if($tt[__xst] === __xsu && $tt['changements'] === 1){
 
         require_once(INCLUDE_PATH . DIRECTORY_SEPARATOR . 'ajax/core/bdd.php');
         $ret=ecrire_le_php_de_la_requete_sur_disque($data[__entree]['params']['id_source'],$data[__entree]['params']['source_php']);
 
-        if($ret[__xst] === true){
+        if($ret[__xst] === __xsu){
 
             $data[__xst]=__xsu;
 
@@ -92,7 +92,7 @@ function enregistrer_les_sources_en_base(&$data){
     
     $tt=sql_62(array( 'T0_chi_id_source' => $data[__entree]['params']['id_source'], 'T0_chx_cible_id_source' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']));
 
-    if($tt[__xst] === false || count($tt[__xva]) !== 1){
+    if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
         $data[__xst]=false;
         $data[__xms][]=__LINE__ . ' ' . __FILE__ . ' KO';

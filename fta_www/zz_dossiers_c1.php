@@ -5,7 +5,7 @@ initialiser_les_services( /*session*/ true, /*bdd*/ true);
 
 if(!isset($_SESSION[APP_KEY]['cible_courante'])){
 
-    ajouterMessage('info',__LINE__ . ' : veuillez sélectionner une cible avant d\'accéder aux dossiers');
+    ajouterMessage(__xsu,__LINE__ . ' : veuillez sélectionner une cible avant d\'accéder aux dossiers');
     recharger_la_page('zz_cibles_l1.php');
 
 }
@@ -97,7 +97,7 @@ $tt=sql_53(array(
     'page_courante' => BNF
 ));
 
-if($tt[__xst] === false){
+if($tt[__xst] === __xer){
 
     $o1 .= '<div>';
     $o1 .= '<div class="yydanger">Erreur sql</div>';

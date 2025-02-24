@@ -68,16 +68,23 @@ if(isset($_POST) && count($_POST) > 0){
         
         $sql1=sql_1(array( 'nom_de_connexion' => $_POST['nom_de_connexion']));
         
-        if($sql1[__xst] !== true){
+        /*si il y a une erreur dans la requête*/
+        if($sql1[__xst] !== __xsu){
+            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql1 , true ) . '</pre>' ; exit(0);
 
-            ajouterMessage('erreur',__LINE__ . ' ' . $sql1[__xme],BNF);
+            ajouterMessage(__xer,__LINE__ . ' ' . $sql1[__xme],BNF);
             supprimerLesValeursDeSession();
             recharger_la_page(BNF);
 
         }
 
+        /*la requete a fonctionné */
         
-        if(password_verify($_POST['mot_de_passe'],$sql1[__xva][0]['T0.chp_mot_de_passe_utilisateur'])){
+        $mot_de_passe_en_base=isset($sql1[__xva][0]) && isset($sql1[__xva][0]['T0.chp_mot_de_passe_utilisateur']) ? $sql1[__xva][0]['T0.chp_mot_de_passe_utilisateur'] : null;
+        
+//        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $mot_de_passe_en_base , true ) . '</pre>' ; exit(0);
+        
+        if(password_verify($_POST['mot_de_passe'],$mot_de_passe_en_base)){
 
             /*
               =============================================================================================
@@ -92,7 +99,7 @@ if(isset($_POST) && count($_POST) > 0){
             $_SESSION[APP_KEY]['__filtres']=array();
             $_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']=array();
             $_SESSION[APP_KEY]['__parametres_utilisateurs']=$sql1[__xva][0]['T0.chp_parametres_utilisateur'] !== '' ? json_decode($sql1[__xva][0]['T0.chp_parametres_utilisateur'],true) : array();
-            ajouterMessage('info',__LINE__ . ' connexion effectuée avec succes :-)');
+            ajouterMessage(__xsu,__LINE__ . ' connexion effectuée avec succes :-)');
             recharger_la_page('index.php');
 
         }else{
@@ -103,7 +110,7 @@ if(isset($_POST) && count($_POST) > 0){
               
             */
             supprimerLesValeursDeSession();
-            ajouterMessage('erreur',__LINE__ . ' la combinaison de l\'identifiant et du mot de passe est inconnue',BNF);
+            ajouterMessage(__xer,__LINE__ . ' la combinaison de l\'identifiant et du mot de passe est inconnue',BNF);
             /*on fait patienter l'utilisateur pendant deux secondes pour qu'il réfléchisse ! */
             sleep(2);
             recharger_la_page(BNF . '?raz1');

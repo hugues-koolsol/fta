@@ -182,11 +182,11 @@ function sauvegardeTexteSource(){
         }
         sauvegarger_un_fichier_rev( 'za_ajax.php?sauvegarger_un_fichier_rev' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst === __xsu){
-                    __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : '👍 fichier sauvegardé'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : '👍 fichier sauvegardé 0'} );
                 }
                 __gi1.remplir_et_afficher_les_messages1( 'zonesource' );
             } );
-        document.getElementById( 'sauvegarderLeNormalise' ).disabled=true;
+        /*document.getElementById( 'sauvegarderLeNormalise' ).disabled=true;*/
         document.getElementById( 'nomDuSource' ).disabled=true;
     }
 }
@@ -305,7 +305,7 @@ function enregistrer2(){
     document.getElementById( 'zoneContenantLeTableauCaracteres' ).style.display='none';
     document.getElementById( 'zoneContenantLeSourceGenere2' ).value='';
     document.getElementById( 'zoneContenantLeSourceGenere2' ).style.display='none';
-    document.getElementById( 'sauvegarderLeNormalise' ).disabled=true;
+    /*document.getElementById( 'sauvegarderLeNormalise' ).disabled=true;*/
     document.getElementById( 'nomDuSource' ).disabled=true;
     __gi1.raz_des_messages();
     document.getElementById( 'arrayed' ).innerHTML='';
@@ -452,7 +452,7 @@ function voirTableau1( div_de_la_zone_source ){
 */
 function chargerFichierRev( nomFichierSource ){
     __gi1.raz_des_messages();
-    document.getElementById( 'sauvegarderLeNormalise' ).disabled=true;
+    /*document.getElementById( 'sauvegarderLeNormalise' ).disabled=true;*/
     document.getElementById( 'nomDuSource' ).disabled=true;
     document.getElementById( 'normalise' ).value='';
     document.getElementById( 'zonesource' ).value='';
@@ -469,7 +469,7 @@ function chargerFichierRev( nomFichierSource ){
                 var zoneSource=document.getElementById( 'zonesource' );
                 zoneSource.value=donnees.__xva;
                 ajusteTailleTextareaContenantSource( 'zonesource' );
-                document.getElementById( 'sauvegarderLeNormalise' ).disabled=true;
+                /*document.getElementById( 'sauvegarderLeNormalise' ).disabled=true;*/
                 document.getElementById( 'sauvegarderLeNormalise' ).setAttribute( 'data-fichiertexte' , donnees.__entree.file_name );
                 document.getElementById( 'nomDuSource' ).value=donnees.__entree.file_name;
                 document.getElementById( 'nomDuSource' ).disabled=true;

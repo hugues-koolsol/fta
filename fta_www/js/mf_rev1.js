@@ -20,7 +20,7 @@ class c_rev1{
     */
     empiler_erreur( o ){
         var a_retourner={
-            "__xst" : o.hasOwnProperty( '__xst' ) ? ( o.__xst ) : ( false ) ,
+            "__xst" : o.hasOwnProperty( '__xst' ) ? ( o.__xst ) : ( __xer ) ,
             "__xva" : o.hasOwnProperty( '__xva' ) ? ( o.__xva ) : ( null ) ,
             "masquee" : o.hasOwnProperty( 'masquee' ) ? ( o.masquee ) : ( false ) ,
             "plage" : o.hasOwnProperty( 'plage' ) ? ( o.plage ) : ( null ) ,
