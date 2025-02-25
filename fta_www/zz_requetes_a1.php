@@ -35,6 +35,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__modification' && isset($_
     `T0`.`cht_php_requete` , `T0`.`cht_commentaire_requete` , `T0`.`cht_matrice_requete`
      FROM b1.tbl_requetes T0
     WHERE (`T0`.`chi_id_requete` = :T0_chi_id_requete
+      
      AND `T0`.`chx_cible_requete` = :T0_chx_cible_requete);
 
     */

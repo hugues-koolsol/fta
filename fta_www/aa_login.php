@@ -68,10 +68,9 @@ if(isset($_POST) && count($_POST) > 0){
         
         $sql1=sql_1(array( 'nom_de_connexion' => $_POST['nom_de_connexion']));
         
-        /*si il y a une erreur dans la requête*/
         if($sql1[__xst] !== __xsu){
-            echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $sql1 , true ) . '</pre>' ; exit(0);
 
+            /*si il y a une erreur dans la requête*/
             ajouterMessage(__xer,__LINE__ . ' ' . $sql1[__xme],BNF);
             supprimerLesValeursDeSession();
             recharger_la_page(BNF);
@@ -79,10 +78,9 @@ if(isset($_POST) && count($_POST) > 0){
         }
 
         /*la requete a fonctionné */
-        
-        $mot_de_passe_en_base=isset($sql1[__xva][0]) && isset($sql1[__xva][0]['T0.chp_mot_de_passe_utilisateur']) ? $sql1[__xva][0]['T0.chp_mot_de_passe_utilisateur'] : null;
-        
-//        echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $mot_de_passe_en_base , true ) . '</pre>' ; exit(0);
+        $mot_de_passe_en_base=isset($sql1[__xva][0])
+           && isset($sql1[__xva][0]['T0.chp_mot_de_passe_utilisateur']) ? $sql1[__xva][0]['T0.chp_mot_de_passe_utilisateur'] : null;
+        /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $mot_de_passe_en_base , true ) . '</pre>' ; exit(0);*/
         
         if(password_verify($_POST['mot_de_passe'],$mot_de_passe_en_base)){
 

@@ -105,7 +105,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_54.php');
         /*
-        
         INSERT INTO b1.`tbl_sources`(
             `chx_cible_id_source` , 
             `chp_nom_source` , 
@@ -243,9 +242,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_55.php');
         /*
-        
         UPDATE b1.tbl_dossiers SET `chx_cible_dossier` = :n_chx_cible_dossier , `chp_nom_dossier` = :n_chp_nom_dossier
         WHERE (`chi_id_dossier` = :c_chi_id_dossier
+          
          AND `chx_cible_dossier` = :c_chx_cible_dossier) ;
 
         */
@@ -310,6 +309,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
              LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier
             
             WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier
+              
              AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
 
             */
@@ -347,9 +347,10 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             require_once(INCLUDE_PATH.'/sql/sql_56.php');
             /*
             SELECT 
-            count(*)
+            count( * )
              FROM b1.tbl_sources T0
             WHERE (`T0`.`chx_cible_id_source` = :T0_chx_cible_id_source
+              
              AND `T0`.`chx_dossier_id_source` = :T0_chx_dossier_id_source);
 
             */
@@ -378,9 +379,10 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             require_once(INCLUDE_PATH.'/sql/sql_57.php');
             /*
             SELECT 
-            count(*)
+            count( * )
              FROM b1.tbl_bdds T0
             WHERE (`T0`.`chx_dossier_id_basedd` = :T0_chx_dossier_id_basedd
+              
              AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
 
             */
@@ -408,7 +410,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_58.php');
             /*
-            
             DELETE FROM b1.tbl_dossiers
             WHERE (`chi_id_dossier` = :chi_id_dossier
               
@@ -456,7 +457,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_37.php');
         /*
-        
         INSERT INTO b1.`tbl_dossiers`(
             `chx_cible_dossier` , 
             `chp_nom_dossier`
@@ -535,6 +535,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['
          LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier
         
         WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier
+          
          AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
 
         */
@@ -728,8 +729,10 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
                         SELECT 
                         `T0`.`chp_nom_source` , `T0`.`chi_id_source`
                          FROM b1.tbl_sources T0
-                        WHERE (/ *  * / `T0`.`chp_nom_source` IN (:T0_chp_nom_source)
+                        WHERE ( / * * / `T0`.`chp_nom_source` IN (:T0_chp_nom_source)
+                          
                          AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source
+                          
                          AND `T0`.`chx_dossier_id_source` = :T0_chx_dossier_id_source);
 
                         */
@@ -761,7 +764,8 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
                         SELECT 
                         `T0`.`chp_nom_dossier` , `T0`.`chi_id_dossier`
                          FROM b1.tbl_dossiers T0
-                        WHERE (/ *  * / `T0`.`chp_nom_dossier` IN (:T0_chp_nom_dossier)
+                        WHERE ( / * * / `T0`.`chp_nom_dossier` IN (:T0_chp_nom_dossier)
+                          
                          AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
 
                         */

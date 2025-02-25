@@ -7,7 +7,6 @@ require($a . '/phplib/vendor/autoload.php');
 use PhpParser\Error;
 use PhpParser\NodeDumper;
 use PhpParser\ParserFactory;
-
 function recuperer_ast_de_php2(&$data){
 
     $parser=(new ParserFactory())->createForNewestSupportedVersion();

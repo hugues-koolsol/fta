@@ -32,8 +32,9 @@ function ecrire_le_php_de_la_requete_sur_disque($id_requete,$source_php_requete)
     SELECT 
     `T0`.`chi_id_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete` , `T0`.`cht_matrice_requete`
      FROM b1.tbl_requetes T0
-    WHERE (`T0`.`chx_cible_requete` = :T0_chx_cible_requete)
-     ORDER BY  `T0`.`chi_id_requete`  ASC;
+    WHERE (`T0`.`chx_cible_requete` = :T0_chx_cible_requete) 
+   
+     ORDER BY `T0`.`chi_id_requete`  ASC;
 
     */
     /*sql_inclure_fin*/
@@ -87,14 +88,13 @@ function modifier_la_requete_en_base(&$data){
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_9.php');
     /*
-    
     UPDATE b1.tbl_requetes SET `chp_type_requete` = :n_chp_type_requete , `cht_rev_requete` = :n_cht_rev_requete , `cht_sql_requete` = :n_cht_sql_requete , `cht_php_requete` = :n_cht_php_requete , `cht_matrice_requete` = :n_cht_matrice_requete , `cht_commentaire_requete` = :n_cht_commentaire_requete
     WHERE (`chi_id_requete` = :c_chi_id_requete
+      
      AND `chx_cible_requete` = :c_chx_cible_requete) ;
 
     */
     /*sql_inclure_fin*/
-    
     
     $a_modifier=array(
         'c_chx_cible_requete' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'],
@@ -139,7 +139,6 @@ function enregistrer_la_requete_en_base(&$data){
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_7.php');
     /*
-    
     INSERT INTO b1.`tbl_requetes`(
         `chx_cible_requete` , 
         `chp_type_requete` , 
@@ -181,9 +180,9 @@ function enregistrer_la_requete_en_base(&$data){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_35.php');
         /*
-        
         UPDATE b1.tbl_requetes SET `cht_php_requete` = :n_cht_php_requete
         WHERE (`chi_id_requete` = :c_chi_id_requete
+          
          AND `chx_cible_requete` = :c_chx_cible_requete) ;
 
         */
@@ -238,6 +237,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
      LEFT JOIN b1.tbl_cibles T2 ON T2.chi_id_cible = T0.chx_cible_id_basedd
     
     WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+      
      AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
 
     */
@@ -318,6 +318,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
      LEFT JOIN b1.tbl_cibles T2 ON T2.chi_id_cible = T0.chx_cible_id_basedd
     
     WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+      
      AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
 
     */
@@ -544,6 +545,7 @@ function operation_sur_base(&$data,$nom_operation){
      LEFT JOIN b1.tbl_cibles T2 ON T2.chi_id_cible = T0.chx_cible_id_basedd
     
     WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+      
      AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
 
     */
@@ -631,6 +633,7 @@ function creer_table_dans_base(&$data){
      LEFT JOIN b1.tbl_cibles T2 ON T2.chi_id_cible = T0.chx_cible_id_basedd
     
     WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+      
      AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
 
     */
@@ -715,6 +718,7 @@ function ordonner_les_champs_de_table(&$data){
      LEFT JOIN b1.tbl_cibles T2 ON T2.chi_id_cible = T0.chx_cible_id_basedd
     
     WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+      
      AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
 
     */
@@ -836,9 +840,9 @@ function envoyer_le_rev_de_le_base_en_post(&$data){
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_10.php');
     /*
-    
     UPDATE b1.tbl_bdds SET `chp_rev_travail_basedd` = :n_chp_rev_travail_basedd
     WHERE (`chi_id_basedd` = :c_chi_id_basedd
+      
      AND `chx_cible_id_basedd` = :c_chx_cible_id_basedd) ;
 
     */
@@ -875,7 +879,8 @@ function recuperer_zone_travail_pour_les_bases(&$data){
     SELECT 
     `T0`.`chi_id_basedd` , `T0`.`chp_nom_basedd` , `T0`.`chp_rev_travail_basedd`
      FROM b1.tbl_bdds T0
-    WHERE (/ *  * / `T0`.`chi_id_basedd` IN (:les_id_des_bases)
+    WHERE ( / * * / `T0`.`chi_id_basedd` IN (:les_id_des_bases)
+      
      AND `T0`.`chx_cible_id_basedd` = :chx_cible_id_basedd);
 
     */
@@ -924,7 +929,6 @@ function sauvegarder_format_rev_en_dbb(&$data){
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_5.php');
     /*
-    
     DELETE FROM b1.tbl_revs
     WHERE (`chx_cible_rev` = :chx_cible_rev
       
@@ -980,7 +984,6 @@ function sauvegarder_format_rev_en_dbb(&$data){
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_12.php');
     /*
-    
     INSERT INTO b1.`tbl_revs`(
         `chx_cible_rev` , 
         `chp_provenance_rev` , 

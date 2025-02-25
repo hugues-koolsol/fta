@@ -131,8 +131,8 @@ WHERE (`T0`.`chi_id_cible` = :T0_chi_id_cible
  AND `T0`.`chp_dossier_cible` LIKE :T0_chp_dossier_cible
   
  AND `T0`.`chp_commentaire_cible` LIKE :T0_chp_commentaire_cible) 
-ORDER BY `T0`.`chi_id_cible` ASC 
-LIMIT:quantitee OFFSET :debut ;
+ORDER BY `T0`.`chi_id_cible` ASC  
+LIMIT :quantitee OFFSET :debut ;
 
 */
 /*sql_inclure_fin*/

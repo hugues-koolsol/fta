@@ -63,7 +63,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_29.php');
         /*
-        
         UPDATE b1.tbl_taches SET `chp_texte_tache` = :n_chp_texte_tache , `chp_priorite_tache` = :n_chp_priorite_tache
         WHERE (`chx_utilisateur_tache` = :c_chx_utilisateur_tache
           
@@ -117,7 +116,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_31.php');
             /*
-            
             DELETE FROM b1.tbl_taches
             WHERE (`chi_id_tache` = :chi_id_tache
               
@@ -165,7 +163,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_30.php');
         /*
-        
         INSERT INTO b1.`tbl_taches`(
             `chx_utilisateur_tache` , 
             `chp_texte_tache` , 
@@ -247,6 +244,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['
         `T0`.`chi_id_tache` , `T0`.`chx_utilisateur_tache` , `T0`.`chp_texte_tache` , `T0`.`chp_priorite_tache`
          FROM b1.tbl_taches T0
         WHERE (`T0`.`chi_id_tache` = :T0_chi_id_tache
+          
          AND `T0`.`chx_utilisateur_tache` = :T0_chx_utilisateur_tache);
 
         */

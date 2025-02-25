@@ -47,7 +47,6 @@ function integrer_la_requete_dans_la_table_rev($id_requete,$matrice_requete){
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_5.php');
     /*
-    
     DELETE FROM b1.tbl_revs
     WHERE (`chx_cible_rev` = :chx_cible_rev
       
@@ -91,7 +90,6 @@ function integrer_la_requete_dans_la_table_rev($id_requete,$matrice_requete){
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_12.php');
     /*
-    
     INSERT INTO b1.`tbl_revs`(
         `chx_cible_rev` , 
         `chp_provenance_rev` , 
@@ -149,8 +147,9 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
     SELECT 
     `T0`.`chi_id_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete` , `T0`.`cht_matrice_requete`
      FROM b1.tbl_requetes T0
-    WHERE (`T0`.`chx_cible_requete` = :T0_chx_cible_requete)
-     ORDER BY  `T0`.`chi_id_requete`  ASC;
+    WHERE (`T0`.`chx_cible_requete` = :T0_chx_cible_requete) 
+   
+     ORDER BY `T0`.`chi_id_requete`  ASC;
 
     */
     /*sql_inclure_fin*/
@@ -325,9 +324,9 @@ if(isset($_POST) && count($_POST) > 0){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_4.php');
         /*
-        
         DELETE FROM b1.tbl_requetes
         WHERE (`chi_id_requete` = :chi_id_requete
+          
          AND `chx_cible_requete` = :chx_cible_requete) ;
 
         */
@@ -346,7 +345,6 @@ if(isset($_POST) && count($_POST) > 0){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_5.php');
         /*
-        
         DELETE FROM b1.tbl_revs
         WHERE (`chx_cible_rev` = :chx_cible_rev
           
@@ -386,9 +384,9 @@ if(isset($_POST) && count($_POST) > 0){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_3.php');
         /*
-        
         UPDATE b1.tbl_requetes SET `chi_id_requete` = :n_chi_id_requete
-        WHERE (/ *  * / `chi_id_requete` = :c_chi_id_requete
+        WHERE (`chi_id_requete` = :c_chi_id_requete
+          
          AND `chx_cible_requete` = :c_chx_cible_requete) ;
 
         */
@@ -410,10 +408,11 @@ if(isset($_POST) && count($_POST) > 0){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_8.php');
         /*
-        
         UPDATE b1.tbl_revs SET `chx_source_rev` = :n_chx_source_rev
         WHERE (`chx_cible_rev` = :c_chx_cible_rev
+          
          AND `chp_provenance_rev` = :c_chp_provenance_rev
+          
          AND `chx_source_rev` = :c_chx_source_rev) ;
 
         */
@@ -540,7 +539,7 @@ SELECT
 `T0`.`chi_id_requete` , `T0`.`chp_type_requete` , `T0`.`cht_rev_requete` , `T0`.`cht_sql_requete` , `T0`.`cht_php_requete` , 
 `T0`.`cht_commentaire_requete`
  FROM b1.tbl_requetes T0
-WHERE (/ *  * / `T0`.`chx_cible_requete` = :T0_chx_cible_requete
+WHERE (`T0`.`chx_cible_requete` = :T0_chx_cible_requete
   
  AND `T0`.`chi_id_requete` = :T0_chi_id_requete
   

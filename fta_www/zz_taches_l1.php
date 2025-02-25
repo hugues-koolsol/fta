@@ -54,7 +54,6 @@ if(isset($_POST['__ordonner_les_taches'])){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_65.php');
             /*
-            
             UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache
             WHERE (`chi_id_tache` = :c_chi_id_tache
               
@@ -68,14 +67,12 @@ if(isset($_POST['__ordonner_les_taches'])){
                 'c_chx_utilisateur_tache' => $_SESSION[APP_KEY]['sess_id_utilisateur_init'],
                 'c_chi_id_tache' => $v1['T0.chi_id_tache'],
                 'n_chp_priorite_tache' => $nouvelle_priorite
-            ));            
-            
+            ));
             
             if($tt2[__xst] === __xer){
 
                 ajouterMessage(__xer,__LINE__ . ' : ' . $tt2[__xme]);
                 recharger_la_page(BNF);
-
 
             }
 
@@ -99,9 +96,9 @@ if(isset($_POST['__soustraire_1_aux_priorites'])){
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_23.php');
     /*
-    
     UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache
     WHERE ((chp_priorite_tache IS NULL OR chp_priorite_tache = '')
+      
      AND chx_utilisateur_tache = :c_chx_utilisateur_tache) ;
 
     */
@@ -120,10 +117,11 @@ if(isset($_POST['__soustraire_1_aux_priorites'])){
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_25.php');
     /*
-    
-    UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`-1)
-    WHERE (/ *  * / `chx_utilisateur_tache` = :c_chx_utilisateur_tache
+    UPDATE b1.tbl_taches SET `chp_priorite_tache` = (chp_priorite_tache-1)
+    WHERE (`chx_utilisateur_tache` = :c_chx_utilisateur_tache
+      
      AND `chp_priorite_tache` < 50
+      
      AND `chp_priorite_tache` > 0) ;
 
     */
@@ -154,9 +152,9 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_23.php');
     /*
-    
     UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache
     WHERE ((chp_priorite_tache IS NULL OR chp_priorite_tache = '')
+      
      AND chx_utilisateur_tache = :c_chx_utilisateur_tache) ;
 
     */
@@ -175,9 +173,9 @@ if(isset($_POST['__ajouter_1_aux_priorites'])){
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_24.php');
     /*
-    
-    UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`+1)
+    UPDATE b1.tbl_taches SET `chp_priorite_tache` = (chp_priorite_tache+1)
     WHERE (`chx_utilisateur_tache` = :c_chx_utilisateur_tache
+      
      AND `chp_priorite_tache` < 50) ;
 
     */
@@ -212,9 +210,9 @@ if(isset($_GET['__action']) && '__mettre_a_99' === $_GET['__action']){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_22.php');
         /*
-        
         UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache
         WHERE (`chi_id_tache` = :c_chi_id_tache
+          
          AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache) ;
 
         */
@@ -251,9 +249,9 @@ if(isset($_GET['__action']) && '__mettre_a_0' === $_GET['__action']){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_22.php');
         /*
-        
         UPDATE b1.tbl_taches SET `chp_priorite_tache` = :n_chp_priorite_tache
         WHERE (`chi_id_tache` = :c_chi_id_tache
+          
          AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache) ;
 
         */
@@ -290,10 +288,11 @@ if(isset($_GET['__action']) && '__mettre_a_plus_1' === $_GET['__action']){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_21.php');
         /*
-        
-        UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`+1)
+        UPDATE b1.tbl_taches SET `chp_priorite_tache` = (chp_priorite_tache+1)
         WHERE (`chi_id_tache` = :c_chi_id_tache
+          
          AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache
+          
          AND `chp_priorite_tache` < 50) ;
 
         */
@@ -330,10 +329,11 @@ if(isset($_GET['__action']) && '__mettre_a_moins_1' === $_GET['__action']){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_20.php');
         /*
-        
-        UPDATE b1.tbl_taches SET `chp_priorite_tache` = (`chp_priorite_tache`-1)
-        WHERE (/ *  * / `chi_id_tache` = :c_chi_id_tache
+        UPDATE b1.tbl_taches SET `chp_priorite_tache` = (chp_priorite_tache-1)
+        WHERE (`chi_id_tache` = :c_chi_id_tache
+          
          AND `chx_utilisateur_tache` = :c_chx_utilisateur_tache
+          
          AND `chp_priorite_tache` >= 1) ;
 
         */
@@ -429,7 +429,7 @@ require_once(INCLUDE_PATH.'/sql/sql_19.php');
 SELECT 
 `T0`.`chi_id_tache` , `T0`.`chp_texte_tache` , `T0`.`chp_priorite_tache`
  FROM b1.tbl_taches T0
-WHERE (/ *  * / `T0`.`chx_utilisateur_tache` = :T0_chx_utilisateur_tache
+WHERE ( / * * / `T0`.`chx_utilisateur_tache` = :T0_chx_utilisateur_tache
   
  AND `T0`.`chi_id_tache` = :T0_chi_id_tache
   

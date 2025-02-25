@@ -3,7 +3,6 @@
   =====================================================================================================================
   met en session un nombre de lignes à afficher par page
 */
-
 function definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&$data){
 
     /*
@@ -18,14 +17,13 @@ function definir_le_nombre_de_lignes_a_afficher_pour_une_liste(&$data){
 /*
   =====================================================================================================================
 */
-
 function recuperer_les_travaux_en_arriere_plan_de_la_session(&$data){
 
     $data[__xst]=__xsu;
     $data[__xva]=array( 'sess_travaux_en_arriere_plan' => array(), '__aa_js_sql' => array());
     $nom_bref='aa_php_sql_cible_' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . '.php';
     $nom_complet=INCLUDE_PATH . DIRECTORY_SEPARATOR . 'sql' . DIRECTORY_SEPARATOR . $nom_bref;
-
+    
     if(is_file($nom_complet)){
 
         require_once($nom_complet);
@@ -33,7 +31,7 @@ function recuperer_les_travaux_en_arriere_plan_de_la_session(&$data){
 
     }
 
-
+    
     if(isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'])){
 
         $data[__xva]['sess_travaux_en_arriere_plan']=$_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'];
@@ -45,15 +43,14 @@ function recuperer_les_travaux_en_arriere_plan_de_la_session(&$data){
 /*
   =====================================================================================================================
 */
-
 function supprimer_un_travail_en_arriere_plan_en_session(&$data){
 
     $data['nombre_de_travaux_restants_debut']=0;
-
+    
     if(isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'])){
 
         $data['nombre_de_travaux_restants_debut']=count($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']);
-
+        
         if(count($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']) > 0){
 
             foreach($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'] as $k1 => $v1){
@@ -62,7 +59,7 @@ function supprimer_un_travail_en_arriere_plan_en_session(&$data){
                 $data['travail_en_arriere_plan_supprime']=$travail_supprime;
                 break;
             }
-
+            
             if(count($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']) === 0){
 
                 unset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']);
@@ -84,13 +81,12 @@ function supprimer_un_travail_en_arriere_plan_en_session(&$data){
 /*
   =====================================================================================================================
 */
-
 function enregistrer_un_travail_en_arriere_plan_en_session(&$data){
 
     /*
       if($fd=fopen('toto.txt','a')){fwrite($fd,''.date('Y-m-d H:i:s'). ' ' . __LINE__ ."\r\n".'$data='.var_export($data[__entree],true)."\r\n".'$_POST='.var_export($_POST,true)."\r\n"); fclose($fd);} 
     */
-
+    
     if(!isset($_SESSION[APP_KEY]['sess_travaux_en_arriere_plan'])){
 
         $_SESSION[APP_KEY]['sess_travaux_en_arriere_plan']=array();

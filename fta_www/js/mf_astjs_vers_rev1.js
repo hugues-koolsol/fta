@@ -747,14 +747,12 @@ class c_astjs_vers_rev1{
             }else{
                 return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
-        }else{
-            return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         if(element.body){
             obj=this.#traite_ast0( element.body , niveau + 2 , element , tab_comm );
             if(obj.__xst === __xsu){
                 if(obj.__xva !== ''){
-                    contenu+=',contenu(' + obj.__xva + ')';
+                    contenu+='contenu(' + obj.__xva + ')';
                 }
             }else{
                 return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));

@@ -65,13 +65,13 @@ require_once(INCLUDE_PATH.'/sql/sql_15.php');
 SELECT 
 `T0`.`chi_id_basedd` , `T0`.`chp_nom_basedd` , `T0`.`chp_commentaire_basedd`
  FROM b1.tbl_bdds T0
-WHERE (/ *  * / `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd
+WHERE ( / * * / `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd
   
  AND `T0`.`chi_id_basedd` = :T0_chi_id_basedd
   
  AND `T0`.`chp_nom_basedd` LIKE :T0_chp_nom_basedd) 
-ORDER BY `T0`.`chi_id_basedd` ASC 
-LIMIT:quantitee OFFSET :debut ;
+ORDER BY `T0`.`chi_id_basedd` ASC  
+LIMIT :quantitee OFFSET :debut ;
 
 */
 /*sql_inclure_fin*/

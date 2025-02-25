@@ -76,7 +76,6 @@ class c_rev_vers_js1{
             }catch(e){}
         }
         __m_rev1.empiler_erreur( o );
-        debugger;
         return o;
     }
     /*

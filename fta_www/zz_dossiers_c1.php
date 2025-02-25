@@ -82,8 +82,8 @@ WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier
  AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier
   
  AND `T0`.`chp_nom_dossier` LIKE :T0_chp_nom_dossier) 
-ORDER BY `T0`.`chp_nom_dossier` ASC, `T0`.`chi_id_dossier` DESC 
-LIMIT:quantitee OFFSET :debut ;
+ORDER BY `T0`.`chp_nom_dossier` ASC, `T0`.`chi_id_dossier` DESC  
+LIMIT :quantitee OFFSET :debut ;
 
 */
 /*sql_inclure_fin*/

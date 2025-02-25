@@ -376,6 +376,18 @@ class c_astsqliteparseur_vers_rev1{
         }else{
             return(this.#astsql_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
         }
+        if(t.substr( 0 , 6 ) === 'et(et('){
+            var obj=__m_rev1.rev_tm( t );
+            if(obj.__xst === __xsu){
+                var nouveau_tableau=__m_rev1.baisser_le_niveau_et_supprimer( obj.__xva , 2 , 0 );
+                obj=__m_rev1.matrice_vers_source_rev1( nouveau_tableau , 0 , false , 1 );
+                if(obj.__xst === __xsu){
+                    t=obj.__xva;
+                }else{
+                    return(this.#astsql_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
+                }
+            }
+        }
         return({"__xst" : __xsu ,"__xva" : t});
     }
     /*

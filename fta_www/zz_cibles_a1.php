@@ -148,7 +148,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_47.php');
             /*
-            
             UPDATE b1.tbl_cibles SET `chp_commentaire_cible` = :n_chp_commentaire_cible
             WHERE `chi_id_cible` = 1 ;
 
@@ -163,7 +162,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_48.php');
             /*
-            
             UPDATE b1.tbl_cibles SET `chp_nom_cible` = :n_chp_nom_cible , `chp_dossier_cible` = :n_chp_dossier_cible , `chp_commentaire_cible` = :n_chp_commentaire_cible
             WHERE (`chi_id_cible` = :c_chi_id_cible) ;
 
@@ -231,9 +229,8 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_38.php');
         /*
-        
-        BEGIN TRANSACTION;
-        
+            BEGIN TRANSACTION;
+            
 
         */
         /*sql_inclure_fin*/
@@ -254,7 +251,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_14.php');
         /*
-        
         DELETE FROM b1.tbl_revs
         WHERE `chx_cible_rev` = :chx_cible_rev ;
 
@@ -270,8 +266,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_40.php');
             /*
-            
-            ROLLBACK;
+                ROLLBACK;
 
             */
             /*sql_inclure_fin*/
@@ -289,7 +284,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_41.php');
         /*
-        
         DELETE FROM b1.tbl_sources
         WHERE `chx_cible_id_source` = :chx_cible_id_source ;
 
@@ -305,8 +299,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_40.php');
             /*
-            
-            ROLLBACK;
+                ROLLBACK;
 
             */
             /*sql_inclure_fin*/
@@ -324,7 +317,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_42.php');
         /*
-        
         DELETE FROM b1.tbl_requetes
         WHERE (`chx_cible_requete` = :chx_cible_requete) ;
 
@@ -340,8 +332,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_40.php');
             /*
-            
-            ROLLBACK;
+                ROLLBACK;
 
             */
             /*sql_inclure_fin*/
@@ -359,7 +350,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_43.php');
         /*
-        
         DELETE FROM b1.tbl_bdds
         WHERE (`chx_cible_id_basedd` = :chx_cible_id_basedd) ;
 
@@ -375,8 +365,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_40.php');
             /*
-            
-            ROLLBACK;
+                ROLLBACK;
 
             */
             /*sql_inclure_fin*/
@@ -394,7 +383,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_44.php');
         /*
-        
         DELETE FROM b1.tbl_dossiers
         WHERE (`chx_cible_dossier` = :chx_cible_dossier) ;
 
@@ -410,8 +398,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_40.php');
             /*
-            
-            ROLLBACK;
+                ROLLBACK;
 
             */
             /*sql_inclure_fin*/
@@ -429,7 +416,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_45.php');
         /*
-        
         DELETE FROM b1.tbl_cibles
         WHERE (`chi_id_cible` = :chi_id_cible) ;
 
@@ -445,8 +431,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_40.php');
             /*
-            
-            ROLLBACK;
+                ROLLBACK;
 
             */
             /*sql_inclure_fin*/
@@ -464,8 +449,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_46.php');
         /*
-        
-        COMMIT;
+            COMMIT;
 
         */
         /*sql_inclure_fin*/
@@ -502,7 +486,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_36.php');
         /*
-        
         INSERT INTO b1.`tbl_cibles`(
             `chp_nom_cible` , 
             `chp_dossier_cible` , 
@@ -530,7 +513,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_37.php');
             /*
-            
             INSERT INTO b1.`tbl_dossiers`(
                 `chx_cible_dossier` , 
                 `chp_nom_dossier`

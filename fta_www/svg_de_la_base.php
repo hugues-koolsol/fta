@@ -15,9 +15,10 @@ sql_inclure_reference(49);
 require_once(INCLUDE_PATH.'/sql/sql_49.php');
 /*
 SELECT 
-count(*)
+count( * )
  FROM b1.tbl_bdds T0
 WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+  
  AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
 
 */

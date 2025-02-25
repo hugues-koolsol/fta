@@ -18,7 +18,6 @@ if(isset($_GET['supprimer_tout']) && $_GET['supprimer_tout'] === '1'){
     /*sql_inclure_deb*/
     require_once(INCLUDE_PATH.'/sql/sql_14.php');
     /*
-    
     DELETE FROM b1.tbl_revs
     WHERE `chx_cible_rev` = :chx_cible_rev ;
 

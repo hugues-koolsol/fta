@@ -120,8 +120,7 @@ if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
     /* les messages sont mis en tableau */
     $ret[__entree]=json_decode($_POST['ajax_param'],true);
     $GLOBALS[__entree]=$ret[__entree];
-    
-    if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,PHP_EOL.'========================'.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ .PHP_EOL.'$ret='.var_export($ret,true).PHP_EOL); fclose($fdtoto);}
+    /*if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,PHP_EOL.'========================'.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ .PHP_EOL.'$ret='.var_export($ret,true).PHP_EOL); fclose($fdtoto);}*/
     
     if(isset($ret[__entree]['call']['funct'])
        && $ret[__entree]['call']['lib'] !== ''
@@ -184,12 +183,16 @@ if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
     $ret[__xst]=false;
     $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'ajax_param est absent : "' . var_export($_POST,true) . '"';
 }
-if(isset($_SESSION[APP_KEY][NAV])){
- $ret['signaux']=$_SESSION[APP_KEY][NAV];
- unset($_SESSION[APP_KEY][NAV]);
-}
-/*if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,PHP_EOL.'========================'.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ .PHP_EOL.'$ret='.var_export($ret,true).PHP_EOL); fclose($fdtoto);}*/
 
+
+if(isset($_SESSION[APP_KEY][NAV])){
+
+    $ret['signaux']=$_SESSION[APP_KEY][NAV];
+    unset($_SESSION[APP_KEY][NAV]);
+
+}
+
+/*if($fdtoto=fopen('toto.txt','a')){fwrite($fdtoto,PHP_EOL.'========================'.PHP_EOL.date('Y-m-d H:i:s'). ' ' . __LINE__ .PHP_EOL.'$ret='.var_export($ret,true).PHP_EOL); fclose($fdtoto);}*/
 header('Content-Type: application/json; charset=utf-8');
 echo json_encode($ret,JSON_FORCE_OBJECT) ;
 exit(0);

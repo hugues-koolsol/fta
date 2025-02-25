@@ -331,6 +331,7 @@ SELECT
  LEFT JOIN b1.tbl_cibles T2 ON T2.chi_id_cible = T0.chx_cible_id_basedd
 
 WHERE (`T0`.`chi_id_basedd` = :T0_chi_id_basedd
+  
  AND `T0`.`chx_cible_id_basedd` = :T0_chx_cible_id_basedd);
 
 */

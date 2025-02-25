@@ -67,7 +67,7 @@ class c_rev_vers_sql1{
         }else if(op === 'champ'){
             t='';
         }else if(op === 'tous_les_champs'){
-            t='tous_les_champs';
+            t='* ';
         }else if(op === 'concat'){
             t='concat';
         }else if(op === 'nombre_d_element'){
@@ -81,7 +81,7 @@ class c_rev_vers_sql1{
         }else if(op === 'début'){
             t='OFFSET';
         }else if(op === '#'){
-            t='#';
+            t='/* */';
         }else if(op === 'conditions'){
             t='';
         }else if(op === 'dans'){
@@ -156,12 +156,12 @@ class c_rev_vers_sql1{
         var obj_op=this.#recuperer_operateur_sqlite( tab[id][1] );
         if(obj_op.__xst === __xsu){
             operateur=obj_op.__xva;
-            if(tab[id][8]===0){
+            if(tab[id][8] === 0){
                 /*
                   si c'est un opérateur de type décroissant() dans "trier_par( champ(...) , décroissant())"
-                  
+                  de même : tous_les_champs() , #
                 */
-                return({"__xst" : __xsu ,"__xva" : ' '+operateur ,"operateur" : operateur});
+                return({"__xst" : __xsu ,"__xva" : ' ' + operateur ,"operateur_retour" : tab[id][1]});
             }
         }else{
             return(this.#rev_sql_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'problème sur l\'opérateur'} ));
@@ -233,7 +233,7 @@ class c_rev_vers_sql1{
                     }else{
                         t+=obj.__xva;
                     }
-                    if(obj.operateur && obj.operateur === '#' && premierChamp === true){
+                    if(obj.operateur_retour && obj.operateur_retour === '#' && premierChamp === true){
                         /*
                           cas d'un commentaire avant les contitions,
                           / *  * /`T0`.`chi_id_test` = :par0 AND `T0`.`chp_nom_test` = :par1
@@ -282,7 +282,7 @@ class c_rev_vers_sql1{
         ){
             t='(' + t + ')';
         }
-        return({"__xst" : __xsu ,"__xva" : t ,"operateur" : operateur});
+        return({"__xst" : __xsu ,"__xva" : t ,"operateur_retour" : operateur});
     }
     /*
       =============================================================================================================
@@ -612,7 +612,6 @@ class c_rev_vers_sql1{
                             if(this.#tb[j][1] === 'complements'){
                                 for( k=j + 1 ; k < this.#l02 ; k=this.#tb[k][12] ){
                                     if(this.#tb[k][1] === 'trier_par' && this.#tb[k][8] >= 1){
-
                                         for( l=k + 1 ; l < this.#l02 ; l=this.#tb[l][12] ){
                                             options.tableau_des_alias=tableau_des_alias;
                                             obj=this.traite_sqlite_fonction_de_champ( this.#tb , l , niveau , options );

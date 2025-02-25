@@ -3,7 +3,6 @@
 declare(strict_types=1);
 
 namespace PhpParser;
-
 /*
   * This parser is based on a skeleton written by Moriyoshi Koizumi, which in
   * turn is based on work by Masato Bito.
@@ -180,7 +179,7 @@ abstract class ParserAbstract implements  Parser{
         /* or not.*/
         foreach($this->createdArrays as $node){
             foreach($node->items as $item){
-
+                
                 if($item->value instanceof Expr\Error){
 
                     $this->errorHandler->handleError(new Error('Cannot use empty array elements in arrays',$item->getAttributes()));
@@ -196,7 +195,7 @@ abstract class ParserAbstract implements  Parser{
         $this->semStack=[];
         $this->semValue=null;
         $this->createdArrays=null;
-
+        
         if($result !== null){
 
             $traverser=new NodeTraverser(new CommentAnnotatingVisitor($this->tokens));
@@ -226,16 +225,17 @@ abstract class ParserAbstract implements  Parser{
         /* Current position in the stack(s)*/
         $stackPos=0;
         $this->errorState=0;
-        for(;;){
+        for(  ;  ;  ){
+            
             /* $this->traceNewState($state, $symbol);*/
-
+            
             if($this->actionBase[$state] === 0){
 
                 $rule=$this->actionDefault[$state];
 
             }else{
 
-
+                
                 if($symbol === self::SYMBOL_NONE){
 
                     do{
@@ -244,7 +244,7 @@ abstract class ParserAbstract implements  Parser{
                     }while(isset($this->dropTokens[$tokenId]));
                     /* Map the lexer token id to the internally used symbols.*/
                     $tokenValue=$token->text;
-
+                    
                     if(!isset($this->phpTokenToSymbol[$tokenId])){
 
                         throw new \RangeException(sprintf('The lexer returned an invalid token (id=%d, value=%s)',$tokenId,$tokenValue));
@@ -257,7 +257,7 @@ abstract class ParserAbstract implements  Parser{
                 }
 
                 $idx=$this->actionBase[$state] + $symbol;
-
+                
                 if(($idx >= 0
                            && $idx < $this->actionTableSize
                            && $this->actionCheck[$idx] === $symbol
@@ -275,7 +275,7 @@ abstract class ParserAbstract implements  Parser{
                       * < 0: reduce
                       * = -YYUNEXPECTED: error
                     */
-
+                    
                     if($action > 0){
 
                         /* shift */
@@ -286,14 +286,14 @@ abstract class ParserAbstract implements  Parser{
                         $this->tokenStartStack[$stackPos]=$this->tokenPos;
                         $this->tokenEndStack[$stackPos]=$this->tokenPos;
                         $symbol=self::SYMBOL_NONE;
-
+                        
                         if($this->errorState){
 
                             --$this->errorState;
 
                         }
 
-
+                        
                         if($action < $this->numNonLeafStates){
 
                             continue;
@@ -316,8 +316,9 @@ abstract class ParserAbstract implements  Parser{
 
             }
 
-            for(;;){
-
+            for(  ;  ;  ){
+                
+                
                 if($rule === 0){
 
                     /* accept */
@@ -326,7 +327,7 @@ abstract class ParserAbstract implements  Parser{
 
                 }
 
-
+                
                 if($rule !== $this->unexpectedTokenRule){
 
                     /* reduce */
@@ -334,7 +335,7 @@ abstract class ParserAbstract implements  Parser{
                     $ruleLength=$this->ruleToLength[$rule];
                     try{
                         $callback=$this->reduceCallbacks[$rule];
-
+                        
                         if($callback !== null){
 
                             $callback($this,$stackPos);
@@ -342,11 +343,10 @@ abstract class ParserAbstract implements  Parser{
                         }else if($ruleLength > 0){
 
                             $this->semValue=$this->semStack[($stackPos - $ruleLength) + 1];
-
                         }
 
                     }catch(Error $e){
-
+                        
                         if(-1 === $e->getStartLine()){
 
                             $e->setStartLine($this->tokens[$this->tokenPos]->line);
@@ -362,7 +362,7 @@ abstract class ParserAbstract implements  Parser{
                     $stackPos=$stackPos - $ruleLength;
                     $nonTerminal=$this->ruleToNonTerminal[$rule];
                     $idx=$this->gotoBase[$nonTerminal] + $stateStack[$stackPos];
-
+                    
                     if($idx >= 0 && $idx < $this->gotoTableSize && $this->gotoCheck[$idx] === $nonTerminal){
 
                         $state=$this->goto[$idx];
@@ -376,7 +376,7 @@ abstract class ParserAbstract implements  Parser{
                     $stateStack[$stackPos]=$state;
                     $this->semStack[$stackPos]=$this->semValue;
                     $this->tokenEndStack[$stackPos]=$lastTokenEnd;
-
+                    
                     if($ruleLength === 0){
 
                         /* Empty productions use the start attributes of the lookahead token.*/
@@ -390,7 +390,7 @@ abstract class ParserAbstract implements  Parser{
                     /* error */
                     switch ($this->errorState){
                         case 0:
-                            $msg=$this->getErrorMessage($symbol,$state);
+                        $msg=$this->getErrorMessage($symbol,$state);
                             $this->emitError(new Error($msg,$this->getAttributesForToken($this->tokenPos)));
                             
                             /* Break missing intentionally*/
@@ -398,7 +398,7 @@ abstract class ParserAbstract implements  Parser{
                         case 1:
                             
                         case 2:
-                            $this->errorState=3;
+                        $this->errorState=3;
                             /* Pop until error-expecting state uncovered*/
                             while(
                               !(($idx=$this->actionBase[$state] + $this->errorSymbol) >= 0
@@ -411,7 +411,7 @@ abstract class ParserAbstract implements  Parser{
                                || ($action=$this->action[$idx]) === $this->defaultAction
                             ){
                                 /* Not totally sure about this*/
-
+                                
                                 if($stackPos <= 0){
 
                                     /* Could not recover from error*/
@@ -432,7 +432,7 @@ abstract class ParserAbstract implements  Parser{
                             break;
                             
                         case 3:
-
+                        
                             if($symbol === 0){
 
                                 /* Reached EOF without recovering from error*/
@@ -441,12 +441,13 @@ abstract class ParserAbstract implements  Parser{
                             }
 
                             /* $this->traceDiscard($symbol);*/
-                            $symbol=self::SYMBOL_NONE;break 2;
+                            $symbol=self::SYMBOL_NONE;
+                            break 2;
                             
                     }
                 }
 
-
+                
                 if($state < $this->numNonLeafStates){
 
                     break;
@@ -471,7 +472,7 @@ abstract class ParserAbstract implements  Parser{
     */
     protected function getErrorMessage(int $symbol,int $state):string{
         $expectedString='';
-
+        
         if($expected=$this->getExpectedTokens($state)){
 
             $expectedString=', expecting ' . implode(' or ',$expected);
@@ -492,7 +493,7 @@ abstract class ParserAbstract implements  Parser{
         $base=$this->actionBase[$state];
         foreach($this->symbolToName as $symbol => $name){
             $idx=$base + $symbol;
-
+            
             if($idx >= 0
                    && $idx < $this->actionTableSize
                    && $this->actionCheck[$idx] === $symbol
@@ -502,13 +503,13 @@ abstract class ParserAbstract implements  Parser{
                    && $this->actionCheck[$idx] === $symbol
             ){
 
-
+                
                 if($this->action[$idx] !== $this->unexpectedTokenRule
                    && $this->action[$idx] !== $this->defaultAction
                    && $symbol !== $this->errorSymbol
                 ){
 
-
+                    
                     if(count($expected) === 4){
 
                         /* Too many expected tokens */
@@ -551,7 +552,7 @@ abstract class ParserAbstract implements  Parser{
       * @return array<string, mixed> Attributes
     */
     protected function getAttributesForToken(int $tokenPos):array{
-
+        
         if($tokenPos < \count($this->tokens) - 1){
 
             return $this->getAttributes($tokenPos,$tokenPos);
@@ -614,7 +615,7 @@ abstract class ParserAbstract implements  Parser{
     protected function handleNamespaces(array $stmts):array{
         $hasErrored=false;
         $style=$this->getNamespacingStyle($stmts);
-
+        
         if(null === $style){
 
             /* not namespaced, nothing to do*/
@@ -622,13 +623,13 @@ abstract class ParserAbstract implements  Parser{
 
         }
 
-
+        
         if('brace' === $style){
 
             /* For braced namespaces we only have to check that there are no invalid statements between the namespaces*/
             $afterFirstNamespace=false;
             foreach($stmts as $stmt){
-
+                
                 if($stmt instanceof Node\Stmt\Namespace_){
 
                     $afterFirstNamespace=true;
@@ -638,7 +639,6 @@ abstract class ParserAbstract implements  Parser{
                     $this->emitError(new Error('No code may exist outside of namespace {}',$stmt->getAttributes()));
                     $hasErrored=true;
                     /* Avoid one error for every statement*/
-
                 }
 
             }
@@ -651,17 +651,17 @@ abstract class ParserAbstract implements  Parser{
             $targetStmts=&$resultStmts;
             $lastNs=null;
             foreach($stmts as $stmt){
-
+                
                 if($stmt instanceof Node\Stmt\Namespace_){
 
-
+                    
                     if($lastNs !== null){
 
                         $this->fixupNamespaceAttributes($lastNs);
 
                     }
 
-
+                    
                     if($stmt->stmts === null){
 
                         $stmt->stmts=[];
@@ -688,7 +688,7 @@ abstract class ParserAbstract implements  Parser{
                 }
 
             }
-
+            
             if($lastNs !== null){
 
                 $this->fixupNamespaceAttributes($lastNs);
@@ -702,7 +702,7 @@ abstract class ParserAbstract implements  Parser{
     private function fixupNamespaceAttributes(Node\Stmt\Namespace_ $stmt):void{
         /* We moved the statements into the namespace node, as such the end of the namespace node*/
         /* needs to be extended to the end of the statements.*/
-
+        
         if(empty($stmt->stmts)){
 
             return;
@@ -714,7 +714,7 @@ abstract class ParserAbstract implements  Parser{
         $endAttributes=[ 'endLine', 'endFilePos', 'endTokenPos'];
         $lastStmt=$stmt->stmts[count($stmt->stmts) - 1];
         foreach($endAttributes as $endAttribute){
-
+            
             if($lastStmt->hasAttribute($endAttribute)){
 
                 $stmt->setAttribute($endAttribute,$lastStmt->getAttribute($endAttribute));
@@ -727,21 +727,21 @@ abstract class ParserAbstract implements  Parser{
     private function getNamespaceErrorAttributes(Namespace_ $node):array{
         $attrs=$node->getAttributes();
         /* Adjust end attributes to only cover the "namespace" keyword, not the whole namespace.*/
-
+        
         if(isset($attrs['startLine'])){
 
             $attrs['endLine']=$attrs['startLine'];
 
         }
 
-
+        
         if(isset($attrs['startTokenPos'])){
 
             $attrs['endTokenPos']=$attrs['startTokenPos'];
 
         }
 
-
+        
         if(isset($attrs['startFilePos'])){
 
             $attrs['endFilePos']=($attrs['startFilePos'] + \strlen('namespace')) - 1;
@@ -761,15 +761,15 @@ abstract class ParserAbstract implements  Parser{
         $style=null;
         $hasNotAllowedStmts=false;
         foreach($stmts as $i => $stmt){
-
+            
             if($stmt instanceof Node\Stmt\Namespace_){
 
                 $currentStyle=null === $stmt->stmts ? 'semicolon' : 'brace';
-
+                
                 if(null === $style){
 
                     $style=$currentStyle;
-
+                    
                     if($hasNotAllowedStmts){
 
                         $this->emitError(new Error('Namespace declaration statement has to be the very first statement in the script',$this->getNamespaceErrorAttributes($stmt)));
@@ -782,7 +782,6 @@ abstract class ParserAbstract implements  Parser{
                     $this->emitError(new Error('Cannot mix bracketed namespace declarations with unbracketed namespace declarations',$this->getNamespaceErrorAttributes($stmt)));
                     /* Treat like semicolon style for namespace normalization*/
                     return 'semicolon';
-
                 }
 
                 continue;
@@ -790,7 +789,7 @@ abstract class ParserAbstract implements  Parser{
             }
 
             /* declare(), __halt_compiler() and nops can be used before a namespace declaration */
-
+            
             if($stmt instanceof Node\Stmt\Declare_ || $stmt instanceof Node\Stmt\HaltCompiler || $stmt instanceof Node\Stmt\Nop){
 
                 continue;
@@ -798,7 +797,7 @@ abstract class ParserAbstract implements  Parser{
             }
 
             /* There may be a hashbang line at the very start of the file */
-
+            
             if($i === 0 && $stmt instanceof Node\Stmt\InlineHTML && preg_match('/\A#!.*\r?\n\z/',$stmt->value)){
 
                 continue;
@@ -812,7 +811,7 @@ abstract class ParserAbstract implements  Parser{
     }
     /*# @return Name|Identifier */
     protected function handleBuiltinTypes(Name $name){
-
+        
         if(!$name->isUnqualified()){
 
             return $name;
@@ -820,7 +819,7 @@ abstract class ParserAbstract implements  Parser{
         }
 
         $lowerName=$name->toLowerString();
-
+        
         if(!$this->phpVersion->supportsBuiltinType($lowerName)){
 
             return $name;
@@ -841,14 +840,14 @@ abstract class ParserAbstract implements  Parser{
     }
     protected function getFloatCastKind(string $cast):int{
         $cast=strtolower($cast);
-
+        
         if(strpos($cast,'float') !== false){
 
             return Double::KIND_FLOAT;
 
         }
 
-
+        
         if(strpos($cast,'real') !== false){
 
             return Double::KIND_REAL;
@@ -876,7 +875,7 @@ abstract class ParserAbstract implements  Parser{
       * @return Int_|String_ Integer or string node.
     */
     protected function parseNumString(string $str,array $attributes){
-
+        
         if(!preg_match('/^(?:0|-?[1-9][0-9]*)$/',$str)){
 
             return new String_($str,$attributes);
@@ -884,7 +883,7 @@ abstract class ParserAbstract implements  Parser{
         }
 
         $num=+$str;
-
+        
         if(!is_int($num)){
 
             return new String_($str,$attributes);
@@ -895,7 +894,7 @@ abstract class ParserAbstract implements  Parser{
     }
     /*# @param array<string, mixed> $attributes */
     protected function stripIndentation(string $string,int $indentLen,string $indentChar,bool $newlineAtStart,bool $newlineAtEnd,array $attributes):string{
-
+        
         if($indentLen === 0){
 
             return $string;
@@ -906,8 +905,8 @@ abstract class ParserAbstract implements  Parser{
         $end=$newlineAtEnd ? '(?:(?=[\r\n])|\z)' : '(?=[\r\n])';
         $regex='/' . $start . '([ \t]*)(' . $end . ')?/';
         return preg_replace_callback($regex,function($matches) use ($indentLen,$indentChar,$attributes){
-                $prefix=substr($matches[1],0,$indentLen);
-
+            $prefix=substr($matches[1],0,$indentLen);
+                
                 if(false !== strpos($prefix,$indentChar === " " ? "\t" : " ")){
 
                     $this->emitError(new Error('Invalid indentation - tabs and spaces cannot be mixed',$attributes));
@@ -915,7 +914,6 @@ abstract class ParserAbstract implements  Parser{
                 }else if(strlen($prefix) < $indentLen && !isset($matches[2])){
 
                     $this->emitError(new Error('Invalid body indentation level ' . '(expecting an indentation level of at least ' . $indentLen . ')',$attributes));
-
                 }
 
                 return substr($matches[0],strlen($prefix));
@@ -940,7 +938,7 @@ abstract class ParserAbstract implements  Parser{
         $attributes['docIndentation']=$indentation;
         $indentHasSpaces=false !== strpos($indentation," ");
         $indentHasTabs=false !== strpos($indentation,"\t");
-
+        
         if($indentHasSpaces && $indentHasTabs){
 
             $this->emitError(new Error('Invalid indentation - tabs and spaces cannot be mixed',$endTokenAttributes));
@@ -951,10 +949,10 @@ abstract class ParserAbstract implements  Parser{
 
         $indentLen=\strlen($indentation);
         $indentChar=$indentHasSpaces ? " " : "\t";
-
+        
         if(\is_string($contents)){
 
-
+            
             if($contents === ''){
 
                 $attributes['rawValue']=$contents;
@@ -965,7 +963,7 @@ abstract class ParserAbstract implements  Parser{
             $contents=$this->stripIndentation($contents,$indentLen,$indentChar,true,true,$attributes);
             $contents=preg_replace('~(\r\n|\n|\r)\z~','',$contents);
             $attributes['rawValue']=$contents;
-
+            
             if($kind === String_::KIND_HEREDOC){
 
                 $contents=String_::parseEscapeSequences($contents,null,$parseUnicodeEscape);
@@ -977,7 +975,7 @@ abstract class ParserAbstract implements  Parser{
         }else{
 
             assert(count($contents) > 0);
-
+            
             if(!$contents[0] instanceof Node\InterpolatedStringPart){
 
                 /* If there is no leading encapsed string part, pretend there is an empty one*/
@@ -987,12 +985,12 @@ abstract class ParserAbstract implements  Parser{
 
             $newContents=[];
             foreach($contents as $i => $part){
-
+                
                 if($part instanceof Node\InterpolatedStringPart){
 
                     $isLast=$i === \count($contents) - 1;
                     $part->value=$this->stripIndentation($part->value,$indentLen,$indentChar,$i === 0,$isLast,$part->getAttributes());
-
+                    
                     if($isLast){
 
                         $part->value=preg_replace('~(\r\n|\n|\r)\z~','',$part->value);
@@ -1001,7 +999,7 @@ abstract class ParserAbstract implements  Parser{
 
                     $part->setAttribute('rawValue',$part->value);
                     $part->value=String_::parseEscapeSequences($part->value,null,$parseUnicodeEscape);
-
+                    
                     if('' === $part->value){
 
                         continue;
@@ -1029,14 +1027,14 @@ abstract class ParserAbstract implements  Parser{
     protected function getCommentBeforeToken(int $tokenPos):?Comment{
         while(--$tokenPos >= 0){
             $token=$this->tokens[$tokenPos];
-
+            
             if(!isset($this->dropTokens[$token->id])){
 
                 break;
 
             }
 
-
+            
             if($token->id === \T_COMMENT || $token->id === \T_DOC_COMMENT){
 
                 return $this->createCommentFromToken($token,$tokenPos);
@@ -1051,7 +1049,7 @@ abstract class ParserAbstract implements  Parser{
     */
     protected function maybeCreateZeroLengthNop(int $tokenPos):?Nop{
         $comment=$this->getCommentBeforeToken($tokenPos);
-
+        
         if($comment === null){
 
             return null;
@@ -1072,7 +1070,7 @@ abstract class ParserAbstract implements  Parser{
         return new Nop($attributes);
     }
     protected function maybeCreateNop(int $tokenStartPos,int $tokenEndPos):?Nop{
-
+        
         if($this->getCommentBeforeToken($tokenStartPos) === null){
 
             return null;
@@ -1092,7 +1090,7 @@ abstract class ParserAbstract implements  Parser{
         $tokenPos=$this->tokenStartStack[$stackPos];
         $token=$this->tokens[$tokenPos];
         assert($token->id == \T_INLINE_HTML);
-
+        
         if($tokenPos > 0){
 
             $prevToken=$this->tokens[$tokenPos - 1];
@@ -1112,7 +1110,7 @@ abstract class ParserAbstract implements  Parser{
     protected function fixupArrayDestructuring(Array_ $node):Expr\List_{
         $this->createdArrays->detach($node);
         return new Expr\List_(array_map(function(Node\ArrayItem $item){
-
+            
                 if($item->value instanceof Expr\Error){
 
                     /* We used Error as a placeholder for empty elements, which are legal for destructuring.*/
@@ -1120,7 +1118,7 @@ abstract class ParserAbstract implements  Parser{
 
                 }
 
-
+                
                 if($item->value instanceof Array_){
 
                     return new Node\ArrayItem($this->fixupArrayDestructuring($item->value),$item->key,$item->byRef,$item->getAttributes());
@@ -1132,7 +1130,7 @@ abstract class ParserAbstract implements  Parser{
     }
     protected function postprocessList(Expr\List_ $node):void{
         foreach($node->items as $i => $item){
-
+            
             if($item->value instanceof Expr\Error){
 
                 /* We used Error as a placeholder for empty elements, which are legal for destructuring.*/
@@ -1146,25 +1144,25 @@ abstract class ParserAbstract implements  Parser{
     protected function fixupAlternativeElse($node):void{
         /* Make sure a trailing nop statement carrying comments is part of the node.*/
         $numStmts=\count($node->stmts);
-
+        
         if($numStmts !== 0 && $node->stmts[$numStmts - 1] instanceof Nop){
 
             $nopAttrs=$node->stmts[$numStmts - 1]->getAttributes();
-
+            
             if(isset($nopAttrs['endLine'])){
 
                 $node->setAttribute('endLine',$nopAttrs['endLine']);
 
             }
 
-
+            
             if(isset($nopAttrs['endFilePos'])){
 
                 $node->setAttribute('endFilePos',$nopAttrs['endFilePos']);
 
             }
 
-
+            
             if(isset($nopAttrs['endTokenPos'])){
 
                 $node->setAttribute('endTokenPos',$nopAttrs['endTokenPos']);
@@ -1193,7 +1191,7 @@ abstract class ParserAbstract implements  Parser{
         }
     }
     protected function checkParam(Param $node):void{
-
+        
         if($node->variadic && null !== $node->default){
 
             $this->emitError(new Error('Variadic parameter cannot have a default value',$node->default->getAttributes()));
@@ -1202,7 +1200,7 @@ abstract class ParserAbstract implements  Parser{
 
     }
     protected function checkTryCatch(TryCatch $node):void{
-
+        
         if(empty($node->catches) && null === $node->finally){
 
             $this->emitError(new Error('Cannot use try without catch or finally',$node->getAttributes()));
@@ -1211,11 +1209,11 @@ abstract class ParserAbstract implements  Parser{
 
     }
     protected function checkNamespace(Namespace_ $node):void{
-
+        
         if(null !== $node->stmts){
 
             foreach($node->stmts as $stmt){
-
+                
                 if($stmt instanceof Namespace_){
 
                     $this->emitError(new Error('Namespace declarations cannot be nested',$stmt->getAttributes()));
@@ -1228,7 +1226,7 @@ abstract class ParserAbstract implements  Parser{
 
     }
     private function checkClassName(?Identifier $name,int $namePos):void{
-
+        
         if(null !== $name && $name->isSpecialClassName()){
 
             $this->emitError(new Error(sprintf('Cannot use \'%s\' as class name as it is reserved',$name),$this->getAttributesAt($namePos)));
@@ -1239,7 +1237,7 @@ abstract class ParserAbstract implements  Parser{
     /*# @param Name[] $interfaces */
     private function checkImplementedInterfaces(array $interfaces):void{
         foreach($interfaces as $interface){
-
+            
             if($interface->isSpecialClassName()){
 
                 $this->emitError(new Error(sprintf('Cannot use \'%s\' as interface name as it is reserved',$interface),$interface->getAttributes()));
@@ -1250,7 +1248,7 @@ abstract class ParserAbstract implements  Parser{
     }
     protected function checkClass(Class_ $node,int $namePos):void{
         $this->checkClassName($node->name,$namePos);
-
+        
         if($node->extends && $node->extends->isSpecialClassName()){
 
             $this->emitError(new Error(sprintf('Cannot use \'%s\' as class name as it is reserved',$node->extends),$node->extends->getAttributes()));
@@ -1268,27 +1266,27 @@ abstract class ParserAbstract implements  Parser{
         $this->checkImplementedInterfaces($node->implements);
     }
     protected function checkClassMethod(ClassMethod $node,int $modifierPos):void{
-
+        
         if($node->flags & Modifiers::STATIC){
 
             switch ($node->name->toLowerString()){
                 case '__construct':
-                    $this->emitError(new Error(sprintf('Constructor %s() cannot be static',$node->name),$this->getAttributesAt($modifierPos)));
+                $this->emitError(new Error(sprintf('Constructor %s() cannot be static',$node->name),$this->getAttributesAt($modifierPos)));
                     break;
                     
                 case '__destruct':
-                    $this->emitError(new Error(sprintf('Destructor %s() cannot be static',$node->name),$this->getAttributesAt($modifierPos)));
+                $this->emitError(new Error(sprintf('Destructor %s() cannot be static',$node->name),$this->getAttributesAt($modifierPos)));
                     break;
                     
                 case '__clone':
-                    $this->emitError(new Error(sprintf('Clone method %s() cannot be static',$node->name),$this->getAttributesAt($modifierPos)));
+                $this->emitError(new Error(sprintf('Clone method %s() cannot be static',$node->name),$this->getAttributesAt($modifierPos)));
                     break;
                     
             }
 
         }
 
-
+        
         if($node->flags & Modifiers::READONLY){
 
             $this->emitError(new Error(sprintf('Method %s() cannot be readonly',$node->name),$this->getAttributesAt($modifierPos)));
@@ -1298,7 +1296,7 @@ abstract class ParserAbstract implements  Parser{
     }
     protected function checkClassConst(ClassConst $node,int $modifierPos):void{
         foreach([ Modifiers::STATIC, Modifiers::ABSTRACT, Modifiers::READONLY] as $modifier){
-
+            
             if($node->flags & $modifier){
 
                 $this->emitError(new Error("Cannot use '" . Modifiers::toString($modifier) . "' as constant modifier",$this->getAttributesAt($modifierPos)));
@@ -1308,7 +1306,7 @@ abstract class ParserAbstract implements  Parser{
         }
     }
     protected function checkUseUse(UseItem $node,int $namePos):void{
-
+        
         if($node->alias && $node->alias->isSpecialClassName()){
 
             $this->emitError(new Error(sprintf('Cannot use %s as %s because \'%2$s\' is a special class name',$node->name,$node->alias),$this->getAttributesAt($namePos)));
@@ -1317,7 +1315,7 @@ abstract class ParserAbstract implements  Parser{
 
     }
     protected function checkPropertyHooksForMultiProperty(Property $property,int $hookPos):void{
-
+        
         if(count($property->props) > 1){
 
             $this->emitError(new Error('Cannot use hooks when declaring multiple properties',$this->getAttributesAt($hookPos)));
@@ -1327,7 +1325,7 @@ abstract class ParserAbstract implements  Parser{
     }
     /*# @param PropertyHook[] $hooks */
     protected function checkEmptyPropertyHookList(array $hooks,int $hookPos):void{
-
+        
         if(empty($hooks)){
 
             $this->emitError(new Error('Property hook list cannot be empty',$this->getAttributesAt($hookPos)));
@@ -1337,14 +1335,14 @@ abstract class ParserAbstract implements  Parser{
     }
     protected function checkPropertyHook(PropertyHook $hook,?int $paramListPos):void{
         $name=$hook->name->toLowerString();
-
+        
         if($name !== 'get' && $name !== 'set'){
 
             $this->emitError(new Error('Unknown hook "' . $hook->name . '", expected "get" or "set"',$hook->name->getAttributes()));
 
         }
 
-
+        
         if($name === 'get' && $paramListPos !== null){
 
             $this->emitError(new Error('get hook must not have a parameter list',$this->getAttributesAt($paramListPos)));
@@ -1359,7 +1357,7 @@ abstract class ParserAbstract implements  Parser{
             $error->setAttributes($this->getAttributesAt($modifierPos));
             $this->emitError($error);
         }
-
+        
         if($b != Modifiers::FINAL){
 
             $this->emitError(new Error('Cannot use the ' . Modifiers::toString($b) . ' modifier on a property hook',$this->getAttributesAt($modifierPos)));
@@ -1371,7 +1369,7 @@ abstract class ParserAbstract implements  Parser{
       * @param Property|Param $node
     */
     protected function addPropertyNameToHooks(Node $node):void{
-
+        
         if($node instanceof Property){
 
             $name=$node->props[0]->name->toString();
@@ -1387,14 +1385,14 @@ abstract class ParserAbstract implements  Parser{
     }
     /*# @param array<Node\Arg|Node\VariadicPlaceholder> $args */
     private function isSimpleExit(array $args):bool{
-
+        
         if(\count($args) === 0){
 
             return true;
 
         }
 
-
+        
         if(\count($args) === 1){
 
             $arg=$args[0];
@@ -1409,7 +1407,7 @@ abstract class ParserAbstract implements  Parser{
       * @param array<string, mixed> $attrs
     */
     protected function createExitExpr(string $name,int $namePos,array $args,array $attrs):Expr{
-
+        
         if($this->isSimpleExit($args)){
 
             /* Create Exit node for backwards compatibility.*/
@@ -1432,11 +1430,12 @@ abstract class ParserAbstract implements  Parser{
     protected function createTokenMap():array{
         $tokenMap=[];
         /* Single-char tokens use an identity mapping.*/
-        for($i=0;$i < 256;++$i){
+        for( $i=0 ; $i < 256 ; ++$i ){
+            
             $tokenMap[$i]=$i;
         }
         foreach($this->symbolToName as $name){
-
+            
             if($name[0] === 'T'){
 
                 $tokenMap[\constant($name)]=constant(static::class . '::' . $name);
@@ -1453,7 +1452,7 @@ abstract class ParserAbstract implements  Parser{
         $fullTokenMap=[];
         foreach($tokenMap as $phpToken => $extSymbol){
             $intSymbol=$this->tokenToSymbol[$extSymbol];
-
+            
             if($intSymbol === $this->invalidSymbol){
 
                 continue;
