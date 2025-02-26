@@ -1218,7 +1218,8 @@ $par=array(/**/
             'js/mf_rev_vers_php1.js',
             'js/mf_rev_vers_sql1.js',
             'js/mf_astphpnikic_vers_rev1.js',
-            'js/mf_astsqliteparseur_vers_rev1.js'
+            'js/mf_astsqliteparseur_vers_rev1.js',
+            'js/mf_rev_vers_html1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

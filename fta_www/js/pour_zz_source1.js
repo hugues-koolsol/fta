@@ -147,7 +147,7 @@ function sauvegarder_html_en_ligne( format_rev , donnees ){
         __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0128 erreur sauvegarder_html_en_ligne'} );
         return({"__xst" : __xer ,"__xme" : '0129 erreur sauvegarder_html_en_ligne'});
     }
-    var obj2=__module_html1.tabToHtml1( matriceFonction.__xva , 0 , false , 0 );
+    var obj2=__m_rev_vers_html1.c_tab_vers_html( matriceFonction.__xva , {} );
     if(obj2.__xst === __xsu){
         sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant( donnees.__entree.id_source , format_rev , obj2.__xva , donnees.__entree.date_de_debut_traitement , matriceFonction.__xva );
         return({"__xst" : __xsu});
@@ -420,7 +420,7 @@ function convertir_rev_en_html( nom_zone_source , nom_zone_genere , id_source , 
     */
     var matriceFonction=__m_rev1.rev_tm( a.value );
     if(matriceFonction.__xst === __xsu){
-        var objHtml=__module_html1.tabToHtml1( matriceFonction.__xva , 0 , false , 0 );
+        var objHtml=__m_rev_vers_html1.c_tab_vers_html( matriceFonction.__xva , {} );
         if(objHtml.__xst === __xsu){
             document.getElementById( nom_zone_genere ).value=objHtml.__xva;
         }

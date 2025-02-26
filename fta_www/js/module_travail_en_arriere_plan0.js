@@ -236,7 +236,7 @@ function apres_traite_un_remplacement( id_tache , arg , provenance ){
                             }
                         }else if(provenance === 'source'){
                             if(extension === '.html' || extension === '.htm'){
-                                var objSource=__module_html1.tabToHtml1( tab , 0 , false , 0 );
+                                var objSource=__m_rev_vers_html1.c_tab_vers_html( tab , {} );
                             }else if(extension === '.js'){
                                 var objSource=__m_rev_vers_js1.c_tab_vers_js( tab , {} );
                             }else if(extension === '.php'){
@@ -329,7 +329,8 @@ function traite_une_suppression( id_tache , arg ){
                     if(extension === '.html' || extension === '.htm' || extension === '.php' || extension === '.js'){
                         tache_en_cours=true;
                         if(extension === '.html' || extension === '.htm'){
-                            var objSource=__module_html1.tabToHtml1( tab1 , 0 , false , 0 );
+                            var objSource=__m_rev_vers_html1.c_tab_vers_html( tab1 , {} );
+
                             console.log( '%c on traite un html ' , 'color:red;background:yellow;' , objSource.__xst );
                         }else if(extension === '.js'){
                             /* var objSource=parseJavascript0(tab,1,0); */

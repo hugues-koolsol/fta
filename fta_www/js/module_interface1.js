@@ -1053,18 +1053,12 @@ class interface1{
     convertir_textearea_rev_vers_textarea_html( nom_de_la_textarea_rev , nom_de_la_textarea_html ){
         __gi1.raz_des_messages();
         var a=document.getElementById( nom_de_la_textarea_rev );
-        var tableau1=__m_rev1.txt_en_tableau( a.value );
-        var obj1=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
-        if(obj1.__xst === __xsu){
-            var obj2=__module_html1.tabToHtml1( obj1.__xva , 0 , false , 0 );
-            if(obj2.__xst === __xsu){
-                document.getElementById( nom_de_la_textarea_html ).value=obj2.__xva;
-                __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : 'html produit'} );
-            }else{
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur de reconstruction du html'} );
-            }
+        var obj3=__m_rev_vers_html1.c_rev_vers_html( a.value ,{} );
+        if(obj3.__xst === __xsu){
+            document.getElementById( nom_de_la_textarea_html ).value=obj3.__xva;
+            __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : 'html produit'} );
         }else{
-            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour le rev'} );
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur de reconstruction du html'} );
         }
         __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
     }
@@ -1089,10 +1083,18 @@ class interface1{
         }
         __gi1.raz_des_messages();
         var a=document.getElementById( nom_de_la_textarea );
-        localStorage.setItem( 'fta_traitehtml_dernier_fichier_charge' , a.value );
-        var lines=a.value.split( /\r\n|\r|\n/ );
+        var source_html=a.value;
+        for(var i=0;i<a.value.length;i++){
+            var c=source_html.substr(i,1);
+            if(!(c==' ' || c=='\n' || c=='\r' || c=='\t' )){
+                source_html=source_html.substr(i);
+                break;
+            }
+        }
+        localStorage.setItem( 'fta_traitehtml_dernier_fichier_charge' , source_html );
+        var lines=source_html.split( /\r\n|\r|\n/ );
         var count=lines.length;
-        var obj=__module_html1.TransformHtmlEnRev( a.value , 0 , options_json );
+        var obj=__module_html1.TransformHtmlEnRev( source_html , 0 , options_json );
         if(obj.__xst == true){
             if(obj.hasOwnProperty( 'traitements_javascript_integres_en_cours' )
                    && obj.traitements_javascript_integres_en_cours === true

@@ -617,11 +617,11 @@ class c_rev_vers_js1{
                             }else if(this.#tb[j][1] === 'sierreur' && this.#tb[j][2] === 'f'){
                                 if(this.#tb[j][8] === 0){
                                 }else if(this.#tb[j][8] === 2){
-                                    if(this.#tb[j + 1][2] === 'c'){
+                                    if(this.#tb[j + 1][2] === 'c' || ( this.#tb[j + 1][2] === 'f' && this.#tb[j + 1][1] === 'null' && this.#tb[j + 2][8] === 0 ) ){
                                         nomErreur=this.#tb[j + 1][1];
                                         if(this.#tb[j + 2][1] === 'faire' && this.#tb[j + 2][2] === 'f'){
                                             if(this.#tb[j + 2][8] === 0){
-                                                sierreur+='catch(' + nomErreur + '){}';
+                                                sierreur+= nomErreur === 'null' ? ' catch {}' : 'catch('+nomErreur+'){}'  ;
                                             }else{
                                                 obj=this.#rev_js1( j + 2 , niveau + 1 , {} );
                                                 if(obj.__xst === __xsu){
@@ -1334,7 +1334,7 @@ class c_rev_vers_js1{
                     break;
                     
                 case 'declare' :
-                    if(this.#tb[this.#tb[id][7]][1] === 'dans'){
+                    if(this.#tb[this.#tb[id][7]][1] === 'dans' || this.#tb[this.#tb[id][7]][1] === 'de'){
                         for( var j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                             if(this.#tb[j][2] === 'c'){
                                 return({"__xst" : __xsu ,"__xva" : 'var ' + this.#macst_pour_javascript( this.#tb[j] )});
@@ -2879,6 +2879,7 @@ class c_rev_vers_js1{
                         'at',
                         'bind',
                         'call',
+                        'callback',
                         'charAt',
                         'charCodeAt',
                         'cloneNode',

@@ -107,7 +107,8 @@ function convertSource( objMatSrc ){
                     "tabConcatFichier" : tabConcatFichier
                 });
         }else if(type_source == 'src_html' && file_extension == 'html'){
-            retProgrammeSource=__module_html1.tabToHtml1( objMatSrc.__xva , position_de_la_balise_source + 1 , false , 0 );
+            retProgrammeSource=__m_rev_vers_html1.c_tab_vers_html( objMatSrc.__xva , {"indice_de_debut" : position_de_la_balise_source + 1} );
+            debugger
             if(retProgrammeSource.__xst === __xsu){
                 t+=retProgrammeSource.__xva;
             }else{

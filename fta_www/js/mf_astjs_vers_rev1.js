@@ -2317,6 +2317,8 @@ class c_astjs_vers_rev1{
             if(element.handler.type === 'CatchClause'){
                 if(element.handler.param && element.handler.param.type === 'Identifier'){
                     t+=element.handler.param.name + ',';
+                }else if(element.handler.param===null){
+                    t+='null(),'
                 }else{
                     return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                 }

@@ -985,6 +985,7 @@ let __m_astjs_vers_rev1=null;
 let __m_rev_vers_js1=null;
 let __m_rev_vers_php1=null;
 let __m_rev_vers_sql1=null;
+let __m_rev_vers_html1=null;
 let __m_astphpnikic_vers_rev1=null;
 let __m_astsqliteparseur_vers_rev1=null;
 
@@ -1036,6 +1037,11 @@ function initialiser_le_module_apres_chargement(element){
          import(element.src).then(function(Module){
                 __m_rev_vers_sql1=new Module.c_rev_vers_sql1('__m_rev_vers_sql1');
          });
+    }else if(element.src.indexOf("js/mf_rev_vers_html1.js") >= 0){
+         import(element.src).then(function(Module){
+                __m_rev_vers_html1=new Module.c_rev_vers_html1('__m_rev_vers_html1');
+         });
+         
     }else if(element.src.indexOf("js/module_svg_bdd.js") >= 0){
          import(element.src).then(function(Module){
                 __module_svg1=new Module.module_svg_bdd('__module_svg1','div_svg1',CSS_TAILLE_REFERENCE_BORDER,'donnees_travail');

@@ -58,7 +58,8 @@ $par=array(/* */
     'module_a_inclure' => array(/**/
             'js/module_html.js',
             'js/mf_astjs_vers_rev1.js',
-            'js/mf_rev_vers_js1.js'
+            'js/mf_rev_vers_js1.js',
+            'js/mf_rev_vers_html1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );
