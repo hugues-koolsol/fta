@@ -55,15 +55,9 @@ if(isset($_POST) && count($_POST) > 0){
         sql_inclure_reference(1);
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_1.php');
-        /*
-        SELECT 
-        `T0`.`chi_id_utilisateur` , `T0`.`chp_mot_de_passe_utilisateur` , `T0`.`chp_parametres_utilisateur`
-         FROM b1.tbl_utilisateurs T0
-        WHERE `T0`.`chp_nom_de_connexion_utilisateur` = :nom_de_connexion  
-       
-         LIMIT 1 OFFSET 0 ;
-
-        */
+        /* === ATTENTION === 
+Le fichier des requêtes sql js est à regénérer et/ou à intégrer 
+*/
         /*sql_inclure_fin*/
         
         $sql1=sql_1(array( 'nom_de_connexion' => $_POST['nom_de_connexion']));
@@ -192,7 +186,14 @@ if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['
     ?>
     <!--  formulaire html en dehors du php  -->
     <form id="boite_de_connexion" method="post" onsubmit="return verifier_formulaire_avant_envoi()" style="margin-top:50px;">
-        <div>Veuillez indiquer votre nom de connexion et votre mot de passe</div>
+        <div>
+            <div style="margin: auto;width: 10%;">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="19 4  130 142">
+                    <path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path>
+                    <circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle>
+                </svg>
+            </div>Veuillez indiquer votre nom de connexion et votre mot de passe
+        </div>
         <hr />
         <label for="nom_de_connexion">nom de connexion</label>
         <input type="text" name="nom_de_connexion" id="nom_de_connexion" value="" />

@@ -568,15 +568,21 @@ class c_astphpparseur_vers_rev1{
                         }
                         return({"__xst" : __xsu ,"__xva" : obj.__xva});
                     }else{
+                        /*afr*/
                         debugger;
                     }
                 }catch(e){
+                    /*afr*/
                     debugger;
                 }
             }else{
+                /*afr*/
                 debugger;
             }
-        }catch(e){}
+        }catch(e){
+            return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2(e) ,"element" : element} ));
+         
+        }
         return({"__xst" : __xer ,"__xms" : 'le html dans php n\'est pas convertible'});
     }
     /*

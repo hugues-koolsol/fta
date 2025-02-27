@@ -536,10 +536,10 @@ class traitements_sur_html{
               "image/svg+xml"
               "text/html"
             */
-            var element_a_traiter=element.replace( /&nbsp;/g , '__a_remplacer__&#160;__a_remplacer__' );
             /*
               j'aime les &nbsp;
             */
+            var element_a_traiter=element.replace( /&nbsp;/g , '__a_remplacer__&#160;__a_remplacer__' );
             var docNode=parser.parseFromString( '<aaaaa>' + element_a_traiter + '</aaaaa>' , 'application/xml' );
             var elementNoeud=docNode.firstChild;
             if(docNode.getElementsByTagName( 'parsererror' ).length || element.indexOf( '<' ) < 0){
@@ -548,7 +548,11 @@ class traitements_sur_html{
                 */
                 var docNode=parser.parseFromString( element.replace( /&/g , '&amp;' ) , 'text/html' );
                 elementNoeud=docNode.firstChild;
-                function treeHTML( element , object ){
+                /*
+                  =================================================================================================
+                  =================================================================================================
+                */
+                function arbre_HTML( element , object ){
                     object['type']=element.nodeName;
                     var i=0;
                     var nodeList=element.childNodes;
@@ -560,7 +564,7 @@ class traitements_sur_html{
                                     object['content'].push( nodeList[i].nodeValue );
                                 }else{
                                     object['content'].push( {} );
-                                    treeHTML( nodeList[i] , object["content"][object["content"].length - 1] );
+                                    arbre_HTML( nodeList[i] , object["content"][object["content"].length - 1] );
                                 }
                             }
                         }else{
@@ -588,14 +592,22 @@ class traitements_sur_html{
                         }
                     }
                 }
-                treeHTML( elementNoeud , treeObject );
+                /*
+                  =================================================================================================
+                  =================================================================================================
+                */
+                arbre_HTML( elementNoeud , treeObject );
                 return({"__xst" : __xsu ,"__xva" : treeObject ,"parfait" : false});
             }else{
                 /*
                   c'est un xml parfait, on retire la racine aaaaa et on le traite
                 */
                 elementNoeud=docNode.firstChild.childNodes;
-                function treeXML( elements , objet , niveau , remplacer_les_nbsp ){
+                /*
+                  =================================================================================================
+                  =================================================================================================
+                */
+                function arbre_XML( elements , objet , niveau , remplacer_les_nbsp ){
                     try{
                         var les_contenus=[];
                         for( var i=0 ; i < elements.length ; i++ ){
@@ -609,7 +621,7 @@ class traitements_sur_html{
                                 le_noeud['attributes']=les_attributs;
                             }
                             if(elements[i].childNodes && elements[i].childNodes.length > 0){
-                                treeXML( elements[i].childNodes , le_noeud , niveau + 1 , remplacer_les_nbsp );
+                                arbre_XML( elements[i].childNodes , le_noeud , niveau + 1 , remplacer_les_nbsp );
                             }else{
                                 if(elements[i].data){
                                     if(remplacer_les_nbsp === true){
@@ -629,14 +641,18 @@ class traitements_sur_html{
                         debugger;
                     }
                 }
+                /*
+                  =================================================================================================
+                  =================================================================================================
+                */
                 treeObject['type']='';
                 if(element.indexOf( '&nbsp;' ) >= 0){
                     /*
-                      j'aime les &nbsp;
+                      j'aime encore les &nbsp;
                     */
-                    treeXML( elementNoeud , treeObject , 0 , true );
+                    arbre_XML( elementNoeud , treeObject , 0 , true );
                 }else{
-                    treeXML( elementNoeud , treeObject , 0 , false );
+                    arbre_XML( elementNoeud , treeObject , 0 , false );
                 }
                 return({"__xst" : __xsu ,"__xva" : treeObject ,"parfait" : true});
             }
@@ -976,67 +992,6 @@ class traitements_sur_html{
     }
     /*
       =============================================================================================================
-      function recupérer_un_fetch
-    */
-    async recupere_un_fetch( url , donnees ){
-        var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 6000 );
-        var masquer_les_messages_du_serveur=donnees.call.opt && donnees.call.opt.hasOwnProperty( 'masquer_les_messages_du_serveur' ) ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
-        var en_entree={
-            "signal" : AbortSignal.timeout( delais_admis ) ,
-            "method" : "POST" ,
-            "mode" : "cors" ,
-            "cache" : "no-cache" ,
-            "credentials" : "same-origin" ,
-            "headers" : {"Content-Type" : 'application/x-www-form-urlencoded'} ,
-            "redirect" : "follow" ,
-            "referrerPolicy" : "no-referrer" ,
-            "body" : 'ajax_param=' + encodeURIComponent( JSON.stringify( donnees ) )
-        };
-        try{
-            var response=await fetch( url , en_entree ).catch( ( dataerr ) => {
-                console.error( 'fetch dataerr=' , dataerr );
-            } ).finally( ( datafinally ) => {
-                /* vide */
-            } );
-            var t=await response.text().catch( ( dataerr ) => {
-                console.error( 'text dataerr=' , dataerr );
-            } ).finally( ( datafinally ) => {
-                /* vide */
-            } );
-            try{
-                var le_json=JSON.parse( t );
-                if(le_json.hasOwnProperty( '__xms' )){
-                    for(var i in le_json.__xms){
-                        __m_rev1.empiler_erreur( {"__xst" : le_json.__xst ,"__xme" : le_json.__xms[i] ,"masquee" : masquer_les_messages_du_serveur} );
-                    }
-                }
-                return le_json;
-            }catch(e){
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur sur convertion json, texte non json=' + t ,"masquee" : masquer_les_messages_du_serveur} );
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur} );
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( en_entree ) ,"masquee" : masquer_les_messages_du_serveur} );
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( donnees ) ,"masquee" : masquer_les_messages_du_serveur} );
-                return({
-                        "__xst" : __xer ,
-                        "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t ,
-                        "masquee" : masquer_les_messages_du_serveur
-                    });
-            }
-        }catch(e){
-            console.log( e );
-            if(e.message === 'signal timed out'){
-                __m_rev1.empiler_erreur( {
-                        "__xst" : __xer ,
-                        "__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt( (delais_admis / 1000) * 10 , 10 ) / 10) + ' secondes '
-                    } );
-            }else{
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : e.message} );
-            }
-            return({"__xst" : __xer ,"__xme" : e.message});
-        }
-    }
-    /*
-      =============================================================================================================
       function TransformHtmlEnRev
     */
     TransformHtmlEnRev( texteHtml , niveau , options ){
@@ -1060,7 +1015,7 @@ class traitements_sur_html{
                     }
                 }
             }
-            elementsJson=this.mapDOM( texteHtml , false );
+            elementsJson=this.mapDOM( texteHtml );
             if(elementsJson.__xst === __xsu){
                 if(elementsJson.parfait === true){
                     supprimer_le_tag_html_et_head=false;
@@ -1265,87 +1220,6 @@ class traitements_sur_html{
             return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur 0098 e=' + e.message + '\ne.stack=' + e.stack} ));
         }
         console.log( 'fin' );
-    }
-    /*
-      =============================================================================================================
-      function insere_javascript_dans_html
-    */
-    insere_javascript_dans_html( tab , ind , niveau ){
-        var t='';
-        var j=0;
-        var l01=tab.length;
-        /*
-          dans ce cas, c'est un tag <script avec des propriétés 
-        */
-        var lesProprietes='';
-        var indiceDebutJs=-1;
-        for( j=ind + 1 ; j < l01 && tab[j][3] > tab[ind][3] ; j++ ){
-            if(tab[j][7] === ind){
-                if(tab[j][2] === 'f'){
-                    if(tab[j][1] === ''){
-                        if((tab[j + 1][1] === 'defer' || tab[j + 1][1] === 'async') && tab[j + 2][1] === '' || tab[j][8] === 1){
-                            lesProprietes+=' ' + tab[j + 1][1];
-                        }else{
-                            try{
-                                lesProprietes+=' ' + tab[j + 1][1] + '="' + tab[j + 2][1].replace( /\"/g , '&quot;' ).replace( /\\/g , '&#92;' ) + '"';
-                            }catch(e){
-                                debugger;
-                            }
-                        }
-                    }else{
-                        if(indiceDebutJs === -1){
-                            indiceDebutJs=j;
-                        }
-                    }
-                }else{
-                    if(indiceDebutJs === -1){
-                        indiceDebutJs=j;
-                    }
-                }
-            }
-        }
-        if(indiceDebutJs === -1){
-            /*
-              c'est une balise <script src=""></script>
-            */
-            t+=CRLF;
-            t+='<script' + lesProprietes + '></script>' + CRLF;
-        }else{
-            /*
-              c'est un script dans un html
-            */
-            if(tab[indiceDebutJs][8] === 0){
-                /* js vide ! */
-                t+=CRLF;
-                t+='<script' + lesProprietes + '>' + CRLF;
-                t+='//<![CDATA[' + CRLF;
-                t+='//<source_javascript_rev>' + CRLF;
-                t+='//</source_javascript_rev>' + CRLF;
-                t+='//]]>' + CRLF;
-                t+='</script>' + CRLF;
-            }else{
-                var ob=__m_rev_vers_js1.c_tab_vers_js( tab , {"indice_de_debut" : indiceDebutJs} );
-                if(ob.__xst === __xsu){
-                    /*
-                      =============================================================================
-                      ecriture de la valeur dans le cas d'un tag javascriptdanshtml
-                      =============================================================================
-                    */
-                    t+=CRLF;
-                    t+='<script' + lesProprietes + '>' + CRLF;
-                    t+='//<![CDATA[' + CRLF;
-                    t+='//<source_javascript_rev>' + CRLF;
-                    t+=ob.__xva + CRLF;
-                    t+='//</source_javascript_rev>' + CRLF;
-                    t+='//]]>' + CRLF;
-                    t+='</script>' + CRLF;
-                }else{
-                    debugger;
-                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'javascriptdanshtml'} ));
-                }
-            }
-        }
-        return({"__xst" : __xsu ,"__xva" : t});
     }
 }
 export{traitements_sur_html as traitements_sur_html};
