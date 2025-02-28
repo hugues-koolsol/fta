@@ -36,7 +36,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
         if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
             $data[__xst]=false;
-            $data[__xms][]=__LINE__ . ' ' . __FILE__ . ' KO';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' KO');
             return;
 
         }
@@ -49,7 +49,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
         if(strpos($texte_source,$alea1) !== false){
 
             $data[__xst]=false;
-            $data[__xms][]=__LINE__ . ' ' . __FILE__ . ' KO';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ .' KO');
             return;
 
         }else{
@@ -152,7 +152,7 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
         if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
             $data[__xst]=false;
-            $data[__xms][]=__LINE__ . ' ' . __FILE__ . ' KO';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ .' KO');
             return;
 
         }
@@ -175,13 +175,13 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
 
         }else{
 
-            $data[__xms][]='fichier introuvable ' . $chemin_fichier;
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ .' fichier introuvable ' . $chemin_fichier);
         }
 
 
     }else{
 
-        $data[__xms][]='champ id_source introuvable';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' champ id_source introuvable' );
     }
 
 
@@ -202,13 +202,13 @@ function supprimer_un_fichier_avec_un_nom_encrypte(&$data){
 
         }else{
 
-            $data[__xms][]='la copie du fichier dans le répertoire de sauvegarde est impossible';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ .' la copie du fichier dans le répertoire de sauvegarde est impossible');
         }
 
 
     }else{
 
-        $data[__xms][]='$data[\'input\'][\'file_name\'] non trouvé';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .' $data[\'input\'][\'file_name\'] non trouvé');
     }
 
 
@@ -230,7 +230,7 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
             
             if($contenu === false){
 
-                $data[__xms][]='impossible de lire le fichier';
+                ajouterMessage(__xer,BNF . ' ' . __LINE__ .' impossible de lire le fichier');
 
             }else{
 
@@ -241,13 +241,13 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
 
         }else{
 
-            $data[__xms][]='le fichier fait plus de ' . TAILLE_MAXI_SOURCE . ' octets et il ne peut pas être intégré dans une zone de texte';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ .'le fichier fait plus de ' . TAILLE_MAXI_SOURCE . ' octets et il ne peut pas être intégré dans une zone de texte');
         }
 
 
     }else{
 
-        $data[__xms][]='$data[\'input\'][\'file_name\'] non trouvé';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .' $data[\'input\'][\'file_name\'] non trouvé');
     }
 
 
@@ -261,7 +261,7 @@ function charger_un_ficher_rev(&$data){
     
     if(strpos($data[__entree]['file_name'],'..') !== false){
 
-        $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . ' le fichier n\'a pas pu être ouvert';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' le fichier n\'a pas pu être ouvert');
         return;
 
     }
@@ -279,13 +279,13 @@ function charger_un_ficher_rev(&$data){
 
         }else{
 
-            $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'le fichier n\'a pas pu être lu.';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' le fichier n\'a pas pu être lu.');
         }
 
 
     }else{
 
-        $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'file name must be given';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' nom de fichier manquant');
     }
 
 
@@ -313,7 +313,7 @@ function sauvegarger_un_fichier_rev(&$data){
     
     if(strpos($data[__entree]['file_name'],'..')){
 
-        $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write a file containing ".."';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . 'chemin avec ".."');
         return;
 
     }
@@ -321,7 +321,7 @@ function sauvegarger_un_fichier_rev(&$data){
     
     if(substr($data[__entree]['file_name'],-4) !== '.rev'){
 
-        $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The file must end with a .rev extension';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . ' extension non "rev" ');
         return;
 
     }
@@ -332,7 +332,7 @@ function sauvegarger_un_fichier_rev(&$data){
         
         if($c == '/' || $c == '\\' || $c == ':' || $c == '*' || $c == '?' || $c == '"' || $c == '<' || $c == '>' || $c == '|'){
 
-            $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The filename cannot contain character "' . $c . '"';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . 'caractère interdit dans le nom de fichier "' . $c . '"');
             return;
 
         }else{
@@ -340,7 +340,7 @@ function sauvegarger_un_fichier_rev(&$data){
             
             if(!(ord($c) >= 32 && ord($c) < 127)){
 
-                $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'The filename cannot contain character "' . $c . '"';
+                ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ' . 'caractère interdit dans le nom de fichie "' . $c . '"');
                 return;
 
             }
@@ -366,27 +366,27 @@ function sauvegarger_un_fichier_rev(&$data){
             
             if(fclose($fd)){
 
-                ajouterMessage(__xer,BNF . ' ' . __LINE__ . '👍fichier sauvegargé sur disque 1 (test)');
-                ajouterMessage(__xsu,BNF . ' ' . __LINE__ . '👍fichier sauvegargé sur disque 2 (test)');
-                ajouterMessage(__xal,BNF . ' ' . __LINE__ . '👍fichier sauvegargé sur disque 3 (test)');
-                ajouterMessage(__xif,BNF . ' ' . __LINE__ . '👍fichier sauvegargé sur disque 4 (test)');
+                ajouterMessage(__xer,BNF . ' ' . __LINE__ . '👍xer fichier sauvegargé sur disque 1 (test)');
+                ajouterMessage(__xsu,BNF . ' ' . __LINE__ . '👍xsu fichier sauvegargé sur disque 2 (test)');
+                ajouterMessage(__xal,BNF . ' ' . __LINE__ . '👍xal fichier sauvegargé sur disque 3 (test)');
+                ajouterMessage(__xif,BNF . ' ' . __LINE__ . '👍xif fichier sauvegargé sur disque 4 (test)');
                 $data[__xst]=__xsu;
 
             }else{
 
-                $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
+                ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' fichier non fermé');
             }
 
 
         }else{
 
-            $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write to the file';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . '  ecriture impossible du fichier');
         }
 
 
     }else{
 
-        $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ouverture impossible du fichier');
     }
 
 
@@ -410,7 +410,7 @@ function ecrire_fichier1(&$data){
        && 1 !== $_SESSION[APP_KEY]["user"]
     ){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . '1 cannot open the file';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . 'ouverture impossible du fichier');
 
     }else{
 
@@ -436,19 +436,19 @@ function ecrire_fichier1(&$data){
 
                 }else{
 
-                    $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
+                    ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . 'fermeture impossible du fichier');
                 }
 
 
             }else{
 
-                $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write to the file';
+                ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . 'écriture impossible du fichier');
             }
 
 
         }else{
 
-            $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ouverture impossible du fichier');
         }
 
     }
@@ -466,7 +466,7 @@ function recuperer_un_genere(&$data){
        || strpos($data[__entree]['file_extension'],'..') !== false
     ){
 
-        $data[__xms][]='cannot open the file';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ouverture impossible du fichier');
 
     }else{
 
@@ -475,7 +475,7 @@ function recuperer_un_genere(&$data){
         
         if($contenu === false){
 
-            $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'erreur lecture fichier';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' lecture impossible du fichier');
 
         }else{
 
@@ -500,7 +500,7 @@ function concatener_des_fichiers1(&$data){
        || strpos($data[__entree]['file_extension'],'..') !== false
     ){
 
-        $data[__xms][]='cannot open the file';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ouverture impossible du fichier avec ".."');
 
     }else{
 
@@ -523,25 +523,25 @@ function concatener_des_fichiers1(&$data){
 
                     }else{
 
-                        $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'the file has not been closed';
+                        ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ' . 'fermeture impossible du fichier');
                     }
 
 
                 }else{
 
-                    $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot write to the file';
+                    ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ' . 'écriture impossible du fichier');
                 }
 
 
             }else{
 
-                $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot get content of "' . $filefullpath2 . '"';
+                ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ' . 'lecture impossible du fichier');
             }
 
 
         }else{
 
-            $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'cannot open the file';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ' . 'ouverture impossible du fichier');
         }
 
     }

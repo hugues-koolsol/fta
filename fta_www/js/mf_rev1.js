@@ -21,31 +21,25 @@ class c_rev1{
     empiler_erreur( o ){
         var a_retourner={
             "__xst" : o.hasOwnProperty( '__xst' ) ? ( o.__xst ) : ( __xer ) ,
+            "__xme" : o.hasOwnProperty( '__xme' ) ? ( o.__xme ) : ( null ) ,
             "__xva" : o.hasOwnProperty( '__xva' ) ? ( o.__xva ) : ( null ) ,
             "masquee" : o.hasOwnProperty( 'masquee' ) ? ( o.masquee ) : ( false ) ,
             "plage" : o.hasOwnProperty( 'plage' ) ? ( o.plage ) : ( null ) ,
             "ligne" : o.hasOwnProperty( 'ligne' ) ? ( o.ligne ) : ( null )
         };
-        if(o.hasOwnProperty( '__xme' )){
-            a_retourner[__xme]=o.__xme;
-        }
         if(o.hasOwnProperty( '__xav' )){
+         
+            debugger
             a_retourner['__xav']=o.__xav;
         }
-        if(o.hasOwnProperty( '__xms' )){
-            for(var i in o.__xms){
-                a_retourner.__xme=o.__xms[i];
-                this.globale_messages['erreurs'].push( a_retourner );
-            }
+        if(a_retourner.hasOwnProperty( '__xav' ) || a_retourner.__xst===__xal){
+            this.globale_messages['alarmes'].push( a_retourner );
+        }else if(a_retourner.__xst===__xif){
+            this.globale_messages['infos'].push( a_retourner );
+        }else if(a_retourner.__xst===__xsu){
+            this.globale_messages['succes'].push( a_retourner );
         }else{
-            if(a_retourner.hasOwnProperty( '__xav' )){
-                this.globale_messages['alarmes'].push( a_retourner );
-            }
-            if(a_retourner.__xst === __xer){
-                this.globale_messages['erreurs'].push( a_retourner );
-            }else{
-                this.globale_messages['infos'].push( a_retourner );
-            }
+            this.globale_messages['erreurs'].push( a_retourner );
         }
         return a_retourner;
     }

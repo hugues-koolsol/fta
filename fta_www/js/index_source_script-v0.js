@@ -83,14 +83,6 @@ function convertSource( objMatSrc ){
                     t=t.substr( 1 );
                 }
             }
-            return({
-                    "__xst" : __xsu ,
-                    "__xva" : t ,
-                    "file_name" : file_name ,
-                    "file_path" : file_path ,
-                    "file_extension" : file_extension ,
-                    "tabConcatFichier" : tabConcatFichier
-                });
         }else if(type_source == 'src_javascript' && file_extension == 'js'){
             retProgrammeSource=__m_rev_vers_js1.c_tab_vers_js( objMatSrc.__xva , {"indice_de_debut" : position_de_la_balise_source + 1} );
             if(retProgrammeSource.__xst === __xsu){
@@ -98,30 +90,13 @@ function convertSource( objMatSrc ){
             }else{
                 return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'erreur dans un javascript'} ));
             }
-            return({
-                    "__xst" : __xsu ,
-                    "__xva" : t ,
-                    "file_name" : file_name ,
-                    "file_path" : file_path ,
-                    "file_extension" : file_extension ,
-                    "tabConcatFichier" : tabConcatFichier
-                });
         }else if(type_source == 'src_html' && file_extension == 'html'){
             retProgrammeSource=__m_rev_vers_html1.c_tab_vers_html( objMatSrc.__xva , {"indice_de_debut" : position_de_la_balise_source + 1} );
-            debugger
             if(retProgrammeSource.__xst === __xsu){
                 t+=retProgrammeSource.__xva;
             }else{
                 return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'erreur dans un html'} ));
             }
-            return({
-                    "__xst" : __xsu ,
-                    "__xva" : t ,
-                    "file_name" : file_name ,
-                    "file_path" : file_path ,
-                    "file_extension" : file_extension ,
-                    "tabConcatFichier" : tabConcatFichier
-                });
         }else if(type_source == 'src_sql' && file_extension == 'sql'){
             retProgrammeSource=__m_rev_vers_sql1.c_tab_vers_js( objMatSrc.__xva , {"indice_de_debut" : position_de_la_balise_source + 1} );
             if(retProgrammeSource.__xst === __xsu){
@@ -129,15 +104,16 @@ function convertSource( objMatSrc ){
             }else{
                 return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'erreur dans un sql'} ));
             }
-            return({
-                    "__xst" : __xsu ,
-                    "__xva" : t ,
-                    "file_name" : file_name ,
-                    "file_path" : file_path ,
-                    "file_extension" : file_extension ,
-                    "tabConcatFichier" : tabConcatFichier
-                });
         }
+        return({
+                "__xst" : __xsu ,
+                "__xva" : t ,
+                "file_name" : file_name ,
+                "file_path" : file_path ,
+                "file_extension" : file_extension ,
+                "tabConcatFichier" : tabConcatFichier
+            });
+        
     }else{
         return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : 0 ,"__xme" : __m_rev1.nl2() + 'les noms et chemin du fichier doivent être complétés'} ));
     }
@@ -183,7 +159,7 @@ function sauvegardeTexteSource(){
         }
         sauvegarger_un_fichier_rev( 'za_ajax.php?sauvegarger_un_fichier_rev' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst === __xsu){
-                    __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : '👍 fichier sauvegardé 0'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : __m_rev1.nl2()+'👍 fichier sauvegardé 0'} );
                 }
                 __gi1.remplir_et_afficher_les_messages1( 'zonesource' );
             } );

@@ -298,14 +298,10 @@ class c_astphpparseur_vers_rev1{
                    && this.#options_traitement.nettoyer_html === true
             ){
             }else{
-                return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'ATTENTION, ce php contient du html en ligne qui n\'est pas complet' ,"element" : element} ));
+                return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'ce php contient du html en ligne qui n\'est pas complet' ,"element" : element} ));
             }
             var cle=this.#php_construit_cle( 10 );
-            this.#astphp_le( {
-                    "__xst" : __xsu ,
-                    "__xav" : __m_rev1.nl2() + '<br />ATTENTION, ce php contient du html en ligne qui n\'est pas complet et qui est converti en echo , chercher : "' + cle + '"' ,
-                    "element" : element
-                } );
+            this.#astphp_le( {"__xst" : __xal ,"__xme" : __m_rev1.nl2() + "<br />ATTENTION, html incomplet converti en echo (" + cle + ") !" ,"element" : element} );
             if(contenu.indexOf( '<?' ) >= 0){
                 /*
                   il semble qu'il y a une erreur dans ce parseur contrairement à celui de nikki
@@ -367,7 +363,7 @@ class c_astphpparseur_vers_rev1{
                                                     t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + '))';
                                                 }
                                             }else{
-                                                var obj=__module_html1.traiteAstDeHtml( obj1.content[j].content[k] , 0 , true , '' , tableau_de_javascripts_dans_php_a_convertir );
+                                                var obj=__module_html1.asthtml_vers_rev( obj1.content[j].content[k] , 0 , true , '' , tableau_de_javascripts_dans_php_a_convertir );
                                                 if(obj.__xst === __xsu){
                                                     t+='\n' + esp0 + 'html_dans_php(' + obj.__xva + ')';
                                                 }else{
@@ -552,7 +548,7 @@ class c_astphpparseur_vers_rev1{
                 }
                 try{
                     var tableau_de_javascripts_a_convertir=[];
-                    var obj=__module_html1.traiteAstDeHtml( elementsJson.__xva , 0 , supprimer_le_tag_html_et_head , '' , tableau_de_javascripts_a_convertir );
+                    var obj=__module_html1.asthtml_vers_rev( elementsJson.__xva , 0 , supprimer_le_tag_html_et_head , '' , tableau_de_javascripts_a_convertir );
                     if(obj.__xst === __xsu){
                         if(obj.__xva.trim().indexOf( 'html(' ) == 0){
                             if(doctype.toUpperCase() === '<!DOCTYPE HTML>'){
@@ -583,7 +579,7 @@ class c_astphpparseur_vers_rev1{
             return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2(e) ,"element" : element} ));
          
         }
-        return({"__xst" : __xer ,"__xms" : 'le html dans php n\'est pas convertible'});
+        return(this.#astphp_le({"__xst" : __xer ,"__xme" : 'le html dans php n\'est pas convertible'}));
     }
     /*
       =============================================================================================================

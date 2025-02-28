@@ -2027,7 +2027,7 @@ class c_rev_vers_js1{
                         textObj+=__m_rev1.resps( niveau + 1 );
                     }
                     textObj+='';
-                    this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2() + 'attention CE N\'EST PAS UNE ERREUR MAIS..., paramètre vide dans un tableau '} );
+                    this.#rev_js_le( {"__xst" : __xal ,"id" : j ,"__xme" : __m_rev1.nl2() + '<br />attention CE N\'EST PAS UNE ERREUR MAIS... paramètre vide dans un tableau'} );
                 }else{
                     for( var k=j + 1 ; k < this.#l02 ; k=this.#tb[k][12] ){
                         if(this.#tb[k][1] === '#' && this.#tb[k][2] === 'f'){

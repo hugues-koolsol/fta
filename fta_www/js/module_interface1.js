@@ -135,36 +135,34 @@ class interface1{
         var tt='';
         var tab_cas_erreur=[
             /*  */
-            {"type" : 'erreurs' ,"css_cls" : 'yyerreur' ,"nom_zone" : '__xme'},
-            {"type" : 'succes' ,"css_cls" : 'yyerreur' ,"nom_zone" : '__xme'},
-            {"type" : 'alarmes' ,"css_cls" : 'yyalarme' ,"nom_zone" : '__xav'},
-            {"type" : 'infos' ,"css_cls" : 'yysucces' ,"nom_zone" : '__xme'}
+            {"type" : 'erreurs' ,"css_cls" : 'yyerreur' },
+            {"type" : 'succes'  ,"css_cls" : 'yysucces' },
+            {"type" : 'alarmes' ,"css_cls" : 'yyalarme' },
+            {"type" : 'infos'   ,"css_cls" : 'yyinfo' }
         ];
         for(let cas in tab_cas_erreur){
             var le_cas=tab_cas_erreur[cas];
             while(__m_rev1.globale_messages[le_cas.type].length > 0){
                 tt='';
-                if(__m_rev1.globale_messages[le_cas.type][i].hasOwnProperty( le_cas.nom_zone )){
-                    if(__m_rev1.globale_messages[le_cas.type][i].hasOwnProperty( 'masquee' )
-                           && __m_rev1.globale_messages[le_cas.type][i].masquee === true
-                    ){
-                        il_existe_des_messages_masques=true;
-                        tt+='<div class="' + le_cas.css_cls + '" style="display:none;" data-masquable="1">';
-                    }else{
-                        tt+='<div class="' + le_cas.css_cls + '" >';
-                    }
-                    if(__m_rev1.globale_messages[le_cas.type][i].plage && nomDeLaTextAreaContenantLeTexteSource !== ''){
-                        tt+='<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + __m_rev1.globale_messages[le_cas.type][i].plage[0] + ',' + __m_rev1.globale_messages[le_cas.type][i].plage[1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
-                        tt+=' class="' + le_cas.css_cls + '" style="border:2px red outset;">plage ' + __m_rev1.globale_messages[le_cas.type][i].plage[0] + ',' + __m_rev1.globale_messages[le_cas.type][i].plage[1] + '</a>';
-                    }
-                    if(__m_rev1.globale_messages[le_cas.type][i].ligne && nomDeLaTextAreaContenantLeTexteSource !== ''){
-                        tt+='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + __m_rev1.globale_messages[le_cas.type][i].ligne + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
-                        tt+=' class="' + le_cas.css_cls + '" style="border:2px red outset;">ligne ' + __m_rev1.globale_messages[le_cas.type][i].ligne + '</a>';
-                    }
-                    tt+=__m_rev1.globale_messages[le_cas.type][i][le_cas.nom_zone] + '</div>';
-                    zon.innerHTML+=tt;
-                    affichagesPresents=true;
+                if(__m_rev1.globale_messages[le_cas.type][i].hasOwnProperty( 'masquee' )
+                       && __m_rev1.globale_messages[le_cas.type][i].masquee === true
+                ){
+                    il_existe_des_messages_masques=true;
+                    tt+='<div class="' + le_cas.css_cls + '" style="display:none;" data-masquable="1">';
+                }else{
+                    tt+='<div class="' + le_cas.css_cls + '" >';
                 }
+                if(__m_rev1.globale_messages[le_cas.type][i].plage && nomDeLaTextAreaContenantLeTexteSource !== ''){
+                    tt+='<a href="javascript:' + this.#nom_de_la_variable + '.selectionner_une_plage1(' + __m_rev1.globale_messages[le_cas.type][i].plage[0] + ',' + __m_rev1.globale_messages[le_cas.type][i].plage[1] + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
+                    tt+=' class="' + le_cas.css_cls + '" style="border:2px red outset;">plage ' + __m_rev1.globale_messages[le_cas.type][i].plage[0] + ',' + __m_rev1.globale_messages[le_cas.type][i].plage[1] + '</a>';
+                }
+                if(__m_rev1.globale_messages[le_cas.type][i].ligne && nomDeLaTextAreaContenantLeTexteSource !== ''){
+                    tt+='<a href="javascript:' + this.#nom_de_la_variable + '.allerAlaLigne(' + __m_rev1.globale_messages[le_cas.type][i].ligne + ',\'' + nomDeLaTextAreaContenantLeTexteSource + '\')" ';
+                    tt+=' class="' + le_cas.css_cls + '" style="border:2px red outset;">ligne ' + __m_rev1.globale_messages[le_cas.type][i].ligne + '</a>';
+                }
+                tt+=__m_rev1.globale_messages[le_cas.type][i].__xme + '</div>';
+                zon.innerHTML+=tt;
+                affichagesPresents=true;
                 __m_rev1.globale_messages[le_cas.type].splice( 0 , 1 );
             }
         }
@@ -210,11 +208,6 @@ class interface1{
             /* vide */
             try{
                 var le_json=JSON.parse( t );
-                if(le_json.hasOwnProperty( '__xms' )){
-                    for(var i in le_json.__xms){
-                        __m_rev1.empiler_erreur( {"__xst" : le_json.__xst ,"__xme" : le_json.__xms[i] ,"masquee" : masquer_les_messages_du_serveur} );
-                    }
-                }
                 if(le_json.hasOwnProperty( 'signaux' )){
                     var tableau_des_signaux=[__xsu,__xer,__xal,__xif];
                     for( let j=0 ; j < tableau_des_signaux.length ; j++ ){
@@ -232,23 +225,22 @@ class interface1{
                 __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur} );
                 __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( en_entree ) ,"masquee" : masquer_les_messages_du_serveur} );
                 __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( donnees ) ,"masquee" : masquer_les_messages_du_serveur} );
-                return({
+                return(__m_rev1.empiler_erreur({
                         "__xst" : __xer ,
-                        "__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t ,
+                        "__xme" : __m_rev1.nl2()+'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t ,
                         "masquee" : masquer_les_messages_du_serveur
-                    });
+                    }));
             }
         }catch(e){
-            console.log( e );
+            console.error( e );
             if(e.message === 'signal timed out'){
-                __m_rev1.empiler_erreur( {
+                return(__m_rev1.empiler_erreur( {
                         "__xst" : __xer ,
-                        "__xme" : 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt( (delais_admis / 1000) * 10 , 10 ) / 10) + ' secondes '
-                    } );
+                        "__xme" : __m_rev1.nl2()+'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt( (delais_admis / 1000) * 10 , 10 ) / 10) + ' secondes '
+                    } ));
             }else{
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : e.message} );
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+e.message} ));
             }
-            return({"__xst" : __xer ,"__xme" : e.message});
         }
     }
     /*
@@ -1037,7 +1029,6 @@ class interface1{
             */
         }catch(e){
             /* console.error(e); */
-            debugger;
             if(e.lineNumber){
                 __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) + 'erreur dans le source php : <br />' + e.message ,"ligne" : e.lineNumber} );
             }else{
@@ -1183,39 +1174,23 @@ class interface1{
     /*
       =============================================================================================================
     */
-    traitement_apres_recuperation_ast_de_php2_ko( reponse_ajax , json_de_reponse=null ){
+    traitement_apres_recuperation_ast_de_php2_ko( reponse_ajax , json_de_reponse=null , erreur_du_catch=null){
         if(json_de_reponse !== null){
-            if(json_de_reponse.hasOwnProperty( '__xst' )){
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'Retour serveur, __xst="' + JSON.stringify( json_de_reponse.__xst ) + '"'} );
-            }else{
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'pas de "__xst" dans le Retour serveur'} );
-            }
-            if(json_de_reponse.hasOwnProperty( '__xms' )){
-                for(var i in json_de_reponse.__xms){
-                    if(json_de_reponse.__xms[i].indexOf( ' on line ' ) >= 0){
-                        var num_ligne=parseInt( json_de_reponse.__xms[i].substr( json_de_reponse.__xms[i].indexOf( ' on line ' ) + 9 ) , 10 );
-                        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : json_de_reponse.__xms[i] ,"ligne" : num_ligne} );
-                    }else{
-                        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : json_de_reponse.__xms[i]} );
-                    }
-                }
-                if(json_de_reponse.hasOwnProperty( '__entree' )
-                       && json_de_reponse.__entree.hasOwnProperty( 'call' )
-                       && json_de_reponse.__entree.call.hasOwnProperty( 'opt' )
-                ){
-                    var options=json_de_reponse.__entree.call.opt;
-                    if(options.hasOwnProperty( 'nom_de_la_text_area_php' )){
-                        this.remplir_et_afficher_les_messages1( options.nom_de_la_text_area_php );
-                    }else{
-                        this.remplir_et_afficher_les_messages1( '' );
-                    }
+         
+            if(json_de_reponse.hasOwnProperty( '__entree' )
+                   && json_de_reponse.__entree.hasOwnProperty( 'call' )
+                   && json_de_reponse.__entree.call.hasOwnProperty( 'opt' )
+            ){
+                var options=json_de_reponse.__entree.call.opt;
+                if(options.hasOwnProperty( 'nom_de_la_text_area_php' )){
+                    this.remplir_et_afficher_les_messages1( options.nom_de_la_text_area_php );
                 }else{
                     this.remplir_et_afficher_les_messages1( '' );
                 }
             }else{
-                debugger;
                 this.remplir_et_afficher_les_messages1( '' );
             }
+            
         }else{
             /* on retire les caractéristiques graphiques sur les messages au standard php */
             if(reponse_ajax !== ''){
@@ -1481,7 +1456,7 @@ function toto(&$data){
         $data[__xva]=json_encode($ast);
         $data[__xst]=__xsu;
     } catch (Error $error) {
-       $data[__xms][]=$error->getMessage();
+       ajouterMessage(__xer,BNF . ' ' . __LINE__ .   ' ' . $error->getMessage());
        return;
     }
 }

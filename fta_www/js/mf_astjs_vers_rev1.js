@@ -828,9 +828,10 @@ class c_astjs_vers_rev1{
                 lesPar+=',' + commentaire;
             }
             if(element.elements[i] === null){
+                ne_contient_que_des_constantes=false;
                 this.#astjs_le( {
-                        "__xst" : __xsu ,
-                        "__xav" : __m_rev1.nl2() + '<br /> ATTENTION, CE N\'EST PAS UNE ERREUR MAIS... élément vide dans un tableau' ,
+                        "__xst" : __xal ,
+                        "__xme" : __m_rev1.nl2() + '<br /> ATTENTION, CE N\'EST PAS UNE ERREUR MAIS... élément vide dans un tableau' ,
                         "element" : element
                     } );
                 lesPar+=',p()';
@@ -2431,9 +2432,9 @@ class c_astjs_vers_rev1{
         let obj=null;
         if(element.expressions.length > 1 && parent.computed && parent.computed === true){
             /*
-              tab[1,1] est super dangereux, on le signale mais ça passe
+              var a=tab[1,1] est super dangereux, on le signale mais ça passe
             */
-            this.#astjs_le( {"__xst" : __xsu ,"__xav" : __m_rev1.nl2() + 'l\'opérateur virgule est dangereux dans un tableau !' ,"element" : element} );
+            this.#astjs_le( {"__xst" : __xal ,"__xme" : __m_rev1.nl2() + '<br />l\'opérateur virgule est dangereux dans un tableau !' ,"element" : element} );
         }
         for( let i=0 ; i < element.expressions.length ; i++ ){
             obj=this.#traite_element( element.expressions[i] , niveau + 2 , element , tab_comm , false );

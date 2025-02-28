@@ -29,8 +29,6 @@ define('__xal',2);
 define('__xif',3);
 /*message*/
 define('__xme','__xme');
-/*plusieurs messages dans un tableau */
-define('__xms','__xms');
 /*plusieurs alarmes dans un tableau */
 define('__xav','__xav');
 /*valeur*/
@@ -966,7 +964,6 @@ const NBESPACESREV=3;
 const NBESPACESSOURCEPRODUIT=4;
 const __xst='__xst';
 const __xme='__xme';
-const __xms='__xms';
 const __xva='__xva';
 const __xer=0;
 const __xsu=1;

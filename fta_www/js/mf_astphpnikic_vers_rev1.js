@@ -3191,15 +3191,11 @@ class c_astphpnikic_vers_rev1{
                             if(estTraiteSansErreur === false){
                                 if(options_traitement && options_traitement.hasOwnProperty( 'nettoyer_html' ) && options_traitement.nettoyer_html === true){
                                 }else{
-                                    return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'ATTENTION, ce php contient du html en ligne qui n\'est pas strict' ,"element" : stmts[i]} ));
+                                    return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'ce php contient du html en ligne qui n\'est pas complet' ,"element" : stmts[i]} ));
                                 }
                                 var cle=this.#php_construit_cle( 10 );
                                 t+='#( === transformation html incomplet en echo voir ci dessous pour la clé = "' + cle + '")';
-                                this.#astphp_le( {
-                                        "__xst" : __xsu ,
-                                        "__xav" : __m_rev1.nl2() + "ATTENTION, ce php contient du html incomplet qui est converti en echo (" + cle + ") !" ,
-                                        "element" : stmts[i]
-                                    } );
+                                this.#astphp_le( {"__xst" : __xal ,"__xme" : __m_rev1.nl2() + "<br />ATTENTION, html incomplet converti en echo (" + cle + ") !" ,"element" : stmts[i]} );
                                 /*
                                   numeroLigneCourantStmtHtmlStartLine=stmts[i].attributes.startLine;
                                   numeroLigneCourantStmtHtmlEndLine=stmts[i].attributes.endLine;
@@ -3216,7 +3212,6 @@ class c_astphpnikic_vers_rev1{
                                       =============================================
                                       cas ou le html contenu contient des scripts, 
                                       =============================================
-                                      
                                     */
                                     var obj1=__module_html1.mapDOM( stmts[i].value );
                                     if(obj1.__xst === __xsu && obj1.parfait === true && obj1.__xva.type.toLowerCase() === 'html'){
@@ -3259,7 +3254,7 @@ class c_astphpnikic_vers_rev1{
                                                                         t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + '))';
                                                                     }
                                                                 }else{
-                                                                    obj=__module_html1.traiteAstDeHtml( obj1.content[j].content[k] , 0 , true , '' , tableau_de_javascripts_dans_php_a_convertir );
+                                                                    obj=__module_html1.asthtml_vers_rev( obj1.content[j].content[k] , 0 , true , '' , tableau_de_javascripts_dans_php_a_convertir );
                                                                     if(obj.__xst === __xsu){
                                                                         t+='\n' + esp0 + 'html_dans_php(' + obj.__xva + ')';
                                                                     }else{
@@ -3578,7 +3573,7 @@ class c_astphpnikic_vers_rev1{
                 }
                 try{
                     var tableau_de_javascripts_a_convertir=[];
-                    var obj=__module_html1.traiteAstDeHtml( elementsJson.__xva , 0 , supprimer_le_tag_html_et_head , '' , tableau_de_javascripts_a_convertir );
+                    var obj=__module_html1.asthtml_vers_rev( elementsJson.__xva , 0 , supprimer_le_tag_html_et_head , '' , tableau_de_javascripts_a_convertir );
                     if(obj.__xst === __xsu){
                         if(obj.__xva.trim().indexOf( 'html(' ) == 0){
                             if(doctype.toUpperCase() === '<!DOCTYPE HTML>'){
@@ -3603,7 +3598,7 @@ class c_astphpnikic_vers_rev1{
                 debugger;
             }
         }catch(e){}
-        return({"__xst" : __xer ,"__xms" : 'le html dans php n\'est pas convertible'});
+        return(this.#astphp_le({"__xst" : __xer ,"__xme" : 'le html dans php n\'est pas convertible'}));
     }
     /*
       =============================================================================================================
@@ -3748,13 +3743,13 @@ class c_astphpnikic_vers_rev1{
                 }else{
                     if(r.status === 404){
                         if(0 === numero_de_message++){
-                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '<br />404 page "' + page + '" non trouvée'} );
+                            __m_rev1.empiler_erreur(  {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '<br />404 page "' + page + '" non trouvée'} );
                             __gi1.remplir_et_afficher_les_messages1( '' );
                         }
                         return;
                     }else if(r.status >= 500){
                         if(0 === numero_de_message++){
-                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '<br />erreur du serveur, peut-être une limite de temps de traitement atteinte'} );
+                            __m_rev1.empiler_erreur(  {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '<br />erreur du serveur, peut-être une limite de temps de traitement atteinte'} );
                             __gi1.remplir_et_afficher_les_messages1( '' );
                         }
                         /*
@@ -3774,32 +3769,42 @@ class c_astphpnikic_vers_rev1{
                 }
                 try{
                     var json_retour=JSON.parse( r.responseText );
-                    if(json_retour.__xms){
-                        for(var i in json_retour.__xms){
-                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + json_retour.__xms[i]} );
-                        }
-                    }
-                    if(json_retour.__xif){
-                        for(var i in json_retour.__xif){
-                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : __xsu ,"__xme" : __m_rev1.nl2() + json_retour.__xif[i]} );
-                        }
-                    }
-                    if(json_retour.__xav){
-                        for(var i in json_retour.__xav){
-                            __m_astphpnikic_vers_rev1.#astphp_le( {"__xst" : __xer ,"__xav" : __m_rev1.nl2() + json_retour.__xav[i]} );
+                    debugger
+                    if(json_retour.hasOwnProperty( 'signaux' )){
+                        var tableau_des_signaux=[__xsu,__xer,__xal,__xif];
+                        for( let j=0 ; j < tableau_des_signaux.length ; j++ ){
+                            if(json_retour.signaux.hasOwnProperty( tableau_des_signaux[j] )){
+                                for(let i in json_retour.signaux[tableau_des_signaux[j]]){
+                                    if(tableau_des_signaux[j]===__xer){
+                                        /* en cas d'erreur le parseur nikic retourne "blablabla on line 123" */
+                                        var le_message=json_retour.signaux[tableau_des_signaux[j]][i]; // 
+                                        if(le_message.indexOf(' on line ')>0 && __m_rev1.est_num(le_message.substr( le_message.indexOf(' on line ')+9))){
+                                            var la_ligne=parseInt( le_message.substr( le_message.indexOf(' on line ')+9) , 10);
+                                            __m_rev1.empiler_erreur( {"__xst" : tableau_des_signaux[j] ,"__xme" : json_retour.signaux[tableau_des_signaux[j]][i] , ligne:la_ligne,"masquee" : json_retour.__entree.call.opt.masquer_les_messages_du_serveur} );
+                                        }else{
+                                            __m_rev1.empiler_erreur( {"__xst" : tableau_des_signaux[j] ,"__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,"masquee" : json_retour.__entree.call.opt.masquer_les_messages_du_serveur} );
+                                        }
+                                     
+                                    }else{
+                                        __m_rev1.empiler_erreur( {"__xst" : tableau_des_signaux[j] ,"__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,"masquee" : json_retour.__entree.call.opt.masquer_les_messages_du_serveur} );
+                                    }
+                                }
+                                json_retour.signaux[tableau_des_signaux[j]]=[];
+                            }
                         }
                     }
                     if(json_retour.__xst === __xsu){
                         if(fonction_traitement_apres_recuperation_ast_de_php2_ok !== undefined){
                             fonction_traitement_apres_recuperation_ast_de_php2_ok( json_retour );
                         }else{
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+'Il manque une fonction de traitement de retour OK'} );
                             console.error( 'veuillez définir une fonction de traitement' );
                         }
                     }else{
                         fonction_traitement_apres_recuperation_ast_de_php2_ko( r.responseText , json_retour );
                     }
                 }catch(e){
-                    fonction_traitement_apres_recuperation_ast_de_php2_ko( r.responseText );
+                    fonction_traitement_apres_recuperation_ast_de_php2_ko( r.responseText , null , e );
                 }
             };
             r.send( 'ajax_param=' + encodeURIComponent( JSON.stringify( ajax_param ) ) );

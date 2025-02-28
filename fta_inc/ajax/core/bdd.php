@@ -115,7 +115,7 @@ function modifier_la_requete_en_base(&$data){
 
     }else{
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' erreur modifier_la_requete_en_base ' . $tt[__xme];
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' erreur modifier_la_requete_en_base ' . $tt[__xme]);
         $data[__xst]=false;
     }
 
@@ -250,7 +250,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
     
     if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque bdd non trouvée');
         return;
 
     }
@@ -265,7 +265,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
     
     if(is_file($chemin_bdd)){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque le fichier bdd existe déjà';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque le fichier bdd existe déjà');
         return;
 
     }
@@ -275,7 +275,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
     
     if($ret1 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque BEGIN transaction KO';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque BEGIN transaction KO');
         return;
 
     }
@@ -284,7 +284,7 @@ function creer_la_base_a_partir_du_shema_sur_disque(&$data){
     
     if($ret1 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque création base impossible';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' creer_la_base_a_partir_du_shema_sur_disque création base impossible');
         $db1temp->close();
         sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
         return;
@@ -331,7 +331,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     
     if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée');
         return;
 
     }
@@ -343,7 +343,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     
     if(!is_file($chemin_bdd)){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque fichier de bdd non trouvé';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque fichier de bdd non trouvé');
         return;
 
     }
@@ -354,7 +354,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     
     if($ret1 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque BEGIN transaction KO';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque BEGIN transaction KO');
         return;
 
     }
@@ -363,7 +363,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     
     if($ret1 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque création base temporaire impossible';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque création base temporaire impossible');
         $db1temp->close();
         sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
         return;
@@ -376,7 +376,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
     
     if($ret2 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque attach impossible';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque attach impossible');
         $db1temp->close();
         sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
         return;
@@ -392,7 +392,7 @@ function reecrire_la_base_a_partir_du_shema_sur_disque(&$data){
         
         if($ret3 !== true){
 
-            $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque, les donnees de ' . $v1 . ' ne peuvent être copiées';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque, les donnees de ' . $v1 . ' ne peuvent être copiées');
             $db1temp->close();
             sauvegarder_et_supprimer_fichier($chemin_bdd_base_temporaire,true);
             return;
@@ -453,10 +453,10 @@ function recuperer_les_bases_de_la_cible_en_cours(&$data){
     $tt=sql_27(array(/**/
         'T0_chx_cible_id_basedd' => $_SESSION[APP_KEY]['cible_courante']['chi_id_cible']
     ));
-    
+
     if($tt[__xst] === __xer){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' recuperer_les_bases bdd non trouvée';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' recuperer_les_bases bdd non trouvée');
         return;
 
     }
@@ -558,7 +558,7 @@ function operation_sur_base(&$data,$nom_operation){
     
     if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' reecrire_la_base_a_partir_du_shema_sur_disque bdd non trouvée');
         return;
 
     }
@@ -569,7 +569,7 @@ function operation_sur_base(&$data,$nom_operation){
     
     if(!is_file($chemin_bdd)){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . $nom_operation . ' fichier de bdd non trouvé';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . $nom_operation . ' fichier de bdd non trouvé');
         return;
 
     }
@@ -579,7 +579,7 @@ function operation_sur_base(&$data,$nom_operation){
     
     if($ret0 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . $nom_operation . ' BEGIN transaction KO';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .  $nom_operation . ' BEGIN transaction KO');
         return;
 
     }
@@ -590,7 +590,7 @@ function operation_sur_base(&$data,$nom_operation){
     
     if($ret1 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . $nom_operation . ' impossible';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .  ' ' . $nom_operation . ' impossible');
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -600,7 +600,7 @@ function operation_sur_base(&$data,$nom_operation){
     
     if($retfin !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ' . $nom_operation . ' COMMIT impossible';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .   ' ' . $nom_operation . ' COMMIT impossible');
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -646,7 +646,7 @@ function creer_table_dans_base(&$data){
     
     if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base bdd non trouvée';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .  ' creer_table_dans_base bdd non trouvée');
         return;
 
     }
@@ -657,7 +657,7 @@ function creer_table_dans_base(&$data){
     
     if(!is_file($chemin_bdd)){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base fichier de bdd non trouvé';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .    ' creer_table_dans_base fichier de bdd non trouvé');
         return;
 
     }
@@ -667,7 +667,7 @@ function creer_table_dans_base(&$data){
     
     if($ret0 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base BEGIN transaction KO';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .    ' creer_table_dans_base BEGIN transaction KO');
         return;
 
     }
@@ -676,7 +676,7 @@ function creer_table_dans_base(&$data){
     
     if($ret1 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base création table temporaire impossible';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .    ' creer_table_dans_base création table temporaire impossible');
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -686,7 +686,7 @@ function creer_table_dans_base(&$data){
     
     if($retfin !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' creer_table_dans_base COMMIT impossible';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .    ' creer_table_dans_base COMMIT impossible');
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -731,7 +731,7 @@ function ordonner_les_champs_de_table(&$data){
     
     if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table bdd non trouvée';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .    ' ordonner_les_champs_de_table bdd non trouvée');
         return;
 
     }
@@ -742,7 +742,7 @@ function ordonner_les_champs_de_table(&$data){
     
     if(!is_file($chemin_bdd)){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table fichier de bdd non trouvé';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .    ' ordonner_les_champs_de_table fichier de bdd non trouvé');
         return;
 
     }
@@ -752,7 +752,7 @@ function ordonner_les_champs_de_table(&$data){
     
     if($ret0 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table BEGIN transaction KO';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .   ' ordonner_les_champs_de_table BEGIN transaction KO');
         return;
 
     }
@@ -761,7 +761,7 @@ function ordonner_les_champs_de_table(&$data){
     
     if($ret1 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table création table temporaire impossible';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .    ' ordonner_les_champs_de_table création table temporaire impossible');
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -775,7 +775,7 @@ function ordonner_les_champs_de_table(&$data){
     
     if($ret2 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table insertion des données impossible';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .   ' ordonner_les_champs_de_table insertion des données impossible');
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -786,7 +786,7 @@ function ordonner_les_champs_de_table(&$data){
     
     if($ret3 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table DROP TABLE impossible';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .   ' ordonner_les_champs_de_table DROP TABLE impossible');
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -797,7 +797,7 @@ function ordonner_les_champs_de_table(&$data){
     
     if($ret4 !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table RENAME impossible';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .    ' ordonner_les_champs_de_table RENAME impossible');
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -808,7 +808,7 @@ function ordonner_les_champs_de_table(&$data){
         
         if($ret5 !== true){
 
-            $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table RENAME impossible';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ .    ' ordonner_les_champs_de_table RENAME impossible');
             $ret0=$db1->exec('ROLLBACK;');
             return;
 
@@ -819,7 +819,7 @@ function ordonner_les_champs_de_table(&$data){
     
     if($retfin !== true){
 
-        $data[__xms][]=__FILE__ . ' ' . __LINE__ . ' ordonner_les_champs_de_table COMMIT impossible';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .   ' ordonner_les_champs_de_table COMMIT impossible');
         $ret0=$db1->exec('ROLLBACK;');
         return;
 
@@ -861,7 +861,7 @@ function envoyer_le_rev_de_le_base_en_post(&$data){
 
     }else{
 
-        $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' Erreur sur la sauvegarde de la base';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .   ' Erreur sur la sauvegarde de la base');
         $data[__xst]=false;
     }
 
@@ -902,7 +902,7 @@ function recuperer_zone_travail_pour_les_bases(&$data){
 
     }else{
 
-        $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' Erreur select ' . $db->lastErrorMsg();
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .   ' Erreur select ' . $db->lastErrorMsg());
         $data[__xst]=false;
     }
 
@@ -948,7 +948,7 @@ function sauvegarder_format_rev_en_dbb(&$data){
     
     if($tt[__xst] !== __xsu){
 
-        $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' Erreur sur suppression dans la table rev ';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .    ' Erreur sur suppression dans la table rev ');
         $data[__xst]=false;
 
     }
@@ -1029,14 +1029,14 @@ function sauvegarder_format_rev_en_dbb(&$data){
     
     if($tt[__xst] !== __xsu){
 
-        $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' Erreur sur insertion';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .    ' Erreur sur insertion');
 
     }else{
 
         
         if($GLOBALS[__mode_traque]){
 
-            $data[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' la matrice est en bdd';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ .   ' la matrice est en bdd');
 
         }
 

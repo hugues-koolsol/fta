@@ -47,6 +47,7 @@ html(
       div( ( 'style' , "text-align:center;" ) , a( ( 'class' , "yyinfo yytbgrand" ) , ( 'style' , "max-width: fit-content;" ) , ( 'href' , "fta_www/" ) , 'y aller maintenant' )),
       div( ( 'style' , "text-align:center;" ) , a( ( 'class' , "yyinfo yytbgrand" ) , ( 'style' , "max-width: fit-content;" ) , ( 'href' , "tictactoe.html" ) , 'aller sur tictactoe' )),
       javascriptDansHtml(
+         ( 'type' , "text/javascript"),
          source(
             #(
               =============================================================================================
@@ -140,7 +141,20 @@ html(
                   appelf( nomf(setTimeout) , p(maj_decompte) , p(1000))
                )
             ),
-            appelf( nomf(setTimeout) , p(maj_decompte) , p(1000))
+            appelf( nomf(setTimeout) , p(maj_decompte) , p(1000)),
+            fonction( definition( nom(f) , argument(x) ) , contenu( retourner(x) )),
+            declare( a , defTab( p( 'x' ) , p( 'y' ) )),
+            declare(
+               test,
+               tableau(
+                  nomt(a),
+                  p(
+                     virgule( appelf( nomf(f) , p(0) ) , appelf( nomf(f) , p(1) ))
+                  )
+               )
+            ),
+            #( ci dessous test retourne y ! ),
+            appelf( element(console) , nomf(log) , p(test))
          )
       )
    )

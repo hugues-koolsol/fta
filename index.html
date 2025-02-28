@@ -79,6 +79,13 @@ function maj_decompte(){
     setTimeout( maj_decompte , 1000 );
 }
 setTimeout( maj_decompte , 1000 );
+function f( x ){
+    return x;
+}
+var a=['x','y'];
+var test=a[f( 0 ),f( 1 )];
+/* ci dessous test retourne y ! */
+console.log( test );
 //</source_javascript_rev>
 //]]>
 </script>

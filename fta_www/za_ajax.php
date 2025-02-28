@@ -75,7 +75,12 @@ function shutdownHandler(){
 /* ================================================================================================ */
 function ma_trace($error){
 
-    $ret=array( __xst => __xer, __xms => array( $error), __entree => isset($GLOBALS['__entree']) ? $GLOBALS['__entree'] : null);
+    $ret=array( 
+        "__xst" => 0, 
+        "signaux" => array( 0 => array($error)), 
+        "__entree" => isset($GLOBALS['__entree']) ? $GLOBALS['__entree'] : null
+    );
+
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($ret,JSON_FORCE_OBJECT) ;
     /* on a capturé une erreur de type 500, on force la réponse en 200 */
@@ -105,17 +110,9 @@ initialiser_les_services(false,true);
 
 if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
 
-    $ret=array(
-        /*statut, à priori faux*/
-        __xst => __xer,
-        /*erreurs*/
-        __xms => array(),
-        __xsu => array(),
-        /*informations*/
-        __xif => array(),
-        /*alarmes*/
-        __xav => array(),
-        'signaux' => array()
+    $ret=array(/*statut, à priori faux*/
+        __xst => __xer,/*signaux d'erreur */
+        'signaux' => array( __xer => array(), __xsu => array(), __xal => array(), __xif => array())
     );
     /* les messages sont mis en tableau */
     $ret[__entree]=json_decode($_POST['ajax_param'],true);
@@ -132,7 +129,7 @@ if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
         
         if(!is_file(INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php')){
 
-            $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'programme ajan non trouvé : "' . INCLUDE_PATH . '/ajax/' . $ret[__entree]['call']['lib'] . '/ajax_' . $ret[__entree]['call']['funct'] . '.php"';
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' programme non trouvé : "ajax/' . $ret[__entree]['call']['lib'] . '/' . $ret[__entree]['call']['file'] . '.php"');
 
         }else{
 
@@ -174,7 +171,7 @@ if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
     }else{
 
         $ret[__xst]=false;
-        $ret[__xms][]=basename(__FILE__) . ' ' . __LINE__ . ' ' . 'les paramètres de l\'appel ajax sont incomplets (lib,file,func) : "' . var_export($ret[__entree],true) . '"';
+        ajouterMessage(__xer, __LINE__ . ' les paramètres de l\'appel ajax sont incomplets (lib,file,func) : "' . var_export($ret[__entree],true) . '"');
     }
 
 

@@ -162,6 +162,9 @@ class module_svg_bdd{
     */
     #message_succes_modale( donnees ){
         document.getElementById( '__message_modale' ).innerHTML='<div class="yysucces">OK</div>';
+        setTimeout( function(){
+                document.getElementById( '__message_modale' ).innerHTML='';
+            } , 1000 );
     }
     /*
       =============================================================================================================
@@ -170,8 +173,8 @@ class module_svg_bdd{
     #message_succes_et_fermer_modale( donnees ){
         document.getElementById( '__message_modale' ).innerHTML='<div class="yysucces">OK</div>';
         setTimeout( function(){
-                __gi1.global_modale2.close();
                 document.getElementById( '__message_modale' ).innerHTML='';
+                __gi1.global_modale2.close();
             } , 500 );
     }
     /*
@@ -709,16 +712,17 @@ class module_svg_bdd{
     */
     supprimer_un_index_dans_base_de_modale( id_svg_rectangle_de_l_index , nom_de_l_index , nom_de_la_table ){
         var source_sql='DROP INDEX ' + nom_de_l_index;
-        async function supprimer_en_bdd_l_index( url="" , donnees , that ){
-            return(that.#recupérer_un_fetch( url , donnees ));
+        async function supprimer_en_bdd_l_index( url="" , donnees  ){
+            return(__gi1.recupérer_un_fetch( url , donnees ));
         }
         var ajax_param={
             "call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'supprimer_en_bdd_l_index'} ,
             "source_sql" : source_sql ,
             "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
         };
-        supprimer_en_bdd_l_index( 'za_ajax.php?supprimer_en_bdd_l_index' , ajax_param , this ).then( ( donnees ) => {
+        supprimer_en_bdd_l_index( 'za_ajax.php?supprimer_en_bdd_l_index' , ajax_param  ).then( ( donnees ) => {
                 if(donnees.__xst === __xsu){
+                    this.#message_succes_modale(donnees);
                     console.log( true );
                 }else{
                     console.log( 'KO donnees=' , donnees );
@@ -736,17 +740,17 @@ class module_svg_bdd{
             var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
             if(obj2.__xst === __xsu){
                 var source_sql=obj2.__xva;
-                async function ajouter_en_bdd_l_index( url="" , donnees , that ){
-                    return(that.#recupérer_un_fetch( url , donnees ));
+                async function ajouter_en_bdd_l_index( url="" , donnees  ){
+                    return(__gi1.recupérer_un_fetch( url , donnees ));
                 }
                 var ajax_param={
                     "call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'ajouter_en_bdd_l_index'} ,
                     "source_sql" : source_sql ,
                     "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
                 };
-                ajouter_en_bdd_l_index( 'za_ajax.php?ajouter_en_bdd_l_index' , ajax_param , this ).then( ( donnees ) => {
+                ajouter_en_bdd_l_index( 'za_ajax.php?ajouter_en_bdd_l_index' , ajax_param ).then( ( donnees ) => {
                         if(donnees.__xst === __xsu){
-                            console.log( true );
+                            this.#message_succes_modale(donnees);
                         }else{
                             console.error( 'KO donnees=' , donnees );
                         }
@@ -768,8 +772,9 @@ class module_svg_bdd{
             if(obj1.__xst === __xsu){
                 var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
                 if(obj2.__xst === __xsu){
-                    async function ajouter_en_bdd_le_champ( url="" , donnees , that ){
-                        return(that.#recupérer_un_fetch( url , donnees ));
+                    async function ajouter_en_bdd_le_champ( url="" , donnees  ){
+                        return(__gi1.recupérer_un_fetch( url , donnees ));
+                        
                     }
                     var source_sql='ALTER TABLE `' + nom_de_la_table + '` ADD COLUMN ' + obj2.__xva + ';';
                     var ajax_param={
@@ -777,9 +782,9 @@ class module_svg_bdd{
                         "source_sql" : source_sql ,
                         "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
                     };
-                    ajouter_en_bdd_le_champ( 'za_ajax.php?ajouter_en_bdd_le_champ' , ajax_param , this ).then( ( donnees ) => {
+                    ajouter_en_bdd_le_champ( 'za_ajax.php?ajouter_en_bdd_le_champ' , ajax_param ).then( ( donnees ) => {
                             if(donnees.__xst === __xsu){
-                                this.#message_succes_et_fermer_modale( donnees );
+                                this.#message_succes_modale( donnees );
                             }else{
                                 this.#message_erreur_modale( donnees );
                                 console.error( 'KO donnees=' , donnees );
@@ -3441,13 +3446,6 @@ class module_svg_bdd{
                     __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : ' Le schema de la base est sauvegardé'} );
                 }else{
                     console.log( donnees );
-                    if(donnees.hasOwnProperty( '__xms' )){
-                        if( typeof donnees.__xms === 'object' && !Array.isArray( donnees.__xms ) && donnees.__xms !== null){
-                            for(var i in donnees.__xms){
-                                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : donnees.__xms[i]} );
-                            }
-                        }
-                    }
                     __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la base'} );
                 }
                 __gi1.remplir_et_afficher_les_messages1( '' );

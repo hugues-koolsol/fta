@@ -63,11 +63,6 @@ async function recuperer_un_fetch_dans_module_travail_en_ap( url , donnees ){
         var t=await response.text();
         try{
             var le_json=JSON.parse( t );
-            if(le_json.hasOwnProperty( '__xms' )){
-                for(var i in le_json.__xms){
-                    console.log( le_json.__xms[i] );
-                }
-            }
             return le_json;
         }catch(e){
             console.log( 'erreur sur convertion json, texte non json=' + t );

@@ -43,13 +43,13 @@ function enregistrer_les_sql_en_base(&$data){
 
         }else{
 
-            $data[__xms][]=$ret[__xme];
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' KO');
         }
 
 
     }else{
 
-        $data[__xms][]=$ret[__xme];
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .   ' KO');
     }
 
 
@@ -93,7 +93,7 @@ function enregistrer_les_sources_en_base(&$data){
     if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
         $data[__xst]=false;
-        $data[__xms][]=__LINE__ . ' ' . __FILE__ . ' KO';
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ .    ' KO');
         return;
 
     }

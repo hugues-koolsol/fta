@@ -44,9 +44,9 @@ class traitements_sur_html{
     }
     /*#
       =======================================================================================
-      function traiteAstDeHtml
+      function asthtml_vers_rev
       
-      Construit texte html à partir d'un AST html qui ressemble à ça :
+      Construit rev à partir d'un AST html qui ressemble à ça :
       {"type":"BODY",
         "content":[
           {"type":"DIV","content":["a"],"attributes":{"class":"a"}},
@@ -59,7 +59,7 @@ class traitements_sur_html{
       pas renseignés
       =======================================================================================  
     */
-    traiteAstDeHtml( jsonDeHtml , niveau , retirerHtmlHeadEtBody , typeParent , tableau_des_javascript_a_convertir ){
+    asthtml_vers_rev( jsonDeHtml , niveau , retirerHtmlHeadEtBody , typeParent , tableau_des_javascript_a_convertir ){
         var i=0;
         var j=0;
         var k=0;
@@ -226,7 +226,7 @@ class traitements_sur_html{
                           entree dans le récursif
                           =====================================================================
                         */
-                        obj=this.traiteAstDeHtml( jsonDeHtml.content[i] , niveau + 1 , retirerHtmlHeadEtBody , type , tableau_des_javascript_a_convertir );
+                        obj=this.asthtml_vers_rev( jsonDeHtml.content[i] , niveau + 1 , retirerHtmlHeadEtBody , type , tableau_des_javascript_a_convertir );
                         if(obj.__xst === __xsu){
                             if((attributs !== '' || contenu !== '') && obj.__xva !== ''){
                                 contenu+=',';
@@ -423,39 +423,39 @@ class traitements_sur_html{
                                     var nouveauTableau3=__m_rev1.baisser_le_niveau_et_supprimer( nouveauTableau2 , 1 , 0 );
                                     var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml( nouveauTableau3 );
                                     if(nouveauJsonDeHtml.__xst === __xsu){
-                                        var obj1=this.traiteAstDeHtml( nouveauJsonDeHtml.__xva , 0 , false , '' , [] );
+                                        var obj1=this.asthtml_vers_rev( nouveauJsonDeHtml.__xva , 0 , false , '' , [] );
                                         if(obj1.__xst === __xsu){
                                             t=obj1.__xva;
                                         }else{
-                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour traiteJsonDeHtml 0314 '} ));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
                                         }
                                     }else{
-                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour traiteJsonDeHtml 0317 '} ));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
                                     }
                                 }else{
                                     var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml( nouveauTableau2 );
                                     if(nouveauJsonDeHtml.__xst === __xsu){
-                                        var obj1=this.traiteAstDeHtml( nouveauJsonDeHtml.__xva , 0 , false , '' , [] );
+                                        var obj1=this.asthtml_vers_rev( nouveauJsonDeHtml.__xva , 0 , false , '' , [] );
                                         if(obj.__xst === __xsu){
                                             t=obj.__xva;
                                         }else{
-                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour traiteJsonDeHtml 0217 '} ));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
                                         }
                                     }else{
-                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour traiteJsonDeHtml 0317 '} ));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
                                     }
                                 }
                             }else{
                                 var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml( nouveauTableau2 );
                                 if(nouveauJsonDeHtml === true){
-                                    var obj1=this.traiteAstDeHtml( nouveauJsonDeHtml.__xva , 0 , false , '' , [] );
+                                    var obj1=this.asthtml_vers_rev( nouveauJsonDeHtml.__xva , 0 , false , '' , [] );
                                     if(obj1.__xst === __xsu){
                                         t=obj1.__xva;
                                     }else{
-                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour traiteJsonDeHtml 0340 '} ));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
                                     }
                                 }else{
-                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour traiteJsonDeHtml 0343 '} ));
+                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
                                 }
                             }
                         }else{
@@ -476,7 +476,7 @@ class traitements_sur_html{
                                             if(obj.__xst === __xsu){
                                                 t+=',' + obj.__xva + '\n';
                                             }else{
-                                                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour traiteJsonDeHtml 0217 '} ));
+                                                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
                                             }
                                         }
                                     }
@@ -492,11 +492,11 @@ class traitements_sur_html{
                                   avec des retours de lignes et sans coloration
                                 */
                                 var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml( nouveauTableau1 );
-                                var obj1=this.traiteAstDeHtml( nouveauJsonDeHtml.__xva , 0 , false , '' , [] );
+                                var obj1=this.asthtml_vers_rev( nouveauJsonDeHtml.__xva , 0 , false , '' , [] );
                                 if(obj1.__xst === __xsu){
                                     t=obj1.__xva;
                                 }else{
-                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour traiteJsonDeHtml 0217 '} ));
+                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
                                 }
                             }
                         }
@@ -511,14 +511,19 @@ class traitements_sur_html{
                     */
                 }
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour traiteJsonDeHtml 0168 ' + jsonDeHtml.type} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
             }
         }
         /*
-          on retourne du html "pur"
+          on retourne du rev
         */
         t=t.replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\n' );
-        return({"__xst" : __xsu ,"__xva" : t ,"dernierEstTexte" : dernierEstTexte});
+        if(niveau === 0){
+            /*utile seulement pour debug*/
+            return({"__xst" : __xsu ,"__xva" : t ,"dernierEstTexte" : dernierEstTexte});
+        }else{
+            return({"__xst" : __xsu ,"__xva" : t ,"dernierEstTexte" : dernierEstTexte});
+        }
     }
     /*
       =============================================================================================================
@@ -658,30 +663,32 @@ class traitements_sur_html{
             }
         }
     }
-    /*
+    /*#
       =============================================================================================================
       function mapMatriceVersJsonDeHtml
       construit un ast à partir d'une matrice rev de html
       <div class="a">a</div><div class="b">b</div>
       [
-      [0,""      ,"INIT" ,-1,0 ,0, 0,0,6,0,0, 0,0,""],
-      [1,"div"   ,"f"    ,0 ,0,33,35,0,2,1,2,36,0,""],
-      [2,""      ,"f"    ,1 ,0,33,35,1,2,1,1,37,0,""],
-      [3,"class" ,"c"    ,2 ,0,38,42,2,0,1,0,37,0,""],
-      [4,"a"     ,"c"    ,2 ,3,45,45,2,0,2,0,37,0,""],
-      [5,"a"     ,"c"    ,1 ,3,50,50,1,0,2,0,37,0,""],
-      [6,"div"   ,"f"    ,0 ,0,61,63,0,2,2,2,64,0,""],
-      [7,""      ,"f"    ,1 ,0,61,63,6,2,1,1,65,0,""],
-      [8,"class" ,"c"    ,2 ,0,66,70,7,0,1,0,65,0,""],
-      [9,"b"     ,"c"    ,2 ,3,73,73,7,0,2,0,65,0,""],
-      [10,"b"    ,"c"    ,1 ,3,78,78,6,0,2,0,65,0,""]
+          [0,""      ,"INIT" ,-1,0 ,0, 0,0,6,0,0, 0,0,""],
+          [1,"div"   ,"f"    ,0 ,0,33,35,0,2,1,2,36,0,""],
+          [2,""      ,"f"    ,1 ,0,33,35,1,2,1,1,37,0,""],
+          [3,"class" ,"c"    ,2 ,0,38,42,2,0,1,0,37,0,""],
+          [4,"a"     ,"c"    ,2 ,3,45,45,2,0,2,0,37,0,""],
+          [5,"a"     ,"c"    ,1 ,3,50,50,1,0,2,0,37,0,""],
+          [6,"div"   ,"f"    ,0 ,0,61,63,0,2,2,2,64,0,""],
+          [7,""      ,"f"    ,1 ,0,61,63,6,2,1,1,65,0,""],
+          [8,"class" ,"c"    ,2 ,0,66,70,7,0,1,0,65,0,""],
+          [9,"b"     ,"c"    ,2 ,3,73,73,7,0,2,0,65,0,""],
+          [10,"b"    ,"c"    ,1 ,3,78,78,6,0,2,0,65,0,""]
       ]
-      {"type":"BODY",
-      "content":[
-      {"type":"DIV","content":["a"],"attributes":{"class":"a"}},
-      {"type":"DIV","content":["b"],"attributes":{"class":"b"}},
-      "\n"
-      ]
+      vers
+      {
+          "type":"BODY",
+          "content":[
+              {"type":"DIV","content":["a"],"attributes":{"class":"a"}},
+              {"type":"DIV","content":["b"],"attributes":{"class":"b"}},
+              "\n"
+          ]
       }
       =============================================================================================================
     */
@@ -708,7 +715,7 @@ class traitements_sur_html{
                                     attrib[tab[i + 1][1]]=tab[i + 2][1];
                                     a_des_attributs=true;
                                 }else{
-                                    return({"__xst" : __xer ,"message" : '0547 nombre incorrect pour les attributs'});
+                                    return(__m_rev1.empiler_erreur({"__xst" : __xer ,"message" : __m_rev1.nl2()}));
                                 }
                             }
                         }
@@ -733,7 +740,7 @@ class traitements_sur_html{
                                                 attrib[tab[j + 1][1]]=tab[j + 2][1];
                                                 a_des_attributs=true;
                                             }else{
-                                                return({"__xst" : __xer ,"message" : '0547 nombre incorrect pour les attributs'});
+                                                return(__m_rev1.empiler_erreur({"__xst" : __xer ,"message" : __m_rev1.nl2()}));
                                             }
                                         }
                                     }
@@ -754,7 +761,7 @@ class traitements_sur_html{
                                         if(objContenuJs.__xst === __xsu){
                                             le_contenu.push( JSON.parse( JSON.stringify( {"type" : 'javascriptdanshtml' ,"content" : objContenuJs.__xva ,"attributes" : attrib} ) ) );
                                         }else{
-                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_html erreur 0635 '} ));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                         }
                                     }else if(tab[parentId][1].toLowerCase() === 'ldplusjsondanshtml'){
                                         var debut=indice + 1;
@@ -778,7 +785,7 @@ class traitements_sur_html{
                                             content.push( contenu );
                                             le_contenu.push( JSON.parse( JSON.stringify( {"type" : 'ldplusjsondanshtml' ,"content" : contenu ,"attributes" : attrib} ) ) );
                                         }else{
-                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_html erreur 0660 '} ));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                         }
                                     }else{
                                         var obj=reconstruit( tab , i );
@@ -790,7 +797,7 @@ class traitements_sur_html{
                                                 le_contenu.push( JSON.parse( JSON.stringify( {"type" : tab[i][1] ,"content" : obj.content} ) ) );
                                             }
                                         }else{
-                                            return({"__xst" : __xer ,"message" : '0563 '});
+                                            return(__m_rev1.empiler_erreur({"__xst" : __xer ,"message" : __m_rev1.nl2()}));
                                         }
                                     }
                                 }
@@ -816,170 +823,6 @@ class traitements_sur_html{
         }
         /*
           =====================================================================================================
-          On définit une fonction dans une fonction car elle sera appelée récursivement
-          =====================================================================================================
-        */
-        function reconstruit2( tab , parentId ){
-            var l01=tab.length;
-            var type='';
-            var attributes={};
-            var content=[];
-            /*
-              récupération des attributs
-            */
-            var leJson={};
-            if(tab[parentId][1].toLowerCase() === 'ldplusjsondanshtml'){
-                var debut=parentId + 1;
-                for( var j=parentId + 1 ; j < l01 ; j++ ){
-                    if(tab[j][7] === parentId){
-                        if(tab[j][1] === '' && tab[j][2] === 'f'){
-                        }else{
-                            debut=j;
-                            break;
-                        }
-                    }
-                }
-                var objContenuJs=__m_rev_vers_js1.c_tab_vers_js( tab , {"indice_de_debut" : debut} );
-                debugger;
-                /* avrif */
-                if(objContenuJs.__xst === __xsu){
-                    var contenu=objContenuJs.__xva.substr( objContenuJs.__xva.indexOf( '=' ) + 1 );
-                    if(contenu.substr( contenu.length - 1 , 1 ) === ';'){
-                        contenu=contenu.substr( 0 , contenu.length - 1 );
-                    }
-                    content.push( contenu );
-                }else{
-                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_html erreur 0477 '} ));
-                }
-            }else if(tab[parentId][1].toLowerCase() === 'javascriptdanshtml'){
-                var debut=parentId + 1;
-                for( var j=parentId + 1 ; j < l01 ; j++ ){
-                    if(tab[j][7] === parentId){
-                        if(tab[j][1] === '' && tab[j][2] === 'f'){
-                        }else{
-                            debut=j;
-                            break;
-                        }
-                    }
-                }
-                var objContenuJs=__m_rev_vers_js1.c_tab_vers_js( tab , {"indice_de_debut" : debut} );
-                debugger;
-                /* avrif */
-                if(objContenuJs.__xst === __xsu){
-                    content.push( objContenuJs.__xva );
-                }else{
-                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_html erreur 0503 '} ));
-                }
-                console.log( 'objContenuJs=' , objContenuJs );
-            }else if(tab[parentId][1] === '@'){
-                debugger;
-            }else if(tab[parentId][8] === 0 && parentId > 0){
-                content.push( '' );
-            }else{
-                for( var indice=parentId + 1 ; indice < l01 ; indice++ ){
-                    var element={"type" : '' ,"attributes" : null ,"content" : null};
-                    if(tab[indice][7] === parentId){
-                        /*
-                        */
-                        if(tab[indice][1] !== ''){
-                            if(tab[indice][2] === 'f'){
-                                if('@' === tab[indice][1]){
-                                    content.push( tab[indice][13].replace( /\\\'/g , '\'' ).replace( /\\\\/g , '\\' ) );
-                                    var max=l01 - 1;
-                                    for( var j=indice + 1 ; j < l01 ; j++ ){
-                                        if(tab[j][3] <= tab[indice][3]){
-                                            max=j - 1;
-                                            break;
-                                        }
-                                    }
-                                    indice=max;
-                                }else if('ldplusjsondanshtml' === tab[indice][1].toLowerCase()){
-                                    var obj=reconstruit( tab , indice );
-                                    if(obj.__xst === __xsu){
-                                        content.push( obj.__xva );
-                                    }else{
-                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_html erreur 0541 '} ));
-                                    }
-                                    var max=l01 - 1;
-                                    for( var j=indice + 1 ; j < l01 ; j++ ){
-                                        if(tab[j][3] <= tab[indice][3]){
-                                            max=j - 1;
-                                            break;
-                                        }
-                                    }
-                                    indice=max;
-                                }else if('javascriptdanshtml' === tab[indice][1].toLowerCase()){
-                                    var obj=reconstruit( tab , indice );
-                                    if(obj.__xst === __xsu){
-                                        content.push( obj.__xva );
-                                    }else{
-                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_html erreur 0559 '} ));
-                                    }
-                                    var max=l01 - 1;
-                                    for( var j=indice + 1 ; j < l01 ; j++ ){
-                                        if(tab[j][3] <= tab[indice][3]){
-                                            max=j - 1;
-                                            break;
-                                        }
-                                    }
-                                    indice=max;
-                                    /*
-                                    */
-                                }else{
-                                    var obj=reconstruit( tab , indice );
-                                    if(obj.__xst === __xsu){
-                                        content.push( obj.__xva );
-                                    }else{
-                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_html erreur 0559 '} ));
-                                    }
-                                    var max=l01 - 1;
-                                    for( var j=indice + 1 ; j < l01 ; j++ ){
-                                        if(tab[j][3] <= tab[indice][3]){
-                                            max=j - 1;
-                                            break;
-                                        }
-                                    }
-                                    indice=max;
-                                }
-                            }else{
-                                var obj=reconstruit( tab , indice );
-                                if(obj.__xst === __xsu){
-                                    content.push( obj.__xva );
-                                }else{
-                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_html erreur 0559 '} ));
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            if(parentId === 0){
-                type='';
-            }else{
-                if(tab[parentId][1] === '@'){
-                    type='';
-                }else{
-                    type=tab[parentId][1];
-                }
-            }
-            leJson['type']=type;
-            leJson['content']=content;
-            var aDesAttributs=false;
-            for( var indice=parentId + 1 ; indice < l01 ; indice++ ){
-                if(tab[indice][7] === parentId){
-                    if(tab[indice][1] === '' && tab[indice][2] === 'f' && tab[indice][8] === 2){
-                        attributes[tab[indice + 1][1]]=tab[indice + 2][1];
-                        aDesAttributs=true;
-                    }
-                }
-            }
-            if(aDesAttributs){
-                leJson['attributes']=attributes;
-            }
-            return({"__xst" : __xsu ,"__xva" : leJson});
-        }
-        /*
-          =====================================================================================================
           L'appel récursif se fait ici
           =====================================================================================================
         */
@@ -987,7 +830,7 @@ class traitements_sur_html{
         if(obj.__xst === __xsu){
             return({"__xst" : __xsu ,"__xva" : obj.content});
         }else{
-            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_html erreur 0606 '} ));
+            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
         }
     }
     /*
@@ -1066,7 +909,7 @@ class traitements_sur_html{
                 }
                 try{
                     var tableau_de_javascripts_a_convertir=[];
-                    var obj=this.traiteAstDeHtml( elementsJson.__xva , 0 , supprimer_le_tag_html_et_head , '' , tableau_de_javascripts_a_convertir );
+                    var obj=this.asthtml_vers_rev( elementsJson.__xva , 0 , supprimer_le_tag_html_et_head , '' , tableau_de_javascripts_a_convertir );
                     if(obj.__xst === __xsu){
                         if(obj.__xva.trim().indexOf( 'html(' ) == 0){
                             if(doctype.toUpperCase() === '<!DOCTYPE HTML>'){
@@ -1154,18 +997,16 @@ class traitements_sur_html{
                                         }
                                         var matriceFonction=__m_rev1.rev_tm( source_rev );
                                         if(matriceFonction.__xst === __xer){
-                                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '1344 erreur module_html conversion en matrice'} );
-                                            return({"__xst" : __xer ,"__xme" : '1345 erreur module_html conversion en matrice'});
+                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+'conversion en matrice'} ));
                                         }
                                         var obj1=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
                                         if(obj1.__xst === __xsu){
                                             document.getElementById( options.zone_html_rev ).value=obj1.__xva;
                                         }else{
-                                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '1344 erreur module_html nettoyage en matrice'} );
-                                            return({"__xst" : __xer ,"__xme" : '1345 erreur module_html nettoyage en matrice'});
+                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+'nettoyage en matrice'} ));
                                         }
                                     }catch(e){
-                                        console.error( 'la zone "' + options.zone_html_rev + '" indiquée en paramètre n\'existe pas dans le document' , e );
+                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2(e)+'la zone "' + options.zone_html_rev + '" indiquée en paramètre n\'existe pas dans le document' } ));
                                     }
                                 }
                                 return({"__xst" : __xsu ,"__xva" : source_rev});
@@ -1184,19 +1025,19 @@ class traitements_sur_html{
                                     document.getElementById( options.zone_html_rev ).value=obj.__xva.replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\r' ).replace( /\\\\¶\\\\LF\\\\¶/g , '\n' ).replace( /\\\\¶\\\\CR\\\\¶/g , '\r' );
                                     var matriceFonction=__m_rev1.rev_tm( obj.__xva );
                                     if(matriceFonction.__xst === __xer){
-                                        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '1412 erreur module_html conversion en matrice'} );
-                                        return({"__xst" : __xer ,"__xme" : '1413 erreur module_html conversion en matrice'});
+                                        
+                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                     }
                                     var obj1=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
                                     if(obj1.__xst === __xsu){
                                         document.getElementById( options.zone_html_rev ).value=obj1.__xva;
                                     }else{
-                                        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '1419 erreur module_html nettoyage en matrice'} );
-                                        return({"__xst" : __xer ,"__xme" : '1420 erreur module_html nettoyage en matrice'});
+                                        
+                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                     }
                                 }catch(e){
                                     console.error( 'e=' , e );
-                                    return({"__xst" : __xer ,"__xme" : '1424 module_html'});
+                                    return(__m_rev1.empiler_erreur({"__xst" : __xer ,"__xme" : __m_rev1.nl2()}));
                                 }
                                 return({"__xst" : __xsu ,"__xva" : obj.__xva});
                             }else{
@@ -1204,20 +1045,21 @@ class traitements_sur_html{
                             }
                         }
                     }else{
-                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '1191 erreur module_html'} ));
+                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                     }
                 }catch(e){
                     console.error( 'e=' , e );
-                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '1194 erreur module_html'} ));
+                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                 }
             }else{
                 console.log( 'elementsJson=' , elementsJson );
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
             }
             console.log( 'par ici' , elementsJson );
-            return;
+            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
         }catch(e){
             console.log( 'e=' , e );
-            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur 0098 e=' + e.message + '\ne.stack=' + e.stack} ));
+            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2(e)} ));
         }
         console.log( 'fin' );
     }

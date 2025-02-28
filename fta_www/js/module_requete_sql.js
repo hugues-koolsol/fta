@@ -1665,7 +1665,7 @@ class requete_sql{
         t+='<div>';
         t+='<label style="width:90%;display:inline-block" for="cht_commentaire_requete">commentaire : <input style="width:50%" type="text" id="cht_commentaire_requete" value="' + this.#globale_commentaire_requete.replace( /&/g , '&amp;' ).replace( '<' , '&lt;' ).replace( '>' , '&gt;' ).replace( '"' , '&quot;' ) + '"/></label>';
         t+='<br />';
-        t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.transform_textarea_rev_vers_sql(&quot;txtar1&quot; , &quot;txtar2&quot; , ' + this.#globale_id_requete + ');" title="convertir rev en SQL">R2S</a>';
+        t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.transform_textarea_rev_vers_sql(&quot;txtar1&quot; , &quot;txtar2&quot; , ' + this.#globale_id_requete + ',true);" title="convertir rev en SQL">R2S</a>';
         t+='<a class="yysucces" href="javascript:' + this.#nom_de_la_variable + '.bouton_ajouter_le_rev_en_base(' + this.#globale_id_requete + ')" title="ajouter en base">ajouter en base</a>';
         if(this.#globale_id_requete > 0){
             t+='<a class="yyinfo" href="javascript:' + this.#nom_de_la_variable + '.bouton_modifier_le_rev_en_base(' + this.#globale_id_requete + ')" title="modifier_en_base">modifier en base(' + this.#globale_id_requete + ')</a>';
@@ -1680,48 +1680,14 @@ class requete_sql{
     }
     /*
       =============================================================================================================
-      function recupérer_un_fetch
-    */
-    async #recupérer_un_fetch( url , donnees ){
-        var en_entree={
-            "signal" : AbortSignal.timeout( 2000 ) ,
-            "method" : "POST" ,
-            "mode" : "cors" ,
-            "cache" : "no-cache" ,
-            "credentials" : "same-origin" ,
-            "headers" : {"Content-Type" : 'application/x-www-form-urlencoded'} ,
-            "redirect" : "follow" ,
-            "referrerPolicy" : "no-referrer" ,
-            "body" : 'ajax_param=' + encodeURIComponent( JSON.stringify( donnees ) )
-        };
-        try{
-            var response=await fetch( url , en_entree );
-            var t=await response.text();
-            try{
-                var le_json=JSON.parse( t );
-                return le_json;
-            }catch(e){
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur sur convertion json, texte non json=' + t} );
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'url=' + url} );
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( en_entree )} );
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( donnees )} );
-                return({"__xst" : __xer ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t});
-            }
-        }catch(e){
-            debugger;
-            console.log( 'e=' , e );
-            return({"__xst" : __xer ,"__xme" : e.message});
-        }
-    }
-    /*
-      =============================================================================================================
       =============================================================================================================
       function bouton_modifier_le_rev_en_base
     */
     bouton_modifier_le_rev_en_base( id_requete ){
         __gi1.raz_des_messages();
-        async function modifier_la_requete_en_base( url="" , ajax_param , that ){
-            return(that.#recupérer_un_fetch( url , ajax_param ));
+        async function modifier_la_requete_en_base( url="" , ajax_param  ){
+            return(__gi1.recupérer_un_fetch( url , ajax_param ));
+
         }
         /*
           var tableau1=__m_rev1.txt_en_tableau(document.getElementById('txtar1').value);
@@ -1741,7 +1707,7 @@ class requete_sql{
                     "tableau_rev_requete" : obj1.__xva ,
                     "cht_commentaire_requete" : document.getElementById( 'cht_commentaire_requete' ).value
                 };
-                modifier_la_requete_en_base( this.#globale_debut_url + '?modifier_la_requete_en_base' , ajax_param , this ).then( ( donnees ) => {
+                modifier_la_requete_en_base( this.#globale_debut_url + '?modifier_la_requete_en_base' , ajax_param ).then( ( donnees ) => {
                         console.log( 'donnees=' , donnees );
                         if(donnees.__xst === __xsu){
                             __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : ' requête sauvegardée'} );
@@ -1764,8 +1730,8 @@ class requete_sql{
     */
     bouton_ajouter_le_rev_en_base( id_courant=0 ){
         __gi1.raz_des_messages();
-        async function enregistrer_la_requete_en_base( url="" , ajax_param , that ){
-            return(that.#recupérer_un_fetch( url , ajax_param , that ));
+        async function enregistrer_la_requete_en_base( url="" , ajax_param  ){
+            return(__gi1.recupérer_un_fetch( url , ajax_param ));
         }
         /*
           var tableau1=__m_rev1.txt_en_tableau(document.getElementById('txtar1').value);
@@ -1785,7 +1751,7 @@ class requete_sql{
                     "cht_commentaire_requete" : document.getElementById( 'cht_commentaire_requete' ).value ,
                     "id_courant" : id_courant
                 };
-                enregistrer_la_requete_en_base( this.#globale_debut_url + '?enregistrer_la_requete_en_base' , ajax_param , this ).then( ( donnees ) => {
+                enregistrer_la_requete_en_base( this.#globale_debut_url + '?enregistrer_la_requete_en_base' , ajax_param  ).then( ( donnees ) => {
                         console.log( 'donnees=' , donnees );
                         if(donnees.__xst === __xsu){
                             var recharger_page='zz_requetes_a1.php?__action=__modification&__id=' + donnees.nouvel_id;
@@ -2658,13 +2624,15 @@ class requete_sql{
       =============================================================================================================
       function transform_textarea_rev_vers_sql
     */
-    transform_textarea_rev_vers_sql( txtarea_source , txtarea_dest , id_requete ){
+    transform_textarea_rev_vers_sql( txtarea_source , txtarea_dest , id_requete , effacer_la_pile_des_messages=true){
         if( typeof globale_requete_en_cours === 'undefined'){
             /*
               ne rien faire
             */
         }else if( typeof globale_requete_en_cours === 'object'){
-            __gi1.raz_des_messages();
+            if(effacer_la_pile_des_messages===true){
+                __gi1.raz_des_messages();
+            }
             __gi1.masquer_les_messages1( '' );
             var obj1=this.transform_source_rev_vers_sql( document.getElementById( txtarea_source ).value , id_requete );
             if(obj1.__xst === __xsu){
@@ -2697,7 +2665,7 @@ class requete_sql{
             "tableau_des_bases_tables_champs" : {}
         };
         async function recuperer_les_bases_de_la_cible_en_cours( url="" , donnees , that ){
-            return(that.#recupérer_un_fetch( url , ajax_param , that ));
+            return(__gi1.recupérer_un_fetch( url , ajax_param , that ));
         }
         var ajax_param={"call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'recuperer_les_bases_de_la_cible_en_cours'}};
         recuperer_les_bases_de_la_cible_en_cours( this.#globale_debut_url + '?recuperer_les_bases_de_la_cible_en_cours' , ajax_param , this ).then( ( donnees ) => {
@@ -2765,7 +2733,8 @@ class requete_sql{
                     }
                     if(fonction_appelee_apres_chargement !== null){
                         fonction_appelee_apres_chargement( this.#obj_init , this );
-                        this.transform_textarea_rev_vers_sql( 'txtar1' , 'txtar2' , this.#globale_id_requete );
+                        this.transform_textarea_rev_vers_sql( 'txtar1' , 'txtar2' , this.#globale_id_requete , false );
+                        __gi1.remplir_et_afficher_les_messages1( '' );
                     }else{
                         this.#obj_webs=JSON.parse( JSON.stringify( this.#obj_init ) );
                         this.#mettre_en_stokage_local_et_afficher();
@@ -2773,6 +2742,7 @@ class requete_sql{
                     }
                 }else{
                     console.log( 'KO donnees=' , donnees );
+                    __gi1.remplir_et_afficher_les_messages1( '' );
                 }
             } );
     }
