@@ -325,7 +325,6 @@ function traite_une_suppression( id_tache , arg ){
                         tache_en_cours=true;
                         if(extension === '.html' || extension === '.htm'){
                             var objSource=__m_rev_vers_html1.c_tab_vers_html( tab1 , {} );
-
                             console.log( '%c on traite un html ' , 'color:red;background:yellow;' , objSource.__xst );
                         }else if(extension === '.js'){
                             /* var objSource=parseJavascript0(tab,1,0); */

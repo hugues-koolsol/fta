@@ -135,10 +135,10 @@ class interface1{
         var tt='';
         var tab_cas_erreur=[
             /*  */
-            {"type" : 'erreurs' ,"css_cls" : 'yyerreur' },
-            {"type" : 'succes'  ,"css_cls" : 'yysucces' },
-            {"type" : 'alarmes' ,"css_cls" : 'yyalarme' },
-            {"type" : 'infos'   ,"css_cls" : 'yyinfo' }
+            {"type" : 'erreurs' ,"css_cls" : 'yyerreur'},
+            {"type" : 'succes' ,"css_cls" : 'yysucces'},
+            {"type" : 'alarmes' ,"css_cls" : 'yyalarme'},
+            {"type" : 'infos' ,"css_cls" : 'yyinfo'}
         ];
         for(let cas in tab_cas_erreur){
             var le_cas=tab_cas_erreur[cas];
@@ -225,21 +225,21 @@ class interface1{
                 __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur} );
                 __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( en_entree ) ,"masquee" : masquer_les_messages_du_serveur} );
                 __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( donnees ) ,"masquee" : masquer_les_messages_du_serveur} );
-                return(__m_rev1.empiler_erreur({
+                return(__m_rev1.empiler_erreur( {
                         "__xst" : __xer ,
-                        "__xme" : __m_rev1.nl2()+'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t ,
+                        "__xme" : __m_rev1.nl2() + 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t ,
                         "masquee" : masquer_les_messages_du_serveur
-                    }));
+                    } ));
             }
         }catch(e){
             console.error( e );
             if(e.message === 'signal timed out'){
                 return(__m_rev1.empiler_erreur( {
                         "__xst" : __xer ,
-                        "__xme" : __m_rev1.nl2()+'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt( (delais_admis / 1000) * 10 , 10 ) / 10) + ' secondes '
+                        "__xme" : __m_rev1.nl2() + 'les données n\'ont pas pu être récupérées  en moins de ' + (parseInt( (delais_admis / 1000) * 10 , 10 ) / 10) + ' secondes '
                     } ));
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+e.message} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + e.message} ));
             }
         }
     }
@@ -1044,7 +1044,7 @@ class interface1{
     convertir_textearea_rev_vers_textarea_html( nom_de_la_textarea_rev , nom_de_la_textarea_html ){
         __gi1.raz_des_messages();
         var a=document.getElementById( nom_de_la_textarea_rev );
-        var obj3=__m_rev_vers_html1.c_rev_vers_html( a.value ,{} );
+        var obj3=__m_rev_vers_html1.c_rev_vers_html( a.value , {} );
         if(obj3.__xst === __xsu){
             document.getElementById( nom_de_la_textarea_html ).value=obj3.__xva;
             __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : 'html produit'} );
@@ -1075,10 +1075,10 @@ class interface1{
         __gi1.raz_des_messages();
         var a=document.getElementById( nom_de_la_textarea );
         var source_html=a.value;
-        for(var i=0;i<a.value.length;i++){
-            var c=source_html.substr(i,1);
-            if(!(c==' ' || c=='\n' || c=='\r' || c=='\t' )){
-                source_html=source_html.substr(i);
+        for( var i=0 ; i < a.value.length ; i++ ){
+            var c=source_html.substr( i , 1 );
+            if(!(c == ' ' || c == '\n' || c == '\r' || c == '\t')){
+                source_html=source_html.substr( i );
                 break;
             }
         }
@@ -1174,9 +1174,8 @@ class interface1{
     /*
       =============================================================================================================
     */
-    traitement_apres_recuperation_ast_de_php2_ko( reponse_ajax , json_de_reponse=null , erreur_du_catch=null){
+    traitement_apres_recuperation_ast_de_php2_ko( reponse_ajax , json_de_reponse=null , erreur_du_catch=null ){
         if(json_de_reponse !== null){
-         
             if(json_de_reponse.hasOwnProperty( '__entree' )
                    && json_de_reponse.__entree.hasOwnProperty( 'call' )
                    && json_de_reponse.__entree.call.hasOwnProperty( 'opt' )
@@ -1190,7 +1189,6 @@ class interface1{
             }else{
                 this.remplir_et_afficher_les_messages1( '' );
             }
-            
         }else{
             /* on retire les caractéristiques graphiques sur les messages au standard php */
             if(reponse_ajax !== ''){

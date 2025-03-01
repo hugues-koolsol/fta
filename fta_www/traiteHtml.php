@@ -55,7 +55,8 @@ $par=array(/* */
     'js_a_inclure' => array(/*il peut y avoir du javascript dans le html*/
             'js/jslib/acorn.js'
         ),
-    'module_a_inclure' => array(/**/
+    'module_a_inclure' => array(
+            /**/
             'js/module_html.js',
             'js/mf_astjs_vers_rev1.js',
             'js/mf_rev_vers_js1.js',

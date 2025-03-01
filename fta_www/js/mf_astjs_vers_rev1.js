@@ -1111,7 +1111,12 @@ class c_astjs_vers_rev1{
                         debugger;
                         t='chainé(' + objet + ',' + propriete + ')';
                     }else{
-                        t=objet + '.' + propriete;
+                        if(parent && parent.type === 'VariableDeclaration' && type_objet === 'SequenceExpression'){
+                            /* var u = (s = c, f()).stop; */
+                            t=objet + ',prop(' + propriete + ')';
+                        }else{
+                            t=objet + '.' + propriete;
+                        }
                     }
                     /* on force le type d'élément parent */
                     element.type='Identifier';
@@ -2318,8 +2323,8 @@ class c_astjs_vers_rev1{
             if(element.handler.type === 'CatchClause'){
                 if(element.handler.param && element.handler.param.type === 'Identifier'){
                     t+=element.handler.param.name + ',';
-                }else if(element.handler.param===null){
-                    t+='null(),'
+                }else if(element.handler.param === null){
+                    t+='null(),';
                 }else{
                     return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                 }

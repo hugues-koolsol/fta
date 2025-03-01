@@ -104,7 +104,7 @@ class traitements_sur_html{
                             type='script';
                             t+='\n' + esp0 + 'script(';
                             __m_rev1.empiler_erreur( {
-                                    "__xst" : __xer ,
+                                    "__xst" : __xal ,
                                     "__xme" : __m_rev1.nl2() + '<br />attention, seuls "text/javascript", "module" et "application/ld+json" sont traités <br />et il existe un type de script non traité <b>"' + jsonDeHtml.attributes.type + '"</b>'
                                 } );
                         }
@@ -148,11 +148,14 @@ class traitements_sur_html{
             t+=attributs;
             if(typeScriptNonTraite && jsonDeHtml.content && jsonDeHtml.content.length > 0){
                 contenu=jsonDeHtml.content[0];
+                if(contenu.hasOwnProperty( 'content' ) &&  typeof contenu.content === 'string'){
+                    contenu=contenu.content;
+                }
                 contenu=contenu.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' );
                 if(attributs !== ''){
                     t+=',';
                 }
-                t+='@(' + contenu + ')';
+                t+='@(\'' + contenu + '\')';
                 t+=')';
             }else if(type.toLowerCase() === 'ldplusjsondanshtml' && jsonDeHtml.content && jsonDeHtml.content.length > 0){
                 if(jsonDeHtml.content[0].content){
@@ -427,10 +430,10 @@ class traitements_sur_html{
                                         if(obj1.__xst === __xsu){
                                             t=obj1.__xva;
                                         }else{
-                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                         }
                                     }else{
-                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                     }
                                 }else{
                                     var nouveauJsonDeHtml=this.mapMatriceVersJsonDeHtml( nouveauTableau2 );
@@ -439,10 +442,10 @@ class traitements_sur_html{
                                         if(obj.__xst === __xsu){
                                             t=obj.__xva;
                                         }else{
-                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                         }
                                     }else{
-                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                     }
                                 }
                             }else{
@@ -452,10 +455,10 @@ class traitements_sur_html{
                                     if(obj1.__xst === __xsu){
                                         t=obj1.__xva;
                                     }else{
-                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
+                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                     }
                                 }else{
-                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
+                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                 }
                             }
                         }else{
@@ -476,7 +479,7 @@ class traitements_sur_html{
                                             if(obj.__xst === __xsu){
                                                 t+=',' + obj.__xva + '\n';
                                             }else{
-                                                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
+                                                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                             }
                                         }
                                     }
@@ -496,7 +499,7 @@ class traitements_sur_html{
                                 if(obj1.__xst === __xsu){
                                     t=obj1.__xva;
                                 }else{
-                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
+                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                 }
                             }
                         }
@@ -511,7 +514,7 @@ class traitements_sur_html{
                     */
                 }
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() } ));
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
             }
         }
         /*
@@ -519,7 +522,7 @@ class traitements_sur_html{
         */
         t=t.replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\n' );
         if(niveau === 0){
-            /*utile seulement pour debug*/
+            /* utile seulement pour debug */
             return({"__xst" : __xsu ,"__xva" : t ,"dernierEstTexte" : dernierEstTexte});
         }else{
             return({"__xst" : __xsu ,"__xva" : t ,"dernierEstTexte" : dernierEstTexte});
@@ -554,8 +557,8 @@ class traitements_sur_html{
                 var docNode=parser.parseFromString( element.replace( /&/g , '&amp;' ) , 'text/html' );
                 elementNoeud=docNode.firstChild;
                 /*
-                  =================================================================================================
-                  =================================================================================================
+                  =====================================================================================
+                  =====================================================================================
                 */
                 function arbre_HTML( element , object ){
                     object['type']=element.nodeName;
@@ -598,8 +601,8 @@ class traitements_sur_html{
                     }
                 }
                 /*
-                  =================================================================================================
-                  =================================================================================================
+                  =====================================================================================
+                  =====================================================================================
                 */
                 arbre_HTML( elementNoeud , treeObject );
                 return({"__xst" : __xsu ,"__xva" : treeObject ,"parfait" : false});
@@ -609,8 +612,8 @@ class traitements_sur_html{
                 */
                 elementNoeud=docNode.firstChild.childNodes;
                 /*
-                  =================================================================================================
-                  =================================================================================================
+                  =====================================================================================
+                  =====================================================================================
                 */
                 function arbre_XML( elements , objet , niveau , remplacer_les_nbsp ){
                     try{
@@ -647,8 +650,8 @@ class traitements_sur_html{
                     }
                 }
                 /*
-                  =================================================================================================
-                  =================================================================================================
+                  =====================================================================================
+                  =====================================================================================
                 */
                 treeObject['type']='';
                 if(element.indexOf( '&nbsp;' ) >= 0){
@@ -715,7 +718,7 @@ class traitements_sur_html{
                                     attrib[tab[i + 1][1]]=tab[i + 2][1];
                                     a_des_attributs=true;
                                 }else{
-                                    return(__m_rev1.empiler_erreur({"__xst" : __xer ,"message" : __m_rev1.nl2()}));
+                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"message" : __m_rev1.nl2()} ));
                                 }
                             }
                         }
@@ -740,7 +743,7 @@ class traitements_sur_html{
                                                 attrib[tab[j + 1][1]]=tab[j + 2][1];
                                                 a_des_attributs=true;
                                             }else{
-                                                return(__m_rev1.empiler_erreur({"__xst" : __xer ,"message" : __m_rev1.nl2()}));
+                                                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"message" : __m_rev1.nl2()} ));
                                             }
                                         }
                                     }
@@ -797,7 +800,7 @@ class traitements_sur_html{
                                                 le_contenu.push( JSON.parse( JSON.stringify( {"type" : tab[i][1] ,"content" : obj.content} ) ) );
                                             }
                                         }else{
-                                            return(__m_rev1.empiler_erreur({"__xst" : __xer ,"message" : __m_rev1.nl2()}));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"message" : __m_rev1.nl2()} ));
                                         }
                                     }
                                 }
@@ -997,16 +1000,19 @@ class traitements_sur_html{
                                         }
                                         var matriceFonction=__m_rev1.rev_tm( source_rev );
                                         if(matriceFonction.__xst === __xer){
-                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+'conversion en matrice'} ));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'conversion en matrice'} ));
                                         }
                                         var obj1=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
                                         if(obj1.__xst === __xsu){
                                             document.getElementById( options.zone_html_rev ).value=obj1.__xva;
                                         }else{
-                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+'nettoyage en matrice'} ));
+                                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'nettoyage en matrice'} ));
                                         }
                                     }catch(e){
-                                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2(e)+'la zone "' + options.zone_html_rev + '" indiquée en paramètre n\'existe pas dans le document' } ));
+                                        return(__m_rev1.empiler_erreur( {
+                                                "__xst" : __xer ,
+                                                "__xme" : __m_rev1.nl2( e ) + 'la zone "' + options.zone_html_rev + '" indiquée en paramètre n\'existe pas dans le document'
+                                            } ));
                                     }
                                 }
                                 return({"__xst" : __xsu ,"__xva" : source_rev});
@@ -1025,19 +1031,17 @@ class traitements_sur_html{
                                     document.getElementById( options.zone_html_rev ).value=obj.__xva.replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\r' ).replace( /\\\\¶\\\\LF\\\\¶/g , '\n' ).replace( /\\\\¶\\\\CR\\\\¶/g , '\r' );
                                     var matriceFonction=__m_rev1.rev_tm( obj.__xva );
                                     if(matriceFonction.__xst === __xer){
-                                        
                                         return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                     }
                                     var obj1=__m_rev1.matrice_vers_source_rev1( matriceFonction.__xva , 0 , true , 1 );
                                     if(obj1.__xst === __xsu){
                                         document.getElementById( options.zone_html_rev ).value=obj1.__xva;
                                     }else{
-                                        
                                         return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                     }
                                 }catch(e){
                                     console.error( 'e=' , e );
-                                    return(__m_rev1.empiler_erreur({"__xst" : __xer ,"__xme" : __m_rev1.nl2()}));
+                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                                 }
                                 return({"__xst" : __xsu ,"__xva" : obj.__xva});
                             }else{
@@ -1059,7 +1063,7 @@ class traitements_sur_html{
             return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
         }catch(e){
             console.log( 'e=' , e );
-            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2(e)} ));
+            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e )} ));
         }
         console.log( 'fin' );
     }

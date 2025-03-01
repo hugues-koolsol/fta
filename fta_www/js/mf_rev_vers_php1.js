@@ -923,7 +923,7 @@ class c_rev_vers_php1{
                             }else{
                                 tag_de_fin=CRLF + '<?' + 'php';
                             }
-                            obj=__m_rev_vers_html1.c_tab_vers_html( this.#tb , {"indice_de_debut" : i , "nohead" : true , "niveau" : niveau} );
+                            obj=__m_rev_vers_html1.c_tab_vers_html( this.#tb , {"indice_de_debut" : i ,"nohead" : true ,"niveau" : niveau} );
                             if(obj.__xst === __xsu){
                                 if(obj.__xva.substr( obj.__xva.length - 2 , 2 ) === '\r\n'){
                                     obj.__xva=obj.__xva.substr( 0 , obj.__xva.length - 2 );
@@ -1477,7 +1477,7 @@ class c_rev_vers_php1{
             case 'html_dans_php' :
                 debugger;
                 /* afr dans quel cas passe-t-on par ici ? */
-                obj=__m_rev_vers_html1.c_tab_vers_html( this.#tb , {"indice_de_debut" : ind , "nohead" : true , "niveau" : 0} );
+                obj=__m_rev_vers_html1.c_tab_vers_html( this.#tb , {"indice_de_debut" : ind ,"nohead" : true ,"niveau" : 0} );
                 if(obj.__xst === __xsu){
                     t='html_dans_php(\'' + obj.__xva.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' ) + '\')';
                 }else{

@@ -27,16 +27,11 @@ class c_rev1{
             "plage" : o.hasOwnProperty( 'plage' ) ? ( o.plage ) : ( null ) ,
             "ligne" : o.hasOwnProperty( 'ligne' ) ? ( o.ligne ) : ( null )
         };
-        if(o.hasOwnProperty( '__xav' )){
-         
-            debugger
-            a_retourner['__xav']=o.__xav;
-        }
-        if(a_retourner.hasOwnProperty( '__xav' ) || a_retourner.__xst===__xal){
+        if(a_retourner.__xst === __xal){
             this.globale_messages['alarmes'].push( a_retourner );
-        }else if(a_retourner.__xst===__xif){
+        }else if(a_retourner.__xst === __xif){
             this.globale_messages['infos'].push( a_retourner );
-        }else if(a_retourner.__xst===__xsu){
+        }else if(a_retourner.__xst === __xsu){
             this.globale_messages['succes'].push( a_retourner );
         }else{
             this.globale_messages['erreurs'].push( a_retourner );
@@ -57,6 +52,7 @@ class c_rev1{
     }
     /*
       =============================================================================================================
+      __m_rev1.ma_constante
     */
     ma_constante( eltTab ){
         var t='';

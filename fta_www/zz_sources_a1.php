@@ -103,6 +103,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
              LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
             
             WHERE (`T0`.`chi_id_source` = :T0_chi_id_source
+              
              AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
 
             */
@@ -198,6 +199,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
          LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
         
         WHERE (`T0`.`chi_id_source` = :T0_chi_id_source
+          
          AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
 
         */
@@ -383,6 +385,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
          LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
         
         WHERE (`T0`.`chi_id_source` = :T0_chi_id_source
+          
          AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
 
         */
@@ -417,6 +420,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
              LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier
             
             WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier
+              
              AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
 
             */
@@ -496,9 +500,9 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_63.php');
         /*
-        
         UPDATE b1.tbl_sources SET `chp_nom_source` = :n_chp_nom_source , `chp_commentaire_source` = :n_chp_commentaire_source , `chx_dossier_id_source` = :n_chx_dossier_id_source , `chp_rev_source` = :n_chp_rev_source , `chp_genere_source` = :n_chp_genere_source , `chp_type_source` = :n_chp_type_source
         WHERE (`chi_id_source` = :c_chi_id_source
+          
          AND `chx_cible_id_source` = :c_chx_cible_id_source) ;
 
         */
@@ -585,6 +589,7 @@ if(isset($_POST) && sizeof($_POST) >= 1){
              LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
             
             WHERE (`T0`.`chi_id_source` = :T0_chi_id_source
+              
              AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
 
             */
@@ -645,7 +650,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_5.php');
         /*
-        
         DELETE FROM b1.tbl_revs
         WHERE (`chx_cible_rev` = :chx_cible_rev
           
@@ -670,7 +674,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
             /*sql_inclure_deb*/
             require_once(INCLUDE_PATH.'/sql/sql_39.php');
             /*
-            
             DELETE FROM b1.tbl_sources
             WHERE (`chi_id_source` = :chi_id_source
               
@@ -715,7 +718,6 @@ if(isset($_POST) && sizeof($_POST) >= 1){
         /*sql_inclure_deb*/
         require_once(INCLUDE_PATH.'/sql/sql_54.php');
         /*
-        
         INSERT INTO b1.`tbl_sources`(
             `chx_cible_id_source` , 
             `chp_nom_source` , 
@@ -819,6 +821,7 @@ if(isset($_GET['__action']) && ($_GET['__action'] == '__modification' || $_GET['
      LEFT JOIN b1.tbl_dossiers T2 ON T2.chi_id_dossier = T0.chx_dossier_id_source
     
     WHERE (`T0`.`chi_id_source` = :T0_chi_id_source
+      
      AND `T0`.`chx_cible_id_source` = :T0_chx_cible_id_source);
 
     */
@@ -931,6 +934,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
          LEFT JOIN b1.tbl_cibles T1 ON T1.chi_id_cible = T0.chx_cible_dossier
         
         WHERE (`T0`.`chi_id_dossier` = :T0_chi_id_dossier
+          
          AND `T0`.`chx_cible_dossier` = :T0_chx_cible_dossier);
 
         */

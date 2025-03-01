@@ -29,8 +29,6 @@ define('__xal',2);
 define('__xif',3);
 /*message*/
 define('__xme','__xme');
-/*plusieurs alarmes dans un tableau */
-define('__xav','__xav');
 /*valeur*/
 define('__xva','__xva');
 define('__mode_traque','__mode_traque');
@@ -42,10 +40,10 @@ $GLOBALS[__le_biscuit]=array();
 $GLOBALS[__mode_traque]=false;
 /*
   =====================================================================================================================
-  ====================== un temps de traitement supérieur à 2 secondes est suspect ====================================
+  ====================== un temps de traitement supérieur à 5 secondes est suspect ====================================
   =====================================================================================================================
 */
-set_time_limit(2);
+set_time_limit(5);
 /*
   =====================================================================================================================
 */

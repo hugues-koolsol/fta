@@ -617,11 +617,11 @@ class c_rev_vers_js1{
                             }else if(this.#tb[j][1] === 'sierreur' && this.#tb[j][2] === 'f'){
                                 if(this.#tb[j][8] === 0){
                                 }else if(this.#tb[j][8] === 2){
-                                    if(this.#tb[j + 1][2] === 'c' || ( this.#tb[j + 1][2] === 'f' && this.#tb[j + 1][1] === 'null' && this.#tb[j + 2][8] === 0 ) ){
+                                    if(this.#tb[j + 1][2] === 'c' || this.#tb[j + 1][2] === 'f' && this.#tb[j + 1][1] === 'null' && this.#tb[j + 2][8] === 0){
                                         nomErreur=this.#tb[j + 1][1];
                                         if(this.#tb[j + 2][1] === 'faire' && this.#tb[j + 2][2] === 'f'){
                                             if(this.#tb[j + 2][8] === 0){
-                                                sierreur+= nomErreur === 'null' ? ' catch {}' : 'catch('+nomErreur+'){}'  ;
+                                                sierreur+=nomErreur === 'null' ? ( ' catch {}' ) : ( 'catch(' + nomErreur + '){}' );
                                             }else{
                                                 obj=this.#rev_js1( j + 2 , niveau + 1 , {} );
                                                 if(obj.__xst === __xsu){
@@ -895,9 +895,17 @@ class c_rev_vers_js1{
                     case 'variable_publique' :
                         var les_declarations=[];
                         var le_commentaire='';
+                        var la_propriété='';
                         for( j=i + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                             if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                                 le_commentaire='/*' + __m_rev1.tr_co_src( this.#tb[j][13] , niveau , j ) + '*/' + __m_rev1.resps( niveau );
+                            }else if(this.#tb[j][1] === 'prop' && this.#tb[j][2] === 'f'){
+                                obj=this.#js_traiteInstruction1( niveau , j + 1 , {} );
+                                if(obj.__xst === __xsu){
+                                    la_propriété=obj.__xva;
+                                }else{
+                                    this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} );
+                                }
                             }else{
                                 les_declarations.push( this.#tb[j] );
                             }
@@ -932,13 +940,21 @@ class c_rev_vers_js1{
                                     if(obj.__xva === ''){
                                         t+=debut2;
                                     }else{
-                                        t+=debut2 + '=' + obj.__xva;
+                                        if(la_propriété !== ''){
+                                            t+=debut2 + '=(' + obj.__xva + ').' + la_propriété;
+                                        }else{
+                                            t+=debut2 + '=' + obj.__xva;
+                                        }
                                     }
                                 }else{
                                     if(obj.__xva === ''){
                                         t+=debut;
                                     }else{
-                                        t+=debut + '=' + obj.__xva;
+                                        if(la_propriété !== ''){
+                                            t+=debut + '=(' + obj.__xva + ').' + la_propriété;
+                                        }else{
+                                            t+=debut + '=' + obj.__xva;
+                                        }
                                     }
                                 }
                             }else{

@@ -1685,9 +1685,8 @@ class requete_sql{
     */
     bouton_modifier_le_rev_en_base( id_requete ){
         __gi1.raz_des_messages();
-        async function modifier_la_requete_en_base( url="" , ajax_param  ){
+        async function modifier_la_requete_en_base( url="" , ajax_param ){
             return(__gi1.recupérer_un_fetch( url , ajax_param ));
-
         }
         /*
           var tableau1=__m_rev1.txt_en_tableau(document.getElementById('txtar1').value);
@@ -1730,7 +1729,7 @@ class requete_sql{
     */
     bouton_ajouter_le_rev_en_base( id_courant=0 ){
         __gi1.raz_des_messages();
-        async function enregistrer_la_requete_en_base( url="" , ajax_param  ){
+        async function enregistrer_la_requete_en_base( url="" , ajax_param ){
             return(__gi1.recupérer_un_fetch( url , ajax_param ));
         }
         /*
@@ -1751,7 +1750,7 @@ class requete_sql{
                     "cht_commentaire_requete" : document.getElementById( 'cht_commentaire_requete' ).value ,
                     "id_courant" : id_courant
                 };
-                enregistrer_la_requete_en_base( this.#globale_debut_url + '?enregistrer_la_requete_en_base' , ajax_param  ).then( ( donnees ) => {
+                enregistrer_la_requete_en_base( this.#globale_debut_url + '?enregistrer_la_requete_en_base' , ajax_param ).then( ( donnees ) => {
                         console.log( 'donnees=' , donnees );
                         if(donnees.__xst === __xsu){
                             var recharger_page='zz_requetes_a1.php?__action=__modification&__id=' + donnees.nouvel_id;
@@ -2624,13 +2623,13 @@ class requete_sql{
       =============================================================================================================
       function transform_textarea_rev_vers_sql
     */
-    transform_textarea_rev_vers_sql( txtarea_source , txtarea_dest , id_requete , effacer_la_pile_des_messages=true){
+    transform_textarea_rev_vers_sql( txtarea_source , txtarea_dest , id_requete , effacer_la_pile_des_messages=true ){
         if( typeof globale_requete_en_cours === 'undefined'){
             /*
               ne rien faire
             */
         }else if( typeof globale_requete_en_cours === 'object'){
-            if(effacer_la_pile_des_messages===true){
+            if(effacer_la_pile_des_messages === true){
                 __gi1.raz_des_messages();
             }
             __gi1.masquer_les_messages1( '' );
@@ -2664,11 +2663,11 @@ class requete_sql{
             "complements" : [] ,
             "tableau_des_bases_tables_champs" : {}
         };
-        async function recuperer_les_bases_de_la_cible_en_cours( url="" , donnees , that ){
-            return(__gi1.recupérer_un_fetch( url , ajax_param , that ));
+        async function recuperer_les_bases_de_la_cible_en_cours( url="" , donnees ){
+            return(__gi1.recupérer_un_fetch( url , ajax_param ));
         }
         var ajax_param={"call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'recuperer_les_bases_de_la_cible_en_cours'}};
-        recuperer_les_bases_de_la_cible_en_cours( this.#globale_debut_url + '?recuperer_les_bases_de_la_cible_en_cours' , ajax_param , this ).then( ( donnees ) => {
+        recuperer_les_bases_de_la_cible_en_cours( this.#globale_debut_url + '?recuperer_les_bases_de_la_cible_en_cours' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst === __xsu){
                     console.log( 'bases_chargées' );
                     this.#obj_init['bases']={};

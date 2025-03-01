@@ -50,8 +50,6 @@ class c_rev_vers_html1{
         }
         return ob;
     }
-    
-    
     /* function tabToHtml2 */
     #tabToHtml2( id , dansHead , dansBody , dansJs , noHead , dansPhp , dansCss , niveau ){
         var t='';
@@ -87,7 +85,7 @@ class c_rev_vers_html1{
             if(ob.__xst === __xsu){
                 t+=ob.__xva;
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xva" : t ,"__xme" : 'erreur de script dans un html'} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xva" : t ,"__xme" : __m_rev1.nl2() + 'erreur de script dans un html'} ));
             }
             t+=' ?>';
             return({
@@ -113,7 +111,7 @@ class c_rev_vers_html1{
                 t+=CRLF + '// = = = = source javascript> = = = =' + CRLF;
                 t+='//]]>' + CRLF;
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xva" : t ,"__xme" : 'erreur de script dans un html'} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xva" : t ,"__xme" : __m_rev1.nl2() + 'erreur de script dans un html'} ));
             }
             return({
                     "__xst" : __xsu ,
@@ -173,11 +171,11 @@ class c_rev_vers_html1{
                                     temp+=' ' + this.#tb[i + 1][1] + '';
                                 }
                             }else{
-                                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xva" : t ,"__xme" : __m_rev1.nl2() +'les propriété d\'un tag html doivent contenir une ou deux constantes'} ));
+                                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xva" : t ,"__xme" : __m_rev1.nl2() + 'les propriété d\'un tag html doivent contenir une ou deux constantes'} ));
                             }
                         }else{
-                            debugger
-                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xva" : t ,"__xme" : __m_rev1.nl2() +'les propriété d\'un tag html doivent contenir une ou deux constantes'} ));
+                            debugger;
+                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : i ,"__xva" : t ,"__xme" : __m_rev1.nl2() + 'les propriété d\'un tag html doivent contenir une ou deux constantes'} ));
                         }
                     }
                     if(this.#tb[i][2] == 'f' && this.#tb[i][1] != ''){
@@ -212,7 +210,16 @@ class c_rev_vers_html1{
                     if(this.#tb[i][2] == 'f' && this.#tb[i][1] != ''){
                         ne_contient_que_des_constantes=false;
                         if(this.#tb[i][1].toLowerCase() === '@'){
-                            t+=this.#tb[i][13];
+                            var valeur_script_non_traité=this.#tb[i][13].substr( 1 , this.#tb[i][13].length - 2 );
+                            valeur_script_non_traité=valeur_script_non_traité.replace( /\\\'/g , '\'' );
+                            if(valeur_script_non_traité.substr( valeur_script_non_traité.length - 2 , 2 ) === '\r\n'){
+                                valeur_script_non_traité=valeur_script_non_traité.substr( 0 , valeur_script_non_traité.length - 2 );
+                            }else if(valeur_script_non_traité.substr( valeur_script_non_traité.length - 1 , 1 ) === '\r'){
+                                valeur_script_non_traité=valeur_script_non_traité.substr( 0 , valeur_script_non_traité.length - 1 );
+                            }else if(valeur_script_non_traité.substr( valeur_script_non_traité.length - 1 , 1 ) === '\n'){
+                                valeur_script_non_traité=valeur_script_non_traité.substr( 0 , valeur_script_non_traité.length - 1 );
+                            }
+                            t+=valeur_script_non_traité;
                         }else if(this.#tb[i][1].toLowerCase() === 'ldplusjsondanshtml'){
                             /*
                               dans ce cas, c'est un tag <script avec des propriétés 
@@ -261,15 +268,15 @@ class c_rev_vers_html1{
                                     }
                                     t+=contenu + '</script>' + CRLF;
                                 }else{
-                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur dans un javascript contenu dans un html par la fonction ldplusjsondanshtml 0783'} ));
+                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + ' javascript contenu dans un html par la fonction ldplusjsondanshtml '} ));
                                 }
                             }
                         }else if(this.#tb[i][1].toLowerCase() === 'javascriptdanshtml'){
-                            var obj=this.#insere_javascript_dans_html1(  i , niveau );
+                            var obj=this.#insere_javascript_dans_html1( i , niveau );
                             if(obj.__xst === __xsu){
                                 t+=obj.__xva;
                             }else{
-                                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml 0943'} ));
+                                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'erreur dans un javascript contenu dans un html par la fonction javascriptdanshtml'} ));
                             }
                         }else{
                             /*
@@ -281,7 +288,7 @@ class c_rev_vers_html1{
                                 /*
                                   dans le cas du script ou de la racine, on le met à la racine
                                 */
-                                ob=this.#tabToHtml2( i , dansHead , dansBody , dansJs , noHead , dansPhp , dansCss , /*niveau*/0 );
+                                ob=this.#tabToHtml2( i , dansHead , dansBody , dansJs , noHead , dansPhp , dansCss ,  /* niveau */ 0 );
                             }else{
                                 ob=this.#tabToHtml2( i , dansHead , dansBody , dansJs , noHead , dansPhp , dansCss , niveau + 1 );
                             }
@@ -296,7 +303,7 @@ class c_rev_vers_html1{
                                 dansHead=ob.dansHead;
                                 dansJs=ob.dansJs;
                             }else{
-                                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur dans un html 0659'} ));
+                                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
                             }
                         }
                     }else{
@@ -305,7 +312,10 @@ class c_rev_vers_html1{
                             if(this.#tb[i][2] === 'c' && this.#tb[this.#tb[i][7]][8] === 1){
                                 /* aucune propriété et qu'une constante */
                             }else{
-                                if(this.#tb[this.#tb[i][7]][2] === 'f' && (this.#tb[this.#tb[i][7]][1] === 'textarea' || this.#tb[this.#tb[i][7]][1] === 'pre')){
+                                if(this.#tb[this.#tb[i][7]][2] === 'f'
+                                       && (this.#tb[this.#tb[i][7]][1] === 'textarea'
+                                           || this.#tb[this.#tb[i][7]][1] === 'pre')
+                                ){
                                     t+='';
                                 }else{
                                     /* t+=__m_rev1.resps(niveau + 1); */
@@ -342,7 +352,10 @@ class c_rev_vers_html1{
                                 }
                                 t+=contenuCss;
                             }else{
-                                if(this.#tb[this.#tb[i][7]][2] === 'f' && (this.#tb[this.#tb[i][7]][1] === 'textarea' || this.#tb[this.#tb[i][7]][1] === 'pre')){
+                                if(this.#tb[this.#tb[i][7]][2] === 'f'
+                                       && (this.#tb[this.#tb[i][7]][1] === 'textarea'
+                                           || this.#tb[this.#tb[i][7]][1] === 'pre')
+                                ){
                                     t+=this.#tb[i][1].replace( /&amp;gt;/g , '&gt;' ).replace( /&amp;lt;/g , '&lt;' ).replace( /&amp;amp;/g , '&amp;' ).replace( /\\\'/g , '\'' ).replace( /\\\\/g , '\\' ).replace( />/g , '&gt;' ).replace( /</g , '&lt;' ).replace( /¶LF¶/g , '\n' ).replace( /¶CR¶/g , '\r' );
                                 }else{
                                     t+=this.#tb[i][1].replace( /&amp;gt;/g , '&gt;' ).replace( /&amp;lt;/g , '&lt;' ).replace( /&amp;amp;/g , '&amp;' ).replace( /\\\'/g , '\'' ).replace( /\\\\/g , '\\' ).replace( />/g , '&gt;' ).replace( /</g , '&lt;' );
@@ -432,6 +445,7 @@ class c_rev_vers_html1{
             return({"__xst" : __xsu ,"__xva" : t ,"dansHead" : dansHead ,"dansBody" : dansBody ,"dansJs" : dansJs});
         }
     }
+    /* function insere_javascript_dans_html1 */
     #insere_javascript_dans_html1( ind , niveau ){
         var t='';
         var j=0;
@@ -476,8 +490,8 @@ class c_rev_vers_html1{
             if(this.#tb[indiceDebutJs][8] === 0){
                 /* js vide ! */
                 t+=CRLF;
-                if(lesProprietes===''){
-                    lesProprietes=' type="text/javascript"'
+                if(lesProprietes === ''){
+                    lesProprietes=' type="text/javascript"';
                 }
                 t+='<script' + lesProprietes + '>' + CRLF;
                 t+='//<![CDATA[' + CRLF;
@@ -495,8 +509,8 @@ class c_rev_vers_html1{
                       =============================================================================
                     */
                     t+=CRLF;
-                    if(lesProprietes===''){
-                        lesProprietes=' type="text/javascript"'
+                    if(lesProprietes === ''){
+                        lesProprietes=' type="text/javascript"';
                     }
                     t+='<script' + lesProprietes + '>' + CRLF;
                     t+='//<![CDATA[' + CRLF;
@@ -513,8 +527,6 @@ class c_rev_vers_html1{
         }
         return({"__xst" : __xsu ,"__xva" : t});
     }
-    
-    
     /*
       =============================================================================================================
       point d'entrée : convertion matrice vers un texte format html
@@ -526,13 +538,13 @@ class c_rev_vers_html1{
         var nohead=false;
         var indice_de_debut=0;
         var niveau=0;
-        if(options_traitement.hasOwnProperty('nohead')){
+        if(options_traitement.hasOwnProperty( 'nohead' )){
             nohead=options_traitement.nohead;
         }
-        if(options_traitement.hasOwnProperty('indice_de_debut')){
+        if(options_traitement.hasOwnProperty( 'indice_de_debut' )){
             indice_de_debut=options_traitement.indice_de_debut;
         }
-        if(options_traitement.hasOwnProperty('niveau')){
+        if(options_traitement.hasOwnProperty( 'niveau' )){
             niveau=options_traitement.niveau;
         }
         var obj=this.#rev_html1( indice_de_debut , nohead , niveau );
@@ -551,8 +563,6 @@ class c_rev_vers_html1{
         }else{
             return(this.#rev_html_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'erreur de conversion en html'} ));
         }
-        
-     
     }
     /*
       =============================================================================================================
@@ -567,7 +577,7 @@ class c_rev_vers_html1{
             this.#tb=obj.__xva;
             this.#l02=obj.__xva.length;
             var nohead=false;
-            if(options_traitement.hasOwnProperty('nohead')){
+            if(options_traitement.hasOwnProperty( 'nohead' )){
                 nohead=options_traitement.nohead;
             }
             obj=this.#rev_html1( 0 , nohead , 0 );
@@ -590,6 +600,5 @@ class c_rev_vers_html1{
             return(this.#rev_html_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'erreur dans un rev'} ));
         }
     }
-    
 }
 export{c_rev_vers_html1 as c_rev_vers_html1};

@@ -149,7 +149,7 @@ function gererer_le_fichier_des_requetes($chi_id_cible){
      FROM b1.tbl_requetes T0
     WHERE (`T0`.`chx_cible_requete` = :T0_chx_cible_requete) 
    
-     ORDER BY `T0`.`chi_id_requete`  ASC;
+     ORDER BY `T0`.`chi_id_requete` ASC;
 
     */
     /*sql_inclure_fin*/

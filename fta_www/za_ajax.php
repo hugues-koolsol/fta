@@ -75,12 +75,7 @@ function shutdownHandler(){
 /* ================================================================================================ */
 function ma_trace($error){
 
-    $ret=array( 
-        "__xst" => 0, 
-        "signaux" => array( 0 => array($error)), 
-        "__entree" => isset($GLOBALS['__entree']) ? $GLOBALS['__entree'] : null
-    );
-
+    $ret=array( "__xst" => 0, "signaux" => array( 0 => array( $error)), "__entree" => isset($GLOBALS['__entree']) ? $GLOBALS['__entree'] : null);
     header('Content-Type: application/json; charset=utf-8');
     echo json_encode($ret,JSON_FORCE_OBJECT) ;
     /* on a capturé une erreur de type 500, on force la réponse en 200 */
@@ -88,15 +83,9 @@ function ma_trace($error){
     exit(0);
 
 }
-/*
-  =====================================================================================================================
-  ====================== un temps de traitement supérieur à 5 secondes est suspect ====================================
-  =====================================================================================================================
-*/
-set_time_limit(5);
 /*#
-// simulation d'un traitement supérieur à deux secondes pour mes tests: la fonction password_verify prend du temps
-for($i=0;$i<50;$i++){
+// simulation d'un traitement supérieur à 5 secondes pour mes tests: la fonction password_verify prend du temps
+for($i=0;$i<200;$i++){
     password_verify('admin','$2y$13$511GXb2mv6/lIM8yBiyGte7CNn.rMaTvD0aPNW6BF/GYlmv946RVK');
 }
 */
@@ -171,7 +160,7 @@ if(isset($_POST) && sizeof($_POST) > 0 && isset($_POST['ajax_param'])){
     }else{
 
         $ret[__xst]=false;
-        ajouterMessage(__xer, __LINE__ . ' les paramètres de l\'appel ajax sont incomplets (lib,file,func) : "' . var_export($ret[__entree],true) . '"');
+        ajouterMessage(__xer,__LINE__ . ' les paramètres de l\'appel ajax sont incomplets (lib,file,func) : "' . var_export($ret[__entree],true) . '"');
     }
 
 

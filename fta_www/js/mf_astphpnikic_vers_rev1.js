@@ -3598,7 +3598,7 @@ class c_astphpnikic_vers_rev1{
                 debugger;
             }
         }catch(e){}
-        return(this.#astphp_le({"__xst" : __xer ,"__xme" : 'le html dans php n\'est pas convertible'}));
+        return(this.#astphp_le( {"__xst" : __xer ,"__xme" : 'le html dans php n\'est pas convertible'} ));
     }
     /*
       =============================================================================================================
@@ -3743,13 +3743,13 @@ class c_astphpnikic_vers_rev1{
                 }else{
                     if(r.status === 404){
                         if(0 === numero_de_message++){
-                            __m_rev1.empiler_erreur(  {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '<br />404 page "' + page + '" non trouvée'} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '<br />404 page "' + page + '" non trouvée'} );
                             __gi1.remplir_et_afficher_les_messages1( '' );
                         }
                         return;
                     }else if(r.status >= 500){
                         if(0 === numero_de_message++){
-                            __m_rev1.empiler_erreur(  {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '<br />erreur du serveur, peut-être une limite de temps de traitement atteinte'} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '<br />erreur du serveur, peut-être une limite de temps de traitement atteinte'} );
                             __gi1.remplir_et_afficher_les_messages1( '' );
                         }
                         /*
@@ -3769,24 +3769,37 @@ class c_astphpnikic_vers_rev1{
                 }
                 try{
                     var json_retour=JSON.parse( r.responseText );
-                    debugger
+                    debugger;
                     if(json_retour.hasOwnProperty( 'signaux' )){
                         var tableau_des_signaux=[__xsu,__xer,__xal,__xif];
                         for( let j=0 ; j < tableau_des_signaux.length ; j++ ){
                             if(json_retour.signaux.hasOwnProperty( tableau_des_signaux[j] )){
                                 for(let i in json_retour.signaux[tableau_des_signaux[j]]){
-                                    if(tableau_des_signaux[j]===__xer){
+                                    if(tableau_des_signaux[j] === __xer){
                                         /* en cas d'erreur le parseur nikic retourne "blablabla on line 123" */
-                                        var le_message=json_retour.signaux[tableau_des_signaux[j]][i]; // 
-                                        if(le_message.indexOf(' on line ')>0 && __m_rev1.est_num(le_message.substr( le_message.indexOf(' on line ')+9))){
-                                            var la_ligne=parseInt( le_message.substr( le_message.indexOf(' on line ')+9) , 10);
-                                            __m_rev1.empiler_erreur( {"__xst" : tableau_des_signaux[j] ,"__xme" : json_retour.signaux[tableau_des_signaux[j]][i] , ligne:la_ligne,"masquee" : json_retour.__entree.call.opt.masquer_les_messages_du_serveur} );
+                                        var le_message=json_retour.signaux[tableau_des_signaux[j]][i];
+                                        /*  */
+                                        if(le_message.indexOf( ' on line ' ) > 0 && __m_rev1.est_num( le_message.substr( le_message.indexOf( ' on line ' ) + 9 ) )){
+                                            var la_ligne=parseInt( le_message.substr( le_message.indexOf( ' on line ' ) + 9 ) , 10 );
+                                            __m_rev1.empiler_erreur( {
+                                                    "__xst" : tableau_des_signaux[j] ,
+                                                    "__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,
+                                                    "ligne" : la_ligne ,
+                                                    "masquee" : json_retour.__entree.call.opt.masquer_les_messages_du_serveur
+                                                } );
                                         }else{
-                                            __m_rev1.empiler_erreur( {"__xst" : tableau_des_signaux[j] ,"__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,"masquee" : json_retour.__entree.call.opt.masquer_les_messages_du_serveur} );
+                                            __m_rev1.empiler_erreur( {
+                                                    "__xst" : tableau_des_signaux[j] ,
+                                                    "__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,
+                                                    "masquee" : json_retour.__entree.call.opt.masquer_les_messages_du_serveur
+                                                } );
                                         }
-                                     
                                     }else{
-                                        __m_rev1.empiler_erreur( {"__xst" : tableau_des_signaux[j] ,"__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,"masquee" : json_retour.__entree.call.opt.masquer_les_messages_du_serveur} );
+                                        __m_rev1.empiler_erreur( {
+                                                "__xst" : tableau_des_signaux[j] ,
+                                                "__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,
+                                                "masquee" : json_retour.__entree.call.opt.masquer_les_messages_du_serveur
+                                            } );
                                     }
                                 }
                                 json_retour.signaux[tableau_des_signaux[j]]=[];
@@ -3797,7 +3810,7 @@ class c_astphpnikic_vers_rev1{
                         if(fonction_traitement_apres_recuperation_ast_de_php2_ok !== undefined){
                             fonction_traitement_apres_recuperation_ast_de_php2_ok( json_retour );
                         }else{
-                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+'Il manque une fonction de traitement de retour OK'} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'Il manque une fonction de traitement de retour OK'} );
                             console.error( 'veuillez définir une fonction de traitement' );
                         }
                     }else{

@@ -113,7 +113,6 @@ function convertSource( objMatSrc ){
                 "file_extension" : file_extension ,
                 "tabConcatFichier" : tabConcatFichier
             });
-        
     }else{
         return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"id" : 0 ,"__xme" : __m_rev1.nl2() + 'les noms et chemin du fichier doivent être complétés'} ));
     }
@@ -159,7 +158,7 @@ function sauvegardeTexteSource(){
         }
         sauvegarger_un_fichier_rev( 'za_ajax.php?sauvegarger_un_fichier_rev' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst === __xsu){
-                    __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : __m_rev1.nl2()+'👍 fichier sauvegardé 0'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : __m_rev1.nl2() + '👍 fichier sauvegardé 0'} );
                 }
                 __gi1.remplir_et_afficher_les_messages1( 'zonesource' );
             } );

@@ -123,41 +123,6 @@ class module_svg_bdd{
     }
     /*
       =============================================================================================================
-      function recupérer_un_fetch
-    */
-    async #recupérer_un_fetch( url , donnees ){
-        var en_entree={
-            "signal" : AbortSignal.timeout( 2000 ) ,
-            "method" : "POST" ,
-            "mode" : "cors" ,
-            "cache" : "no-cache" ,
-            "credentials" : "same-origin" ,
-            "headers" : {"Content-Type" : 'application/x-www-form-urlencoded'} ,
-            "redirect" : "follow" ,
-            "referrerPolicy" : "no-referrer" ,
-            "body" : 'ajax_param=' + encodeURIComponent( JSON.stringify( donnees ) )
-        };
-        try{
-            var response=await fetch( url , en_entree );
-            var t=await response.text();
-            try{
-                var le_json=JSON.parse( t );
-                return le_json;
-            }catch(e){
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur sur convertion json, texte non json=' + t} );
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'url=' + url} );
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( en_entree )} );
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( donnees )} );
-                return({"__xst" : __xer ,"message" : 'le retour n\'est pas en json'});
-            }
-        }catch(e){
-            debugger;
-            console.log( 'e=' , e );
-            return({"__xst" : __xer ,"message" : e.message});
-        }
-    }
-    /*
-      =============================================================================================================
       function #message_succes_et_fermer_modale
     */
     #message_succes_modale( donnees ){
@@ -712,7 +677,7 @@ class module_svg_bdd{
     */
     supprimer_un_index_dans_base_de_modale( id_svg_rectangle_de_l_index , nom_de_l_index , nom_de_la_table ){
         var source_sql='DROP INDEX ' + nom_de_l_index;
-        async function supprimer_en_bdd_l_index( url="" , donnees  ){
+        async function supprimer_en_bdd_l_index( url="" , donnees ){
             return(__gi1.recupérer_un_fetch( url , donnees ));
         }
         var ajax_param={
@@ -720,9 +685,9 @@ class module_svg_bdd{
             "source_sql" : source_sql ,
             "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
         };
-        supprimer_en_bdd_l_index( 'za_ajax.php?supprimer_en_bdd_l_index' , ajax_param  ).then( ( donnees ) => {
+        supprimer_en_bdd_l_index( 'za_ajax.php?supprimer_en_bdd_l_index' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst === __xsu){
-                    this.#message_succes_modale(donnees);
+                    this.#message_succes_modale( donnees );
                     console.log( true );
                 }else{
                     console.log( 'KO donnees=' , donnees );
@@ -740,7 +705,7 @@ class module_svg_bdd{
             var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
             if(obj2.__xst === __xsu){
                 var source_sql=obj2.__xva;
-                async function ajouter_en_bdd_l_index( url="" , donnees  ){
+                async function ajouter_en_bdd_l_index( url="" , donnees ){
                     return(__gi1.recupérer_un_fetch( url , donnees ));
                 }
                 var ajax_param={
@@ -750,7 +715,7 @@ class module_svg_bdd{
                 };
                 ajouter_en_bdd_l_index( 'za_ajax.php?ajouter_en_bdd_l_index' , ajax_param ).then( ( donnees ) => {
                         if(donnees.__xst === __xsu){
-                            this.#message_succes_modale(donnees);
+                            this.#message_succes_modale( donnees );
                         }else{
                             console.error( 'KO donnees=' , donnees );
                         }
@@ -772,9 +737,8 @@ class module_svg_bdd{
             if(obj1.__xst === __xsu){
                 var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
                 if(obj2.__xst === __xsu){
-                    async function ajouter_en_bdd_le_champ( url="" , donnees  ){
+                    async function ajouter_en_bdd_le_champ( url="" , donnees ){
                         return(__gi1.recupérer_un_fetch( url , donnees ));
-                        
                     }
                     var source_sql='ALTER TABLE `' + nom_de_la_table + '` ADD COLUMN ' + obj2.__xva + ';';
                     var ajax_param={
@@ -1765,8 +1729,8 @@ class module_svg_bdd{
             if(obj2.__xst === __xsu){
                 var obj3=__m_rev_vers_sql1.c_tab_vers_js( obj2.__xva , {} );
                 if(obj3.__xst === __xsu){
-                    async function recuperer_les_tableaux_des_bases( url="" , donnees , that ){
-                        return(that.#recupérer_un_fetch( url , donnees ));
+                    async function recuperer_les_tableaux_des_bases( url="" , donnees ){
+                        return(__gi1.recupérer_un_fetch( url , donnees ));
                     }
                     var ajax_param={
                          /* enveloppe d'appels */
@@ -1775,7 +1739,7 @@ class module_svg_bdd{
                         "source_base_sql" : obj3.__xva ,
                         "id_bdd_de_la_base" : id_bdd_de_la_base_en_cours
                     };
-                    recuperer_les_tableaux_des_bases( 'za_ajax.php?recuperer_les_tableaux_des_bases' , ajax_param , this ).then( ( donnees ) => {
+                    recuperer_les_tableaux_des_bases( 'za_ajax.php?recuperer_les_tableaux_des_bases' , ajax_param ).then( ( donnees ) => {
                             if(donnees.__xst === __xsu){
                                 this.afficher_resultat_comparaison_base_physique_et_base_virtuelle( {"donnees" : donnees.__xva ,"id_bdd_de_la_base_en_cours" : id_bdd_de_la_base_en_cours} );
                             }else{
@@ -1826,15 +1790,15 @@ class module_svg_bdd{
             alert( 'Problème sur reecrire_la_base 1746 ' );
             return;
         }
-        async function creer_la_base_a_partir_du_shema_sur_disque( url="" , donnees , that ){
-            return(that.#recupérer_un_fetch( url , donnees ));
+        async function creer_la_base_a_partir_du_shema_sur_disque( url="" , donnees ){
+            return(__gi1.recupérer_un_fetch( url , donnees ));
         }
         var ajax_param={
             "call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'creer_la_base_a_partir_du_shema_sur_disque'} ,
             "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours ,
             "source_sql_de_la_base" : source_sql_de_la_base
         };
-        creer_la_base_a_partir_du_shema_sur_disque( 'za_ajax.php?creer_la_base_a_partir_du_shema_sur_disque' , ajax_param , this ).then( ( donnees ) => {
+        creer_la_base_a_partir_du_shema_sur_disque( 'za_ajax.php?creer_la_base_a_partir_du_shema_sur_disque' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst === __xsu){
                     console.log( true );
                 }else{
@@ -1892,8 +1856,8 @@ class module_svg_bdd{
             alert( 'Problème sur reecrire_la_base 1746 ' );
             return;
         }
-        async function reecrire_la_base_a_partir_du_shema_sur_disque( url="" , donnees , that ){
-            return(that.#recupérer_un_fetch( url , donnees ));
+        async function reecrire_la_base_a_partir_du_shema_sur_disque( url="" , donnees ){
+            return(__gi1.recupérer_un_fetch( url , donnees ));
         }
         var ajax_param={
             "call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'reecrire_la_base_a_partir_du_shema_sur_disque'} ,
@@ -1901,7 +1865,7 @@ class module_svg_bdd{
             "source_sql_de_la_base" : source_sql_de_la_base ,
             "liste_des_tables" : liste_des_tables
         };
-        reecrire_la_base_a_partir_du_shema_sur_disque( 'za_ajax.php?reecrire_la_base_a_partir_du_shema_sur_disque' , ajax_param , this ).then( ( donnees ) => {
+        reecrire_la_base_a_partir_du_shema_sur_disque( 'za_ajax.php?reecrire_la_base_a_partir_du_shema_sur_disque' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst === __xsu){
                     this.#message_succes_et_fermer_modale( donnees );
                 }else{
@@ -2071,8 +2035,8 @@ class module_svg_bdd{
           console.log('tab_des_index_sql=' , tab_des_index_sql );
           debugger;
         */
-        async function ordonner_les_champs_de_table( url="" , donnees , that ){
-            return(that.#recupérer_un_fetch( url , donnees ));
+        async function ordonner_les_champs_de_table( url="" , donnees ){
+            return(__gi1.recupérer_un_fetch( url , donnees ));
         }
         var ajax_param={
              /* enveloppe d'appels */
@@ -2090,7 +2054,7 @@ class module_svg_bdd{
             "mode_supression_de_champ" : mode_supression_de_champ ,
             "en_base_et_sur_schema" : en_base_et_sur_schema
         };
-        ordonner_les_champs_de_table( 'za_ajax.php?ordonner_les_champs_de_table' , ajax_param , this ).then( ( donnees ) => {
+        ordonner_les_champs_de_table( 'za_ajax.php?ordonner_les_champs_de_table' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst === __xsu){
                     if(donnees.__entree.mode_supression_de_champ === true && en_base_et_sur_schema === false){
                     }else{
@@ -2705,15 +2669,15 @@ class module_svg_bdd{
     */
     supprimer_la_table_en_base_de_modale( id_svg_rectangle_de_la_table , nom_de_la_table ){
         var source_sql='DROP table ' + nom_de_la_table;
-        async function supprimer_table_dans_base( url="" , donnees , that ){
-            return(that.#recupérer_un_fetch( url , donnees ));
+        async function supprimer_table_dans_base( url="" , donnees ){
+            return(__gi1.recupérer_un_fetch( url , donnees ));
         }
         var ajax_param={
             "call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'supprimer_table_dans_base'} ,
             "source_sql" : source_sql ,
             "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
         };
-        supprimer_table_dans_base( 'za_ajax.php?supprimer_table_dans_base' , ajax_param , this ).then( ( donnees ) => {
+        supprimer_table_dans_base( 'za_ajax.php?supprimer_table_dans_base' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst === __xsu){
                     this.#message_succes_modale( donnees );
                 }else{
@@ -2732,15 +2696,15 @@ class module_svg_bdd{
         if(obj1.__xst === __xsu){
             var obj2=tabToSql0( obj1.__xva , 0 , 0 , {"tableau_tables_champs" : []} );
             if(obj2.__xst === __xsu){
-                async function creer_table_dans_base( url="" , donnees , that ){
-                    return(that.#recupérer_un_fetch( url , donnees ));
+                async function creer_table_dans_base( url="" , donnees ){
+                    return(__gi1.recupérer_un_fetch( url , donnees ));
                 }
                 var ajax_param={
                     "call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'creer_table_dans_base'} ,
                     "source_sql" : obj2.__xva ,
                     "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
                 };
-                creer_table_dans_base( 'za_ajax.php?creer_table_dans_base' , ajax_param , this ).then( ( donnees ) => {
+                creer_table_dans_base( 'za_ajax.php?creer_table_dans_base' , ajax_param ).then( ( donnees ) => {
                         if(donnees.__xst === __xsu){
                             this.#message_succes_modale( donnees );
                         }else{
@@ -3433,15 +3397,15 @@ class module_svg_bdd{
             alert( 'Problème sur la sauvegarde de la base ' );
             return;
         }
-        async function envoyer_le_rev_de_le_base_en_post( url="" , donnees , that ){
-            return(that.#recupérer_un_fetch( url , donnees ));
+        async function envoyer_le_rev_de_le_base_en_post( url="" , donnees ){
+            return(__gi1.recupérer_un_fetch( url , donnees ));
         }
         var ajax_param={
             "call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'envoyer_le_rev_de_le_base_en_post'} ,
             "source_rev_de_la_base" : t ,
             "id_bdd_de_la_base" : this.#id_bdd_de_la_base_en_cours
         };
-        envoyer_le_rev_de_le_base_en_post( 'za_ajax.php?envoyer_le_rev_de_le_base_en_post' , ajax_param , this ).then( ( donnees ) => {
+        envoyer_le_rev_de_le_base_en_post( 'za_ajax.php?envoyer_le_rev_de_le_base_en_post' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst === __xsu){
                     __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : ' Le schema de la base est sauvegardé'} );
                 }else{
@@ -4100,11 +4064,11 @@ class module_svg_bdd{
       function charger_les_bases
     */
     #charger_les_bases_en_asynchrone( les_id_des_bases ){
-        async function recuperer_les_donnees_de_le_base_en_post( url="" , donnees , that ){
-            return(that.#recupérer_un_fetch( url , donnees ));
+        async function recuperer_les_donnees_de_le_base_en_post( url="" , donnees ){
+            return(__gi1.recupérer_un_fetch( url , donnees ));
         }
         var ajax_param={"call" : {"lib" : 'core' ,"file" : 'bdd' ,"funct" : 'recuperer_zone_travail_pour_les_bases'} ,"les_id_des_bases" : les_id_des_bases};
-        recuperer_les_donnees_de_le_base_en_post( 'za_ajax.php?recuperer_zone_travail_pour_les_bases' , ajax_param , this ).then( ( donnees ) => {
+        recuperer_les_donnees_de_le_base_en_post( 'za_ajax.php?recuperer_zone_travail_pour_les_bases' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst !== __xsu){
                     console.log( 'donnees=' , donnees );
                     __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : donnees.message} );

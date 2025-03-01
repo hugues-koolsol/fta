@@ -49,7 +49,7 @@ function sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant(&$data){
         if(strpos($texte_source,$alea1) !== false){
 
             $data[__xst]=false;
-            ajouterMessage(__xer,BNF . ' ' . __LINE__ .' KO');
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' KO');
             return;
 
         }else{
@@ -152,7 +152,7 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
         if($tt[__xst] === __xer || count($tt[__xva]) !== 1){
 
             $data[__xst]=false;
-            ajouterMessage(__xer,BNF . ' ' . __LINE__ .' KO');
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' KO');
             return;
 
         }
@@ -175,13 +175,13 @@ function charger_un_fichier_source_par_son_identifiant(&$data){
 
         }else{
 
-            ajouterMessage(__xer,BNF . ' ' . __LINE__ .' fichier introuvable ' . $chemin_fichier);
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' fichier introuvable ' . $chemin_fichier);
         }
 
 
     }else{
 
-        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' champ id_source introuvable' );
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' champ id_source introuvable');
     }
 
 
@@ -202,13 +202,13 @@ function supprimer_un_fichier_avec_un_nom_encrypte(&$data){
 
         }else{
 
-            ajouterMessage(__xer,BNF . ' ' . __LINE__ .' la copie du fichier dans le répertoire de sauvegarde est impossible');
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' la copie du fichier dans le répertoire de sauvegarde est impossible');
         }
 
 
     }else{
 
-        ajouterMessage(__xer,BNF . ' ' . __LINE__ .' $data[\'input\'][\'file_name\'] non trouvé');
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' $data[\'input\'][\'file_name\'] non trouvé');
     }
 
 
@@ -230,7 +230,7 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
             
             if($contenu === false){
 
-                ajouterMessage(__xer,BNF . ' ' . __LINE__ .' impossible de lire le fichier');
+                ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' impossible de lire le fichier');
 
             }else{
 
@@ -241,13 +241,13 @@ function charger_un_fichier_avec_un_nom_encrypte(&$data){
 
         }else{
 
-            ajouterMessage(__xer,BNF . ' ' . __LINE__ .'le fichier fait plus de ' . TAILLE_MAXI_SOURCE . ' octets et il ne peut pas être intégré dans une zone de texte');
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . 'le fichier fait plus de ' . TAILLE_MAXI_SOURCE . ' octets et il ne peut pas être intégré dans une zone de texte');
         }
 
 
     }else{
 
-        ajouterMessage(__xer,BNF . ' ' . __LINE__ .' $data[\'input\'][\'file_name\'] non trouvé');
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' $data[\'input\'][\'file_name\'] non trouvé');
     }
 
 
@@ -340,7 +340,7 @@ function sauvegarger_un_fichier_rev(&$data){
             
             if(!(ord($c) >= 32 && ord($c) < 127)){
 
-                ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ' . 'caractère interdit dans le nom de fichie "' . $c . '"');
+                ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . 'caractère interdit dans le nom de fichie "' . $c . '"');
                 return;
 
             }
@@ -466,7 +466,7 @@ function recuperer_un_genere(&$data){
        || strpos($data[__entree]['file_extension'],'..') !== false
     ){
 
-        ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ouverture impossible du fichier');
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ouverture impossible du fichier');
 
     }else{
 
@@ -500,7 +500,7 @@ function concatener_des_fichiers1(&$data){
        || strpos($data[__entree]['file_extension'],'..') !== false
     ){
 
-        ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ouverture impossible du fichier avec ".."');
+        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ouverture impossible du fichier avec ".."');
 
     }else{
 
@@ -523,25 +523,25 @@ function concatener_des_fichiers1(&$data){
 
                     }else{
 
-                        ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ' . 'fermeture impossible du fichier');
+                        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . 'fermeture impossible du fichier');
                     }
 
 
                 }else{
 
-                    ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ' . 'écriture impossible du fichier');
+                    ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . 'écriture impossible du fichier');
                 }
 
 
             }else{
 
-                ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ' . 'lecture impossible du fichier');
+                ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . 'lecture impossible du fichier');
             }
 
 
         }else{
 
-            ajouterMessage(__xer,BNF . ' ' . __LINE__ .' ' . 'ouverture impossible du fichier');
+            ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . 'ouverture impossible du fichier');
         }
 
     }
