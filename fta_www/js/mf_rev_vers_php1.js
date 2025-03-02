@@ -366,11 +366,7 @@ class c_rev_vers_php1{
                                     tabchoix[tabchoix.length - 1][3].push( [j,this.#tb[j][1],i,[]] );
                                 }
                             }else{
-                                return(this.#rev_php_le( {
-                                        "__xst" : __xer ,
-                                        "id" : id ,
-                                        "__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + '<br />syntaxe : boucle(condition(),initialisation(),incrément(),faire())'
-                                    } ));
+                                return(this.#rev_php_le( {"__xst" : __xer ,"id" : id ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ',syntaxe : condition(),initialisation(),incrément(),faire()'} ));
                             }
                         }
                         var condition='';
@@ -744,16 +740,12 @@ class c_rev_vers_php1{
                                         t+=obj.__xva;
                                     }
                                 }else{
-                                    /* ✍      console.log(this.#tb[tabchoix[j][0]],tab); */
                                     return(this.#rev_php_le( {"__xst" : __xer ,"id" : tabchoix[j][0] ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' condition '} ));
                                 }
                                 t+='){';
                                 t+=CRLF;
                                 if(tabchoix[j][2] > 0 && tabchoix[j][4] > 0){
-                                    /* ✍ si on a trouve un "alors" et qu'il contient des enfants */
-                                    /* avrif */
                                     obj=this.#rev_php1( tabchoix[j][2] , niveau + 1 , {} );
-                                    /* ,dansFonction,false */
                                     if(obj.__xst === __xsu){
                                         t+=un_espace_p1;
                                         t+=obj.__xva;
@@ -776,9 +768,7 @@ class c_rev_vers_php1{
                                 t+='}else{';
                                 t+=CRLF;
                                 if(tabchoix[j][2] > 0 && tabchoix[j][4] > 0){
-                                    /* ✍ si on a trouve un "alors" et qu'il contient des enfants */
                                     obj=this.#rev_php1( tabchoix[j][2] , niveau + 1 , {} );
-                                    /* ,dansFonction,false */
                                     if(obj.__xst === __xsu){
                                         t+=un_espace_p1;
                                         t+=obj.__xva;
@@ -790,57 +780,6 @@ class c_rev_vers_php1{
                                 t+='}';
                                 t+=CRLF;
                             }
-                        }
-                        ne_pas_mettre_de_terminateur=true;
-                        break;
-                        
-                    case 'affecteFonction' :
-                        debugger;
-                        /* afr est-ce utilisé ? */
-                        if(this.#tb[i + 1][2] === 'c' && this.#tb[i][8] >= 2){
-                        }else{
-                            return(this.#rev_php_le( {
-                                    "__xst" : __xer ,
-                                    "id" : id ,
-                                    "__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' il faut au moins deux parametres affecteFonction(xxx,[p(yyy),]contenu())'
-                                } ));
-                        }
-                        var tabTemp=[];
-                        var listeParametres;
-                        var positionContenu=-1;
-                        argumentsFonction='';
-                        for( j=i + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
-                            /* ✍ 0id	1val	2typ	3niv	4coQ	5pre	6der	7cAv	8cAp	9cDe	10pId	11nbE */
-                            if(this.#tb[j][1] === 'contenu' && this.#tb[j][2] === 'f'){
-                                positionContenu=j;
-                            }else{
-                                if(this.#tb[j][1] === 'p'){
-                                    if(this.#tb[j][8] === 1 && this.#tb[j + 1][2] === 'c'){
-                                        argumentsFonction+=',' + this.#tb[j + 1][1];
-                                    }else{
-                                        return(this.#rev_php_le( {
-                                                "__xst" : __xer ,
-                                                "id" : i ,
-                                                "__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' les parametres doivent être des variables affecteFonction(xxx,[p(yyy),]contenu()) '
-                                            } ));
-                                    }
-                                }
-                            }
-                        }
-                        if(positionContenu > 0){
-                            obj=this.#rev_php1( positionContenu , niveau , {} );
-                            /* ,dansFonction,false */
-                            if(obj.__xst === __xsu){
-                                /* avrif */
-                                debugger;
-                                t+='' + this.#tb[i + 1][1] + '=function(' + (argumentsFonction === '' ? ( '' ) : ( argumentsFonction.substr( 1 ) )) + '){';
-                                t+=obj.__xva;
-                                t+='}';
-                            }else{
-                                debugger;
-                            }
-                        }else{
-                            return(this.#rev_php_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' il faut un contenu() : affecteFonction(xxx,[p(yyy),]contenu())'} ));
                         }
                         ne_pas_mettre_de_terminateur=true;
                         break;

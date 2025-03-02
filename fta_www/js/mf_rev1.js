@@ -693,7 +693,7 @@ class c_rev1{
                         }
                         t+=')';
                     }else{
-                        return({"__xst" : __xer ,"__xme" : 'erreur' ,"id" : i});
+                        return({"__xst" : __xer ,"__xme" : this.nl2() + 'erreur' ,"id" : i});
                     }
                     count++;
                 }
@@ -2326,7 +2326,7 @@ class c_rev1{
                     return({"__xst" : __xsu ,"pos_ouv_par" : tableauEntree[T[i][11]][2]});
                 }
             }
-            return({"__xst" : __xer ,"__xme" : 'pas de correspondance trouvée'});
+            return({"__xst" : __xer ,"__xme" : this.nl2() + 'pas de correspondance trouvée'});
         }
         if(chaine_tableau_commentaires !== ''){
             chaine_tableau_commentaires='[' + chaine_tableau_commentaires.substr( 1 ) + ']';

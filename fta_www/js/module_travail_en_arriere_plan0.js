@@ -69,7 +69,7 @@ async function recuperer_un_fetch_dans_module_travail_en_ap( url , donnees ){
             console.log( 'url=' + url );
             console.log( JSON.stringify( en_entree ) );
             console.log( JSON.stringify( donnees ) );
-            return({"__xst" : __xer ,"__xme" : 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t});
+            return({"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t});
         }
     }catch(e){
         console.log( e );
@@ -78,7 +78,7 @@ async function recuperer_un_fetch_dans_module_travail_en_ap( url , donnees ){
         }else{
             console.log( e.message );
         }
-        return({"__xst" : __xer ,"__xme" : e.message});
+        return({"__xst" : __xer ,"__xme" : __m_rev1.nl2() + e.message});
     }
 }
 /*

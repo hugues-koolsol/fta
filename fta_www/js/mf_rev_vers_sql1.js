@@ -1456,12 +1456,12 @@ class c_rev_vers_sql1{
                 if(dans_comm === true){
                     if(ci === '*'){
                         if(i === l02 - 1){
-                            return({"__xst" : __xer ,"__xme" : '1053 erreur commentaire'});
+                            return({"__xst" : __xer ,"__xme" : __m_rev1.nl2() + ' erreur commentaire'});
                         }else{
                             if(txt.substr( i + 1 , 1 ) === '/'){
                                 dans_comm=false;
                                 i++;
-                                tab_meta.push( {"txt_meta" : txt_meta ,"__xst" : __xer ,"matrice" : [] ,"type_element" : 'table|champ' ,"nom_element" : ''} );
+                                tab_meta.push( {"txt_meta" : txt_meta ,"etat" : false ,"matrice" : [] ,"type_element" : 'table|champ' ,"nom_element" : ''} );
                                 txt_meta='';
                             }
                         }
@@ -1471,7 +1471,7 @@ class c_rev_vers_sql1{
                 }else{
                     if(ci === '/'){
                         if(i === l02 - 1){
-                            return({"__xst" : __xer ,"__xme" : '1053 erreur commentaire'});
+                            return({"__xst" : __xer ,"__xme" : __m_rev1.nl2() + ' erreur commentaire'});
                         }else{
                             if(txt.substr( i + 1 , 1 ) === '*'){
                                 dans_comm=true;
@@ -1493,12 +1493,12 @@ class c_rev_vers_sql1{
                         if(dans_comm === true){
                             if(ci === '*'){
                                 if(i === l02 - 1){
-                                    return({"__xst" : __xer ,"__xme" : '1053 erreur commentaire'});
+                                    return({"__xst" : __xer ,"__xme" : __m_rev1.nl2() + ' erreur commentaire'});
                                 }else{
                                     if(txt.substr( i + 1 , 1 ) === '/'){
                                         dans_comm=false;
                                         i++;
-                                        tab_meta.push( {"txt_meta" : txt_meta ,"__xst" : __xer ,"matrice" : [] ,"type_element" : 'table|champ' ,"nom_element" : ''} );
+                                        tab_meta.push( {"txt_meta" : txt_meta ,"etat" : false ,"matrice" : [] ,"type_element" : 'table|champ' ,"nom_element" : ''} );
                                         txt_meta='';
                                     }
                                 }
@@ -1508,7 +1508,7 @@ class c_rev_vers_sql1{
                         }else{
                             if(ci === '/'){
                                 if(i === l02 - 1){
-                                    return({"__xst" : __xer ,"__xme" : '1053 erreur commentaire'});
+                                    return({"__xst" : __xer ,"__xme" : __m_rev1.nl2() + ' erreur commentaire'});
                                 }else{
                                     if(txt.substr( i + 1 , 1 ) === '*'){
                                         dans_comm=true;
@@ -1524,7 +1524,7 @@ class c_rev_vers_sql1{
                 if(tab_meta[i].txt_meta.indexOf( 'meta' ) >= 0){
                     obj=__m_rev1.rev_tm( tab_meta[i].txt_meta );
                     if(obj.__xst === __xsu){
-                        tab_meta[i].__xst=true;
+                        tab_meta[i].etat=true;
                         tab_meta[i].matrice=obj.__xva;
                         for( j=1 ; j < tab_meta[i].matrice.length ; j++ ){
                             if(tab_meta[i].matrice[j][3] === 2
@@ -1534,7 +1534,7 @@ class c_rev_vers_sql1{
                             ){
                                 tab_meta[i].type_element='table';
                                 tab_meta[i].nom_element=tab_meta[i].matrice[j + 1][1];
-                                tab_meta[i].__xst=true;
+                                tab_meta[i].etat=true;
                                 break;
                             }
                             if(tab_meta[i].matrice[j][3] === 2
@@ -1544,7 +1544,7 @@ class c_rev_vers_sql1{
                             ){
                                 tab_meta[i].type_element='champ';
                                 tab_meta[i].nom_element=tab_meta[i].matrice[j + 1][1];
-                                tab_meta[i].__xst=true;
+                                tab_meta[i].etat=true;
                                 break;
                             }
                             if(tab_meta[i].matrice[j][3] === 2
@@ -1554,7 +1554,7 @@ class c_rev_vers_sql1{
                             ){
                                 tab_meta[i].type_element='index';
                                 tab_meta[i].nom_element=tab_meta[i].matrice[j + 1][1];
-                                tab_meta[i].__xst=true;
+                                tab_meta[i].etat=true;
                                 break;
                             }
                         }
@@ -1586,7 +1586,7 @@ class c_rev_vers_sql1{
             var texte_meta_champ='';
             /* on vérifie que pour chaque libellé ci dessus on a quelque chose, sinon, on complète */
             for( i=0 ; i < tab_meta.length ; i++ ){
-                if(tab_meta[i].__xst === __xsu && tab_meta[i].type_element === 'table'){
+                if(tab_meta[i].etat === true && tab_meta[i].type_element === 'table'){
                     var elt_meta={};
                     var tab=tab_meta[i].matrice;
                     for(elt_meta in liste_meta_table){
@@ -1730,7 +1730,7 @@ class c_rev_vers_sql1{
                 var texte_meta_champ='';
                 /* on vérifie que pour chaque libellé ci dessus on a quelque chose, sinon, on complète */
                 for( i=0 ; i < tab_meta.length ; i++ ){
-                    if(tab_meta[i].__xst === __xsu && tab_meta[i].type_element === 'champ' && tab_meta[i].nom_element === nom_champ){
+                    if(tab_meta[i].etat === true && tab_meta[i].type_element === 'champ' && tab_meta[i].nom_element === nom_champ){
                         var elt_meta={};
                         for(elt_meta in liste_meta_champ){
                             var tab=tab_meta[i].matrice;
@@ -1818,7 +1818,7 @@ class c_rev_vers_sql1{
                 var texte_meta_index='';
                 /* on vérifie que pour chaque libellé ci dessus on a quelque chose, sinon, on complète */
                 for( i=0 ; i < tab_meta.length ; i++ ){
-                    if(tab_meta[i].__xst === __xsu && tab_meta[i].type_element === 'index' && tab_meta[i].nom_element === nom_index){
+                    if(tab_meta[i].etat === true && tab_meta[i].type_element === 'index' && tab_meta[i].nom_element === nom_index){
                         var tab=tab_meta[i].matrice;
                         var elt_meta={};
                         for(elt_meta in liste_meta_index){

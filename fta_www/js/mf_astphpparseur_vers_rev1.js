@@ -578,7 +578,7 @@ class c_astphpparseur_vers_rev1{
         }catch(e){
             return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) ,"element" : element} ));
         }
-        return(this.#astphp_le( {"__xst" : __xer ,"__xme" : 'le html dans php n\'est pas convertible'} ));
+        return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'le html dans php n\'est pas convertible'} ));
     }
     /*
       =============================================================================================================
@@ -2560,11 +2560,7 @@ class c_astphpparseur_vers_rev1{
                                         if(i > 0 && rv.substr( i - 1 , 1 ) !== '\\'){
                                             nouvelle_chaine='\\\\' + nouvelle_chaine;
                                         }else{
-                                            return(this.#astphp_le( {
-                                                    "__xst" : __xer ,
-                                                    "__xme" : __m_rev1.nl2() + 'après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr( i + 1 , 1 ) + '" ' ,
-                                                    "element" : element
-                                                } ));
+                                            return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '"' + rv.substr( i + 1 , 1 ) + '" après un backslash' ,"element" : element} ));
                                         }
                                     }else{
                                         /*
@@ -2574,11 +2570,7 @@ class c_astphpparseur_vers_rev1{
                                         if(i > 0 && rv.substr( i - 1 , 1 ) !== '\\'){
                                             nouvelle_chaine='\\\\' + nouvelle_chaine;
                                         }else{
-                                            return(this.#astphp_le( {
-                                                    "__xst" : __xer ,
-                                                    "__xme" : __m_rev1.nl2() + 'après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr( i + 1 , 1 ) + '" ' ,
-                                                    "element" : element
-                                                } ));
+                                            return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '"' + rv.substr( i + 1 , 1 ) + '" après un backslash' ,"element" : element} ));
                                         }
                                     }
                                 }
@@ -2620,11 +2612,7 @@ class c_astphpparseur_vers_rev1{
                                 ){
                                     nouvelle_chaine='\\' + nouvelle_chaine;
                                 }else{
-                                    return(this.#astphp_le( {
-                                            "__xst" : __xer ,
-                                            "__xme" : __m_rev1.nl2() + 'après un backslash il ne peut y avoir que les caractères entre les crochets suivants [\\"\'tonrxb] ' ,
-                                            "element" : element
-                                        } ));
+                                    return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '"' + c + '" après un backslash' ,"element" : element} ));
                                 }
                             }else{
                                 nouvelle_chaine=rv.substr( i , 1 ) + nouvelle_chaine;

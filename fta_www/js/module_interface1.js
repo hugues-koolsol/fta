@@ -179,7 +179,7 @@ class interface1{
       function recupérer_un_fetch
     */
     async recupérer_un_fetch( url , donnees ){
-        var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 6000 );
+        var delais_admis=donnees.call.opt && donnees.call.opt.delais_admis ? ( donnees.call.opt.delais_admis ) : ( 4500 );
         var masquer_les_messages_du_serveur=donnees.call.opt && donnees.call.opt.hasOwnProperty( 'masquer_les_messages_du_serveur' ) ? ( donnees.call.opt.masquer_les_messages_du_serveur ) : ( true );
         var en_entree={
             "signal" : AbortSignal.timeout( delais_admis ) ,
@@ -224,7 +224,6 @@ class interface1{
                 __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur sur convertion json, texte non json=' + t ,"masquee" : masquer_les_messages_du_serveur} );
                 __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'url=' + url ,"masquee" : masquer_les_messages_du_serveur} );
                 __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( en_entree ) ,"masquee" : masquer_les_messages_du_serveur} );
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : JSON.stringify( donnees ) ,"masquee" : masquer_les_messages_du_serveur} );
                 return(__m_rev1.empiler_erreur( {
                         "__xst" : __xer ,
                         "__xme" : __m_rev1.nl2() + 'le retour n\'est pas en json pour ' + JSON.stringify( donnees ) + ' , t=' + t ,
@@ -837,7 +836,7 @@ class interface1{
                 if(obj1.__xst === __xsu){
                     return({"__xst" : __xsu ,"__xva" : obj1.__xva});
                 }else{
-                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur convertit_source_javascript_en_rev 3433'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
                 }
             }
         }catch(e){
@@ -882,7 +881,7 @@ class interface1{
                         document.getElementById( nom_de_la_text_area_rev ).value=obj2.__xva;
                     }
                 }else{
-                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur rev'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
                 }
             }else{
                 this.remplir_et_afficher_les_messages1( nom_de_la_text_area_js );
@@ -1049,7 +1048,7 @@ class interface1{
             document.getElementById( nom_de_la_textarea_html ).value=obj3.__xva;
             __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : 'html produit'} );
         }else{
-            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur de reconstruction du html'} );
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'erreur de reconstruction du html'} );
         }
         __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
     }
@@ -1062,7 +1061,7 @@ class interface1{
             options_json['zone_source']=nom_de_la_textarea;
         }catch(e){
             console.log( e );
-            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0050 convertit-html-en-rev.js erreur dans les paramètres option'} );
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + ' convertit-html-en-rev.js erreur dans les paramètres option'} );
             __gi1.remplir_et_afficher_les_messages1( 'txtar2' );
             return;
         }
@@ -1177,7 +1176,9 @@ class interface1{
     traitement_apres_recuperation_ast_de_php2_ko( reponse_ajax , json_de_reponse=null , erreur_du_catch=null ){
         if(json_de_reponse !== null){
             if(json_de_reponse.hasOwnProperty( '__entree' )
+                   && json_de_reponse.__entree !== null
                    && json_de_reponse.__entree.hasOwnProperty( 'call' )
+                   && json_de_reponse.__entree.call !== null
                    && json_de_reponse.__entree.call.hasOwnProperty( 'opt' )
             ){
                 var options=json_de_reponse.__entree.call.opt;
@@ -1194,7 +1195,7 @@ class interface1{
             if(reponse_ajax !== ''){
                 reponse_ajax=reponse_ajax.replace( "<font size='1'>" , '<font>' );
                 reponse_ajax=reponse_ajax.replace( "font-size: x-large;" , '' );
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : reponse_ajax} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + reponse_ajax} );
             }
             this.remplir_et_afficher_les_messages1( '' );
         }
@@ -1318,7 +1319,7 @@ class interface1{
                         __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : '👍 sources compactés Egaux : ' + tempsTraitement} );
                     }else{
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<hr /><b style="color:red;">💥sources compactés différents</b>';
-                        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '💥sources compactés différents'} );
+                        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '💥sources compactés différents'} );
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />o=' + compacteOriginal.__xva;
                         diResultatsCompactes.innerHTML=diResultatsCompactes.innerHTML + '<br />r=' + compacteReecrit.__xva;
                     }
@@ -2524,14 +2525,6 @@ COMMIT;
                     if(c0 === ' ' || c0 === '\r' || c0 === '\n' || c0 === '\t'){
                         /* si on a un propriété du type async dans  <script async src="..."></script> */
                         dansNomPropriete=false;
-                        /*#
-                          if(i > 50){
-                              presDe=str.substr(i - 50,i + 10);
-                          }else{
-                              presDe=str.substr(0,i + 10);
-                          }
-                          return({"__xst" : __xer ,"id" : i ,"__xme" : 'Erreur 1785 pres de "' + presDe + '"'});
-                        */
                     }else if(c0 === '='){
                         if(cp1 === "'" || cp1 === '"'){
                             dansValeurPropriete=true;
@@ -2745,7 +2738,7 @@ COMMIT;
                         }else{
                             presDe=str.substr( 0 , i + 10 );
                         }
-                        return({"__xst" : __xer ,"id" : i ,"__xme" : 'Erreur 1935 pres de "' + presDe + '"'});
+                        return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                     }
                 }else{
                 }
@@ -2760,7 +2753,7 @@ COMMIT;
                         }else{
                             presDe=str.substr( 0 , i + 10 );
                         }
-                        return({"__xst" : __xer ,"id" : i ,"__xme" : 'Erreur 1952 pres de "' + presDe + '"'});
+                        return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
                     }
                 }
             }
@@ -2771,7 +2764,7 @@ COMMIT;
             }else{
                 presDe=str.substr( 0 , i + 10 );
             }
-            return({"__xst" : __xer ,"id" : i ,"__xme" : 'Erreur 1964 pres de "' + presDe + '"'});
+            return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
         }
         if(dansTag){
             if(i > 50){
@@ -2779,7 +2772,7 @@ COMMIT;
             }else{
                 presDe=str.substr( 0 , i + 10 );
             }
-            return({"__xst" : __xer ,"id" : i ,"__xme" : 'Erreur 1972 pres de "' + presDe + '"'});
+            return({"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + 'pres de "' + presDe + '"'});
         }
         return({"__xst" : __xsu});
     }

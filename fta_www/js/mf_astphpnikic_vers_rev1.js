@@ -1482,11 +1482,7 @@ class c_astphpnikic_vers_rev1{
                             i--;
                         }else{
                             /* position du \ en dernier */
-                            return(this.#astphp_le( {
-                                    "__xst" : __xer ,
-                                    "__xme" : __m_rev1.nl2() + '<br />une chaine ne doit pas contenir un simple \\ en dernière position  ' ,
-                                    "element" : element
-                                } ));
+                            return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'entislash en dernière position  ' ,"element" : element} ));
                         }
                     }else{
                         if(i > 1){
@@ -1539,11 +1535,7 @@ class c_astphpnikic_vers_rev1{
                                         if(i > 0 && rv.substr( i - 1 , 1 ) !== '\\'){
                                             nouvelle_chaine='\\\\' + nouvelle_chaine;
                                         }else{
-                                            return(this.#astphp_le( {
-                                                    "__xst" : __xer ,
-                                                    "__xme" : __m_rev1.nl2() + '<br />après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr( i + 1 , 1 ) + '" ' ,
-                                                    "element" : element
-                                                } ));
+                                            return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '"' + rv.substr( i + 1 , 1 ) + '" après un backslash' ,"element" : element} ));
                                         }
                                     }else{
                                         /*
@@ -1553,11 +1545,7 @@ class c_astphpnikic_vers_rev1{
                                         if(i > 0 && rv.substr( i - 1 , 1 ) !== '\\'){
                                             nouvelle_chaine='\\\\' + nouvelle_chaine;
                                         }else{
-                                            return(this.#astphp_le( {
-                                                    "__xst" : __xer ,
-                                                    "__xme" : __m_rev1.nl2() + '<br />après un backslash il ne peut y avoir que les caractères spéciaux et non pas "' + rv.substr( i + 1 , 1 ) + '" ' ,
-                                                    "element" : element
-                                                } ));
+                                            return(this.astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '"' + rv.substr( i + 1 , 1 ) + '" après un backslash' ,"element" : element} ));
                                         }
                                     }
                                 }
@@ -1599,11 +1587,7 @@ class c_astphpnikic_vers_rev1{
                                 ){
                                     nouvelle_chaine='\\' + nouvelle_chaine;
                                 }else{
-                                    return(this.#astphp_le( {
-                                            "__xst" : __xer ,
-                                            "__xme" : __m_rev1.nl2() + '<br />après un backslash il ne peut y avoir que les caractères réduits et pas "' + c + '" ' ,
-                                            "element" : element
-                                        } ));
+                                    return(this.astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '"' + c + '" après un backslash' ,"element" : element} ));
                                 }
                             }else{
                                 nouvelle_chaine=rv.substr( i , 1 ) + nouvelle_chaine;
@@ -3598,7 +3582,7 @@ class c_astphpnikic_vers_rev1{
                 debugger;
             }
         }catch(e){}
-        return(this.#astphp_le( {"__xst" : __xer ,"__xme" : 'le html dans php n\'est pas convertible'} ));
+        return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'le html dans php n\'est pas convertible'} ));
     }
     /*
       =============================================================================================================
@@ -3710,20 +3694,23 @@ class c_astphpnikic_vers_rev1{
         opt.masquer_les_messages_du_serveur=false;
         var ajax_param={"call" : {"lib" : 'php' ,"file" : 'ast' ,"funct" : 'recuperer_ast_de_php2' ,"opt" : opt} ,"source_php" : source_php};
         var r=new XMLHttpRequest();
+        r.timeout=4500;
         r.onerror=function( e ){
             debugger;
             console.error( 'e=' , e );
-            return({"__xst" : __xer});
+            return({"__xst" : __xer ,"__xme" : __m_rev1.nl2()});
         };
         r.onabort=function( e ){
             debugger;
             console.error( 'e=' , e );
-            return({"__xst" : __xer});
+            return({"__xst" : __xer ,"__xme" : __m_rev1.nl2()});
         };
         r.ontimeout=function( e ){
-            debugger;
-            console.error( 'e=' , e );
-            return({"__xst" : __xer});
+            /* console.error( 'e=' , e ); */
+            var message_erreur={"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'le temps admis pour l\'exécution est écoulé'};
+            __m_rev1.empiler_erreur( message_erreur );
+            fonction_traitement_apres_recuperation_ast_de_php2_ko( '' , null );
+            return message_erreur;
         };
         try{
             var numero_de_message=0;
@@ -3762,44 +3749,31 @@ class c_astphpnikic_vers_rev1{
                             /* on sort,  on reboucle pour traiter l'état suivant */
                             return;
                         }else{
-                            /* afr */
-                            debugger;
+                            console.log( r.readyState + ' ' + r.status );
+                            return;
                         }
                     }
                 }
                 try{
                     var json_retour=JSON.parse( r.responseText );
-                    debugger;
                     if(json_retour.hasOwnProperty( 'signaux' )){
                         var tableau_des_signaux=[__xsu,__xer,__xal,__xif];
                         for( let j=0 ; j < tableau_des_signaux.length ; j++ ){
                             if(json_retour.signaux.hasOwnProperty( tableau_des_signaux[j] )){
                                 for(let i in json_retour.signaux[tableau_des_signaux[j]]){
                                     if(tableau_des_signaux[j] === __xer){
-                                        /* en cas d'erreur le parseur nikic retourne "blablabla on line 123" */
                                         var le_message=json_retour.signaux[tableau_des_signaux[j]][i];
                                         /*  */
                                         if(le_message.indexOf( ' on line ' ) > 0 && __m_rev1.est_num( le_message.substr( le_message.indexOf( ' on line ' ) + 9 ) )){
+                                            /* en cas d'erreur dans le php à analyser le parseur nikic retourne "blablabla on line 123" */
                                             var la_ligne=parseInt( le_message.substr( le_message.indexOf( ' on line ' ) + 9 ) , 10 );
-                                            __m_rev1.empiler_erreur( {
-                                                    "__xst" : tableau_des_signaux[j] ,
-                                                    "__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,
-                                                    "ligne" : la_ligne ,
-                                                    "masquee" : json_retour.__entree.call.opt.masquer_les_messages_du_serveur
-                                                } );
+                                            __m_rev1.empiler_erreur( {"__xst" : tableau_des_signaux[j] ,"__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,"ligne" : la_ligne ,"masquee" : false} );
                                         }else{
-                                            __m_rev1.empiler_erreur( {
-                                                    "__xst" : tableau_des_signaux[j] ,
-                                                    "__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,
-                                                    "masquee" : json_retour.__entree.call.opt.masquer_les_messages_du_serveur
-                                                } );
+                                            /* en cas d'erreur dans le source php coté serveur */
+                                            __m_rev1.empiler_erreur( {"__xst" : tableau_des_signaux[j] ,"__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,"masquee" : false} );
                                         }
                                     }else{
-                                        __m_rev1.empiler_erreur( {
-                                                "__xst" : tableau_des_signaux[j] ,
-                                                "__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,
-                                                "masquee" : json_retour.__entree.call.opt.masquer_les_messages_du_serveur
-                                            } );
+                                        __m_rev1.empiler_erreur( {"__xst" : tableau_des_signaux[j] ,"__xme" : json_retour.signaux[tableau_des_signaux[j]][i] ,"masquee" : false} );
                                     }
                                 }
                                 json_retour.signaux[tableau_des_signaux[j]]=[];

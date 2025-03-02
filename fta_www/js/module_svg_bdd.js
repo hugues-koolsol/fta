@@ -3356,7 +3356,7 @@ class module_svg_bdd{
             }
         }
         if(racine_du_svg === null){
-            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '2670 il y a eu un problème lors de la récupération de l\'arbre svg'} ));
+            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'il y a eu un problème lors de la récupération de l\'arbre svg'} ));
         }
         this.#id_svg_de_la_base_en_cours=parseInt( racine_du_svg.getAttribute( 'id_svg_de_la_base_en_cours' ) , 10 );
         /*
@@ -3410,7 +3410,7 @@ class module_svg_bdd{
                     __m_rev1.empiler_erreur( {"__xst" : __xsu ,"__xme" : ' Le schema de la base est sauvegardé'} );
                 }else{
                     console.log( donnees );
-                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la base'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
                 }
                 __gi1.remplir_et_afficher_les_messages1( '' );
             } );
@@ -3610,7 +3610,7 @@ class module_svg_bdd{
         };
         indice_courant++;
         var indice_du_champ=indice_courant - 1;
-        var objrev={"__xst" : __xer};
+        var objrev=null;
         var tabrev=[];
         var couleur_nom_de_champ='navy';
         var non_nulle=false;
@@ -3619,7 +3619,7 @@ class module_svg_bdd{
             if(objrev.__xst === __xsu){
                 tabrev=objrev.__xva;
             }else{
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '2653'} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
             }
             var o=1;
             for( o=1 ; o < tabrev.length ; o++ ){
@@ -4071,8 +4071,7 @@ class module_svg_bdd{
         recuperer_les_donnees_de_le_base_en_post( 'za_ajax.php?recuperer_zone_travail_pour_les_bases' , ajax_param ).then( ( donnees ) => {
                 if(donnees.__xst !== __xsu){
                     console.log( 'donnees=' , donnees );
-                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : donnees.message} );
-                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'récupération des données de la base'} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + donnees.message} );
                     __gi1.remplir_et_afficher_les_messages1( '' );
                 }else{
                     var nouvel_arbre={};
@@ -4084,7 +4083,7 @@ class module_svg_bdd{
                             "chp_nom_basedd" : donnees.__xva[i]['T0.chp_nom_basedd']
                         };
                         if(donnees.__xva[i]['T0.chp_rev_travail_basedd'] === '' || donnees.__xva[i]['T0.chp_rev_travail_basedd'] === null){
-                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0803 le champ chp_rev_travail_basedd est vide [module_svg[charger_les_bases_en_asynchrone]]'} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'le champ chp_rev_travail_basedd est vide'} );
                         }
                         if(donnees.__xva[i]['T0.chp_rev_travail_basedd'] === null || donnees.__xva[i]['T0.chp_rev_travail_basedd'] === ''){
                         }else{

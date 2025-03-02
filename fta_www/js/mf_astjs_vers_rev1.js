@@ -539,7 +539,7 @@ class c_astjs_vers_rev1{
         if(element.argument){
             obj=this.#traite_element( element.argument , niveau + 1 , element , tab_comm , false );
             if(obj.__xst === __xsu){
-                if(element.argument.type === 'CallExpression'){
+                if(element.argument.type === 'CallExpression' || element.argument.type === 'MemberExpression' ){
                     /*
                       cas a=[...a.f()] => appelf(element(...a),nomf(f)) 
                       cas a=[...f]     => appelf(nomf(...f)) 

@@ -239,11 +239,7 @@ class c_rev_vers_js1{
                             }else if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                                 les_cas.push( [j,this.#tb[j][1],i] );
                             }else{
-                                return(this.#rev_js_le( {
-                                        "__xst" : __xer ,
-                                        "id" : i ,
-                                        "__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'la syntaxe est boucle_sur_objet_dans(pourChaque(dans(a , b)),faire())'
-                                    } ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ' syntaxe : pourChaque(dans(a , b)),faire()'} ));
                             }
                         }
                         var pourChaque='';
@@ -526,11 +522,7 @@ class c_rev_vers_js1{
                             }else if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                                 les_cas.push( [j,this.#tb[j][1],i] );
                             }else{
-                                return(this.#rev_js_le( {
-                                        "__xst" : __xer ,
-                                        "id" : id ,
-                                        "__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'syntaxe = boucle(condition(),initialisation(),increment(),faire())'
-                                    } ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ',syntaxe = condition(),initialisation(),increment(),faire()'} ));
                             }
                         }
                         var initialisation='';
@@ -704,7 +696,7 @@ class c_rev_vers_js1{
                                 return(this.#rev_js_le( {
                                         "__xst" : __xer ,
                                         "id" : id ,
-                                        "__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'syntaxe = choix(si(condition(),alors()),sinonsi(condition(),alors()),sinon(alors()))'
+                                        "__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + ',syntaxe = si(condition(),alors()),sinonsi(condition(),alors()),sinon(alors())'
                                     } ));
                             }
                         }
@@ -2934,6 +2926,7 @@ class c_rev_vers_js1{
                         'repeat',
                         'replace',
                         'replaceAll',
+                        'replaceChildren',
                         'search',
                         'setAttribute',
                         'slice',
@@ -3213,7 +3206,6 @@ class c_rev_vers_js1{
         let propriete='';
         if(!this.#tbleau_precedences_js.hasOwnProperty( this.#tb[id][1] )){
             return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + ' pour "' + this.#tb[id][1] + '"'} ));
-            /* return(php_logerr({"__xst" : __xer ,"id" : i ,"__xme" : '2259 php_traiteOperation 1633 "' + this.#tb[id][1] + '"'})); */
         }
         var operateur_courant=this.#tbleau_precedences_js[this.#tb[id][1]];
         var operandes=[];
@@ -3248,7 +3240,6 @@ class c_rev_vers_js1{
                         }
                     }else{
                         return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
-                        /* return(php_logerr({"__xst" : __xer ,"id" : i ,"__xme" : '2282 php_traiteOperation'})); */
                     }
                 }else{
                     if(this.#tb[i][1] === 'prop' && this.#tb[i][2] === 'f'){
@@ -3286,7 +3277,6 @@ class c_rev_vers_js1{
                             }
                         }else{
                             return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2()} ));
-                            /* return(php_logerr({"__xst" : __xer ,"id" : i ,"__xme" : '2291 php_traiteOperation '})); */
                         }
                     }
                 }

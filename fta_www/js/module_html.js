@@ -217,7 +217,7 @@ class traitements_sur_html{
                     if(obj.__xst === __xsu){
                         contenu+='<![CDATA[' + obj.__xva + ']]>';
                     }else{
-                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour traiteJsonDeHtml 0198 ' + jsonDeHtml.type} ));
+                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + ' traiteJsonDeHtml  ' + jsonDeHtml.type} ));
                     }
                 }
                 t+='\n' + esp0 + contenu + ')';
@@ -236,7 +236,7 @@ class traitements_sur_html{
                             }
                             contenu+=obj.__xva;
                         }else{
-                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur pour traiteJsonDeHtml 0.129 ' + jsonDeHtml.type} ));
+                            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + ' traiteJsonDeHtml ' + jsonDeHtml.type} ));
                         }
                     }
                 }else{

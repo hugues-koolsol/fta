@@ -1713,7 +1713,7 @@ class requete_sql{
                             console.log( true );
                         }else{
                             console.log( 'donnees=' , donnees );
-                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la requête'} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
                         }
                         __gi1.remplir_et_afficher_les_messages1( '' );
                     } );
@@ -1758,7 +1758,7 @@ class requete_sql{
                             return;
                         }else{
                             console.log( 'donnees=' , donnees );
-                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : ' il y a eu un problème lors de la sauvegarde de la requête'} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
                         }
                         __gi1.remplir_et_afficher_les_messages1( '' );
                     } );
@@ -2085,7 +2085,7 @@ class requete_sql{
                                                 if(obj.__xst === __xsu){
                                                     valeur_du_champ=obj.__xva;
                                                 }else{
-                                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0198 erreur sur fonction dans update conditions "' + tab[l][1] + '"'} ));
+                                                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'fonction dans update conditions "' + tab[l][1] + '"'} ));
                                                 }
                                             }else{
                                                 if(tab[m][1].toLowerCase() === 'null' && tab[m][4] === 0){
@@ -2606,16 +2606,16 @@ class requete_sql{
                     if(obj4.__xst === __xsu){
                         return({"__xst" : __xsu ,"source_sql" : obj2.__xva ,"source_php" : obj4.__xva});
                     }else{
-                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"source_sql" : obj2.__xva ,"__xme" : 'module_requete erreur 2455 erreur de conversion en php '} ));
+                        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"source_sql" : obj2.__xva ,"__xme" : __m_rev1.nl2() + 'conversion en php '} ));
                     }
                 }else{
-                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"source_sql" : obj2.__xva ,"message" : 'module_requete erreur 2456 erreur de conversion en sql '} ));
+                    return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"source_sql" : obj2.__xva ,"message" : __m_rev1.nl2() + 'conversion en sql '} ));
                 }
             }else{
-                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_requete erreur 2457 erreur de conversion en sql '} ));
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'conversion en sql '} ));
             }
         }else{
-            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'module_requete erreur 2458'} ));
+            return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + ''} ));
         }
     }
     /*
