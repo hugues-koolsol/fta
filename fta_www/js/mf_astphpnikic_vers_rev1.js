@@ -11,12 +11,15 @@ class c_astphpnikic_vers_rev1{
     #nom_de_la_variable='';
     #options_traitement={};
     #tableau_de_html_dans_php_a_convertir=[];
+    #globale_tableau_des_js3=[];
     /*
       =============================================================================================================
       le seul argument est pour l'instant le nom de la variable qui est déclarée
     */
     constructor( nom_de_la_variable ){
         this.#nom_de_la_variable=nom_de_la_variable;
+        this.#tableau_de_html_dans_php_a_convertir=[];
+        this.#globale_tableau_des_js3=[];
     }
     /*
       =============================================================================================================
@@ -3134,132 +3137,11 @@ class c_astphpnikic_vers_rev1{
                         case "Stmt_Nop" : t+='';
                             break;
                         case "Stmt_InlineHTML" :
-                            /*
-                              =============================================================
-                              Quand un php contient du html, ou bien ce dernier est un dom valide qui ne contient pas de php
-                              par exemple ">? <div>que_du_html</div><?php"
-                              ou bien il contient du php, 
-                              par exemple ">? <div> <?php echo '';?> </div> <?php"
-                              Dans ce dernier car la chaine " <div> " n'est pas un html "parfait"
-                              =============================================================
-                            */
-                            /* debugger */
-                            var estTraiteSansErreur=false;
-                            obj=__gi1.isHTML( stmts[i].value );
+                            obj=__module_html1.traite_html_de_php( stmts[i].value , options_traitement , niveau );
                             if(obj.__xst === __xsu){
-                                /* var nettoye=stmts[i].value.replace(/\<\!\-\-(.*)\-\-\>/g,'').trim(); */
-                                var nettoye=stmts[i].value.replace( /<!--[\s\S]*?-->/g , '' ).trim();
-                            }
-                            /* recherche d'au moins un tag dans le texte */
-                            var regex=/(<[a-zA-Z0-9\-_]+)/g;
-                            var found=stmts[i].value.match( regex );
-                            if(obj.__xst === __xsu
-                                   && (stmts[i].value.indexOf( '<' ) >= 0
-                                           && found
-                                           && found.length > 0
-                                       || nettoye === ''
-                                       || stmts[i].value.indexOf( '<' ) < 0
-                                           && stmts[i].value.indexOf( '>' ) < 0)
-                            ){
-                                var cle=this.#php_construit_cle( 10 );
-                                this.#tableau_de_html_dans_php_a_convertir.push( {"cle" : cle ,"valeur" : stmts[i].value} );
-                                t+='\n' + esp0 + 'html_dans_php(#(cle_html_dans_php_a_remplacer,' + cle + '))';
-                                estTraiteSansErreur=true;
+                                t+='\n' + obj.__xva;
                             }else{
-                                /*
-                                  On ne capture pas l'erreur car ce qui est traité ici n'est peut être pas un html "pur"
-                                  dans ce cas tout est remplacé par des "echo" plus bas
-                                */
-                                estTraiteSansErreur=false;
-                            }
-                            if(estTraiteSansErreur === false){
-                                if(options_traitement && options_traitement.hasOwnProperty( 'nettoyer_html' ) && options_traitement.nettoyer_html === true){
-                                }else{
-                                    return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'ce php contient du html en ligne qui n\'est pas complet' ,"element" : stmts[i]} ));
-                                }
-                                var cle=this.#php_construit_cle( 10 );
-                                t+='#( === transformation html incomplet en echo voir ci dessous pour la clé = "' + cle + '")';
-                                this.#astphp_le( {"__xst" : __xal ,"__xme" : __m_rev1.nl2() + "<br />ATTENTION, html incomplet converti en echo (" + cle + ") !" ,"element" : stmts[i]} );
-                                /*
-                                  numeroLigneCourantStmtHtmlStartLine=stmts[i].attributes.startLine;
-                                  numeroLigneCourantStmtHtmlEndLine=stmts[i].attributes.endLine;
-                                */
-                                if(stmts[i].value.toLowerCase().indexOf( '<script' ) < 0){
-                                    /*
-                                      =============================================
-                                      C'est un html incomplet qui ne contient pas de script, on le transforme en echo
-                                      =============================================
-                                    */
-                                    t+='\n' + esp0 + 'appelf(nomf(echo),p(\'' + stmts[i].value.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' ) + '\'))';
-                                }else{
-                                    /*
-                                      =============================================
-                                      cas ou le html contenu contient des scripts, 
-                                      =============================================
-                                    */
-                                    var obj1=__module_html1.mapDOM( stmts[i].value );
-                                    if(obj1.__xst === __xsu && obj1.parfait === true && obj1.__xva.type.toLowerCase() === 'html'){
-                                        /*
-                                          si le contenu contient du HTML en racine, on peut essayer de le nettoyer 
-                                        */
-                                        if(obj1.content && obj1.content.length >= 0){
-                                            var j=0;
-                                            for( j=0 ; j < obj1.content.length ; j++ ){
-                                                if(obj1.content[j].type === 'BODY' || obj1.content[j].type === 'HEAD'){
-                                                    if(obj1.content[j].content && obj1.content[j].content.length > 0){
-                                                        var k=0;
-                                                        for( k=0 ; k < obj1.content[j].content.length ; k++ ){
-                                                            if(obj1.content[j].content[k].type){
-                                                                var lesProprietes='';
-                                                                if(obj1.content[j].content[k].attributes){
-                                                                    var attr={};
-                                                                    for(attr in obj1.content[j].content[k].attributes){
-                                                                        if(lesProprietes !== ''){
-                                                                            lesProprietes+=',';
-                                                                        }
-                                                                        lesProprietes+='(\'' + attr.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' ) + '\' , \'' + obj1.content[j].content[k].attributes[attr].replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' ) + '\')';
-                                                                    }
-                                                                }
-                                                                if(obj1.content[j].content[k].type.toLowerCase() === 'script'){
-                                                                    if(obj1.content[j].content[k].content){
-                                                                        objScr=__gi1.convertit_source_javascript_en_rev( obj1.content[j].content[k].content[0] );
-                                                                        if(objScr.__xst === __xsu){
-                                                                            if(objScr.__xva === ''){
-                                                                                t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + '))';
-                                                                            }else{
-                                                                                t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + ',source(' + objScr.__xva + ')))';
-                                                                            }
-                                                                        }else{
-                                                                            console.log( 'un script KO : ' + obj1.content[j].content[k].content[0] );
-                                                                            t+='appelf(nomf(echo),p(\'<script type="text/javascript">\'))';
-                                                                            t+='appelf(nomf(echo),p(\'' + obj1.content[j].content[k].content[0].replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' ) + '\'))';
-                                                                        }
-                                                                    }else{
-                                                                        t+='\n' + esp0 + 'html_dans_php(script(' + lesProprietes + '))';
-                                                                    }
-                                                                }else{
-                                                                    obj=__module_html1.asthtml_vers_rev( obj1.content[j].content[k] , 0 , true , '' , tableau_de_javascripts_dans_php_a_convertir );
-                                                                    if(obj.__xst === __xsu){
-                                                                        t+='\n' + esp0 + 'html_dans_php(' + obj.__xva + ')';
-                                                                    }else{
-                                                                        return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + stmts[i].nodeType ,"element" : stmts[i]} ));
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                }else{
-                                                    return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + stmts[i].nodeType ,"element" : stmts[i]} ));
-                                                }
-                                            }
-                                        }
-                                    }else{
-                                        /*
-                                          si le contenu ne contient pas du HTML en racine, on "echo" 
-                                        */
-                                        t+='appelf(nomf(echo),p(\'' + stmts[i].value.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' ) + '\'))';
-                                    }
-                                }
+                                return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : stmts[i]} ));
                             }
                             break;
                             
@@ -3522,70 +3404,6 @@ class c_astphpnikic_vers_rev1{
     }
     /*
       =============================================================================================================
-    */
-    #transforme_html_de_php_en_rev( texteHtml , niveau , globale_tableau_des_js2 ){
-        var t='';
-        var esp0=' '.repeat( NBESPACESREV * niveau );
-        var esp1=' '.repeat( NBESPACESREV );
-        var supprimer_le_tag_html_et_head=true;
-        var doctype='';
-        var elementsJson={};
-        var i=0;
-        try{
-            var position_doctype=texteHtml.toUpperCase().indexOf( '<!DOCTYPE' );
-            if(position_doctype >= 0){
-                if(position_doctype === 0){
-                    for( i=1 ; i < texteHtml.length && doctype == '' ; i++ ){
-                        if(texteHtml.substr( i , 1 ) === '>'){
-                            doctype=texteHtml.substr( 0 , i + 1 );
-                            texteHtml=texteHtml.substr( i + 1 );
-                        }
-                    }
-                }
-            }
-            elementsJson=__module_html1.mapDOM( texteHtml , false );
-            if(elementsJson.__xst === __xsu){
-                if(elementsJson.parfait === true){
-                    supprimer_le_tag_html_et_head=false;
-                }else{
-                    /*
-                    */
-                    var supprimer_le_tag_html_et_head=true;
-                    if(texteHtml.indexOf( '<html' ) >= 0){
-                        supprimer_le_tag_html_et_head=false;
-                    }
-                }
-                try{
-                    var tableau_de_javascripts_a_convertir=[];
-                    var obj=__module_html1.asthtml_vers_rev( elementsJson.__xva , 0 , supprimer_le_tag_html_et_head , '' , tableau_de_javascripts_a_convertir );
-                    if(obj.__xst === __xsu){
-                        if(obj.__xva.trim().indexOf( 'html(' ) == 0){
-                            if(doctype.toUpperCase() === '<!DOCTYPE HTML>'){
-                                obj.__xva=obj.__xva.replace( /html\(/ , 'html((doctype)' );
-                            }else{
-                                obj.__xva=obj.__xva.replace( /html\(/ , 'html(#((doctype)?? doctype pas html , normal="<!DOCTYPE html>" ?? )' );
-                            }
-                        }
-                        if(tableau_de_javascripts_a_convertir.length > 0){
-                            for( var i=0 ; i < tableau_de_javascripts_a_convertir.length ; i++ ){
-                                globale_tableau_des_js2.push( tableau_de_javascripts_a_convertir[i] );
-                            }
-                        }
-                        return({"__xst" : __xsu ,"__xva" : obj.__xva});
-                    }else{
-                        debugger;
-                    }
-                }catch(e){
-                    debugger;
-                }
-            }else{
-                debugger;
-            }
-        }catch(e){}
-        return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'le html dans php n\'est pas convertible'} ));
-    }
-    /*
-      =============================================================================================================
       point d'entrée
       =============================================================================================================
     */
@@ -3607,72 +3425,6 @@ class c_astphpnikic_vers_rev1{
                 t=obj.__xva;
             }else{
                 return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : ast_de_php} ));
-            }
-        }
-        /*
-          =====================================================================================================
-          on remplace les html en ligne par du rev
-          =====================================================================================================
-        */
-        var globale_tableau_des_js2=[];
-        for( var i=0 ; i < this.#tableau_de_html_dans_php_a_convertir.length ; i++ ){
-            obj=this.#transforme_html_de_php_en_rev( this.#tableau_de_html_dans_php_a_convertir[i].valeur , 0 , globale_tableau_des_js2 );
-            if(obj.__xst === __xsu){
-                var chaine_a_remplacer='#(cle_html_dans_php_a_remplacer,' + this.#tableau_de_html_dans_php_a_convertir[i].cle + ')';
-                t=t.replace( chaine_a_remplacer , obj.__xva );
-            }else{
-                return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
-            }
-        }
-        /*
-          =====================================================================================================
-          on remplace les javascript dans les html
-          =====================================================================================================
-        */
-        if(globale_tableau_des_js2.length > 0){
-            var parseur_javascript=window.acorn.Parser;
-            for( var i=0 ; i < globale_tableau_des_js2.length ; i++ ){
-                try{
-                    var tableau_des_commentaires_js=[];
-                    obj=parseur_javascript.parse( globale_tableau_des_js2[i].__xva.replace( /&amp;/g , '&' ) , {"ecmaVersion" : 'latest' ,"sourceType" : 'module' ,"ranges" : true ,"onComment" : tableau_des_commentaires_js} );
-                }catch(e){
-                    console.log( globale_tableau_des_js2[i].__xva.replace( /&amp;/g , '&' ) );
-                    globale_tableau_des_js2=[];
-                    return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + '<br />il y a un problème dans un source javascript dans le php'} ));
-                }
-                var phrase_a_remplacer='#(cle_javascript_a_remplacer,' + globale_tableau_des_js2[i].cle + ')';
-                if(obj === '' || obj.hasOwnProperty( 'body' ) && Array.isArray( obj.body ) && obj.body.length === 0){
-                    t=t.replace( phrase_a_remplacer , '' );
-                }else{
-                    if(tableau_des_commentaires_js.length > 0){
-                        /*
-                          il faut retirer les commentaires si ce sont des CDATA ou des <source_javascript_rev> 
-                          car javascriptdanshtml les ajoute.
-                        */
-                        var commentaires_a_remplacer=['<![CDATA[',']]>','<source_javascript_rev>','</source_javascript_rev>'];
-                        for( var nn=0 ; nn < commentaires_a_remplacer.length ; nn++ ){
-                            for( var indc=tableau_des_commentaires_js.length - 1 ; indc >= 0 ; indc-- ){
-                                if(tableau_des_commentaires_js[indc].value.trim() === commentaires_a_remplacer[nn]){
-                                    tableau_des_commentaires_js.splice( indc , 1 );
-                                }
-                            }
-                        }
-                        for( var indc=tableau_des_commentaires_js.length - 1 ; indc >= 0 ; indc-- ){
-                            if(tableau_des_commentaires_js[indc].value.trim() === '' && tableau_des_commentaires_js[indc].type === 'Line'){
-                                tableau_des_commentaires_js.splice( indc , 1 );
-                            }
-                        }
-                    }
-                    /* on transforme le ast du js en rev */
-                    var obj0=__m_astjs_vers_rev1.traite_ast( obj.body , tableau_des_commentaires_js , {} );
-                    if(obj0.__xst === __xsu){
-                        /* on retire source() */
-                        t=t.replace( phrase_a_remplacer , obj0.__xva );
-                    }else{
-                        globale_tableau_des_js2=[];
-                        return(this.#astphp_le( {"__xst" : __xsu ,"__xme" : 'le source a été converti en rev'} ));
-                    }
-                }
             }
         }
         if(t.substr( 0 , 2 ) === '\r\n'){

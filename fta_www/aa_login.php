@@ -170,7 +170,7 @@ if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['
 
     /*
       =============================================================================================================
-      ... si oui on lui affiche un formulaire de DEconnexion
+      ... si oui on lui affiche un formulaire de DEconnexion en html
       =============================================================================================================
     */
     ?>
@@ -185,7 +185,7 @@ if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['
 
     /*
       =============================================================================================================
-      ... sinon on lui affiche un formulaire de connexion
+      ... sinon on lui affiche un formulaire de connexion en html
       =============================================================================================================
     */
     ?>
@@ -194,6 +194,7 @@ if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['
         <div>
             <div style="margin: auto;width: 10%;">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="19 4  130 142">
+                    <title>dessin d'une clé</title>
                     <path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path>
                     <circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle>
                 </svg>

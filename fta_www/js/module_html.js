@@ -28,11 +28,12 @@ class traitements_sur_html{
         return this.#nom_de_la_variable;
     }
     /*
-      function #construit_cle
+      =============================================================================================================
+      function #construit_cle 
     */
     #construit_cle( length ){
         let resultat='';
-        /* on retire I("I" de [i]ncrément ) O("o" de [o]bjet) l("l" de laitue)  0(zéro) 1(un) */
+        /* on retire I("I" de [i]ncrément ) O("o" de [o]bjet) l("l" de laitue)  0(zéro) 1(un) car ces lettres peuvent être confondues entre elles */
         const lettres='ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789';
         const longueur=lettres.length;
         let counter=0;
@@ -388,7 +389,7 @@ class traitements_sur_html{
             */
             var matriceFonction=__m_rev1.rev_tcm( t );
             if(matriceFonction.__xst === __xsu){
-                if(matriceFonction.__xva[1][1] === 'html' && matriceFonction.__xva[1][8] <= 2){
+                if(matriceFonction.__xva.length > 1 && matriceFonction.__xva[1][1] === 'html' && matriceFonction.__xva[1][8] <= 2){
                     /*
                       l'élément html est en première position
                       si il n'a aucune propriété, on peut le supprimer
@@ -536,8 +537,28 @@ class traitements_sur_html{
       =============================================================================================================
     */
     mapDOM( element ){
+        var contient_un_doctype=false;
         var treeObject={};
         if( typeof element === 'string'){
+            /*
+              Dans le cas ou c'est une chaine, on essaie de nettoyer le début
+            */
+            var posi1=element.toLowerCase().indexOf( '<!doctype html>' );
+            if(posi1 >= 0){
+                contient_un_doctype=true;
+                /* on supprime ce doctype qui peut être n'importe où */
+                var chaine_avant=element.substr( 0 , posi1 );
+                var chaine_apres=element.substr( posi1 + 15 );
+                element=chaine_avant + chaine_apres;
+            }
+            var l01=element.length;
+            for( var i=0 ; i < l01 ; i++ ){
+                var c=element.substr( i , 1 );
+                if(!(c === '\n' || c === '\r' || c === '\t' || c === ' ')){
+                    element=element.substr( i );
+                    break;
+                }
+            }
             var parser=new DOMParser();
             /*
               "application/xml"
@@ -605,7 +626,7 @@ class traitements_sur_html{
                   =====================================================================================
                 */
                 arbre_HTML( elementNoeud , treeObject );
-                return({"__xst" : __xsu ,"__xva" : treeObject ,"parfait" : false});
+                return({"__xst" : __xsu ,"__xva" : treeObject ,"parfait" : false ,"contient_un_doctype" : contient_un_doctype});
             }else{
                 /*
                   c'est un xml parfait, on retire la racine aaaaa et on le traite
@@ -662,7 +683,7 @@ class traitements_sur_html{
                 }else{
                     arbre_XML( elementNoeud , treeObject , 0 , false );
                 }
-                return({"__xst" : __xsu ,"__xva" : treeObject ,"parfait" : true});
+                return({"__xst" : __xsu ,"__xva" : treeObject ,"parfait" : true ,"contient_un_doctype" : contient_un_doctype});
             }
         }
     }
@@ -1066,6 +1087,101 @@ class traitements_sur_html{
             return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e )} ));
         }
         console.log( 'fin' );
+    }
+    /*
+      =============================================================================================================
+    */
+    traite_html_de_php( contenu , options_traitement , niveau ){
+        let obj=null;
+        let t='';
+        /*
+          =====================================================================================================
+          Quand un php contient du html, ou bien ce dernier est un dom valide qui ne contient pas de php
+          par exemple ">? <div>que_du_html</div><?php"
+          ou bien il contient du php, 
+          par exemple ">? <div> <?php echo '';?> </div> <?php"
+          Dans ce dernier car la chaine " <div> " n'est pas un html "parfait"
+          =====================================================================================================
+        */
+        /* debugger */
+        var estTraiteSansErreur=false;
+        obj=__gi1.isHTML( contenu );
+        /* contenu stmts[i].value */
+        if(obj.__xst === __xsu){
+            /* var nettoye=stmts[i].value.replace(/\<\!\-\-(.*)\-\-\>/g,'').trim(); */
+            var nettoye=contenu.replace( /<!--[\s\S]*?-->/g , '' ).trim();
+        }
+        /* recherche d'au moins un tag dans le texte */
+        var regex=/(<[a-zA-Z0-9\-_]+)/g;
+        var tags_trouves=contenu.match( regex );
+        if(obj.__xst === __xsu
+               && (contenu.indexOf( '<' ) >= 0
+                       && tags_trouves
+                       && tags_trouves.length > 0
+                   || nettoye === ''
+                   || contenu.indexOf( '<' ) < 0
+                       && contenu.indexOf( '>' ) < 0)
+        ){
+            obj=this.TransformHtmlEnRev( contenu , 0 , {} );
+            if(obj.__xst === __xsu){
+                t+='html_dans_php(' + obj.__xva + ')';
+            }else{
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'transformation html en rev'} ));
+            }
+        }else{
+            /*
+              On ne capture pas l'erreur car ce qui est traité ici n'est peut être pas un html "pur"
+              dans ce cas tout est remplacé par des "echo" plus bas
+            */
+            estTraiteSansErreur=false;
+            if(options_traitement && options_traitement.hasOwnProperty( 'nettoyer_html' ) && options_traitement.nettoyer_html === true){
+            }else{
+                return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'ce php contient du html en ligne qui n\'est pas complet'} ));
+            }
+            if(contenu.toLowerCase().indexOf( '<script' ) < 0){
+                /*
+                  =====================================================================================
+                  C'est un html incomplet qui ne contient pas de script, on le transforme en echo
+                  =====================================================================================
+                */
+                var cle=this.#construit_cle( 10 );
+                t+='#( === transformation html incomplet en echo voir ci dessous pour la clé = "' + cle + '")';
+                __m_rev1.empiler_erreur( {"__xst" : __xal ,"__xme" : __m_rev1.nl2() + "<br />ATTENTION, html incomplet converti en echo (" + cle + ") !"} );
+                t+='\n' + 'appelf(nomf(echo),p(\'' + contenu.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' ) + '\'))';
+            }else{
+                /*
+                  =====================================================================================
+                  cas ou le html contenu contient des scripts, 
+                  =====================================================================================
+                */
+                var obj1=__module_html1.mapDOM( contenu );
+                /*
+                  
+                */
+                if(obj1.__xst === __xsu && obj1.parfait === true){
+                    var obj2=__module_html1.TransformHtmlEnRev( contenu , 0 , {} );
+                    if(obj2.__xst == true){
+                        t+='\n' + 'html_dans_php(' + obj2.__xva + ')';
+                    }else{
+                        var cle=this.#construit_cle( 10 );
+                        t+='#( === transformation html incomplet en echo voir ci dessous pour la clé = "' + cle + '")';
+                        __m_rev1.empiler_erreur( {"__xst" : __xal ,"__xme" : __m_rev1.nl2() + "<br />ATTENTION, html incomplet converti en echo (" + cle + ") !"} );
+                        __m_rev1.empiler_erreur( {"__xst" : __xal ,"__xme" : __m_rev1.nl2() + '<br />les scripts ne sont pas validés et peuvent contenir des erreurs'} );
+                        t+='appelf(nomf(echo),p(\'' + contenu.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' ) + '\'))';
+                    }
+                }else{
+                    /*
+                      si le contenu ne contient pas du HTML en racine, on "echo" 
+                    */
+                    var cle=this.#construit_cle( 10 );
+                    t+='#( === transformation html incomplet en echo voir ci dessous pour la clé = "' + cle + '")';
+                    __m_rev1.empiler_erreur( {"__xst" : __xal ,"__xme" : __m_rev1.nl2() + "<br />ATTENTION, html incomplet converti en echo (" + cle + ") !"} );
+                    __m_rev1.empiler_erreur( {"__xst" : __xal ,"__xme" : __m_rev1.nl2() + '<br />les scripts ne sont pas validés et peuvent contenir des erreurs'} );
+                    t+='appelf(nomf(echo),p(\'' + contenu.replace( /\\/g , '\\\\' ).replace( /\'/g , '\\\'' ) + '\'))';
+                }
+            }
+        }
+        return({"__xst" : __xsu ,"__xva" : t});
     }
 }
 export{traitements_sur_html as traitements_sur_html};
