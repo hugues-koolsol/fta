@@ -9,20 +9,10 @@ $o1='';
 ob_flush();
 ?>
 <div class="menuScroller">
-    <ul>
-        <li>
-            <a href="javascript:__gi1.remplir_une_textarea_avex_un_source_de_test_rev(&quot;txtar1&quot;)">charger le source de test</a>
-        </li>
-        <li>
-            <a href="javascript:__gi1.lire_un_rev_et_le_transformer_en_tableau(&quot;txtar1&quot;,false)" class="yysucces">traiter sans cst dans racine</a>
-        </li>
-        <li>
-            <a href="javascript:__gi1.lire_un_rev_et_le_transformer_en_tableau(&quot;txtar1&quot;,true)" class="yysucces">traiter avec cst dans racine</a>
-        </li>
-        <li>
-            <a href="javascript:__gi1.aller_au_caractere_de_la_textarea(&quot;txtar1&quot;)" class="yysucces">aller au caractère</a>
-        </li>
-    </ul>
+    <a href="javascript:__gi1.remplir_une_textarea_avex_un_source_de_test_rev(&quot;txtar1&quot;)">charger le source de test</a>
+    <a href="javascript:__gi1.lire_un_rev_et_le_transformer_en_tableau(&quot;txtar1&quot;,false)" class="yysucces">traiter sans cst dans racine</a>
+    <a href="javascript:__gi1.lire_un_rev_et_le_transformer_en_tableau(&quot;txtar1&quot;,true)" class="yysucces">traiter avec cst dans racine</a>
+    <a href="javascript:__gi1.aller_au_caractere_de_la_textarea(&quot;txtar1&quot;)" class="yysucces">aller au caractère</a>
 </div>
 <h1>Page d'accueil</h1>
 <p>Vous pouvez insérer un source de programme rev et cliquer sur le bouton vert pour le traiter</p>

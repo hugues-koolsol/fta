@@ -23,17 +23,9 @@ print($o1);
 $o1='';
 ?>
 <div class="menuScroller">
-    <ul>
-        <li>
-            <button class="yyinfo" onclick="enregistrer2()">Convertir</button>
-        </li>
-        <li>
-            <input type="text" id="nomDuSource" disabled="true" style="max-width: 150px;" />
-        </li>
-        <li>
-            <button id="sauvegarderLeNormalise" onclick="sauvegardeTexteSource()" disabled="true" data-fichiertexte="">sauvegarder le texte normalise</button>
-        </li>
-    </ul>
+    <button class="yyinfo" onclick="enregistrer2()">Convertir</button>
+    <input type="text" id="nomDuSource" disabled="true" style="max-width: 150px;" />
+    <button id="sauvegarderLeNormalise" onclick="sauvegardeTexteSource()" disabled="true" data-fichiertexte="">sauvegarder le texte normalise</button>
 </div>
 <h1>convertir un rev en js,php,html,sql...</h1>
 <div class="not menuScroller">

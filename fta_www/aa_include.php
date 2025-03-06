@@ -44,7 +44,7 @@ $GLOBALS[__mode_traque]=false;
   =====================================================================================================================
 */
 set_time_limit(5);
-//bug();
+/* bug();*/
 /*
   =====================================================================================================================
 */
@@ -954,6 +954,7 @@ function html_header1($parametres){
     $o1 .= 'const CSS_TAILLE_REFERENCE_PADDING=' . $css_taille_reference_padding . ';' . PHP_EOL;
     $o1 .= 'const CSS_TAILLE_REFERENCE_MARGIN=' . $css_taille_reference_margin . ';' . PHP_EOL;
     $o1 .= 'const CSS_TAILLE_REFERENCE_HAUTEUR_MIN_DIV=' . $css_hauteur_mini_conteneur . ';' . PHP_EOL;
+    $o1 .= 'const CSS_HAUTEUR_MENU_DEFILEMENT=' . $css_hauteur_menu_defilement . ';' . PHP_EOL;
     $o1 .= <<<EOT
 const DEBUT_EXECUTION=performance.now();
 const CRLF='\\r\\n';
@@ -1059,58 +1060,81 @@ EOT;
     
     if(!isset($parametres['pas_de_menu'])){
 
-        $o1 .= '  <nav id="navbar" class="yynavbar">' . PHP_EOL;
-        $o1 .= '    <div style="min-width:' . ($css_hauteur_grands_boutons * 2 + 4 * $css_taille_reference_margin) . 'px;">' . PHP_EOL;
+        $nombre_de_boutons=3;
+        $taille=$css_hauteur_grands_boutons * $nombre_de_boutons + $nombre_de_boutons * $css_taille_reference_margin;
+        $o1 .= '  <nav id="menu_haut">' . PHP_EOL;
+        /*
+          à gauche
+        */
+        $o1 .= '    <div style="display:flex;min-width:' . $taille . 'px;max-width:' . $taille . 'px;">' . PHP_EOL;
         /*
           code utf8 de la maison &#127968;
           bouton messages = 💬
         */
-        $o1 .= '     <a href="./" id="buttonhome" class="yytbgrand ' . ('index.php' === BNF ? 'yymenusel1' : '') . '" title="page d\'accueil" style=""><svg xmlns="http://www.w3.org/2000/svg" viewBox="6 4  49 59"><path d=" M 8 29 L 31 6 L 54 29 V 33 H 51 V 58  H 11 V 33 H 8 V 29" stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:white;stroke-width:0.01;"></path><path d="M 17 57 H 11 c 0 -2 1 -4 2 -2 " stroke="rgb(0, 0, 0)" stroke-width="5" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:lawngreen;fill:transparent;stroke-width:4;"></path><rect x="20" y="27" width="7" height="7" stroke="rgb(0, 0, 0)" stroke-width="0.1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:deepskyblue;stroke-width:0.1;"></rect><rect x="34" y="27" width="7" height="7" stroke="rgb(0, 0, 0)" stroke-width="0.1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:deepskyblue;stroke-width:0.1;"></rect><rect x="34" y="41" width="7" height="7" stroke="rgb(0, 0, 0)" stroke-width="0.1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:deepskyblue;stroke-width:0.1;"></rect><rect x="20" y="41" width="7" height="16" stroke="rgb(0, 0, 0)" stroke-width="0.1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:red;stroke-width:0.1;"></rect><path d=" M 11 30 l 20 -20 l 20 20 " stroke="rgb(0, 0, 0)" stroke-width="3" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:transparent;stroke-width:5;"></path><path d="M 30 57 H 50 c 0 -2 -1 -4 -2 -2 " stroke="rgb(0, 0, 0)" stroke-width="5" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:lawngreen;fill:transparent;stroke-width:4;"></path></svg></a>' . PHP_EOL;
-        $o1 .= '     <a class="yytbgrand yyinfo" style="position: fixed;" title="afficher ou masquer les messages" href="javascript:__gi1.masquer_ou_afficher_les_messages1()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="4 10  75 62"><path stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="miter" stroke-linecap="square" d=" M 14 15 H 67 C 70 15 72 17 72 20 V 51 C 72 54 70 56 67 56 H 30 L 18 69  V 56 H 14 C 11 56 9 54 9 51 V 20 C 9 17 11 15 14 15" style="stroke:red;fill:white;stroke-width:3;"></path><circle cx="56" cy="36" r="3" stroke="rgb(0, 0, 0)" stroke-width="3" fill="transparent" transform="" style="stroke:red;fill:red;stroke-width:3;"></circle><circle cx="41" cy="36" r="3" stroke="rgb(0, 0, 0)" stroke-width="3" fill="transparent" transform="" style="stroke:red;fill:red;stroke-width:3;"></circle><circle cx="26" cy="36" r="3" stroke="rgb(0, 0, 0)" stroke-width="3" fill="transparent" transform="" style="stroke:red;fill:red;stroke-width:3;"></circle></svg></a>' . PHP_EOL;
+        $o1 .= '        <div style="display:flex;flex-grow: 1;">' . PHP_EOL;
+        $o1 .= '        <a style="" href="./" class="yytbgrand ' . ('index.php' === BNF ? 'yymenusel1' : '') . '" id="buttonhome" title="page d\'accueil" style=""><svg xmlns="http://www.w3.org/2000/svg" viewBox="6 4  49 59"><path d=" M 8 29 L 31 6 L 54 29 V 33 H 51 V 58  H 11 V 33 H 8 V 29" stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:white;stroke-width:0.01;"></path><path d="M 17 57 H 11 c 0 -2 1 -4 2 -2 " stroke="rgb(0, 0, 0)" stroke-width="5" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:lawngreen;fill:transparent;stroke-width:4;"></path><rect x="20" y="27" width="7" height="7" stroke="rgb(0, 0, 0)" stroke-width="0.1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:deepskyblue;stroke-width:0.1;"></rect><rect x="34" y="27" width="7" height="7" stroke="rgb(0, 0, 0)" stroke-width="0.1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:deepskyblue;stroke-width:0.1;"></rect><rect x="34" y="41" width="7" height="7" stroke="rgb(0, 0, 0)" stroke-width="0.1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:deepskyblue;stroke-width:0.1;"></rect><rect x="20" y="41" width="7" height="16" stroke="rgb(0, 0, 0)" stroke-width="0.1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:rgb(0, 0, 0);fill:red;stroke-width:0.1;"></rect><path d=" M 11 30 l 20 -20 l 20 20 " stroke="rgb(0, 0, 0)" stroke-width="3" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:transparent;stroke-width:5;"></path><path d="M 30 57 H 50 c 0 -2 -1 -4 -2 -2 " stroke="rgb(0, 0, 0)" stroke-width="5" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:lawngreen;fill:transparent;stroke-width:4;"></path></svg></a>' . PHP_EOL;
+        $o1 .= '        <a style="" class="noHide yytbgrand yyinfo" title="afficher ou masquer les messages" href="javascript:__gi1.masquer_ou_afficher_les_messages1()"><svg xmlns="http://www.w3.org/2000/svg" viewBox="4 10  75 62"><path stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="miter" stroke-linecap="square" d=" M 14 15 H 67 C 70 15 72 17 72 20 V 51 C 72 54 70 56 67 56 H 30 L 18 69  V 56 H 14 C 11 56 9 54 9 51 V 20 C 9 17 11 15 14 15" style="stroke:red;fill:white;stroke-width:3;"></path><circle cx="56" cy="36" r="3" stroke="rgb(0, 0, 0)" stroke-width="3" fill="transparent" transform="" style="stroke:red;fill:red;stroke-width:3;"></circle><circle cx="41" cy="36" r="3" stroke="rgb(0, 0, 0)" stroke-width="3" fill="transparent" transform="" style="stroke:red;fill:red;stroke-width:3;"></circle><circle cx="26" cy="36" r="3" stroke="rgb(0, 0, 0)" stroke-width="3" fill="transparent" transform="" style="stroke:red;fill:red;stroke-width:3;"></circle></svg></a>' . PHP_EOL;
+        $o1 .= '        </div>' . PHP_EOL;
+        $o1 .= '        <a id="vv_decal_menu_gauche" class="noHide" style="visibility:hidden;" href="javascript:__gi1.menu_principal_gauche()">&lt;</a>' . PHP_EOL;
         $o1 .= '    </div>' . PHP_EOL;
-        $o1 .= '    <div id="menuPrincipal" class="menuScroller">' . PHP_EOL;
-        $o1 .= '      <div>' . PHP_EOL;
-        $o1 .= '        <ul>' . PHP_EOL;
+        /*
+          barre centrale
+        */
+        $o1 .= '    <div id="vv_menu_principal" class="menuScroller" style="flex-grow: 1;">' . PHP_EOL;
+        $o1 .= '      <div style="display:flex;flex-grow:1;justify-content:space-around;" id="vv_scroller_principal">' . PHP_EOL;
         $idMenu=0;
         
         if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur']){
 
-            $o1 .= '          <li><a class="yytbfixe ' . ('traiteHtml.php' === BNF ? 'yymenusel1' : '') . '" href="traiteHtml.php?idMenu=' . $idMenu++ . '">HTML</a></li>' . PHP_EOL;
-            $o1 .= '          <li><a class="yytbfixe ' . ('traiteJs.php' === BNF ? 'yymenusel1' : '') . '" href="traiteJs.php?idMenu=' . $idMenu++ . '">JS</a></li>' . PHP_EOL;
-            $o1 .= '          <li><a class="yytbfixe ' . ('traitePhp.php' === BNF ? 'yymenusel1' : '') . '" href="traitePhp.php?idMenu=' . $idMenu++ . '">PHP</a></li>' . PHP_EOL;
-            $o1 .= '          <li><a class="yytbfixe ' . ('traiteSql.php' === BNF ? 'yymenusel1' : '') . '" href="traiteSql.php?idMenu=' . $idMenu++ . '">SQL</a></li>' . PHP_EOL;
-            $o1 .= '          <li><a class="yytbfixe ' . ('index_source.php' === BNF ? 'yymenusel1' : '') . '" href="index_source.php?idMenu=' . $idMenu++ . '">REV</a></li>' . PHP_EOL;
-            $o1 .= '          <li><a class="yytbfixe ' . ('zz_taches_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_taches_l1.php?idMenu=' . $idMenu++ . '&chp_priorite_tache2=99">tâches</a></li>' . PHP_EOL;
-            $o1 .= '          <li><a class="yytbfixe ' . ('zz_cibles_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_cibles_l1.php?idMenu=' . $idMenu++ . '">cibles</a></li>' . PHP_EOL;
+            $o1 .= '          <a class="' . ('traiteHtml.php' === BNF ? 'yymenusel1' : '') . '" href="traiteHtml.php?idMenu=' . $idMenu++ . '">HTML</a>' . PHP_EOL;
+            $o1 .= '          <a class="' . ('traiteJs.php' === BNF ? 'yymenusel1' : '') . '" href="traiteJs.php?idMenu=' . $idMenu++ . '">JS</a>' . PHP_EOL;
+            $o1 .= '          <a class="' . ('traitePhp.php' === BNF ? 'yymenusel1' : '') . '" href="traitePhp.php?idMenu=' . $idMenu++ . '">PHP</a>' . PHP_EOL;
+            $o1 .= '          <a class="' . ('traiteSql.php' === BNF ? 'yymenusel1' : '') . '" href="traiteSql.php?idMenu=' . $idMenu++ . '">SQL</a>' . PHP_EOL;
+            $o1 .= '          <a class="' . ('index_source.php' === BNF ? 'yymenusel1' : '') . '" href="index_source.php?idMenu=' . $idMenu++ . '">REV</a>' . PHP_EOL;
+            $o1 .= '          <a class="' . ('zz_taches_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_taches_l1.php?idMenu=' . $idMenu++ . '&chp_priorite_tache2=99">tâches</a>' . PHP_EOL;
+            $o1 .= '          <a class="' . ('zz_cibles_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_cibles_l1.php?idMenu=' . $idMenu++ . '">cibles</a>' . PHP_EOL;
             
             if(isset($_SESSION[APP_KEY]['cible_courante'])){
 
-                $o1 .= '          <li><a class="yytbfixe ' . ('zz_dossiers_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_dossiers_l1.php?idMenu=' . $idMenu++ . '">dossiers</a></li>' . PHP_EOL;
-                $o1 .= '          <li><a class="yytbfixe ' . ('zz_sources_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_sources_l1.php?idMenu=' . $idMenu++ . '">sources</a></li>' . PHP_EOL;
-                $o1 .= '          <li><a class="yytbfixe ' . ('zz_bdds_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_bdds_l1.php?idMenu=' . $idMenu++ . '">bdds</a></li>' . PHP_EOL;
-                $o1 .= '          <li><a class="yytbfixe ' . ('zz_requetes_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_requetes_l1.php?idMenu=' . $idMenu++ . '">rsql</a></li>' . PHP_EOL;
-                $o1 .= '          <li><a class="yytbfixe ' . ('zz_rev_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_revs_l1.php?idMenu=' . $idMenu++ . '">revs</a></li>' . PHP_EOL;
+                $o1 .= '          <a class="' . ('zz_dossiers_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_dossiers_l1.php?idMenu=' . $idMenu++ . '">dossiers</a>' . PHP_EOL;
+                $o1 .= '          <a class="' . ('zz_sources_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_sources_l1.php?idMenu=' . $idMenu++ . '">sources</a>' . PHP_EOL;
+                $o1 .= '          <a class="' . ('zz_bdds_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_bdds_l1.php?idMenu=' . $idMenu++ . '">bdds</a>' . PHP_EOL;
+                $o1 .= '          <a class="' . ('zz_requetes_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_requetes_l1.php?idMenu=' . $idMenu++ . '">rsql</a>' . PHP_EOL;
+                $o1 .= '          <a class="' . ('zz_rev_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_revs_l1.php?idMenu=' . $idMenu++ . '">revs</a>' . PHP_EOL;
 
             }
 
 
         }
 
-        $o1 .= '        </ul>' . PHP_EOL;
         $o1 .= '      </div>' . PHP_EOL;
         $o1 .= '    </div>' . PHP_EOL;
+        /*
+          à droite
+        */
+        $nombre_de_boutons=2;
+        $taille=$css_hauteur_grands_boutons * $nombre_de_boutons + $nombre_de_boutons * $css_taille_reference_margin;
+        $o1 .= '<div style="display:flex;min-width:' . $taille . 'px;max-width:' . $taille . 'px;">';
+        $o1 .= '        <a id="vv_decal_menu_droite" class="noHide"  style="visibility:hidden;" href="javascript:__gi1.menu_principal_droite()">&gt;</a>' . PHP_EOL;
         
         if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur']){
 
-            $o1 .= '    <div class="">' . PHP_EOL;
             $o1 .= '      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="19 4  130 142"><path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path><circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle></svg></a>' . PHP_EOL;
-            $o1 .= '    </div>' . PHP_EOL;
 
-        }else if(BNF !== 'aa_login.php'){
+        }else{
 
-            $o1 .= '    <div class="yydivhomequit"><a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces"><svg xmlns="http://www.w3.org/2000/svg" viewBox="19 4  130 142"><path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path><circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle></svg></a></div>' . PHP_EOL;
+            
+            if(BNF !== 'aa_login.php'){
+
+                $o1 .= '    <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces"><svg xmlns="http://www.w3.org/2000/svg" viewBox="19 4  130 142"><path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path><circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle></svg></a>' . PHP_EOL;
+
+            }else{
+
+            }
+
         }
 
+        $o1 .= '    </div>' . PHP_EOL;
         $o1 .= '  </nav>' . PHP_EOL;
 
     }

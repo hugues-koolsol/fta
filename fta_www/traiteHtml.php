@@ -9,14 +9,8 @@ $o1='';
 ?>
 <!-- html dans php -->
 <div class="menuScroller">
-    <ul>
-        <li>
-            <a href="javascript:__gi1.remplir_une_textarea_avec_un_source_de_test_html('txtar1')">source de test</a>
-        </li>
-        <li>
-            <a href="javascript:__gi1.convertir_text_area_html_en_rev(&quot;txtar1&quot;,&quot;{'zone_html_rev':'txtar2','zone_html_resultat':'txtar3'}&quot;)" class="yysucces">html-&gt;rev</a>
-        </li>
-    </ul>
+    <a href="javascript:__gi1.remplir_une_textarea_avec_un_source_de_test_html('txtar1')">source de test</a>
+    <a href="javascript:__gi1.convertir_text_area_html_en_rev(&quot;txtar1&quot;,&quot;{'zone_html_rev':'txtar2','zone_html_resultat':'txtar3'}&quot;)" class="yysucces">html-&gt;rev</a>
 </div>
 <h1>Convertir un html en rev</h1>
 <div class="yyconteneur_de_texte1">
@@ -34,7 +28,7 @@ $o1='';
     <a style="float:right;" class="yyinfo" href="javascript:__gi1.aller_a_la_position(&quot;txtar2&quot;)">aller à la position</a>
     <a style="float:right;" href="javascript:__gi1.reduire_la_text_area(&quot;txtar2&quot;);" title="réduire la zone">&nbsp;👊&nbsp;</a>
     <a style="float:right;" href="javascript:__gi1.agrandir_la_text_area(&quot;txtar2&quot;);" title="agrandir la zone">&nbsp;🖐&nbsp;</a>
-    <a style="float:right;margin-right:15px;" href="javascript:__gi1.raz_la_text_area(&quot;txtar1&quot;);" title="raz de la zone">🚫</a>
+    <a style="float:right;margin-right:15px;" href="javascript:__gi1.raz_la_text_area(&quot;txtar2&quot;);" title="raz de la zone">🚫</a>
     <textarea class="txtar1" id="txtar2" rows="15" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
 </div>
 <div class="yyconteneur_de_texte1">

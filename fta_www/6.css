@@ -8,9 +8,11 @@ body{margin:0;border:0;padding:0;overflow-y:scroll;
  padding-top:var(--yyvhmd);
  padding-bottom:var(--yyvhmb); /* espace pour bas de page */
  max-width:1200px;
+ /* supprimer le double click pour zoomer sur les appareils mobiles */
+ touch-action: manipulation;
 }
-*{scrollbar-width:thin;}
-*{scrollbar-color: #B0BEC5 #607D8B;}
+textarea,div{scrollbar-width:thin;}
+textarea,div{scrollbar-color: #B0BEC5 #607D8B;}
 @media print {a[href]:after {content: none !important;}@page {size: auto;margin-bottom: 0;}}
 h1{font-size:1.5rem;text-shadow: #ccc 1px 1px 1px;}
 h1,h2,h3{margin:3px;text-align:center;}
@@ -69,7 +71,6 @@ a,button{
  color:#FFFFFF;
  margin:var(--yyvtrm);
  padding: var(--yyvtrp);
- webkit-user-select:none;
  user-select:none;
  inline-size: max-content;
  /* pour les boutons, il faut préciser la taille de la police !!! */
@@ -80,11 +81,22 @@ a,button{
 a:hover,button:hover{
     box-shadow: 0px 0px 5px red;
 }
+/*
+button{line-height:24px;}
+*/
+/*button:enabled:active,a:active{background:red!important;}*/
+/*button:disabled,
+button[disabled]{
+  border: var(--yyvtrb) solid #999999;
+  background-color: #cccccc;
+  color: #666666;
+}
+*/
 .yy_div_limitee{
  max-width:100vw;
  overflow-x:scroll;
 }
-.yynavbar{
+#menu_haut{
  display:flex;
  position:fixed;
  top:0;
@@ -233,16 +245,7 @@ form{border:var(--yyvtrb) #DAE2E5 outset;}
 .yyformDelete{text-align:center;padding:8px;margin:8px;line-height: 2em;}
 .yyfilterForm{display:flex;flex-wrap:wrap;justify-content:space-evenly;} .yyfilterForm div{display:flex;flex-direction:column;flex-wrap:wrap;margin-right:5px;}.yyfilterForm label{padding:3px;}
 .yylistForm1{display:flex;flex-wrap:wrap;justify-content:space-evenly;align-items: baseline;}
-/*
-button{line-height:24px;}
-*/
-button:enabled:active,a:active{background:red!important;}
-button:disabled,
-button[disabled]{
-  border: var(--yyvtrb) solid #999999;
-  background-color: #cccccc;
-  color: #666666;
-}
+
 .yyflex1{display:flex;}
 .yyminHeight1{min-height:36px;}
 .yytableResult1{

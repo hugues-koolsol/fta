@@ -76,6 +76,12 @@ class interface1{
     /*
       =============================================================================================================
     */
+    rien(){
+        /* rien */
+    }
+    /*
+      =============================================================================================================
+    */
     afficher_les_erreurs_masquees(){
         var est_masque=parseInt( document.getElementById( 'bouton_voir_les_messages_masques' ).getAttribute( 'data-masque' ) , 10 );
         var div_parent=document.getElementById( this.#nom_div_des_messages1 );
@@ -2011,55 +2017,46 @@ COMMIT;
         var i=0;
         var haut=0;
         var bod=document.getElementsByTagName( 'body' )[0];
-        var paddingTopBody=0;
-        var bodyComputed=getComputedStyle( bod );
-        var elem={};
-        for(elem in bodyComputed){
-            if('paddingTop' === elem){
-                paddingTopBody=parseInt( bodyComputed[elem] , 10 );
-            }
-        }
-        var contenuPrincipal=document.getElementById( 'contenuPrincipal' );
-        var lesDivs=contenuPrincipal.getElementsByTagName( 'div' );
+        var paddingTopBody=CSS_HAUTEUR_MENU_DEFILEMENT;
+        var lesDivs=document.getElementById( 'contenuPrincipal' ).getElementsByClassName( 'menuScroller' );
         for( i=0 ; i < lesDivs.length ; i++ ){
-            if(lesDivs[i].className === 'menuScroller'){
-                var menuUtilisateurCalcule=getComputedStyle( lesDivs[i] );
-                var hauteurMenuUtilisateur=parseInt( menuUtilisateurCalcule['height'] , 10 );
-                lesDivs[i].style.top=paddingTopBody + 'px';
-                lesDivs[i].style.position='fixed';
-                lesDivs[i].style.width='100vw';
-                lesDivs[i].addEventListener( 'wheel' , this.mouseWheelOnMenu , false );
-                paddingTopBody+=hauteurMenuUtilisateur;
-            }
+            var menuUtilisateurCalcule=getComputedStyle( lesDivs[i] );
+            var hauteurMenuUtilisateur=parseInt( menuUtilisateurCalcule['height'] , 10 );
+            lesDivs[i].style.top=paddingTopBody + 'px';
+            lesDivs[i].style.position='fixed';
+            lesDivs[i].style.width='100vw';
+            lesDivs[i].addEventListener( 'wheel' , this.mouseWheelOnMenu , false );
+            paddingTopBody+=hauteurMenuUtilisateur;
         }
-        document.getElementById( this.#nom_div_des_messages1 ).style.top=(paddingTopBody + 2) + 'px';
+        document.getElementById( this.#nom_div_des_messages1 ).style.top=(paddingTopBody + 1) + 'px';
         bod.style.paddingTop=paddingTopBody + 'px';
         /*
           ajustement de la position gauche des menus du haut, 
           c'est utile quand il y a beaucoup de menus
           en haut et qu'on est sur un petit appareil
         */
-        var hrefActuel=window.location.href;
-        if(hrefActuel.indexOf( '#' ) >= 1){
-            hrefActuel=hrefActuel.substr( 0 , hrefActuel.indexOf( '#' ) );
-        }
-        if(hrefActuel.lastIndexOf( '/' ) >= 1 && hrefActuel.substr( hrefActuel.lastIndexOf( '/' ) + 1 ) !== ''){
-            hrefActuel=hrefActuel.substr( hrefActuel.lastIndexOf( '/' ) + 1 );
-            if(hrefActuel.indexOf( '?' ) >= 0){
-                hrefActuel=hrefActuel.substr( 0 , hrefActuel.indexOf( '?' ) );
+        var menuPrincipal=document.getElementById( 'vv_menu_principal' );
+        if(menuPrincipal){
+            var hrefActuel=window.location.href;
+            if(hrefActuel.indexOf( '#' ) >= 1){
+                hrefActuel=hrefActuel.substr( 0 , hrefActuel.indexOf( '#' ) );
             }
-            var lienActuel=null;
-            var menuPrincipal=document.getElementById( 'menuPrincipal' );
-            if(menuPrincipal){
+            if(hrefActuel.lastIndexOf( '/' ) >= 1 && hrefActuel.substr( hrefActuel.lastIndexOf( '/' ) + 1 ) !== ''){
+                hrefActuel=hrefActuel.substr( hrefActuel.lastIndexOf( '/' ) + 1 );
+                if(hrefActuel.indexOf( '?' ) >= 0){
+                    hrefActuel=hrefActuel.substr( 0 , hrefActuel.indexOf( '?' ) );
+                }
+                var lienActuel=null;
                 var listeMenu=menuPrincipal.getElementsByTagName( 'a' );
-                for( i=0 ; i < listeMenu.length ; i++ ){
+                var l01=listeMenu.length;
+                for( i=0 ; i < l01 ; i++ ){
                     if(listeMenu[i].href && listeMenu[i].href.indexOf( hrefActuel ) >= 0){
                         lienActuel=listeMenu[i];
                         break;
                     }
                 }
                 if(lienActuel !== null){
-                    for( i=0 ; i < listeMenu.length ; i++ ){
+                    for( i=0 ; i < l01 ; i++ ){
                         if(listeMenu[i] === lienActuel){
                             listeMenu[i].classList.add( 'yymenusel1' );
                         }else{
@@ -2073,17 +2070,50 @@ COMMIT;
                     if(positionDroiteDuLienDansLaBoite > largeurBoiteLiens){
                         var calcul=parseInt( boiteDesLiens.width - positionDuLien.width - 60 , 10 );
                         if(parseInt( positionDuLien.x , 10 ) > calcul){
-                            var nouveauScroll=positionDuLien.x - boiteDesLiens.width - positionDuLien.width - 60;
+                            var nouveauScroll=parseInt( positionDuLien.x - boiteDesLiens.width - positionDuLien.width , 10 );
+                            /* - 60; */
                             menuPrincipal.scrollLeft=nouveauScroll;
                         }
                     }
                 }
-                menuPrincipal.addEventListener( 'wheel' , this.mouseWheelOnMenu , false );
             }
+            menuPrincipal.addEventListener( 'wheel' , this.mouseWheelOnMenu , false );
+            this.mon_resize();
         }
+        window.addEventListener( 'resize' , this.mon_resize );
+        this.mon_resize();
     }
     /*
       =============================================================================================================
+    */
+    menu_principal_gauche(){
+        var a=document.getElementById( 'vv_menu_principal' );
+        a.scrollTo( a.scrollLeft - 50 , 0 );
+    }
+    /*
+      =============================================================================================================
+    */
+    menu_principal_droite(){
+        var a=document.getElementById( 'vv_menu_principal' );
+        a.scrollTo( a.scrollLeft + 50 , 0 );
+    }
+    /*
+      =============================================================================================================
+    */
+    mon_resize( e ){
+        try{
+            var tailles_menu_principal=document.getElementById( 'vv_menu_principal' ).getBoundingClientRect();
+            var tailles_scroller_principal=document.getElementById( 'vv_scroller_principal' ).getBoundingClientRect();
+            if(tailles_scroller_principal.width > tailles_menu_principal.width){
+                document.getElementById( 'vv_decal_menu_gauche' ).style.visibility='visible';
+                document.getElementById( 'vv_decal_menu_droite' ).style.visibility='visible';
+            }else{
+                document.getElementById( 'vv_decal_menu_gauche' ).style.visibility='hidden';
+                document.getElementById( 'vv_decal_menu_droite' ).style.visibility='hidden';
+            }
+        } catch {}
+    }
+    /*
       =============================================================================================================
     */
     parentheses1( nomDeLaTextAreaContenantLeSource ){
@@ -2824,7 +2854,7 @@ COMMIT;
         this.#div_des_positions_du_curseur.innerHTML=zoneSource.selectionStart;
         var ttt=zoneSource.getBoundingClientRect();
         this.#div_des_positions_du_curseur.style.top=((parseInt( ttt.bottom , 10 ) + document.documentElement.scrollTop) - 10) + 'px';
-        this.#div_des_positions_du_curseur.style.left=document.documentElement.scrollLeft + 'px';
+        this.#div_des_positions_du_curseur.style.left=(parseInt( ttt.left , 10 ) + document.documentElement.scrollLeft) + 'px';
         if(e.keyCode === 36){
             /* touche home : on décale le scroll au début et toute la page aussi */
             zoneSource.scrollTo( {"left" : 0} );

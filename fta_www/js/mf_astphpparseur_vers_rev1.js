@@ -272,7 +272,6 @@ class c_astphpparseur_vers_rev1{
         }
         return({"__xst" : __xsu ,"__xva" : t ,"tableau_de_html_dans_php_a_convertir" : tableau_de_html_dans_php_a_convertir});
     }
-
     /*
       =============================================================================================================
     */
