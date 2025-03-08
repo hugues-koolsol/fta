@@ -1119,17 +1119,18 @@ EOT;
         
         if(isset($_SESSION[APP_KEY]['sess_id_utilisateur']) && 0 != $_SESSION[APP_KEY]['sess_id_utilisateur']){
 
-            $o1 .= '      <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="19 4  130 142"><path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path><circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle></svg></a>' . PHP_EOL;
+            $o1 .= '      <a id="buttonQuit2" title="quitter" href="aa_login.php?a=logout" alt="" class="yytbgrand yydanger"><svg xmlns="http://www.w3.org/2000/svg" viewBox="19 4  130 142"><path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path><circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle></svg></a>' . PHP_EOL;
 
         }else{
 
             
             if(BNF !== 'aa_login.php'){
 
-                $o1 .= '    <a id="buttonQuit2" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces"><svg xmlns="http://www.w3.org/2000/svg" viewBox="19 4  130 142"><path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path><circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle></svg></a>' . PHP_EOL;
+                $o1 .= '    <a id="buttonQuit2"  title="quitter" href="aa_login.php?a=logout" alt="" class="yytbgrand yysucces"><svg xmlns="http://www.w3.org/2000/svg" viewBox="19 4  130 142"><path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path><circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle></svg></a>' . PHP_EOL;
 
             }else{
 
+                $o1 .= '    <span class="yytbgrand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="19 4  130 142"><path d=" M 73 80 A 34 35 48 1 1 92 60 l 46 46 l 0 21 l -22 0 l 0 -12 l -11 0 l 0 -11 l -11 0 l 0 -11 l -8 0 l -13 -13 " stroke="rgb(0, 0, 0)" stroke-width="1" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="" style="stroke:red;fill:gold;stroke-width:4;"></path><circle cx="51" cy="38" r="8" stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" transform="" style="stroke:red;fill:black;stroke-width:4;"></circle></svg></span>' . PHP_EOL;
             }
 
         }
@@ -1257,6 +1258,7 @@ EOT;
 }
 /*
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="-26.3303 -10.7052  56.3303 58.7052">
+  <title>poubelle</title>
   <path stroke-linecap="round" stroke-linejoin="round" d=" M -12 -4 H 12 V 6 H 24 V 12 H -24 V 6 H -12 V -4 M 8 0 H -8 V 7  H 8 V 0" style="fill:white;stroke:red;stroke-width:2;stroke-opacity:1;fill-opacity:1;opacity:1;" transform="translate(-2 -3) rotate(-9 0 0)  "></path>
   <path d="M -24 14 H 24 V 42 H -24 V 14 M -10 20 H -18 V 38 H -10 V 20 M 4 20 H -4 V 38 H 4 V 20 M 18 20 H 10 V 38 H 18 V 20 " stroke="rgb(0, 0, 0)" stroke-width="4" fill="transparent" stroke-linejoin="round" stroke-linecap="round" transform="   " style="stroke:red;fill:white;stroke-width:2;"></path>
   </svg>

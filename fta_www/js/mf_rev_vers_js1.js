@@ -1012,12 +1012,19 @@ class c_rev_vers_js1{
                                 return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                             }
                         }else if(this.#tb[i + 1][1] === 'virgule' && this.#tb[i + 1][2] === 'f'){
-                            /* huguesobjOperation=this.#TraiteOperations2(i + 1,niveau,0,false); */
                             objOperation=this.#js_traiteInstruction1( niveau , i + 1 , {} );
                             if(objOperation.__xst === __xsu){
                                 t+='throw ' + objOperation.__xva;
                             }else{
                                 return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
+                            }
+                        }else if(this.#tb[i + 1][1] === 'concat' && this.#tb[i + 1][2] === 'f'){
+                         
+                            obj=this.#TraiteOperations2( i+1 , niveau + 1 , 0 , true );
+                            if(obj.__xst === __xsu){
+                                t+='throw( ' + obj.__xva + ')';
+                            }else{
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i+1 ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                             }
                         }else if(this.#tb[i + 1][1] === 'appelf' && this.#tb[i + 1][2] === 'f'){
                             obj=this.#js_traiteAppelFonction( i + 1 , true , niveau , false , '' );
@@ -2905,11 +2912,14 @@ class c_rev_vers_js1{
                         'getAttribute',
                         'getBBox',
                         'getBoundingClientRect',
+                        'getScreenCTM',
                         'getTime',
                         'has',
                         'hasOwnProperty',
                         'includes',
                         'indexOf',
+                        /* pour les matrices en traitement svg */
+                        'inverse',
                         'isWellFormed',
                         'join',
                         'lastIndexOf',

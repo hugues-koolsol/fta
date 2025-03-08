@@ -1,5 +1,23 @@
-Un programme en cours de développement pour transformer des fonctions imbriquées en tableau
+
+**Introduction**
+
+L'idée est de mettre en place une structure qui permet de considérer que **les programmes sont des données**.
+
+le programme en cours de développement transforme des fonctions imbriquées en tableau
 de façon à écrire des traitements ( c'est à dire les programmes ) et des données avec une syntaxe commune appelée "rev".
+
+
+
+Il faut que cette structure puisse être écrite avec elle même.
+
+Comme il n'existe pas encore de programme qui puisse exécuter les instructions dans ce langage, 
+on s'appuie sur les langages html, javascript, sql et php  
+
+Les programmes écrits dans ces ces langages sont traduits en rev et puis retraduits dans leur langage.
+
+
+
+**Principe général du format rev**
 
 Il n'y a que deux types d'éléments de base :   
 - les constantes   
@@ -186,17 +204,14 @@ et on obtiendra le tableau suivant
 
 Cela dit, on évitera d'écrire des constantes à la racine car ça ne sert généralement pas à grand chose et ce n'est pas autorisé par défaut.   
 Le programme qui traite ces sources rev peut accepter des constantes à la racine quand on veut 
-par exemple vérifier une suite d'arguments mais cela doit être indiqué en paramètre.
+par exemple vérifier une suite d'arguments d'une fonction mais cela doit être indiqué en paramètre.
 
 
 Pour les cas spéciaux des les langages : 
 
 Javascript autorise un "use strict";  il est tranformé en 
-
 useStrict() 
-ou bien en 
 directive( "use strict"), 
-
 
 
 Php autorise un : declare(strict_types=1); il est tranformé en 
@@ -293,8 +308,8 @@ ne l'est pas.
 
 - sql
 
-Je prévois d'intégrer d'autres langages au fur et à mesure de l'avancée des développements mais pour l'instant  
-ça me suffit pour valider toute la chaîne de traitement.
+Je prévois d'intégrer d'autres langages  au fur et à mesure de l'avancée des développements mais pour l'instant  
+ça me suffit pour valider toute la chaîne de traitement (css en particulier, pour les autres, ce sera plus tard).
 
 **5°) les programmes existants**  sont convertis.
 
@@ -304,8 +319,12 @@ A partir du format tabulaire on peut regénérer le source original
 La très grande majorité des sources présents dans ce git sont générés à partir du format rev.
 
 
-Les bibliothèques externes qui sont utilisées pour convertir les sources des programmes en AST ( abstract syntax tree ) sont aussi converties en format "rev".  
+Les bibliothèques externes qui sont utilisées pour convertir les sources des programmes en AST ( abstract syntax tree ).
 Ces "AST" sont ensuites traités pour produire les "rev".   
+
+Ces bibliothèques sont aussi converties en format "rev".
+Pour php, seuls 2 programmes de la bibliothèque nikic/php-parser sont convertis en rev pour l'instant ce qui permet de valider le principe.
+la bibliothèque https://php-parser.glayzzle.com/readme en javascript est utilisée de manière courante ( bien que celle de nikic soit mise en place )
 
 L'objectif est d'avoir que des sources au format rev
 
@@ -315,7 +334,6 @@ L'objectif est d'avoir que des sources au format rev
 ce source php: 
 
 ```
-<?php
 <?php
 /* ceci est un commentaire dans php */
 print('<html><body>');
@@ -390,7 +408,12 @@ console.log('salut javascript,' + ' ceci est ' + (zz - 1) + ' exemple');
 print('</body></html>');
 ```
 
-Les sources javascript, php, html, sql contenus dans ce github sont quasiment tous passés par le format rev
+Les sources javascript, php, html, sql contenus dans ce github sont quasiment tous passés par le format rev.
+
+Vous trouverez à la racine de ce projet des exemples simples de sources en format rev en en format natif.
+
+
+
 
 
 
