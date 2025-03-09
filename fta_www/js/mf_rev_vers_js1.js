@@ -1330,6 +1330,7 @@ class c_rev_vers_js1{
                     }
                     break;
                     
+                    
                 case 'new' :
                     var obj=this.#js_traite_new( id , niveau , {} );
                     if(obj.__xst === __xsu){
@@ -2416,7 +2417,7 @@ class c_rev_vers_js1{
                     return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                 }
             }else if(this.#tb[j][1] === '' && this.#tb[j][2] === 'f'){
-                valeur='';
+                valeur=null;
                 numero=0;
                 cle='';
                 défaut=null;
@@ -2544,6 +2545,7 @@ class c_rev_vers_js1{
         positionAppelFonction=-1;
         var id_de_la_fonction='';
         var auto_appelee=false;
+        var generateur='';
         for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
             if(this.#tb[j][1] === 'nomf' && this.#tb[j][2] === 'f'){
                 positionAppelFonction=j;
@@ -2638,6 +2640,8 @@ class c_rev_vers_js1{
                 asynchrone=true;
             }else if(this.#tb[j][1] === 'id' && this.#tb[j][2] === 'f'){
                 id_de_la_fonction=' ' + this.#tb[j + 1][1];
+            }else if(this.#tb[j][1] === 'generateur' && this.#tb[j][2] === 'f'){
+                generateur='*';
             }else if(this.#tb[j][1] === 'auto_appelee' && this.#tb[j][2] === 'f'){
                 auto_appelee=true;
             }else if(this.#tb[j][1] === 'r' && this.#tb[j][2] === 'f'){
@@ -2667,7 +2671,12 @@ class c_rev_vers_js1{
                         }else{
                             var objinst=this.#js_traiteInstruction1( niveau , k , {} );
                             if(objinst.__xst === __xsu){
-                                nomElement+=objinst.__xva;
+                                if(this.#tb[this.#tb[this.#tb[this.#tb[k][7]][7]][7]][1]==='contenu' && this.#tb[this.#tb[this.#tb[this.#tb[k][7]][7]][7]][8] === 1){
+                                    /*cas var aaa={ "1" : [function( r ){ (function( B ){d=1;}).call( a ); }] } */
+                                    nomElement+='('+objinst.__xva+')';
+                                }else{
+                                    nomElement+=objinst.__xva;
+                                }
                             }else{
                                 return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + 'element incorrecte dans appelf '} ));
                             }
@@ -2692,6 +2701,7 @@ class c_rev_vers_js1{
                        || this.#tb[j][1] === 'id'
                        || this.#tb[j][1] === 'flechee'
                        || this.#tb[j][1] === 'asynchrone'
+                       || this.#tb[j][1] === 'generateur'
                        || this.#tb[j][1] === 'auto_appelee'
                 ){
                     continue;
@@ -2872,6 +2882,7 @@ class c_rev_vers_js1{
                 }
             }
         }
+
         if(argumentsFonction === ', '){
             argumentsFonction=',';
         }
@@ -3011,16 +3022,26 @@ class c_rev_vers_js1{
               }
             */
             if(nomFonction === 'function' && flechee === true){
+                if(generateur!==''){
+                 debugger;
+                }
                 t+=id_de_la_fonction;
             }else{
                 if(transformer_point_en_tableau === true){
+                    if(generateur!==''){
+                     debugger;
+                    }
                     if(fonction_dans_tableau_avec_constante === true){
                         t+='[\'' + nomFonction + '\']' + id_de_la_fonction;
                     }else{
                         t+='[' + nomFonction + ']' + id_de_la_fonction;
                     }
                 }else{
-                    t+=nomFonction + id_de_la_fonction;
+                    if(nomFonction==='' && generateur!=='*'){
+                        t+=nomFonction + id_de_la_fonction + generateur;
+                    }else{
+                        t+=nomFonction+generateur + id_de_la_fonction;
+                    }
                 }
             }
         }
@@ -3138,7 +3159,7 @@ class c_rev_vers_js1{
                 ){
                     t+='{' + espaces_avant_contenu + contenu + __m_rev1.resps( niveau ) + '}';
                 }else if(nom_de_la_fonction_parente === 'filter' || nom_de_la_fonction_parente === 'map'){
-                    t+=contenu;
+                    t+='{'+contenu+'}';
                 }else if(nom_de_la_fonction_parente === ''){
                     t+='{' + espaces_avant_contenu + contenu + __m_rev1.resps( niveau ) + '}';
                 }else{

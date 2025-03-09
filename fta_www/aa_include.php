@@ -979,9 +979,11 @@ let __module_svg1=null;
 let __module_requete_sql1=null;
 let __m_astphpparseur_vers_rev1=null;
 let __m_astjs_vers_rev1=null;
+let __m_astpostcss_vers_rev1=null;
 let __m_rev_vers_js1=null;
 let __m_rev_vers_php1=null;
 let __m_rev_vers_sql1=null;
+let __m_rev_vers_css1=null;
 let __m_rev_vers_html1=null;
 let __m_astphpnikic_vers_rev1=null;
 let __m_astsqliteparseur_vers_rev1=null;
@@ -1022,6 +1024,10 @@ function initialiser_le_module_apres_chargement(element){
          import(element.src).then(function(Module){
                 __m_astjs_vers_rev1=new Module.c_astjs_vers_rev1('__m_astjs_vers_rev1');
             });
+    }else if(element.src.indexOf("js/mf_astpostcss_vers_rev1.js") >= 0){
+         import(element.src).then(function(Module){
+                __m_astpostcss_vers_rev1=new Module.c_astpostcss_vers_rev1('__m_astpostcss_vers_rev1');
+            });
     }else if(element.src.indexOf("js/mf_rev_vers_php1.js") >= 0){
          import(element.src).then(function(Module){
                 __m_rev_vers_php1=new Module.c_rev_vers_php1('__m_rev_vers_php1');
@@ -1033,6 +1039,10 @@ function initialiser_le_module_apres_chargement(element){
     }else if(element.src.indexOf("js/mf_rev_vers_sql1.js") >= 0){
          import(element.src).then(function(Module){
                 __m_rev_vers_sql1=new Module.c_rev_vers_sql1('__m_rev_vers_sql1');
+         });
+    }else if(element.src.indexOf("js/mf_rev_vers_css1.js") >= 0){
+         import(element.src).then(function(Module){
+                __m_rev_vers_css1=new Module.c_rev_vers_css1('__m_rev_vers_css1');
          });
     }else if(element.src.indexOf("js/mf_rev_vers_html1.js") >= 0){
          import(element.src).then(function(Module){
@@ -1090,6 +1100,7 @@ EOT;
             $o1 .= '          <a class="' . ('traiteJs.php' === BNF ? 'yymenusel1' : '') . '" href="traiteJs.php?idMenu=' . $idMenu++ . '">JS</a>' . PHP_EOL;
             $o1 .= '          <a class="' . ('traitePhp.php' === BNF ? 'yymenusel1' : '') . '" href="traitePhp.php?idMenu=' . $idMenu++ . '">PHP</a>' . PHP_EOL;
             $o1 .= '          <a class="' . ('traiteSql.php' === BNF ? 'yymenusel1' : '') . '" href="traiteSql.php?idMenu=' . $idMenu++ . '">SQL</a>' . PHP_EOL;
+            $o1 .= '          <a class="' . ('traiteCss.php' === BNF ? 'yymenusel1' : '') . '" href="traiteCss.php?idMenu=' . $idMenu++ . '">CSS</a>' . PHP_EOL;
             $o1 .= '          <a class="' . ('index_source.php' === BNF ? 'yymenusel1' : '') . '" href="index_source.php?idMenu=' . $idMenu++ . '">REV</a>' . PHP_EOL;
             $o1 .= '          <a class="' . ('zz_taches_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_taches_l1.php?idMenu=' . $idMenu++ . '&chp_priorite_tache2=99">tâches</a>' . PHP_EOL;
             $o1 .= '          <a class="' . ('zz_cibles_l1.php' === BNF ? 'yymenusel1' : '') . '" href="zz_cibles_l1.php?idMenu=' . $idMenu++ . '">cibles</a>' . PHP_EOL;

@@ -1209,6 +1209,12 @@ class interface1{
     /*
       =============================================================================================================
     */
+    transform_rev_de_textarea_en_css2( nom_de_la_textarea_rev , nom_de_la_textarea_css ){
+     alert('todo transform_rev_de_textarea_en_css2')
+    }
+    /*
+      =============================================================================================================
+    */
     transform_rev_de_textarea_en_sql2( nom_de_la_textarea_rev , nom_de_la_textarea_sql ){
         this.raz_des_messages();
         var tableau1=__m_rev1.txt_en_tableau( document.getElementById( nom_de_la_textarea_rev ).value );
@@ -1223,6 +1229,24 @@ class interface1{
             }
         }
         __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
+    }
+    /*
+      =============================================================================================================
+    */
+    transform_css_de_textarea_en_rev2( nom_de_la_textarea_css , nom_de_la_textarea_rev ){
+        this.raz_des_messages();
+        var texte=document.getElementById( nom_de_la_textarea_css ).value;
+        localStorage.setItem( 'fta_traiteCss_dernier_fichier_charge' , texte );
+        try{
+            texte=texte.replace( /\/\*\*\//g , '' );
+            var ast=postcss.parse(texte,{});
+            console.log(ast.nodes);
+        }catch(e){
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) + 'erreur de reconstruction du sql<br />' + e.message} );
+            this.remplir_et_afficher_les_messages1( nom_de_la_textarea_css );
+        }
+          
+            
     }
     /*
       =============================================================================================================
@@ -1567,6 +1591,15 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
           var count=lines.length;
         */
         document.getElementById( nom_de_la_text_area_rev ).setAttribute( 'rows' , 30 );
+    }
+    /*
+      =============================================================================================================
+    */
+    charger_source_de_test_css( nom_de_la_textarea ){
+        var t=`/* test */        
+body{color:red;background:blue;}        
+`;
+        document.getElementById( nom_de_la_textarea ).value=t;
     }
     /*
       =============================================================================================================

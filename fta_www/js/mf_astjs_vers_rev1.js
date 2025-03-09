@@ -36,6 +36,7 @@ class c_astjs_vers_rev1{
         let les_arguments='';
         let asynchrone='';
         let le_commentaire='';
+        let le_generateur='';
         if(element.async !== false){
             asynchrone='asynchrone(),';
         }
@@ -43,7 +44,7 @@ class c_astjs_vers_rev1{
             return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         if(element.generator !== false){
-            return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
+            le_generateur='generateur()'
         }
         if(element.id){
             obj=this.#traite_element( element.id , niveau + 1 , element , tab_comm , false );
@@ -77,9 +78,9 @@ class c_astjs_vers_rev1{
             }
         }
         if(id !== ''){
-            t+='appelf(' + asynchrone + 'id(' + id + '),nomf(function),contenu(' + contenu + ')' + les_arguments + ')';
+            t+='appelf(' + le_generateur + asynchrone + 'id(' + id + '),nomf(function),contenu(' + contenu + ')' + les_arguments + ')';
         }else{
-            t+='appelf(' + asynchrone + 'nomf(function),contenu(' + contenu + ')' + les_arguments + ')';
+            t+='appelf(' + le_generateur + asynchrone + 'nomf(function),contenu(' + contenu + ')' + les_arguments + ')';
         }
         return({"__xst" : __xsu ,"__xva" : t});
     }
@@ -622,12 +623,15 @@ class c_astjs_vers_rev1{
     #traite_ObjectPattern( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
+        let raccourcie=false;
         for(let i in element.properties){
-            if(element.properties[i].method !== false){
+            raccourcie=false;
+            if(element.properties[i].method !== undefined && element.properties[i].method !== false){
                 return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
             if(element.properties[i].shorthand !== false){
-                return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'shorthand' ,"element" : element} ));
+                /*let {a,b}=require('c')*/
+                raccourcie=true;
             }
             if(t !== ''){
                 t+=',';
@@ -641,22 +645,35 @@ class c_astjs_vers_rev1{
                     return(this.#astjs_le( {"__xst" : __xer ,"__xme" : (__m_rev1.nl2() + val.key.type) + '"' ,"element" : element} ));
                 }
             }else{
-                if(val.key.type === 'Identifier'){
-                    t+='(' + val.key.name + ',';
-                }else if(val.key.type === 'Literal'){
-                    t+='(' + val.key.raw + ',';
+                if(val.type==='RestElement'){
+                    /*let { i: o, ...d } = j*/
+                    if(val.argument.type==='Identifier' && raccourcie===true){
+                        t+='(...' + val.argument.name ;
+                    }else{
+                        return(this.#astjs_le( {"__xst" : __xer ,"__xme" : (__m_rev1.nl2() + val.argument.type) + '"' ,"element" : element} ));
+                    }
                 }else{
-                    return(this.#astjs_le( {"__xst" : __xer ,"__xme" : (__m_rev1.nl2() + val.key.type) + '"' ,"element" : element} ));
+                    if(val.key.type === 'Identifier'){
+                        t+='(' + val.key.name + ',';
+                    }else if(val.key.type === 'Literal'){
+                        t+='(' + val.key.raw + ',';
+                    }else{
+                        return(this.#astjs_le( {"__xst" : __xer ,"__xme" : (__m_rev1.nl2() + val.key.type) + '"' ,"element" : element} ));
+                    }
                 }
             }
-            obj=this.#traite_element( val.value , niveau + 1 , element , tab_comm , false );
-            if(obj.__xst === __xsu){
-                t+=obj.__xva + ')';
+            if(raccourcie===true){
+                    t+= ')';
             }else{
-                return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
+                obj=this.#traite_element( val.value , niveau + 1 , element , tab_comm , false );
+                if(obj.__xst === __xsu){
+                    t+=obj.__xva + ')';
+                }else{
+                    return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
+                }
             }
         }
-        t='obj(' + t + ')';
+        t='obj(' +  t + ')';
         return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
