@@ -44,7 +44,7 @@ class c_astjs_vers_rev1{
             return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
         }
         if(element.generator !== false){
-            le_generateur='generateur()'
+            le_generateur='generateur()';
         }
         if(element.id){
             obj=this.#traite_element( element.id , niveau + 1 , element , tab_comm , false );
@@ -630,7 +630,7 @@ class c_astjs_vers_rev1{
                 return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
             if(element.properties[i].shorthand !== false){
-                /*let {a,b}=require('c')*/
+                /* let {a,b}=require('c') */
                 raccourcie=true;
             }
             if(t !== ''){
@@ -645,10 +645,10 @@ class c_astjs_vers_rev1{
                     return(this.#astjs_le( {"__xst" : __xer ,"__xme" : (__m_rev1.nl2() + val.key.type) + '"' ,"element" : element} ));
                 }
             }else{
-                if(val.type==='RestElement'){
-                    /*let { i: o, ...d } = j*/
-                    if(val.argument.type==='Identifier' && raccourcie===true){
-                        t+='(...' + val.argument.name ;
+                if(val.type === 'RestElement'){
+                    /* let { i: o, ...d } = j */
+                    if(val.argument.type === 'Identifier' && raccourcie === true){
+                        t+='(...' + val.argument.name;
                     }else{
                         return(this.#astjs_le( {"__xst" : __xer ,"__xme" : (__m_rev1.nl2() + val.argument.type) + '"' ,"element" : element} ));
                     }
@@ -662,8 +662,8 @@ class c_astjs_vers_rev1{
                     }
                 }
             }
-            if(raccourcie===true){
-                    t+= ')';
+            if(raccourcie === true){
+                t+=')';
             }else{
                 obj=this.#traite_element( val.value , niveau + 1 , element , tab_comm , false );
                 if(obj.__xst === __xsu){
@@ -673,7 +673,7 @@ class c_astjs_vers_rev1{
                 }
             }
         }
-        t='obj(' +  t + ')';
+        t='obj(' + t + ')';
         return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
@@ -682,7 +682,17 @@ class c_astjs_vers_rev1{
     #traite_ObjectExpression( element , niveau , parent , tab_comm ){
         let t='';
         let obj=null;
+        let raccourcie=false;
+        let methode=false;
         for(let i in element.properties){
+            raccourcie=false;
+            if(element.properties[i].method !== undefined && element.properties[i].method !== false){
+                methode=true;
+            }
+            if(element.properties[i].shorthand !== false){
+                /* let {a,b}=require('c') */
+                raccourcie=true;
+            }
             if(t !== ''){
                 t+=',';
             }
@@ -698,7 +708,33 @@ class c_astjs_vers_rev1{
                 }
             }else{
                 if(val.key.type === 'Identifier'){
-                    t+='(' + val.key.name + ',';
+                    if(methode === true){
+                        /* cas a={get(node, prop){ b=1;}}; */
+                        obj=this.#traite_element( val.value , niveau + 1 , element , tab_comm , false );
+                        if(obj.__xst === __xsu){
+                            /* repasse en matrice */
+                            obj=__m_rev1.rev_tm( obj.__xva );
+                            if(obj.__xst === __xsu){
+                                if(obj.__xva[1][1] === 'appelf' && obj.__xva[2][1] === 'nomf' && obj.__xva[3][1] === 'function'){
+                                    /* met "get" à la place de "function" */
+                                    obj.__xva[3][1]=val.key.name;
+                                    /* reconstruit le source */
+                                    obj=__m_rev1.matrice_vers_source_rev1( obj.__xva , 0 , false , 1 );
+                                    if(obj.__xst === __xsu){
+                                        t+='(' + obj.__xva + ')';
+                                    }else{
+                                        return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
+                                    }
+                                }else{
+                                    return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
+                                }
+                            }
+                        }else{
+                            return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
+                        }
+                    }else{
+                        t+='(' + val.key.name + ',';
+                    }
                 }else if(val.key.type === 'Literal'){
                     t+='(' + val.key.raw + ',';
                 }else{
@@ -709,11 +745,19 @@ class c_astjs_vers_rev1{
                         return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
                     }
                 }
-                obj=this.#traite_element( val.value , niveau + 1 , element , tab_comm , false );
-                if(obj.__xst === __xsu){
-                    t+=obj.__xva + ')';
+                if(raccourcie === true){
+                    t+=')';
                 }else{
-                    return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
+                    if(methode === true){
+                        /* traité plus haut */
+                    }else{
+                        obj=this.#traite_element( val.value , niveau + 1 , element , tab_comm , false );
+                        if(obj.__xst === __xsu){
+                            t+=obj.__xva + ')';
+                        }else{
+                            return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
+                        }
+                    }
                 }
             }
         }
@@ -2512,7 +2556,7 @@ class c_astjs_vers_rev1{
             t+=this.#comm_avant_debut1( element , niveau , parent , tab_comm );
         }
         switch (element.type){
-            case 'Super' : t='Super';
+            case 'Super' : t='super';
                 break;
             case 'Identifier' : t+=element.name;
                 break;

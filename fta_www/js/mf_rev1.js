@@ -141,6 +141,7 @@ class c_rev1{
             }
         }
         var nom_fonction='';
+        /* Un grand merci à https://rgx.tools/ */
         if(e_originale !== undefined){
             var stack=e.stack.toString().split( /\r\n|\n/ );
             /* We want our caller's frame. It's index into |stack| depends on the */

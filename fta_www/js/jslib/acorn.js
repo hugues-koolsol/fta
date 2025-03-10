@@ -70,18 +70,18 @@
         /* offset to the next range, and then a size of the range. */
         /* Reserved word lists for various dialects of the language */
         var reservedWords={
-            "3" : "abstract boolean byte char class double enum export extends final float goto implements import int interface long native package private protected public short static super synchronized throws transient volatile" ,
-            "5" : "class enum extends super const export import" ,
-            "6" : "enum" ,
+            3 : "abstract boolean byte char class double enum export extends final float goto implements import int interface long native package private protected public short static super synchronized throws transient volatile" ,
+            5 : "class enum extends super const export import" ,
+            6 : "enum" ,
             "strict" : "implements interface let package private protected public static yield" ,
             "strictBind" : "eval arguments"
         };
         /* And the keywords */
         var ecma5AndLessKeywords="break case catch continue debugger default do else finally for function if return switch throw try var while with null true false instanceof typeof void delete new in this";
         var keywords$1={
-            "5" : ecma5AndLessKeywords ,
+            5 : ecma5AndLessKeywords ,
             "5module" : ecma5AndLessKeywords + " export import" ,
-            "6" : ecma5AndLessKeywords + " const class extends export import super"
+            6 : ecma5AndLessKeywords + " const class extends export import super"
         };
         var keywordRelationalOperator=/^in(stanceof)?$/;
         /* ## Character categories */
@@ -3896,22 +3896,22 @@
         var ecma13BinaryProperties=ecma12BinaryProperties;
         var ecma14BinaryProperties=ecma13BinaryProperties;
         var unicodeBinaryProperties={
-            "9" : ecma9BinaryProperties ,
-            "10" : ecma10BinaryProperties ,
-            "11" : ecma11BinaryProperties ,
-            "12" : ecma12BinaryProperties ,
-            "13" : ecma13BinaryProperties ,
-            "14" : ecma14BinaryProperties
+            9 : ecma9BinaryProperties ,
+            10 : ecma10BinaryProperties ,
+            11 : ecma11BinaryProperties ,
+            12 : ecma12BinaryProperties ,
+            13 : ecma13BinaryProperties ,
+            14 : ecma14BinaryProperties
         };
         /* #table-binary-unicode-properties-of-strings */
         var ecma14BinaryPropertiesOfStrings="Basic_Emoji Emoji_Keycap_Sequence RGI_Emoji_Modifier_Sequence RGI_Emoji_Flag_Sequence RGI_Emoji_Tag_Sequence RGI_Emoji_ZWJ_Sequence RGI_Emoji";
         var unicodeBinaryPropertiesOfStrings={
-            "9" : "" ,
-            "10" : "" ,
-            "11" : "" ,
-            "12" : "" ,
-            "13" : "" ,
-            "14" : ecma14BinaryPropertiesOfStrings
+            9 : "" ,
+            10 : "" ,
+            11 : "" ,
+            12 : "" ,
+            13 : "" ,
+            14 : ecma14BinaryPropertiesOfStrings
         };
         /* #table-unicode-general-category-values */
         var unicodeGeneralCategoryValues="Cased_Letter LC Close_Punctuation Pe Connector_Punctuation Pc Control Cc cntrl Currency_Symbol Sc Dash_Punctuation Pd Decimal_Number Nd digit Enclosing_Mark Me Final_Punctuation Pf Format Cf Initial_Punctuation Pi Letter L Letter_Number Nl Line_Separator Zl Lowercase_Letter Ll Mark M Combining_Mark Math_Symbol Sm Modifier_Letter Lm Modifier_Symbol Sk Nonspacing_Mark Mn Number N Open_Punctuation Ps Other C Other_Letter Lo Other_Number No Other_Punctuation Po Other_Symbol So Paragraph_Separator Zp Private_Use Co Punctuation P punct Separator Z Space_Separator Zs Spacing_Mark Mc Surrogate Cs Symbol S Titlecase_Letter Lt Unassigned Cn Uppercase_Letter Lu";
@@ -3923,12 +3923,12 @@
         var ecma13ScriptValues=ecma12ScriptValues + " Cypro_Minoan Cpmn Old_Uyghur Ougr Tangsa Tnsa Toto Vithkuqi Vith";
         var ecma14ScriptValues=ecma13ScriptValues + " Hrkt Katakana_Or_Hiragana Kawi Nag_Mundari Nagm Unknown Zzzz";
         var unicodeScriptValues={
-            "9" : ecma9ScriptValues ,
-            "10" : ecma10ScriptValues ,
-            "11" : ecma11ScriptValues ,
-            "12" : ecma12ScriptValues ,
-            "13" : ecma13ScriptValues ,
-            "14" : ecma14ScriptValues
+            9 : ecma9ScriptValues ,
+            10 : ecma10ScriptValues ,
+            11 : ecma11ScriptValues ,
+            12 : ecma12ScriptValues ,
+            13 : ecma13ScriptValues ,
+            14 : ecma14ScriptValues
         };
         var data={};
         function buildUnicodeData( ecmaVersion ){

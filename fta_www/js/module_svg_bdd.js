@@ -1985,13 +1985,15 @@ class module_svg_bdd{
                     }
                 }
             }else if(lst[i].getAttribute( 'type_element' ) && lst[i].getAttribute( 'type_element' ) == 'rectangle_d_index'){
-                if(lst[i].getAttribute( 'nom_de_la_table_pour_l_index' ) && lst[i].getAttribute( 'nom_de_la_table_pour_l_index' )===nom_de_la_table){
+                if(lst[i].getAttribute( 'nom_de_la_table_pour_l_index' )
+                       && lst[i].getAttribute( 'nom_de_la_table_pour_l_index' ) === nom_de_la_table
+                ){
                     tab_des_index_rev.push( 'add_index(' + lst[i].getAttribute( 'donnees_rev_de_l_index' ) + ')' );
                 }
                 /*
-                if(lst[i].getAttribute( 'donnees_rev_de_l_index' ).indexOf( 'nom_de_la_table_pour_l_index(\'' + nom_de_la_table ) >= 0){
-                    tab_des_index_rev.push( 'add_index(' + lst[i].getAttribute( 'donnees_rev_de_l_index' ) + ')' );
-                }
+                  if[lst[i].getAttribute[ 'donnees_rev_de_l_index' ].indexOf[ 'nom_de_la_table_pour_l_index[\'' + nom_de_la_table ] >= 0]{
+                  tab_des_index_rev.push[ 'add_index[' + lst[i].getAttribute[ 'donnees_rev_de_l_index' ] + ']' ];
+                  }
                 */
             }
         }
@@ -2057,7 +2059,7 @@ class module_svg_bdd{
             "nouveau_rev" : nouveau_rev ,
             "id_svg_conteneur_table" : id_svg_conteneur_table ,
             "mode_supression_de_champ" : mode_supression_de_champ ,
-            "en_base_et_sur_schema" : en_base_et_sur_schema,
+            "en_base_et_sur_schema" : en_base_et_sur_schema ,
             "tab_des_index_rev" : tab_des_index_rev
         };
         ordonner_les_champs_de_table( 'za_ajax.php?ordonner_les_champs_de_table' , ajax_param ).then( ( donnees ) => {
@@ -2066,7 +2068,7 @@ class module_svg_bdd{
                     }else{
                         var rev_complet_avec_index=donnees.__entree.nouveau_rev;
                         for(var i in donnees.__entree.tab_des_index_rev){
-                         rev_complet_avec_index+='\n'+donnees.__entree.tab_des_index_rev[i];
+                            rev_complet_avec_index+='\n' + donnees.__entree.tab_des_index_rev[i];
                         }
                         var obj=this.#reordonner_les_champs_de_la_table_dans_le_svg( donnees.__entree.id_bdd_de_la_base , donnees.__entree.nom_de_la_table , donnees.__entree.ordre_modifie , donnees.__entree.id_svg_conteneur_table , rev_complet_avec_index );
                         if(obj.__xst === __xsu){

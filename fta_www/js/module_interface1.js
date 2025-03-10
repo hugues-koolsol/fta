@@ -1210,7 +1210,7 @@ class interface1{
       =============================================================================================================
     */
     transform_rev_de_textarea_en_css2( nom_de_la_textarea_rev , nom_de_la_textarea_css ){
-     alert('todo transform_rev_de_textarea_en_css2')
+        alert( 'todo transform_rev_de_textarea_en_css2' );
     }
     /*
       =============================================================================================================
@@ -1239,14 +1239,42 @@ class interface1{
         localStorage.setItem( 'fta_traiteCss_dernier_fichier_charge' , texte );
         try{
             texte=texte.replace( /\/\*\*\//g , '' );
-            var ast=postcss.parse(texte,{});
-            console.log(ast.nodes);
+            var ast=postcss.parse( texte , {} );
+            console.log( ast.nodes );
+            var obj=__m_astpostcss_vers_rev1.traite_ast_postcss( ast , {} );
+            if(obj.__xst === __xsu){
+                document.getElementById( nom_de_la_textarea_rev ).value=obj.__xva;
+                this.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
+                var tableau1=__m_rev1.txt_en_tableau( obj.__xva );
+                var obj1=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
+                if(obj1.__xst === __xsu){
+                    var obj2=__m_rev1.matrice_vers_source_rev1( obj1.__xva , 0 , true , 1 );
+                    if(obj2.__xst === __xsu){
+                        document.getElementById( nom_de_la_textarea_rev ).value=obj2.__xva;
+                    }else{
+                        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
+                    }
+                }else{
+                    __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
+                }
+                this.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
+            }else{
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
+                this.remplir_et_afficher_les_messages1( nom_de_la_textarea_css );
+                return;
+            }
         }catch(e){
-            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) + 'erreur de reconstruction du sql<br />' + e.message} );
+            /* https://rgx.tools/ */
+            const regex=/:(\d+):(\d+):/;
+            const match=e.message.match( regex );
+            if(match){
+                /* console.log(match[1], match[2]); // Outputs: 123 456 */
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) + 'erreur de reconstruction du css<br />' + e.message ,"ligne" : match[1]} );
+            }else{
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) + 'erreur de reconstruction du css<br />' + e.message} );
+            }
             this.remplir_et_afficher_les_messages1( nom_de_la_textarea_css );
         }
-          
-            
     }
     /*
       =============================================================================================================
@@ -1596,8 +1624,10 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
       =============================================================================================================
     */
     charger_source_de_test_css( nom_de_la_textarea ){
-        var t=`/* test */        
-body{color:red;background:blue;}        
+        var t=`/* mon css*/
+@-ms-viewport {width: device-width;}
+*,*::before,*::after {box-sizing: border-box;}
+html{background:linear-gradient(to bottom, #ECEFF1 0%, #DBDEE0 100%);min-height:100%;}
 `;
         document.getElementById( nom_de_la_textarea ).value=t;
     }

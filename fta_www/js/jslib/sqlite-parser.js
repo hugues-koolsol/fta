@@ -72,7 +72,7 @@
                                 throw new Error( 'SingleNodeTransform is not available in this environment' );
                             };
                         },{}] ,
-                "1" : [function( require , module , exports ){
+                1 : [function( require , module , exports ){
                             "use strict";
                             Object.defineProperty( exports , "__esModule" , {"value" : true} );
                             exports.default=sqliteParser;
@@ -121,7 +121,7 @@
                             sqliteParser['VERSION']='1.0.1';
                             module.exports=exports['default'];
                         },{"./parser" : 2 ,"./streaming" : "./streaming" ,"./tracer" : 3}] ,
-                "2" : [function( require , module , exports ){
+                2 : [function( require , module , exports ){
                             "use strict";
                             var _slicedToArray=(function(){
                                 function sliceIterator( arr , i ){
@@ -2870,7 +2870,7 @@
                             }
                             module.exports={"SyntaxError" : peg$SyntaxError ,"DefaultTracer" : peg$DefaultTracer ,"parse" : peg$parse};
                         },{}] ,
-                "3" : [function( require , module , exports ){
+                3 : [function( require , module , exports ){
                             "use strict";
                             Object.defineProperty( exports , "__esModule" , {"value" : true} );
                             function findLastIndex( arr , func ){

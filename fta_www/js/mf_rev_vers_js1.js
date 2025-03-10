@@ -1019,12 +1019,11 @@ class c_rev_vers_js1{
                                 return(this.#rev_js_le( {"__xst" : __xer ,"id" : i ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                             }
                         }else if(this.#tb[i + 1][1] === 'concat' && this.#tb[i + 1][2] === 'f'){
-                         
-                            obj=this.#TraiteOperations2( i+1 , niveau + 1 , 0 , true );
+                            obj=this.#TraiteOperations2( i + 1 , niveau + 1 , 0 , true );
                             if(obj.__xst === __xsu){
                                 t+='throw( ' + obj.__xva + ')';
                             }else{
-                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i+1 ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
+                                return(this.#rev_js_le( {"__xst" : __xer ,"id" : i + 1 ,"__xme" : __m_rev1.nl2() + this.#tb[i][1]} ));
                             }
                         }else if(this.#tb[i + 1][1] === 'appelf' && this.#tb[i + 1][2] === 'f'){
                             obj=this.#js_traiteAppelFonction( i + 1 , true , niveau , false , '' );
@@ -1329,7 +1328,6 @@ class c_rev_vers_js1{
                         return(this.#rev_js_le( {"__xst" : __xer ,"id" : id ,"__xme" : __m_rev1.nl2() + this.#tb[id][1]} ));
                     }
                     break;
-                    
                     
                 case 'new' :
                     var obj=this.#js_traite_new( id , niveau , {} );
@@ -2388,6 +2386,7 @@ class c_rev_vers_js1{
         var cle='';
         var valeur='';
         var défaut=null;
+        var est_methode=false;
         for( j=id + 1 ; j < this.#l02 && a_des_commentaires === false ; j=this.#tb[j][12] ){
             if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                 a_des_commentaires=true;
@@ -2399,6 +2398,7 @@ class c_rev_vers_js1{
         }
         var tableau_prop_objet=[];
         for( j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
+            est_methode=false;
             if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                 commt=__m_rev1.tr_co_src( this.#tb[j][13] , niveau + 1 , j );
                 if(commt.indexOf( '\n' ) >= 0){
@@ -2449,11 +2449,14 @@ class c_rev_vers_js1{
                                 return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                             }
                         }else if(numero === 0){
-                            /* o={...super.getContainerClasses()} */
+                            /* o={...super.getContainerClasses()}, o={get(){}} */
                             var objOperation=this.#js_traiteInstruction1( niveau + 1 , k , {} );
                             if(objOperation.__xst === __xsu){
                                 cle=objOperation.__xva;
                                 valeur=null;
+                                if(this.#tb[k][1] === 'appelf'){
+                                    est_methode=true;
+                                }
                             }else{
                                 return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
                             }
@@ -2469,7 +2472,14 @@ class c_rev_vers_js1{
                         }
                     }
                 }
-                tableau_prop_objet.push( {"type" : 'cv' ,"cle" : cle ,"valeur" : valeur ,"défaut" : défaut ,"niveau" : niveau} );
+                tableau_prop_objet.push( {
+                        "type" : 'cv' ,
+                        "cle" : cle ,
+                        "valeur" : valeur ,
+                        "défaut" : défaut ,
+                        "niveau" : niveau ,
+                        "est_methode" : est_methode
+                    } );
                 if(valeur === null){
                     longueur_totale+=cle.length;
                 }else{
@@ -2497,13 +2507,24 @@ class c_rev_vers_js1{
                 }else if(tableau_prop_objet[i].cle.substr( 0 , 1 ) === '{' || tableau_prop_objet[i].cle.substr( 0 , 1 ) === '['){
                     tt+=tableau_prop_objet[i].cle + ' : ' + tableau_prop_objet[i].valeur;
                 }else{
-                    tt+='"' + tableau_prop_objet[i].cle + '" : ' + tableau_prop_objet[i].valeur;
+                    if(__m_rev1.est_num( tableau_prop_objet[i].cle )){
+                        tt+=tableau_prop_objet[i].cle + ' : ' + tableau_prop_objet[i].valeur;
+                    }else{
+                        tt+='"' + tableau_prop_objet[i].cle + '" : ' + tableau_prop_objet[i].valeur;
+                    }
                 }
                 if(tableau_prop_objet[i].défaut !== null){
                     tt+='=' + tableau_prop_objet[i].défaut;
                 }
                 if(i < tableau_prop_objet.length - 1){
                     tt+=' ,';
+                    if(tableau_prop_objet[i].est_methode == true){
+                        tt+=__m_rev1.resps( niveau + 1 );
+                    }
+                }else{
+                    if(tableau_prop_objet[i].est_methode == true){
+                        tt+=__m_rev1.resps( niveau );
+                    }
                 }
                 if(a_des_commentaires){
                     if(i === tableau_prop_objet.length - 1){
@@ -2537,6 +2558,7 @@ class c_rev_vers_js1{
         var nbEnfants=0;
         var forcerNvelleLigneEnfant=false;
         var contenu='';
+        var contenu_obj='';
         var termineParUnePropriete=false;
         var enfantTermineParUnePropriete=false;
         var flechee=false;
@@ -2644,6 +2666,17 @@ class c_rev_vers_js1{
                 generateur='*';
             }else if(this.#tb[j][1] === 'auto_appelee' && this.#tb[j][2] === 'f'){
                 auto_appelee=true;
+            }else if(this.#tb[j][1] === 'contenu' && this.#tb[j][2] === 'f'){
+                if(this.#tb[this.#tb[this.#tb[j][7]][7]][1] === '' && this.#tb[this.#tb[this.#tb[this.#tb[j][7]][7]][7]][1] === 'obj'){
+                    obj=this.#rev_js1( j , niveau + 1 , {} );
+                    if(obj.__xst === __xsu){
+                        contenu_obj+='{' + __m_rev1.resps( niveau + 1 );
+                        contenu_obj+=obj.__xva;
+                        contenu_obj+=__m_rev1.resps( niveau ) + '}';
+                    }else{
+                        return(this.#rev_js_le( {"__xst" : __xer ,"id" : j ,"__xme" : __m_rev1.nl2()} ));
+                    }
+                }
             }else if(this.#tb[j][1] === 'r' && this.#tb[j][2] === 'f'){
                 if(this.#tb[j][8] === 1){
                     nomRetour=this.#tb[j + 1][1];
@@ -2671,9 +2704,11 @@ class c_rev_vers_js1{
                         }else{
                             var objinst=this.#js_traiteInstruction1( niveau , k , {} );
                             if(objinst.__xst === __xsu){
-                                if(this.#tb[this.#tb[this.#tb[this.#tb[k][7]][7]][7]][1]==='contenu' && this.#tb[this.#tb[this.#tb[this.#tb[k][7]][7]][7]][8] === 1){
-                                    /*cas var aaa={ "1" : [function( r ){ (function( B ){d=1;}).call( a ); }] } */
-                                    nomElement+='('+objinst.__xva+')';
+                                if(this.#tb[this.#tb[this.#tb[this.#tb[k][7]][7]][7]][1] === 'contenu'
+                                       && this.#tb[this.#tb[this.#tb[this.#tb[k][7]][7]][7]][8] === 1
+                                ){
+                                    /* cas var aaa={ "1" : [function( r ){ (function( B ){d=1;}).call( a ); }] } */
+                                    nomElement+='(' + objinst.__xva + ')';
                                 }else{
                                     nomElement+=objinst.__xva;
                                 }
@@ -2757,7 +2792,6 @@ class c_rev_vers_js1{
                     if(this.#tb[j][8] === 0){
                         contenu='/* vide */';
                     }else{
-                        /* obj=js_this.#tbTojavascript1(this.#tb,j + 1,false,false,niveau + 1); */
                         obj=this.#rev_js1( j , niveau + 1 , {} );
                         if(obj.__xst === __xsu){
                             contenu+=__m_rev1.resps( niveau + 1 );
@@ -2882,7 +2916,6 @@ class c_rev_vers_js1{
                 }
             }
         }
-
         if(argumentsFonction === ', '){
             argumentsFonction=',';
         }
@@ -3022,14 +3055,14 @@ class c_rev_vers_js1{
               }
             */
             if(nomFonction === 'function' && flechee === true){
-                if(generateur!==''){
-                 debugger;
+                if(generateur !== ''){
+                    debugger;
                 }
                 t+=id_de_la_fonction;
             }else{
                 if(transformer_point_en_tableau === true){
-                    if(generateur!==''){
-                     debugger;
+                    if(generateur !== ''){
+                        debugger;
                     }
                     if(fonction_dans_tableau_avec_constante === true){
                         t+='[\'' + nomFonction + '\']' + id_de_la_fonction;
@@ -3037,10 +3070,10 @@ class c_rev_vers_js1{
                         t+='[' + nomFonction + ']' + id_de_la_fonction;
                     }
                 }else{
-                    if(nomFonction==='' && generateur!=='*'){
+                    if(nomFonction === '' && generateur !== '*'){
                         t+=nomFonction + id_de_la_fonction + generateur;
                     }else{
-                        t+=nomFonction+generateur + id_de_la_fonction;
+                        t+=nomFonction + generateur + id_de_la_fonction;
                     }
                 }
             }
@@ -3110,7 +3143,11 @@ class c_rev_vers_js1{
                     if(arguments_a_ajouter_au_retour !== ''){
                         /* on le mettra plus tard au retour */
                     }else{
-                        t+=')';
+                        if(!(nomFonction === 'function' || nomFonction === '' && flechee === true)){
+                            t+=')' + (contenu_obj !== '' ? ( contenu_obj ) : ( '' ));
+                        }else{
+                            t+=')';
+                        }
                     }
                     if((nomFonction === 'function' || nomFonction === '') && flechee === true){
                         t+=' => ';
@@ -3159,7 +3196,7 @@ class c_rev_vers_js1{
                 ){
                     t+='{' + espaces_avant_contenu + contenu + __m_rev1.resps( niveau ) + '}';
                 }else if(nom_de_la_fonction_parente === 'filter' || nom_de_la_fonction_parente === 'map'){
-                    t+='{'+contenu+'}';
+                    t+='{' + contenu + '}';
                 }else if(nom_de_la_fonction_parente === ''){
                     t+='{' + espaces_avant_contenu + contenu + __m_rev1.resps( niveau ) + '}';
                 }else{

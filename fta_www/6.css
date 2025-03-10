@@ -1,3 +1,4 @@
+/* mon css*/
 @-ms-viewport {width: device-width;}
 *,*::before,*::after {box-sizing: border-box;}
 html{background:linear-gradient(to bottom, #ECEFF1 0%, #DBDEE0 100%);min-height:100%;}
@@ -34,7 +35,7 @@ input{
 input:focus,select:focus,button:focus{box-shadow:inset 0px 0px 7px;outline:none;}
 input[type="radio"]{transform:translateY(-4px)scale(1.3);vertical-align:bottom;cursor:pointer;} 
 input[type="checkbox"]{transform:translateY(-2px)scale(1.4);vertical-align:sub;cursor:pointer;}
-input[type="text"]:disabled{background:linear-gradient(to bottom, #607d88, #b0bec5)!important;padding:var(--yyvtrp);border;0;}
+input[type="text"]:disabled{background:linear-gradient(to bottom, #607d88, #b0bec5)!important;padding:var(--yyvtrp);border:0;}
 b{font-weight:bold;}
 div{min-height:var(--yyvhmc);line-height:var(--yyvhmc);}
 .yyconteneur_de_texte1{margin-right:var(--yyvhgb);}

@@ -32,8 +32,8 @@ class c_rev_vers_css1{
     /*
       =============================================================================================================
     */
-    #rev_css1( id , niveau , {}){
-     return({__xst : __xsu , t : '' });
+    #rev_css1( id , niveau , {} ){
+        return({"__xst" : __xsu ,"t" : ''});
     }
     /*
       =============================================================================================================
@@ -47,6 +47,7 @@ class c_rev_vers_css1{
         }
         return r;
     }
+    /* function c_rev_vers_css */
     c_rev_vers_css( source_rev , les_options ){
         let t='';
         let obj=null;
