@@ -43,6 +43,13 @@ class c_rev1{
       fonction respr (__m_rev1.#respr) PRIVÉE : retour chariot + nouvelle ligne + n espaces dans les rev produits
       =============================================================================================================
     */
+    espaces1( n ){
+        var t='\r\n';
+        if(n > 0){
+            t+=' '.repeat( this.#NBESPACESREV * n );
+        }
+        return t;
+    }
     #respr( n ){
         var t='\r\n';
         if(n > 0){

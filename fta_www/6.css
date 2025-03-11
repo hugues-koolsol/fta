@@ -14,7 +14,10 @@ body{margin:0;border:0;padding:0;overflow-y:scroll;
 }
 textarea,div{scrollbar-width:thin;}
 textarea,div{scrollbar-color: #B0BEC5 #607D8B;}
-@media print {a[href]:after {content: none !important;}@page {size: auto;margin-bottom: 0;}}
+@media print {
+ a[href]:after {content: none !important;}
+ @page {size: auto;margin-bottom: 0;}
+}
 h1{font-size:1.5rem;text-shadow: #ccc 1px 1px 1px;}
 h1,h2,h3{margin:3px;text-align:center;}
 h4,h5,h6{margin:3px;text-align:left;}
@@ -35,7 +38,7 @@ input{
 input:focus,select:focus,button:focus{box-shadow:inset 0px 0px 7px;outline:none;}
 input[type="radio"]{transform:translateY(-4px)scale(1.3);vertical-align:bottom;cursor:pointer;} 
 input[type="checkbox"]{transform:translateY(-2px)scale(1.4);vertical-align:sub;cursor:pointer;}
-input[type="text"]:disabled{background:linear-gradient(to bottom, #607d88, #b0bec5)!important;padding:var(--yyvtrp);border:0;}
+input[type="text"]:disabled{background:#b0bec5!important;border:var(--yyvtrb)}
 b{font-weight:bold;}
 div{min-height:var(--yyvhmc);line-height:var(--yyvhmc);}
 .yyconteneur_de_texte1{margin-right:var(--yyvhgb);}

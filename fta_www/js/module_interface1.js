@@ -1210,7 +1210,20 @@ class interface1{
       =============================================================================================================
     */
     transform_rev_de_textarea_en_css2( nom_de_la_textarea_rev , nom_de_la_textarea_css ){
-        alert( 'todo transform_rev_de_textarea_en_css2' );
+        this.raz_des_messages();
+        var tableau1=__m_rev1.txt_en_tableau( document.getElementById( nom_de_la_textarea_rev ).value );
+        var obj1=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
+        if(obj1.__xst === __xsu){
+            var obj2=__m_rev_vers_css1.c_tab_vers_css( obj1.__xva , {} );
+            if(obj2.__xst === __xsu){
+                document.getElementById( nom_de_la_textarea_css ).value=obj2.__xva;
+            }else{
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
+            }
+        }else{
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
+        }
+        __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
     }
     /*
       =============================================================================================================
@@ -1627,7 +1640,12 @@ appelf(nomf(f),p(/\\\\\\\\n/g),p('\\\\n'),p('\\\\r'))
         var t=`/* mon css*/
 @-ms-viewport {width: device-width;}
 *,*::before,*::after {box-sizing: border-box;}
-html{background:linear-gradient(to bottom, #ECEFF1 0%, #DBDEE0 100%);min-height:100%;}
+html{/*fond*/background:linear-gradient(to bottom, #ECEFF1 0%, #DBDEE0 100%);/*hauteur*/min-height:100%;}
+@media print {
+ a[href]:after {content: none !important;}
+ @page {size: auto;margin-bottom: 0;}
+}
+
 `;
         document.getElementById( nom_de_la_textarea ).value=t;
     }

@@ -39,19 +39,52 @@ class c_astpostcss_vers_rev1{
             if(t !== ''){
                 t+=',';
             }
-            var node=nodes[i];
-            debugger;
-            switch (node.type){
+            var la_declaration=nodes[i];
+            switch (la_declaration.type){
                 case 'decl' :
-                    if(node.prop && node.value){
-                        t+='d(p(' + node.prop + '),v(' + node.value + '))';
+                    if(la_declaration.prop && la_declaration.value){
+                        t+='d(p(\'' + la_declaration.prop.replace(/\'/g,'\\\'') + '\'),v(\'' + la_declaration.value.replace(/\'/g,'\\\'') + '\'))';
                     }else{
-                        return(this.#astcss_le( {"__xstr" : __xer ,"__xme" : __m_rev1.nl2() + node.type ,"element" : node} ));
+                        return(this.#astcss_le( {"__xstr" : __xer ,"__xme" : __m_rev1.nl2() + la_declaration.type ,"element" : la_declaration} ));
                     }
                     break;
                     
+                case 'comment' :
+                    t+='#(' + la_declaration.text.replace( /\(/g , '[' ).replace( /\)/g , ']' ) + ')';
+                    
+                    break;
+
+                case 'atrule' :
+                    t+='at(nomr(\'' + la_declaration.name.replace( /\'/g , '\\\'' ) + '\')';
+                    if(la_declaration.nodes && la_declaration.nodes.length > 0){
+                        obj=this.#traite_regle1( la_declaration.nodes );
+                        if(obj.__xst === __xsu){
+                            t+=obj.__xva;
+                        }else{
+                            debugger;
+                            return(this.#astcss_le( {"__xstr" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : la_declaration} ));
+                        }
+                    }
+                    t+=')';
+                    break;
+
+                case 'rule' :
+                    t+='regle(selecteur(\'' + la_declaration.selector.replace( /\'/g , '\\\'' ) + '\')';
+                    if(la_declaration.nodes && la_declaration.nodes.length > 0){
+                        obj=this.#traite_regle1( la_declaration.nodes );
+                        if(obj.__xst === __xsu){
+                            t+=obj.__xva;
+                        }else{
+                            debugger;
+                            return(this.#astcss_le( {"__xstr" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : la_declaration} ));
+                        }
+                    }
+                    t+=')';
+                    break;
+
+
                 default:
-                    return(this.#astcss_le( {"__xstr" : __xer ,"__xme" : __m_rev1.nl2() + 'default' ,"element" : node} ));
+                    return(this.#astcss_le( {"__xstr" : __xer ,"__xme" : __m_rev1.nl2() + ' type non traité : "<b>'+la_declaration.type+'</b>"' ,"element" : la_declaration} ));
                     break;
                     
             }
@@ -74,13 +107,17 @@ class c_astpostcss_vers_rev1{
             if(t !== ''){
                 t+=',';
             }
+
             switch (node.type){
                 case 'atrule' :
                     t+='at(nomr(\'' + node.name.replace( /\'/g , '\\\'' ) + '\')';
+                    if(node.params && typeof node.params === 'string'){
+                        t+=',params(\'' + node.params.replace( /\'/g , '\\\'' ) + '\')';
+                    }
                     if(node.nodes && node.nodes.length > 0){
                         obj=this.#traite_regle1( node.nodes );
                         if(obj.__xst === __xsu){
-                            t+=obj.__xva;
+                            t+=','+obj.__xva;
                         }else{
                             debugger;
                             return(this.#astcss_le( {"__xstr" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : node} ));
