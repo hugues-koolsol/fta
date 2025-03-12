@@ -767,21 +767,21 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '<form method="post"  enctype="multipart/form-data" class="form1">' . PHP_EOL;
     $chp_nom_cible=isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_nom_cible'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>' . PHP_EOL;
+    $o1 .= '  <div class="yyflab1"><div>nom</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <input type="text" autofocus="autofocus" value="' . enti1($chp_nom_cible) . '" name="chp_nom_cible" id="chp_nom_cible" maxlength="3" style="max-width:3em;" />' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
     $chp_dossier_cible=isset($_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_dossier_cible'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">dossier</div></div>' . PHP_EOL;
+    $o1 .= '  <div class="yyflab1"><div>dossier</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <input type="text" autofocus="autofocus" value="' . enti1($chp_dossier_cible) . '" name="chp_dossier_cible" id="chp_dossier_cible" maxlength="3" style="max-width:3em;" />' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
     $chp_commentaire_cible=isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_cible'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>' . PHP_EOL;
+    $o1 .= '  <div class="yyflab1"><div>commentaire</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1 yyconteneur_de_texte1">' . PHP_EOL;
     $o1 .= '   <textarea  name="chp_commentaire_cible" id="chp_commentaire_cible"  rows="15" >' . enti1($chp_commentaire_cible,ENT_COMPAT) . '</textarea>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
@@ -814,7 +814,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= ' <input type="hidden" value="' . $__valeur_encriptee . '" name="chi_id_cible" id="chi_id_cible" />' . PHP_EOL;
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">id</div>' . PHP_EOL;
+    $o1 .= '   <div>id</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <span>' . $__id . '</span>' . PHP_EOL;
@@ -825,7 +825,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
         $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
         $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-        $o1 .= '   <div style="word-break:break-word;">nom</div>' . PHP_EOL;
+        $o1 .= '   <div>nom</div>' . PHP_EOL;
         $o1 .= '  </div>' . PHP_EOL;
         $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
         $o1 .= '   <input  type="text" value="' . enti1($__valeurs['T0.chp_nom_cible']) . '" name="chp_nom_cible" id="chp_nom_cible" maxlength="3" style="width:100%;max-width:3em;" />' . PHP_EOL;
@@ -834,7 +834,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
         $o1 .= ' </div>' . PHP_EOL;
         $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
         $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-        $o1 .= '   <div style="word-break:break-word;">dossier</div>' . PHP_EOL;
+        $o1 .= '   <div>dossier</div>' . PHP_EOL;
         $o1 .= '  </div>' . PHP_EOL;
         $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
         $o1 .= '   <input  type="text" value="' . enti1($__valeurs['T0.chp_dossier_cible']) . '" name="chp_dossier_cible" id="chp_dossier_cible" maxlength="3" style="width:100%;max-width:3em;" />' . PHP_EOL;
@@ -846,7 +846,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">commentaire</div>' . PHP_EOL;
+    $o1 .= '   <div>commentaire</div>' . PHP_EOL;
     $o1 .= '   <div style="font-weight: normal;">texte libre</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1 yyconteneur_de_texte1">' . PHP_EOL;

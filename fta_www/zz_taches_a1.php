@@ -305,14 +305,14 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '<form method="post"  enctype="multipart/form-data" class="form1">' . PHP_EOL;
     $chp_texte_tache=isset($_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_texte_tache'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>' . PHP_EOL;
+    $o1 .= '  <div class="yyflab1"><div>nom</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <textarea rows="20"  cols="20" autofocus="autofocus" name="chp_texte_tache" id="chp_texte_tache" autocorrect="off" autocapitalize="off" spellcheck="false">' . enti1($chp_texte_tache) . '</textarea>' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
     $chp_priorite_tache=isset($_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_priorite_tache'] : '0';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">priorité</div></div>' . PHP_EOL;
+    $o1 .= '  <div class="yyflab1"><div>priorité</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <input type="text" value="' . enti1($chp_priorite_tache) . '" name="chp_priorite_tache" id="chp_priorite_tache" maxlength="4" style="max-width:4em;" />' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
@@ -345,7 +345,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= ' <input type="hidden" value="' . $__valeur_encriptee . '" name="chi_id_tache" id="chi_id_tache" />' . PHP_EOL;
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">id, priorité</div>' . PHP_EOL;
+    $o1 .= '   <div>id, priorité</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <span>' . $__id . '</span>' . PHP_EOL;
@@ -355,7 +355,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= ' </div>' . PHP_EOL;
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">tâche</div>' . PHP_EOL;
+    $o1 .= '   <div>tâche</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <span>' . $__id . '</span>' . PHP_EOL;

@@ -1209,7 +1209,7 @@ class interface1{
     /*
       =============================================================================================================
     */
-    transform_rev_de_textarea_en_css2( nom_de_la_textarea_rev , nom_de_la_textarea_css ){
+    transform_rev_de_textarea_en_css2( nom_de_la_textarea_rev , nom_de_la_textarea_css , id_source , id_cible ){
         this.raz_des_messages();
         var tableau1=__m_rev1.txt_en_tableau( document.getElementById( nom_de_la_textarea_rev ).value );
         var obj1=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
@@ -1228,30 +1228,13 @@ class interface1{
     /*
       =============================================================================================================
     */
-    transform_rev_de_textarea_en_sql2( nom_de_la_textarea_rev , nom_de_la_textarea_sql ){
-        this.raz_des_messages();
-        var tableau1=__m_rev1.txt_en_tableau( document.getElementById( nom_de_la_textarea_rev ).value );
-        var obj1=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
-        if(obj1.__xst === __xsu){
-            var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
-            if(obj2.__xst === __xsu){
-                obj2.__xva=obj2.__xva.replace( /\/\* ==========DEBUT DEFINITION=========== \*\//g , '' );
-                document.getElementById( nom_de_la_textarea_sql ).value=obj2.__xva;
-                __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_sql );
-                return;
-            }
-        }
-        __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
-    }
-    /*
-      =============================================================================================================
-    */
-    transform_css_de_textarea_en_rev2( nom_de_la_textarea_css , nom_de_la_textarea_rev ){
+    transform_css_de_textarea_en_rev2( nom_de_la_textarea_css , nom_de_la_textarea_rev , sauvegarder_en_stockage_local=true ){
         this.raz_des_messages();
         var texte=document.getElementById( nom_de_la_textarea_css ).value;
-        localStorage.setItem( 'fta_traiteCss_dernier_fichier_charge' , texte );
+        if(sauvegarder_en_stockage_local === true){
+            localStorage.setItem( 'fta_traiteCss_dernier_fichier_charge' , texte );
+        }
         try{
-            texte=texte.replace( /\/\*\*\//g , '' );
             var ast=postcss.parse( texte , {} );
             console.log( ast.nodes );
             var obj=__m_astpostcss_vers_rev1.traite_ast_postcss( ast , {} );
@@ -1288,6 +1271,24 @@ class interface1{
             }
             this.remplir_et_afficher_les_messages1( nom_de_la_textarea_css );
         }
+    }
+    /*
+      =============================================================================================================
+    */
+    transform_rev_de_textarea_en_sql2( nom_de_la_textarea_rev , nom_de_la_textarea_sql ){
+        this.raz_des_messages();
+        var tableau1=__m_rev1.txt_en_tableau( document.getElementById( nom_de_la_textarea_rev ).value );
+        var obj1=__m_rev1.tb_vers_matrice( tableau1.__xva , false , true , '' );
+        if(obj1.__xst === __xsu){
+            var obj2=__m_rev_vers_sql1.c_tab_vers_js( obj1.__xva , {} );
+            if(obj2.__xst === __xsu){
+                obj2.__xva=obj2.__xva.replace( /\/\* ==========DEBUT DEFINITION=========== \*\//g , '' );
+                document.getElementById( nom_de_la_textarea_sql ).value=obj2.__xva;
+                __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_sql );
+                return;
+            }
+        }
+        __gi1.remplir_et_afficher_les_messages1( nom_de_la_textarea_rev );
     }
     /*
       =============================================================================================================

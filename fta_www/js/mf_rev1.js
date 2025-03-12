@@ -50,6 +50,8 @@ class c_rev1{
         }
         return t;
     }
+    
+    /* function respr */
     #respr( n ){
         var t='\r\n';
         if(n > 0){

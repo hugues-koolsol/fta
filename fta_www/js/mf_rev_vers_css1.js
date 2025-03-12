@@ -47,59 +47,73 @@ class c_rev_vers_css1{
         let t='';
         let obj={};
         let prop='';
-        let valeur=''
+        let valeur='';
+        let important='';
         for( let i=id + 1 ; i < this.#l02 ; i=this.#tb[i][12] ){
             if(this.#tb[i][2] === 'c'){
                 return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'constante' ,"id" : i} ));
             }else{
                 switch (this.#tb[i][1]){
-                    case '#' : t+='/* */';
+                    case '#' : t+='/*' + this.#tb[i][13] + '*/';
                         break;
-                    case 'p' :
-                       prop+=this.#tb[i+1][1].replace(/\\\'/g,'\'');
-                       break;
-                    case 'v' :
-                       valeur+=this.#tb[i+1][1].replace(/\\\'/g,'\'');
-                       break;
+                    case 'p' : prop+=this.#tb[i + 1][1].replace( /\\\'/g , '\'' );
+                        break;
+                    case 'v' : valeur+=this.#tb[i + 1][1].replace( /\\\'/g , '\'' );
+                        break;
+                    case 'important' : important='!important';
+                        break;
                     default:
-                        return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+this.#tb[i][1]  ,"id" : i} ));
+                        return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[i][1] ,"id" : i} ));
+                        
                 }
             }
         }
-        t+=prop+':'+valeur;
+        t+=prop + ':' + valeur + important;
         return({"__xst" : __xsu ,"__xva" : t});
     }
-     
     /*
       =============================================================================================================
     */
     #rev_regle( id , niveau , opt ){
         let t='';
         let obj={};
-        
         let definitions='';
         let nom_selecteur='';
+        let les_espaces='';
+        let les_espaces_m1='';
+        if(this.#tb[id][8] >= 5){
+            les_espaces=__m_rev1.espaces1( niveau + 1 );
+            les_espaces_m1=__m_rev1.espaces1( niveau );
+        }else{
+            for( var j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
+                if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
+                    les_espaces=__m_rev1.espaces1( niveau + 1 );
+                    les_espaces_m1=__m_rev1.espaces1( niveau );
+                    break;
+                }
+            }
+        }
         for( var j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
             switch (this.#tb[j][1]){
                 case 'selecteur' : nom_selecteur=this.#tb[j + 1][1];
                     break;
-                case 'd' : 
-                    obj=this.#rev_definition1(j,niveau,opt);
-                    if(obj.__xst===__xsu){
-                        definitions+=obj.__xva+';';
+                case 'd' :
+                    obj=this.#rev_definition1( j , niveau , opt );
+                    if(obj.__xst === __xsu){
+                        definitions+=(les_espaces + obj.__xva) + ';';
                     }else{
-                        return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[j][1] ,"id" : i} ));
+                        return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[j][1] ,"id" : j} ));
                     }
                     break;
-                case '#' : definitions+='/* */';
+                    
+                case '#' : definitions+=les_espaces + '/*' + this.#tb[j][13] + '*/';
                     break;
                 default:
                     return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[j][1] ,"id" : i} ));
+                    
             }
         }
-        t+=__m_rev1.espaces1(niveau)+nom_selecteur + '{'+definitions+'}';
-        
-        
+        t+=nom_selecteur + '{' + definitions + les_espaces_m1 + '}';
         return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
@@ -108,50 +122,63 @@ class c_rev_vers_css1{
     #rev_at( id , niveau , opt ){
         let t='';
         let obj={};
-        
-        
         let definitions='';
         let nom_regle='';
         let params='';
+        let les_espaces='';
+        let les_espaces_m1='';
+        for( var j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
+            if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
+                les_espaces=__m_rev1.espaces1( niveau + 1 );
+                les_espaces_m1=__m_rev1.espaces1( niveau );
+                break;
+            }
+        }
         for( var j=id + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
             switch (this.#tb[j][1]){
-                case 'nomr' : nom_regle=this.#tb[j + 1][1].replace(/\\\'/g,'\'');
+                case 'nomr' : nom_regle=this.#tb[j + 1][1].replace( /\\\'/g , '\'' );
                     break;
-                case 'params' : params=' '+this.#tb[j + 1][1].replace(/\\\'/g,'\'');
+                case 'params' : params=' ' + this.#tb[j + 1][1].replace( /\\\'/g , '\'' );
                     break;
-                case 'd' : 
-                    obj=this.#rev_definition1(j,niveau+1,opt);
-                    if(obj.__xst===__xsu){
-                        definitions+=obj.__xva+';';
+                case 'd' :
+                    obj=this.#rev_definition1( j , niveau + 1 , opt );
+                    if(obj.__xst === __xsu){
+                        definitions+=(les_espaces + obj.__xva) + ';';
                     }else{
-                        return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+this.#tb[j][1] ,"id" : i} ));
+                        return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[j][1] ,"id" : i} ));
                     }
                     break;
+                    
                 case 'regle' :
-                    obj=this.#rev_regle(j,niveau+1,opt);
-                    if(obj.__xst===__xsu){
-                        definitions+=obj.__xva;
+                    obj=this.#rev_regle( j , niveau + 1 , opt );
+                    if(obj.__xst === __xsu){
+                        definitions+=les_espaces + obj.__xva;
                     }else{
-                        return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+this.#tb[j][1] ,"id" : i} ));
+                        return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[j][1] ,"id" : i} ));
                     }
                     break;
-                 case 'at' :
-                     obj=this.#rev_at(j,niveau+1,opt);
-                     if(obj.__xst===__xsu){
-                         definitions+=obj.__xva;
-                     }else{
-                         return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+this.#tb[j][1] ,"id" : i} ));
-                     }
-                     break;
-                case '#' : definitions+='/* */';
+                    
+                case 'at' :
+                    obj=this.#rev_at( j , niveau + 1 , opt );
+                    if(obj.__xst === __xsu){
+                        definitions+=les_espaces + obj.__xva;
+                    }else{
+                        return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[j][1] ,"id" : i} ));
+                    }
+                    break;
+                    
+                case '#' : definitions+=les_espaces + '/*' + this.#tb[j][13] + '*/';
                     break;
                 default:
                     return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[j][1] ,"id" : i} ));
+                    
             }
         }
-        t+=__m_rev1.espaces1(niveau)+'@' + nom_regle + params+ '{'+definitions+'}';
-        
-        
+        if(definitions === ''){
+            t+='@' + nom_regle + params + ';';
+        }else{
+            t+='@' + nom_regle + params + '{' + definitions + les_espaces_m1 + '}';
+        }
         return({"__xst" : __xsu ,"__xva" : t});
     }
     /*
@@ -165,31 +192,32 @@ class c_rev_vers_css1{
         let nom_selecteur='';
         for( let i=id + 1 ; i < this.#l02 ; i=this.#tb[i][12] ){
             if(t !== ''){
-                t+=__m_rev1.espaces1(niveau);
+                t+=__m_rev1.espaces1( niveau );
             }
             if(this.#tb[i][2] === 'c'){
                 return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'constante' ,"id" : i} ));
             }else{
                 switch (this.#tb[i][1]){
-                    case '#' : t+='/* */';
+                    case '#' : t+='/*' + this.#tb[i][13] + '*/';
                         break;
                     case 'at' :
-                        obj=this.#rev_at(i,niveau+1,opt);
-                        if(obj.__xst===__xsu){
+                        obj=this.#rev_at( i , niveau , opt );
+                        if(obj.__xst === __xsu){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] ,"id" : i} ));
+                            return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[i][1] ,"id" : i} ));
                         }
                         break;
                         
                     case 'regle' :
-                        obj=this.#rev_regle(i,niveau+1,opt);
-                        if(obj.__xst===__xsu){
+                        obj=this.#rev_regle( i , niveau , opt );
+                        if(obj.__xst === __xsu){
                             t+=obj.__xva;
                         }else{
-                            return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()+this.#tb[i][1] ,"id" : i} ));
+                            return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[i][1] ,"id" : i} ));
                         }
                         break;
+                        
                     default:
                         return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[i][1] ,"id" : i} ));
                         
@@ -206,16 +234,15 @@ class c_rev_vers_css1{
         let obj=null;
         this.#tb=matrice;
         this.#l02=matrice.length;
-        debugger
         obj=this.#rev_css1( 0 , 0 , {} );
         if(obj.__xst === __xsu){
-            if(obj.__xva.length >= 2 && obj.__xva.substr( 0 , 2 ) === '\r\n'){
+            if(obj.__xva.length >= 2 && obj.__xva.substr( 0 , 2 ) === CRLF){
                 obj.__xva=obj.__xva.substr( 2 );
             }
-            if(obj.__xva.length >= 1 && obj.__xva.substr( 0 , 1 ) === '\r'){
+            if(obj.__xva.length >= 1 && obj.__xva.substr( 0 , 1 ) === CR){
                 obj.__xva=obj.__xva.substr( 1 );
             }
-            if(obj.__xva.length >= 1 && obj.__xva.substr( 0 , 1 ) === '\n'){
+            if(obj.__xva.length >= 1 && obj.__xva.substr( 0 , 1 ) === LF){
                 obj.__xva=obj.__xva.substr( 1 );
             }
             return obj;

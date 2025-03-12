@@ -78,7 +78,9 @@ class traitements_sur_html{
             if(jsonDeHtml.type !== ''){
                 if(type === 'script'){
                     if(jsonDeHtml.attributes && jsonDeHtml.attributes.type){
-                        if(jsonDeHtml.attributes.type.toLowerCase() === 'application/ld+json' || jsonDeHtml.attributes.type.toLowerCase() === 'application/json'){
+                        if(jsonDeHtml.attributes.type.toLowerCase() === 'application/ld+json'
+                               || jsonDeHtml.attributes.type.toLowerCase() === 'application/json'
+                        ){
                             t+='\n' + esp0 + 'ldPlusJsonDansHtml(';
                             type='ldPlusJsonDansHtml';
                         }else if((jsonDeHtml.attributes.type.toLowerCase() === 'text/javascript'
@@ -167,10 +169,10 @@ class traitements_sur_html{
                 tableau_des_javascript_a_convertir.push( {"type" : "ldplusjsondanshtml" ,"__xva" : chaineJsEquivalente ,"cas" : "ldjson"} );
                 var obj=__gi1.convertit_source_javascript_en_rev( chaineJsEquivalente );
                 if(obj.__xst === __xsu){
-                    let obj1=__m_rev1.rev_tm(obj.__xva);
-                    if(obj1.__xst===__xsu){
-                        var obj2=__m_rev1.matrice_vers_source_rev1(obj1.__xva , /*parent*/1 , /*retour ligne*/true , /*debut*/3);
-                        if(obj2.__xst===__xsu){
+                    let obj1=__m_rev1.rev_tm( obj.__xva );
+                    if(obj1.__xst === __xsu){
+                        var obj2=__m_rev1.matrice_vers_source_rev1( obj1.__xva ,  /* parent */ 1 ,  /* retour ligne */ true ,  /* debut */ 3 );
+                        if(obj2.__xst === __xsu){
                             t+='' + obj2.__xva + '';
                         }else{
                             return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'traiteJsonDeHtml' + jsonDeHtml.type} ));

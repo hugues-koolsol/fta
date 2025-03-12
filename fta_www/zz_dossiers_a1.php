@@ -615,7 +615,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '<form method="post"  enctype="multipart/form-data" class="form1">' . PHP_EOL;
     $chp_nom_dossier=isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_nom_dossier'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>' . PHP_EOL;
+    $o1 .= '  <div class="yyflab1"><div>nom</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <input type="text" autofocus="autofocus" value="' . enti1($chp_nom_dossier) . '" name="chp_nom_dossier" id="chp_nom_dossier" maxlength="64" style="max-width:64em;" />' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
@@ -647,7 +647,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= ' <input type="hidden" value="' . $__valeur_encriptee . '" name="chi_id_dossier" id="chi_id_dossier" />' . PHP_EOL;
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">id, nom , type , dossier</div>' . PHP_EOL;
+    $o1 .= '   <div>id, nom , type , dossier</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <span>' . $__id . '</span>' . PHP_EOL;

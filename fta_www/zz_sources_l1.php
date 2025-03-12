@@ -186,6 +186,10 @@ foreach($tt[__xva] as $k0 => $v0){
 
             $lsttbl .= ' <a class="yyrose" data-attendre_message="oui" id="js2_' . $v0['T0.chi_id_source'] . '" href="javascript:zz_l1_convertir_un_source_js_sur_disque3(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque">😊</a>';
 
+        }else if(substr($v0['T0.chp_nom_source'],-4) === '.css'){
+
+            $lsttbl .= ' <a class="yyrose" data-attendre_message="oui" id="js2_' . $v0['T0.chi_id_source'] . '" href="javascript:zz_l1_convertir_un_source_css_sur_disque3(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque">😊</a>';
+
         }else if(substr($v0['T0.chp_nom_source'],-4) === '.php'){
 
             $lsttbl .= ' <a class="yyrose" data-attendre_message="oui" href="javascript:zz_l1_convertir_un_source_php_sur_disque3(' . $v0['T0.chi_id_source'] . ')" title="convertir un source sur disque avec php_parser">😊</a>';
@@ -232,9 +236,9 @@ $par=array(/**/
             /**/
             'js/pour_zz_source1.js',
             'js/jslib/acorn.js',
-            /* 'js/convertion_sql_en_rev.js',*/
             'js/jslib/sqlite-parser.js',
-            'js/jslib/php-parser.js'
+            'js/jslib/php-parser.js',
+            'js/jslib/postcss0.js'
         ),
     'module_a_inclure' => array(
             /**/
@@ -245,7 +249,9 @@ $par=array(/**/
             'js/mf_rev_vers_php1.js',
             'js/mf_rev_vers_sql1.js',
             'js/mf_astsqliteparseur_vers_rev1.js',
-            'js/mf_rev_vers_html1.js'
+            'js/mf_rev_vers_html1.js',
+            'js/mf_rev_vers_css1.js',
+            'js/mf_astpostcss_vers_rev1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

@@ -888,14 +888,14 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= '<form method="post"  enctype="multipart/form-data" class="form1">' . PHP_EOL;
     $chp_nom_source=isset($_SESSION[APP_KEY][NAV][BNF]['chp_nom_source']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_nom_source'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">nom</div></div>' . PHP_EOL;
+    $o1 .= '  <div class="yyflab1"><div>nom</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <input type="text" autofocus="autofocus" value="' . enti1($chp_nom_source) . '" name="chp_nom_source" id="chp_nom_source" maxlength="64" style="max-width:64em;" />' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
     $o1 .= ' </div>' . PHP_EOL;
     $chp_type_source=isset($_SESSION[APP_KEY][NAV][BNF]['chp_type_source']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_type_source'] : 'normal';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">type</div></div>' . PHP_EOL;
+    $o1 .= '  <div class="yyflab1"><div>type</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <input type="text" autofocus="autofocus" value="' . enti1($chp_type_source) . '" name="chp_type_source" id="chp_type_source" maxlength="32" style="max-width:32em;" />' . PHP_EOL;
     $o1 .= '   <button onclick="document.getElementById(\'chp_type_source\').value=&quot;bibliotheque&quot;;return false;">bibliotheque</button>' . PHP_EOL;
@@ -904,7 +904,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= ' </div>' . PHP_EOL;
     $chx_dossier_id_source=isset($_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source']) ? $_SESSION[APP_KEY][NAV][BNF]['chx_dossier_id_source'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">dossier</div></div>' . PHP_EOL;
+    $o1 .= '  <div class="yyflab1"><div>dossier</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <input type="hidden" value="' . encrypter($chx_dossier_id_source) . '" name="chx_dossier_id_source" id="chx_dossier_id_source" style="max-width:9em;" />' . PHP_EOL;
     /* echo __FILE__ . ' ' . __LINE__ . ' __LINE__ = <pre>' . var_export( $chx_dossier_id_source , true ) . '</pre>' ; exit(0);*/
@@ -958,7 +958,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= ' </div>' . PHP_EOL;
     $chp_commentaire_source=isset($_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source']) ? $_SESSION[APP_KEY][NAV][BNF]['chp_commentaire_source'] : '';
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
-    $o1 .= '  <div class="yyflab1"><div style="word-break:break-word;">commentaire</div></div>' . PHP_EOL;
+    $o1 .= '  <div class="yyflab1"><div>commentaire</div></div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <textarea  name="chp_commentaire_source" id="chp_commentaire_source"  rows="15" >' . enti1($chp_commentaire_source,ENT_COMPAT) . '</textarea>' . PHP_EOL;
     $o1 .= '  </div></div>' . PHP_EOL;
@@ -996,7 +996,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= ' <input type="hidden" value="' . $__valeur_encriptee . '" name="chi_id_source" id="chi_id_source" />' . PHP_EOL;
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">id, nom , dossier</div>' . PHP_EOL;
+    $o1 .= '   <div>id, nom , dossier</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1"><div>' . PHP_EOL;
     $o1 .= '   <span>' . $__id . '</span>' . PHP_EOL;
@@ -1030,7 +1030,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     */
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">rev</div>' . PHP_EOL;
+    $o1 .= '   <div>rev</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1 yyconteneur_de_texte1">' . PHP_EOL;
     $o1 .= '  <div>' . PHP_EOL;
@@ -1051,7 +1051,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     */
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">genere</div>' . PHP_EOL;
+    $o1 .= '   <div>genere</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1 yyconteneur_de_texte1">' . PHP_EOL;
     $o1 .= '  <div>' . PHP_EOL;
@@ -1063,6 +1063,11 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
 
             $o1 .= '   <a class="yyinfo" href="javascript:__gi1.convertir_textearea_rev_vers_textarea_js2(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R-&gt;J&#8615;</a>' . PHP_EOL;
             $o1 .= '   <a class="yyrose" href="javascript:__gi1.bouton_transform_textarea_js_en_rev_avec_acorn3(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,false)">&#8613;J-&gt;R</a>' . PHP_EOL;
+
+        }else if(strpos($__valeurs['T0.chp_nom_source'],'.css') !== false){
+
+            $o1 .= '   <a class="yyinfo" href="javascript:__gi1.transform_rev_de_textarea_en_css2(\'chp_rev_source\',\'chp_genere_source\',' . $__id . ',' . $_SESSION[APP_KEY]['cible_courante']['chi_id_cible'] . ')">R-&gt;C&#8615;</a>' . PHP_EOL;
+            $o1 .= '   <a class="yyrose" href="javascript:__gi1.transform_css_de_textarea_en_rev2(&quot;chp_genere_source&quot;,&quot;chp_rev_source&quot;,false)">&#8613;C-&gt;R</a>' . PHP_EOL;
 
         }else if(strpos($__valeurs['T0.chp_nom_source'],'.htm') !== false){
 
@@ -1153,7 +1158,7 @@ if(isset($_GET['__action']) && $_GET['__action'] == '__suppression'){
     $o1 .= ' </div>' . PHP_EOL;
     $o1 .= ' <div class="yyfdiv1">' . PHP_EOL;
     $o1 .= '  <div class="yyflab1">' . PHP_EOL;
-    $o1 .= '   <div style="word-break:break-word;">commentaire</div>' . PHP_EOL;
+    $o1 .= '   <div>commentaire</div>' . PHP_EOL;
     $o1 .= '   <div style="font-weight: normal;">texte libre</div>' . PHP_EOL;
     $o1 .= '  </div>' . PHP_EOL;
     $o1 .= '  <div class="yyfinp1 yyconteneur_de_texte1"><div>' . PHP_EOL;
@@ -1210,9 +1215,9 @@ $par=array(/**/
             'js/pour_zz_bdds_action1.js',
             'js/texte.js',
             'js/jslib/sqlite-parser.js',
-            /* 'js/convertion_sql_en_rev.js', */
             'js/jslib/acorn.js',
-            'js/jslib/php-parser.js'
+            'js/jslib/php-parser.js',
+            'js/jslib/postcss0.js'
         ),
     'module_a_inclure' => array(
             /**/
@@ -1224,7 +1229,9 @@ $par=array(/**/
             'js/mf_rev_vers_sql1.js',
             'js/mf_astphpnikic_vers_rev1.js',
             'js/mf_astsqliteparseur_vers_rev1.js',
-            'js/mf_rev_vers_html1.js'
+            'js/mf_rev_vers_html1.js',
+            'js/mf_rev_vers_css1.js',
+            'js/mf_astpostcss_vers_rev1.js'
         ),
     'js_a_executer_apres_chargement' => $js_a_executer_apres_chargement
 );

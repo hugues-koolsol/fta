@@ -31,7 +31,7 @@ function convertir_sqlite_en_rev( chp_rev_source , chp_genere_source ){
     if(obj.__xst === __xsu){
         document.getElementById( chp_rev_source ).value=obj.__xva;
     }else{
-        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'Erreur de convertion'} );
+        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
     }
     __gi1.remplir_et_afficher_les_messages1( '' );
 }
@@ -119,7 +119,7 @@ function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3( chp_genere_so
                     document.getElementById( chp_rev_source ).value=obj2.__xva;
                 }
             }else{
-                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'erreur rev'} );
+                __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'erreur rev'} );
             }
         }else{
             __gi1.remplir_et_afficher_les_messages1( 'txtar1' );
@@ -127,9 +127,9 @@ function bouton_dans_zz_source_a1_transform_js_en_rev_avec_acorn3( chp_genere_so
     }catch(e){
         /* console.error('e=',e); */
         if(e.pos){
-            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0115 erreur dans un source javascript' ,"plage" : [e.pos,e.pos]} );
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) ,"plage" : [e.pos,e.pos]} );
         }else{
-            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0117 erreur dans un source javascript'} );
+            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e )} );
         }
         __gi1.remplir_et_afficher_les_messages1( 'chp_genere_source' );
     }
@@ -144,7 +144,7 @@ function sauvegarder_html_en_ligne( format_rev , donnees ){
     */
     var matriceFonction=__m_rev1.rev_tm( format_rev );
     if(matriceFonction.__xst === __xer){
-        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0128 erreur sauvegarder_html_en_ligne'} );
+        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
         return({"__xst" : __xer ,"__xme" : '0129 erreur sauvegarder_html_en_ligne'});
     }
     var obj2=__m_rev_vers_html1.c_tab_vers_html( matriceFonction.__xva , {} );
@@ -152,7 +152,20 @@ function sauvegarder_html_en_ligne( format_rev , donnees ){
         sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant( donnees.__entree.id_source , format_rev , obj2.__xva , donnees.__entree.date_de_debut_traitement , matriceFonction.__xva );
         return({"__xst" : __xsu});
     }else{
-        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0143 erreur sauvegarder_html_en_ligne'} );
+        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
+        __gi1.remplir_et_afficher_les_messages1( '' );
+    }
+}
+/*
+  =====================================================================================================================
+*/
+function sauvegarder_css_en_ligne2( format_rev , donnees ){
+    var objJs=__m_rev_vers_css1.c_rev_vers_css( format_rev , {} );
+    if(objJs.__xst === __xsu){
+        sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant( donnees.__entree.id_source , format_rev , objJs.__xva , donnees.__entree.date_de_debut_traitement , objJs.matriceFonction );
+        return({"__xst" : __xsu});
+    }else{
+        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
         __gi1.remplir_et_afficher_les_messages1( '' );
     }
 }
@@ -165,7 +178,7 @@ function sauvegarder_js_en_ligne2( format_rev , donnees ){
         sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant( donnees.__entree.id_source , format_rev , objJs.__xva , donnees.__entree.date_de_debut_traitement , objJs.matriceFonction );
         return({"__xst" : __xsu});
     }else{
-        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0195 erreur sauvegarder_js_en_ligne'} );
+        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
         __gi1.remplir_et_afficher_les_messages1( '' );
     }
 }
@@ -178,8 +191,55 @@ function sauvegarder_php_en_ligne2( format_rev , donnees ){
         sauvegarder_source_et_ecrire_sur_disque_par_son_identifiant( donnees.__entree.id_source , format_rev , objPhp.__xva , donnees.__entree.date_de_debut_traitement , objPhp.matriceFonction );
         return({"__xst" : __xsu});
     }else{
-        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : '0182 erreur pour_zz_source'} ));
+        return(__m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} ));
     }
+}
+/*
+  =====================================================================================================================
+*/
+function zz_l1_convertir_un_source_css_sur_disque3( id_source ){
+    __gi1.raz_des_messages();
+    var date_de_debut_traitement=new Date();
+    date_de_debut_traitement=date_de_debut_traitement.getTime();
+    var ajax_param={
+        "call" : {"lib" : 'core' ,"file" : 'file' ,"funct" : 'charger_un_fichier_source_par_son_identifiant'} ,
+        "id_source" : id_source ,
+        "date_de_debut_traitement" : date_de_debut_traitement
+    };
+    async function charger_un_fichier_source_par_son_identifiant1( url="" , ajax_param ){
+        return(__gi1.recupérer_un_fetch( url , ajax_param ));
+    }
+    charger_un_fichier_source_par_son_identifiant1( 'za_ajax.php?charger_un_fichier_source_par_son_identifiant' , ajax_param ).then( ( donnees ) => {
+            if(donnees.__xst === __xsu){
+                var nom_source=donnees.db['T0.chp_nom_source'];
+                var type_source=donnees.db['T0.chp_type_source'];
+                if(nom_source.substr( nom_source.length - 4 ) === '.css'){
+                    try{
+                        /* on transforme le css en ast */
+                        var ast=postcss.parse( donnees.contenu_du_fichier , {} );
+                        console.log( ast.nodes );
+                        /* on transforme le ast en rev */
+                        var obj=__m_astpostcss_vers_rev1.traite_ast_postcss( ast , {} );
+                        if(obj.__xst === __xsu){
+                            var parametres={"__entree" : {"id_source" : donnees.db['T0.chi_id_source'] ,"date_de_debut_traitement" : date_de_debut_traitement}};
+                            var obj2=sauvegarder_css_en_ligne2( obj.__xva , parametres );
+                        }else{
+                            __gi1.remplir_et_afficher_les_messages1( 'txtar1' );
+                        }
+                    }catch(e){
+                        debugger;
+                        if(e.pos){
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) ,"plage" : [e.pos,e.pos]} );
+                        }else{
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) + ' ' + e.message} );
+                        }
+                    }
+                }
+            }else{
+                console.log( donnees );
+            }
+            __gi1.remplir_et_afficher_les_messages1( '' );
+        } );
 }
 /*
   =====================================================================================================================
@@ -217,9 +277,9 @@ function zz_l1_convertir_un_source_js_sur_disque3( id_source ){
                     }catch(e){
                         /* console.error('e=',e); */
                         if(e.pos){
-                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : nl1( e ) + 'erreur convertit_source_javascript_en_rev 3441' ,"plage" : [e.pos,e.pos]} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e ) ,"plage" : [e.pos,e.pos]} );
                         }else{
-                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : nl1( e ) + ' ' + e.message} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e )} );
                         }
                     }
                 }
@@ -264,9 +324,9 @@ function zz_l1_convertir_un_source_php_sur_disque3( id_source ){
                         }
                     }catch(e){
                         if(e.hasOwnProperty( 'lineNumber' )){
-                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'Il y a une erreur dans le source php "" ' ,"ligne" : e.lineNumber} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"ligne" : e.lineNumber} );
                         }else{
-                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : 'Il y a une erreur dans le source php '} );
+                            __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
                         }
                     }
                 }
@@ -374,10 +434,7 @@ function traitement_apres_recuperation_ast_dans_zz_source_action( ret ){
             __gi1.remplir_et_afficher_les_messages1( ret.__entree.opt.nom_zone_genere );
         }
     }catch(e){
-        __m_rev1.empiler_erreur( {
-                "__xst" : __xer ,
-                "__xme" : 'erreur de conversion du ast vers json 0409 ' + e.message + ' ' + JSON.stringify( e.stack ).replace( /\\n/g , '\n<br />' )
-            } );
+        __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2( e )} );
     }
     __gi1.remplir_et_afficher_les_messages1( ret.__entree.opt.nom_zone_genere );
 }
