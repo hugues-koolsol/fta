@@ -2667,7 +2667,10 @@ class c_rev_vers_js1{
             }else if(this.#tb[j][1] === 'auto_appelee' && this.#tb[j][2] === 'f'){
                 auto_appelee=true;
             }else if(this.#tb[j][1] === 'contenu' && this.#tb[j][2] === 'f'){
-                if(this.#tb[this.#tb[this.#tb[j][7]][7]][1] === '' && this.#tb[this.#tb[this.#tb[this.#tb[j][7]][7]][7]][1] === 'obj'){
+                if(this.#tb[j][8]===0){
+                    /* cas a={b:function(){}}; */
+                    contenu_obj+='{/*vide*/}';
+                }else if(this.#tb[this.#tb[this.#tb[j][7]][7]][1] === '' && this.#tb[this.#tb[this.#tb[this.#tb[j][7]][7]][7]][1] === 'obj'){
                     obj=this.#rev_js1( j , niveau + 1 , {} );
                     if(obj.__xst === __xsu){
                         contenu_obj+='{' + __m_rev1.resps( niveau + 1 );
@@ -2948,6 +2951,8 @@ class c_rev_vers_js1{
                         'endsWith',
                         'exec',
                         'execute',
+                        'fill',
+                        'filter',
                         'focus',
                         'forEach',
                         'fromCharCode',
@@ -2990,6 +2995,7 @@ class c_rev_vers_js1{
                         'substr',
                         'substring',
                         'test',
+                        'toFixed',
                         'toLocaleLowerCase',
                         'toLocaleUpperCase',
                         'toLowerCase',
@@ -3067,7 +3073,7 @@ class c_rev_vers_js1{
                     if(fonction_dans_tableau_avec_constante === true){
                         t+='[\'' + nomFonction + '\']' + id_de_la_fonction;
                     }else{
-                        t+='[' + nomFonction + ']' + id_de_la_fonction;
+                        t+='[\'' + nomFonction + '\]' + id_de_la_fonction;
                     }
                 }else{
                     if(nomFonction === '' && generateur !== '*'){

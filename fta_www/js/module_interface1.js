@@ -2110,7 +2110,7 @@ COMMIT;
             lesDivs[i].addEventListener( 'wheel' , this.mouseWheelOnMenu , false );
             paddingTopBody+=hauteurMenuUtilisateur;
         }
-        document.getElementById( this.#nom_div_des_messages1 ).style.top=(paddingTopBody + 1) + 'px';
+        document.getElementById( this.#nom_div_des_messages1 ).style.top=paddingTopBody + 'px';
         bod.style.paddingTop=paddingTopBody + 'px';
         /*
           ajustement de la position gauche des menus du haut, 
@@ -2520,6 +2520,9 @@ COMMIT;
         try{
             var zon=document.getElementById( this.#nom_div_des_messages1 );
             if(zon.style.visibility === 'hidden'){
+                if(zon.innerHTML==''){
+                 zon.innerHTML='<div>pas de message</div>'
+                }
                 zon.style.visibility='visible';
             }else{
                 zon.style.visibility='hidden';

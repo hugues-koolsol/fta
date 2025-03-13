@@ -308,8 +308,10 @@ ne l'est pas.
 
 - sql
 
+- css ( à un niveau basique )
+
 Je prévois d'intégrer d'autres langages  au fur et à mesure de l'avancée des développements mais pour l'instant  
-ça me suffit pour valider toute la chaîne de traitement (css en particulier, pour les autres, ce sera plus tard).
+ça me suffit pour valider toute la chaîne de traitement .
 
 **5°) les programmes existants**  sont convertis.
 
@@ -326,7 +328,7 @@ Ces bibliothèques sont aussi converties en format "rev".
 Pour php, seuls 2 programmes de la bibliothèque nikic/php-parser sont convertis en rev pour l'instant ce qui permet de valider le principe.
 la bibliothèque https://php-parser.glayzzle.com/readme en javascript est utilisée de manière courante ( bien que celle de nikic soit mise en place )
 
-L'objectif est d'avoir que des sources au format rev
+L'objectif est de n'avoir que des sources au format rev
 
 
 **6°) un exemple :**
