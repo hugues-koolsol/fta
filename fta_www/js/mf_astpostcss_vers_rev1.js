@@ -37,7 +37,7 @@ class c_astpostcss_vers_rev1{
         let obj=null;
         for(var i in nodes){
             if(t !== ''){
-                t+=',';
+                t+=CRLF+',';
             }
             var la_declaration=nodes[i];
             switch (la_declaration.type){
@@ -103,7 +103,7 @@ class c_astpostcss_vers_rev1{
         for(var i in ast_de_postcss.nodes){
             var node=ast_de_postcss.nodes[i];
             if(t !== ''){
-                t+=',';
+                t+=CRLF+',';
             }
             switch (node.type){
                 case 'atrule' :

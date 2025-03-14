@@ -3073,7 +3073,7 @@ class c_rev_vers_js1{
                     if(fonction_dans_tableau_avec_constante === true){
                         t+='[\'' + nomFonction + '\']' + id_de_la_fonction;
                     }else{
-                        t+='[\'' + nomFonction + '\]' + id_de_la_fonction;
+                        t+='[\'' + nomFonction + '\']' + id_de_la_fonction;
                     }
                 }else{
                     if(nomFonction === '' && generateur !== '*'){

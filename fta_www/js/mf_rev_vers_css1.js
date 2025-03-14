@@ -106,10 +106,21 @@ class c_rev_vers_css1{
                     }
                     break;
                     
+                case 'regle' : 
+                    /*.a {& .b {scrollbar-width: thin}}*/
+                    obj=this.#rev_regle( j , niveau + 1 , opt );
+                    if(obj.__xst === __xsu){
+                        definitions+=les_espaces + obj.__xva;
+                    }else{
+                        return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[j][1] ,"id" : j} ));
+                    }
+                    break;
+                
+                    break;
                 case '#' : definitions+=les_espaces + '/*' + this.#tb[j][13] + '*/';
                     break;
                 default:
-                    return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[j][1] ,"id" : i} ));
+                    return(this.#rev_css_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + this.#tb[j][1] ,"id" : j} ));
                     
             }
         }
