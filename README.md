@@ -8,10 +8,9 @@ de façon à écrire des traitements ( c'est à dire les programmes ) et des don
 
 
 
-Il faut que cette structure puisse être écrite avec elle même.
+Il faut que cette structure soit être écrite avec elle même.
 
-Comme il n'existe pas encore de programme qui puisse exécuter les instructions dans ce langage, 
-on s'appuie sur les langages html, javascript, sql et php  
+Comme il n'existe pas encore de compilateur, on s'appuie sur les langages html, css, javascript, sql et php.
 
 Les programmes écrits dans ces ces langages sont traduits en rev et puis retraduits dans leur langage.
 

@@ -18,11 +18,11 @@ function recuperer_ast_de_php2(&$data){
           $a = "\x80" ;
           retourne false
         */
-        ajouterMessage(__xsu,BNF . ' ' . __LINE__ . ' conversion nikic OK');
+        ajouterMessage(__xsu,'<span title="'.BNF.'">^F</span> ' . __LINE__ . ' conversion nikic OK');
         $data[__xva]=json_encode($ast,JSON_INVALID_UTF8_IGNORE);
         $data[__xst]=__xsu;
     }catch(Error $error){
-        ajouterMessage(__xer,BNF . ' ' . __LINE__ . ' ' . $error->getMessage());
+        ajouterMessage(__xer,'<span title="'.BNF.'">^F</span> ' . __LINE__ . ' ' . $error->getMessage());
         return;
     }
 
