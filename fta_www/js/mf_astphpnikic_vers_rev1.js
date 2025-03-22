@@ -2136,7 +2136,11 @@ class c_astphpnikic_vers_rev1{
                     
                 case "Expr_PostInc" :
                     if(element.var && element.var.nodeType === "Expr_Variable"){
-                        t+='$' + element.var.name + '++';
+                        if(parent.nodeType==="Stmt_For" || "Expr_Assign" === parent.nodeType){
+                            t+='$' + element.var.name + '++';
+                        }else{
+                            t+='postinc($' + element.var.name + ')';
+                        }
                     }else{
                         var obj=this.#php_traite_Stmt_Expression( element.var , niveau , dansFor , element , options_traitement );
                         if(obj.__xst === __xsu){
@@ -2150,7 +2154,11 @@ class c_astphpnikic_vers_rev1{
                     
                 case "Expr_PostDec" :
                     if(element.var && element.var.nodeType === "Expr_Variable"){
-                        t+='$' + element.var.name + '--';
+                        if(parent.nodeType==="Stmt_For" || "Expr_Assign" === parent.nodeType){
+                            t+='$' + element.var.name + '--';
+                        }else{
+                            t+='postdec($' + element.var.name + ')';
+                        }
                     }else{
                         var obj=this.#php_traite_Stmt_Expression( element.var , niveau , dansFor , element , options_traitement );
                         if(obj.__xst === __xsu){
@@ -2164,7 +2172,11 @@ class c_astphpnikic_vers_rev1{
                     
                 case "Expr_PreDec" :
                     if(element.var && element.var.nodeType === "Expr_Variable"){
-                        t+='--$' + element.var.name;
+                        if(parent.nodeType==="Stmt_For" || "Expr_Assign" === parent.nodeType){
+                            t+='--$' + element.var.name;
+                        }else{
+                            t+='predec($' + element.var.name + ')';
+                        }
                     }else{
                         var obj=this.#php_traite_Stmt_Expression( element.var , niveau , dansFor , element , options_traitement );
                         if(obj.__xst === __xsu){
@@ -2178,7 +2190,11 @@ class c_astphpnikic_vers_rev1{
                     
                 case "Expr_PreInc" :
                     if(element.var && element.var.nodeType === "Expr_Variable"){
-                        t+='++$' + element.var.name;
+                        if(parent.nodeType==="Stmt_For" || "Expr_Assign" === parent.nodeType){
+                            t+='++$' + element.var.name;
+                        }else{
+                            t+='preinc($' + element.var.name + ')';
+                        }
                     }else{
                         var obj=this.#php_traite_Stmt_Expression( element.var , niveau , dansFor , element , options_traitement );
                         if(obj.__xst === __xsu){
@@ -3312,7 +3328,7 @@ class c_astphpnikic_vers_rev1{
                         case "Stmt_Property" : 
                         case "Stmt_Static" :
                             /* =============================================== */
-                            obj=this.#php_traite_Stmt_Expression( stmts[i] , niveau , dansFor , stmts , options_traitement );
+                            obj=this.#php_traite_Stmt_Expression( stmts[i] , niveau , dansFor , parent , options_traitement );
                             if(obj.__xst === __xsu){
                                 t+='\n' + esp0 + obj.__xva;
                             }else{

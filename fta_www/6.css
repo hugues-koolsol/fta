@@ -144,7 +144,7 @@ a:active,button:active{border:1px #DAE2E5 inset;}
 }
 #zone_global_messages{
    position:fixed;
-   /*à priori sous le menu [ voir padding top du body plus bas ]  mais pourra être déplacé si l'utilisateur crée un menu fixe en haut*/
+   /*à priori sous le menu [ voir padding top du body plus bas ]  mais pourra être déplacé si l'html crée un menu fixe en haut*/
    top:var(--yyvhmd);
    width:100%;
    max-height:200px;

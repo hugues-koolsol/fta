@@ -1206,7 +1206,7 @@ class c_rev1{
                         */
                         commentaire='';
                         dans_commentaire=false;
-                        niveau=niveau - 1;
+                        niveau--;
                         if(drapeauParenthese){
                             if(i === l01 - 1){
                                 /*
@@ -1228,11 +1228,11 @@ class c_rev1{
                             tab_pour_recherche_parentheses.pop();
                         }
                         commentaire+=c;
-                        niveauDansCommentaire=niveauDansCommentaire - 1;
+                        niveauDansCommentaire--;
                     }
                 }else if(c === '('){
                     commentaire+=c;
-                    niveauDansCommentaire=niveauDansCommentaire + 1;
+                    niveauDansCommentaire++;
                     if(drapeauParenthese){
                         tab_pour_recherche_parentheses.push( i );
                     }

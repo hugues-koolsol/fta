@@ -1193,13 +1193,13 @@ class c_astphpparseur_vers_rev1{
             return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() + 'what' ,"element" : element} ));
         }
         if(element.type === '+'){
-            if(element.what.kind === 'variable'){
+            if(element.what.kind === 'variable' && ( parent.kind==='for' || parent.kind==='assign') ){
                 t+=quoi + '++';
             }else{
                 t+='postinc(' + quoi + ')';
             }
         }else if(element.type === '-'){
-            if(element.what.kind === 'variable'){
+            if(element.what.kind === 'variable' && ( parent.kind==='for' || parent.kind==='assign') ){
                 t+=quoi + '--';
             }else{
                 t+='postdec(' + quoi + ')';
