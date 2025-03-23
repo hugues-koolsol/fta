@@ -241,17 +241,18 @@ class c_rev1{
     }
     /*
       =============================================================================================================
-      fonction transforme un commentaire 
+      fonction transforme un commentaire
+      ind ne semble servir à rien mais ça m'a bien aidé pendant la phase de mise au point
       =============================================================================================================
     */
     #traiteCommentaireSourceEtGenere1( texte , niveau , ind , nbEspacesSrc1 , fichierRev0 ){
         /* Si c'est un commentaire monoligne, on le retourne sans aucune transformation */
-        i=texte.indexOf( '\n' );
+        let i=texte.indexOf( '\n' );
         if(i < 0){
             return texte;
         }
         /*  */
-        var i=0;
+        i=0;
         var j=0;
         let l01=0;
         var min=0;
@@ -396,6 +397,7 @@ class c_rev1{
                 newTab.push( s2 );
             }
         }
+//        console.log(newTab);
         l01=newTab.length;
         var l02=0;
         var calcul=0;
@@ -458,29 +460,22 @@ class c_rev1{
         if(tab.length <= 1){
             return({"__xst" : __xsu ,"__xva" : ''});
         }
-        var i=0;
-        var j=0;
-        var obj={};
-        var t='';
-        var profondeurLimite=3;
-        var nombreEnfantsLimite=5;
-        var commentaire='';
-        var tmpC='';
-        var c1='';
-        var cm1='';
+        let i=0;
+        let j=0;
+        let obj={};
+        let t='';
+        let profondeurLimite=3;
+        let nombreEnfantsLimite=5;
+        let commentaire='';
         const l01=tab.length;
-        var chCR='¶' + 'CR' + '¶';
-        var chLF='¶' + 'LF' + '¶';
-        var chaine='';
-        var obj={};
-        var contient_en_commentaire_tbel=false;
+        let chaine='';
+        let les_espaces='';
         if(tab[debut][3] > 0){
-            var les_espaces=this.espacesnrev( tab[debut][3] );
-        }else{
-            var les_espaces='';
+            les_espaces=this.espacesnrev( tab[debut][3] );
         }
-        var avant=contient_un_defTab_tbel;
-        var indice_tab=tab_retour_ligne.length;
+        let count=0;
+        let avant=contient_un_defTab_tbel;
+        let indice_tab=tab_retour_ligne.length;
         tab_retour_ligne.push( [retourLigne,retourLigne,false] );
         /*
           if(tab[debut][1]==='f1' || tab[debut][1]==='f2'){
@@ -503,7 +498,7 @@ class c_rev1{
             */
             for( i=debut ; i < l01 && tab[i][3] >= tab[debut][3] ; i++ ){
                 if(tab[i][8] >= nombreEnfantsLimite){
-                    for( var j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
+                    for( j=i + 1 ; j < l01 && tab[j][3] > tab[i][3] ; j++ ){
                         if(tab[j][7] === i){
                             if(tab[j][1] === '#' && tab[j][2] === 'f' && tab[j][13].indexOf( 'tbel' ) >= 0){
                                 contient_un_defTab_tbel=true;
@@ -533,7 +528,6 @@ class c_rev1{
             tab_retour_ligne[indice_tab][1]=false;
             retourLigne=tab_retour_ligne[indice_tab][1];
         }
-        var count=0;
         for( i=debut ; i < l01 ; i=tab[i][12] ){
             if(tab[i][7] === parentId){
                 if(t !== ''){
@@ -664,7 +658,7 @@ class c_rev1{
                     */
                     obj=this.matrice_vers_source_rev1( tab , i , retourLigne , i + 1 , tab[i][10] , tab_retour_ligne , contient_un_defTab_tbel );
                     if(obj.__xst === __xsu){
-                        var retour_ligne_stocke=tab_retour_ligne.pop();
+                        let retour_ligne_stocke=tab_retour_ligne.pop();
                         /*
                           =====================================================================
                           on ouvre la fonction
@@ -694,7 +688,8 @@ class c_rev1{
                                     t+=les_espaces;
                                 }else if(tab[i][9] === tab[tab[i][7]][8]){
                                     /* si c'est le dernier enfant */
-                                    t+=this.espacesnrev( tab[debut][3] );
+                                    /*this.espacesnrev( tab[debut][3] );*/
+                                    t+=les_espaces;
                                 }
                             }
                         }
@@ -887,7 +882,16 @@ class c_rev1{
     */
     rev_tm( texte_rev ){
         var tableau1=this.txt_en_tableau( texte_rev );
+
+        var startMicro = performance.now();
+        
         var matrice_fonction=this.tb_vers_matrice( tableau1.__xva ,  /* niv */ true ,  /* cst_dlr */ false ,  /* par */ '' );
+        
+        var endMicro = performance.now();
+        var temps=parseInt((endMicro - startMicro) * 1000,10) / 1000;
+        console.log('temps de conversion de texte rev vers matrice pour un source rev de '+texte_rev.length+' octets  : ',temps)
+        
+        
         return matrice_fonction;
     }
     /*
@@ -949,7 +953,7 @@ class c_rev1{
                     }
                 }
             }else{
-                exceptions=exceptions + 1;
+                exceptions++;
             }
         }
         return({"__xva" : tab ,"numLigne" : numLigne ,"exceptions" : exceptions});

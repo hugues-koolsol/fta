@@ -2127,7 +2127,10 @@ class c_astphpparseur_vers_rev1{
             */
             var o=__m_rev1.rev_tm( t );
             if(o.__xst === __xsu){
-                debugger;
+                /* 
+                  afr je ne ma rappelle plus pourquoi j'ai mis un déverminage
+                */
+                /* debugger; */
             }else{
                 return(this.#astphp_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
             }
