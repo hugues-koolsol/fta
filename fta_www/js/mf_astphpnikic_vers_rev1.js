@@ -2136,7 +2136,7 @@ class c_astphpnikic_vers_rev1{
                     
                 case "Expr_PostInc" :
                     if(element.var && element.var.nodeType === "Expr_Variable"){
-                        if(parent.nodeType==="Stmt_For" || "Expr_Assign" === parent.nodeType){
+                        if(parent.nodeType === "Stmt_For" || "Expr_Assign" === parent.nodeType){
                             t+='$' + element.var.name + '++';
                         }else{
                             t+='postinc($' + element.var.name + ')';
@@ -2154,7 +2154,7 @@ class c_astphpnikic_vers_rev1{
                     
                 case "Expr_PostDec" :
                     if(element.var && element.var.nodeType === "Expr_Variable"){
-                        if(parent.nodeType==="Stmt_For" || "Expr_Assign" === parent.nodeType){
+                        if(parent.nodeType === "Stmt_For" || "Expr_Assign" === parent.nodeType){
                             t+='$' + element.var.name + '--';
                         }else{
                             t+='postdec($' + element.var.name + ')';
@@ -2172,7 +2172,7 @@ class c_astphpnikic_vers_rev1{
                     
                 case "Expr_PreDec" :
                     if(element.var && element.var.nodeType === "Expr_Variable"){
-                        if(parent.nodeType==="Stmt_For" || "Expr_Assign" === parent.nodeType){
+                        if(parent.nodeType === "Stmt_For" || "Expr_Assign" === parent.nodeType){
                             t+='--$' + element.var.name;
                         }else{
                             t+='predec($' + element.var.name + ')';
@@ -2190,7 +2190,7 @@ class c_astphpnikic_vers_rev1{
                     
                 case "Expr_PreInc" :
                     if(element.var && element.var.nodeType === "Expr_Variable"){
-                        if(parent.nodeType==="Stmt_For" || "Expr_Assign" === parent.nodeType){
+                        if(parent.nodeType === "Stmt_For" || "Expr_Assign" === parent.nodeType){
                             t+='++$' + element.var.name;
                         }else{
                             t+='preinc($' + element.var.name + ')';

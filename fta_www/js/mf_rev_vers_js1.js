@@ -2667,7 +2667,7 @@ class c_rev_vers_js1{
             }else if(this.#tb[j][1] === 'auto_appelee' && this.#tb[j][2] === 'f'){
                 auto_appelee=true;
             }else if(this.#tb[j][1] === 'contenu' && this.#tb[j][2] === 'f'){
-                if(this.#tb[j][8]===0){
+                if(this.#tb[j][8] === 0){
                     /* cas a={b:function(){}}; */
                     contenu_obj+='{/*vide*/}';
                 }else if(this.#tb[this.#tb[this.#tb[j][7]][7]][1] === '' && this.#tb[this.#tb[this.#tb[this.#tb[j][7]][7]][7]][1] === 'obj'){

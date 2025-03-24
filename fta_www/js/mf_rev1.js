@@ -50,7 +50,6 @@ class c_rev1{
         }
         return t;
     }
-    
     /* function respr */
     #respr( n ){
         var t='\r\n';
@@ -397,7 +396,7 @@ class c_rev1{
                 newTab.push( s2 );
             }
         }
-//        console.log(newTab);
+        /* console.log(newTab); */
         l01=newTab.length;
         var l02=0;
         var calcul=0;
@@ -688,7 +687,7 @@ class c_rev1{
                                     t+=les_espaces;
                                 }else if(tab[i][9] === tab[tab[i][7]][8]){
                                     /* si c'est le dernier enfant */
-                                    /*this.espacesnrev( tab[debut][3] );*/
+                                    /* this.espacesnrev( tab[debut][3] ); */
                                     t+=les_espaces;
                                 }
                             }
@@ -881,17 +880,16 @@ class c_rev1{
       =============================================================================================================
     */
     rev_tm( texte_rev ){
+        var startMicro=performance.now();
         var tableau1=this.txt_en_tableau( texte_rev );
-
-        var startMicro = performance.now();
-        
+        var endMicro=performance.now();
+        var temps=parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000;
+        console.log( 'source texte -> tableau pour un source rev de ' + texte_rev.length + ' octets  : ' , temps );
+        var startMicro=performance.now();
         var matrice_fonction=this.tb_vers_matrice( tableau1.__xva ,  /* niv */ true ,  /* cst_dlr */ false ,  /* par */ '' );
-        
-        var endMicro = performance.now();
-        var temps=parseInt((endMicro - startMicro) * 1000,10) / 1000;
-        console.log('temps de conversion de texte rev vers matrice pour un source rev de '+texte_rev.length+' octets  : ',temps)
-        
-        
+        var endMicro=performance.now();
+        var temps=parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000;
+        console.log( 'temps de conversion de texte rev vers matrice pour un source rev de ' + texte_rev.length + ' octets  : ' , temps );
         return matrice_fonction;
     }
     /*
@@ -921,42 +919,34 @@ class c_rev1{
     */
     txt_en_tableau( str ){
         const l01=str.length;
-        var tab=[];
-        var i=0;
-        var exceptions=0;
-        var numLigne=0;
-        var codeCaractere='';
-        var temp=0;
-        var indiceTab=0;
-        for( i=0 ; i < l01 ; i++ ){
+        const tab=[];
+        let i=0;
+        let codeCaractere=0;
+        let temp=0;
+        let indiceTab=0;
+        do{
             codeCaractere=str.charCodeAt( i );
-            /*
-              on ne traite pas les zero width space , vertical tab
-              8203 = 0x200B
-              11   = 0x0B
-            */
-            if(!(codeCaractere === 8203 || codeCaractere === 11)){
-                /*
-                  0xD800 = 55296 = 1101 1000 0000 0000  , 0xF800 = 63488 = 1111 1000 0000 0000
-                */
-                temp=codeCaractere & 0xF800;
-                if(temp === 55296){
-                    tab[indiceTab]=[str.substr( i , 2 ),2,i,numLigne];
+            if(codeCaractere <= 127){
+                if(codeCaractere !== 11){
+                    tab[indiceTab]=[String.fromCharCode( codeCaractere ),1,i];
                     indiceTab++;
-                    i++;
-                }else{
-                    tab[indiceTab]=[str.substr( i , 1 ),1,i,numLigne];
-                    indiceTab++;
-                    /* 10 = x0A = \n */
-                    if(codeCaractere === 10){
-                        numLigne++;
-                    }
                 }
             }else{
-                exceptions++;
+                if(codeCaractere !== 8203){
+                    temp=codeCaractere & 0xF800;
+                    if(temp === 55296){
+                        tab[indiceTab]=[str.substr( i , 2 ),2,i];
+                        indiceTab++;
+                        i++;
+                    }else{
+                        tab[indiceTab]=[str.substr( i , 1 ),1,i];
+                        indiceTab++;
+                    }
+                }
             }
-        }
-        return({"__xva" : tab ,"numLigne" : numLigne ,"exceptions" : exceptions});
+            i++;
+        }while(i < l01);
+        return({"__xva" : tab});
     }
     /*
       =============================================================================================================

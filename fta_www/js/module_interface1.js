@@ -2520,8 +2520,8 @@ COMMIT;
         try{
             var zon=document.getElementById( this.#nom_div_des_messages1 );
             if(zon.style.visibility === 'hidden'){
-                if(zon.innerHTML==''){
-                 zon.innerHTML='<div>pas de message</div>'
+                if(zon.innerHTML == ''){
+                    zon.innerHTML='<div>pas de message</div>';
                 }
                 zon.style.visibility='visible';
             }else{
