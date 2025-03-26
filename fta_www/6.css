@@ -69,6 +69,8 @@ textarea{
    max-height:80vh;
    white-space:pre;
    overflow:scroll;
+   /* permet d'empécher le défilement de la page quand le scroll de la texte-area est au max */
+   overscroll-behavior: none;
 }
 a,button{
    display:inline-flex;
