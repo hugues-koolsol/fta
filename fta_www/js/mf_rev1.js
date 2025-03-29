@@ -599,10 +599,18 @@ class c_rev1{
                       on est dans un commentaire
                       =============================================================================
                     */
+                    if(contient_un_defTab_tbel === true){
+                        /* && count% 10 === 0 */
+                        t+=les_espaces;
+                    }
                     commentaire=this.tr_commentaire_rev1( tab[i][13] , tab[i][3] , i );
                     t+=tab[i][1] + '(' + commentaire + ')';
-                    count++;
-                    if(contient_un_defTab_tbel === true && count% 10 === 0){
+                    /*
+                      on ne fait pas count++; sur un commentaire
+                    */
+                    count=0;
+                    if(contient_un_defTab_tbel === true){
+                        /* && count% 10 === 0 */
                         t+=les_espaces;
                     }
                 }else if(tab[i][2] === 'f' && tab[i][1] === '@'){
@@ -883,13 +891,17 @@ class c_rev1{
         var startMicro=performance.now();
         var tableau1=this.txt_en_tableau( texte_rev );
         var endMicro=performance.now();
-        var temps=parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000;
-        console.log( 'source texte -> tableau pour un source rev de ' + texte_rev.length + ' octets  : ' , temps );
+        /*
+          var temps=parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000;
+          console.log( 'source texte -> tableau pour un source rev de ' + texte_rev.length + ' octets  : ' , temps );
+        */
         var startMicro=performance.now();
         var matrice_fonction=this.tb_vers_matrice( tableau1.__xva ,  /* niv */ true ,  /* cst_dlr */ false ,  /* par */ '' );
         var endMicro=performance.now();
-        var temps=parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000;
-        console.log( 'temps de conversion de texte rev vers matrice pour un source rev de ' + texte_rev.length + ' octets  : ' , temps );
+        if(texte_rev.length > 5000){
+            var temps=parseInt( (endMicro - startMicro) * 1000 , 10 ) / 1000;
+            console.log( 'temps de conversion de texte rev vers matrice pour un source rev de ' + texte_rev.length + ' octets  : ' , temps );
+        }
         return matrice_fonction;
     }
     /*

@@ -217,7 +217,7 @@ function zz_l1_convertir_un_source_css_sur_disque3( id_source ){
                     try{
                         /* on transforme le css en ast */
                         var ast=postcss.parse( donnees.contenu_du_fichier , {} );
-                        console.log( ast.nodes );
+                        /* console.log( ast.nodes ); */
                         /* on transforme le ast en rev */
                         var obj=__m_astpostcss_vers_rev1.traite_ast_postcss( ast , {} );
                         if(obj.__xst === __xsu){

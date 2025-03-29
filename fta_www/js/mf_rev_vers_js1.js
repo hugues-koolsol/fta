@@ -2079,6 +2079,7 @@ class c_rev_vers_js1{
                         }
                     }
                 }
+                comptage++;
             }else if(this.#tb[j][1] === 'prop' && this.#tb[j][2] === 'f'){
                 nombre_de_proprietes++;
                 if(this.#tb[j][8] === 1 && this.#tb[j + 1][2] === 'c'){
@@ -2098,6 +2099,7 @@ class c_rev_vers_js1{
                         }
                     }
                 }
+                comptage++;
             }else if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                 if(nombre_de_parametres === 0 || precedent_est_commentaire === true){
                 }else{
@@ -2107,8 +2109,8 @@ class c_rev_vers_js1{
                 var commt=__m_rev1.tr_co_src( this.#tb[j][13] , niveau , j );
                 textObj+='/*' + commt + '*/';
                 precedent_est_commentaire=true;
+                comptage=0;
             }
-            comptage++;
             if(contient_un_tbel){
                 if(comptage% 20 === 0){
                     textObj+=__m_rev1.resps( niveau + 1 );

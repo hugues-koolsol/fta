@@ -888,6 +888,7 @@ class interface1{
                     }
                 }else{
                     __m_rev1.empiler_erreur( {"__xst" : __xer ,"__xme" : __m_rev1.nl2()} );
+                    this.remplir_et_afficher_les_messages1( nom_de_la_text_area_rev );
                 }
             }else{
                 this.remplir_et_afficher_les_messages1( nom_de_la_text_area_js );
