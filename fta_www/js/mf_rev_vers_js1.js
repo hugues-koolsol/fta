@@ -2989,6 +2989,7 @@ class c_rev_vers_js1{
                         'replaceAll',
                         'replaceChildren',
                         'search',
+                        'send',
                         'setAttribute',
                         'slice',
                         'splice',
