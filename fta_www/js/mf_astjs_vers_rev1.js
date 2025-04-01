@@ -1679,6 +1679,12 @@ class c_astjs_vers_rev1{
         let gauche='';
         let droite='';
         let contenu='';
+        let un_wait='';
+        if(element.hasOwnProperty('await') && element.await === true){
+            un_wait='un_wait(),';
+        }else{
+            return(this.#astjs_le( {"__xst" : __xer ,"__xme" : __m_rev1.nl2() ,"element" : element} ));
+        }
         obj=this.#traite_element( element.left , niveau + 1 , element , tab_comm , false );
         if(obj.__xst === __xsu){
             gauche+=obj.__xva;
@@ -1708,7 +1714,7 @@ class c_astjs_vers_rev1{
                 }
             }
         }
-        t+='boucle_sur_objet_de(';
+        t+='boucle_sur_objet_de('+un_wait+'';
         t+='pourChaque(de(' + gauche + ' , ' + droite + ')),';
         t+='faire(' + contenu + ')';
         t+=')';

@@ -279,6 +279,7 @@ class c_rev_vers_js1{
                         var pourChaque='';
                         var faire='';
                         les_cas=[];
+                        let un_wait='';
                         for( j=i + 1 ; j < this.#l02 ; j=this.#tb[j][12] ){
                             if(this.#tb[j][1] === 'pourChaque'){
                                 les_cas.push( [j,this.#tb[j][1],i] );
@@ -286,6 +287,8 @@ class c_rev_vers_js1{
                                 les_cas.push( [j,this.#tb[j][1],i] );
                             }else if(this.#tb[j][1] === '#' && this.#tb[j][2] === 'f'){
                                 les_cas.push( [j,this.#tb[j][1],i] );
+                            }else if(this.#tb[j][1] === 'un_wait' && this.#tb[j][2] === 'f'){
+                                un_wait=' await ';
                             }else{
                                 return(this.#rev_js_le( {"__xst" : __xer ,"__xme" : (__m_rev1.nl2() + this.#tb[i][1]) + 'syntaxe = boucle_sur_objet_dans(pourChaque(dans(a , b)),faire())'} ));
                             }
@@ -311,7 +314,7 @@ class c_rev_vers_js1{
                                 }
                             }
                         }
-                        t+='for(';
+                        t+='for'+un_wait+'(';
                         t+=pourChaque;
                         t+='){';
                         t+=un_espace_p1;
