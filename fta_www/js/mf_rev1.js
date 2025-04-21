@@ -546,7 +546,7 @@ class c_rev1{
                             t+=les_espaces;
                         }
                     }else{
-                        if(count > 0){
+                        if(count > 0 || (tab[i][3]===0 && i!== 1 )){
                             t+=CRLF;
                         }
                     }

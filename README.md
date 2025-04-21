@@ -4,11 +4,11 @@
 L'idée est de mettre en place une structure qui permet de considérer que **les programmes sont des données**.
 
 le programme en cours de développement transforme des fonctions imbriquées en tableau
-de façon à écrire des traitements ( c'est à dire les programmes ) et des données avec une syntaxe commune appelée "rev".
+de façon à écrire des traitements ( c'est à dire les programmes ) et des données avec **une syntaxe commune appelée "rev"**.
 
 
 
-Il faut que cette structure soit être écrite avec elle même.
+Il faut que cette structure soit écrite avec elle même.
 
 Comme il n'existe pas encore de compilateur, on s'appuie sur les langages html, css, javascript, sql et php.
 
